@@ -1,8 +1,8 @@
 ---
 author: "Stephan Lichtenauer"
 date: 2020-05-09
-title: Throw Away Firefox
-tags: ["firefox", "browser", "save browsing"]
+title: Firefox
+tags: ["firefox", "browser", "safe browsing"]
 ---
 
 # Overview
