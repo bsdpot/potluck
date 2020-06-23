@@ -3,7 +3,7 @@
 [ -w /etc/pkg/FreeBSD.conf ] && sed -i '' 's/quarterly/latest/' /etc/pkg/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
-sysrc sendmail_enable="NONE"
+sysrc sendmail_enable="NO"
 sysrc sshd_enable="YES"
 
 echo myjailpassword | pw add user ffoxuser -h 0
