@@ -1,6 +1,6 @@
 ---
 author: "Luca Pizzamiglio & Stephan Lichtenauer"
-title: NGINX
+title: NGINX (NOMAD)
 tags: ["nginx", "http", "httpd", "web server", "nomad"]
 ---
 
