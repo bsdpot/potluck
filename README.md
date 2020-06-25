@@ -10,4 +10,4 @@ To learn how to use these pot flavours & images (spoiler alert: it is just one c
 
 **Additional flavours or fixes/updates to existing flavours are very welcome via pull requests!**
 
-If you want to provide an additional flavour, please provide both flavour files (<flavour> and <flavour>.sh) as well as a short README.md.
+If you want to provide an additional flavour, please provide both flavour files ("flavour" and "flavour".sh) as well as a short README.md.
