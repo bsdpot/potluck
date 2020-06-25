@@ -10,5 +10,5 @@ echo myjailpassword | pw add user ffoxuser -h 0
 mkdir /home/ffoxuser
 chown ffoxuser /home/ffoxuser
 
-# pkg install -y xauth firefox 
-# pkg clean -y
+pkg install -y xauth firefox 
+pkg clean -y
