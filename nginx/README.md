@@ -1,7 +1,7 @@
 ---
 author: "Luca Pizzamiglio & Stephan Lichtenauer"
 date: 2020-05-09
-title: Firefox
+title: NGINX
 tags: ["nginx", "http", "httpd", "web server"]
 ---
 
