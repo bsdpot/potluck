@@ -1,6 +1,5 @@
 ---
 author: "Stephan Lichtenauer"
-date: 2020-05-09
 title: Firefox
 tags: ["firefox", "browser", "safe browsing"]
 ---
