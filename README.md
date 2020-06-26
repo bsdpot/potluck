@@ -21,3 +21,5 @@ If you do have any questions or comments, do not hesitate to contact us!
 ## Technical notes about flavours
 
 If you prepare flavours for ```nomad```, add the start cmd flavour as flavour+4: Jenkins runs flavours 0-3 before slim, 4 after slim. The start cmd flavour does not allow any further shell scripts to be run because the jail never returns.
+
+See nginx-nomad for example.
