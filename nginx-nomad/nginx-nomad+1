@@ -1,1 +1,0 @@
-set-cmd -c "nginx -g 'daemon off;'"
