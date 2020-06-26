@@ -1,6 +1,7 @@
 ---
 author: "Luca Pizzamiglio & Stephan Lichtenauer"
 title: NGINX
+summary: This is a basic NGINX jail, NGINX is started (as usually) as a daemon.
 tags: ["nginx", "http", "httpd", "web server"]
 ---
 
