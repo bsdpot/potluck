@@ -9,4 +9,5 @@ tags: ["nginx", "http", "httpd", "web server", "nomad"]
 
 This is a NGINX jail that can be deployed via ```nomad```.
 
-NGINX is started as blocking task when the jail is started (see ```nginx-nomad+4.sh```)
+NGINX is started as blocking task when the jail is started (see ```nginx-nomad+4.sh```).
+The image also is slimmed (see nomad-nginx+3.sh```)
