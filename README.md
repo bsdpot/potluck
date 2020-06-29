@@ -20,6 +20,8 @@ If you do have any questions or comments, do not hesitate to contact us!
 
 ## Technical notes about flavours
 
-If you prepare flavours for ```nomad```, add the start cmd flavour as flavour+4: Jenkins runs flavours 0-3 before slim, 4 after slim. The start cmd flavour does not allow any further shell scripts to be run because the jail never returns.
+If you prepare flavours for ```nomad```, add the start cmd flavour as flavour+4 to make sure it is run as the last flavour. The start cmd flavour does not allow any further shell scripts to be run because the jail never returns.
+
+If you want to slim your pot jail, create slim.sh as flavour+3 (second to last). Jenkins does not auto-slim flavours, so simply copy slim.sh from ```/usr/local/etc/pot/flavours``` as flavour+3 into github.
 
 See nginx-nomad for example.
