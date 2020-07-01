@@ -1,6 +1,6 @@
 ---
 author: "Stephan Lichtenauer"
-title: JITSI MEET (NOMAD)
+title: Jitsi Meet (Nomad)
 summary: This is a JITSI MEET jail that can be deployed via nomad.
 tags: ["jitsi", "jitsi-meet", "video conference", "nomad"]
 ---
