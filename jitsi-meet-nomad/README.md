@@ -1,7 +1,7 @@
 ---
 author: "Stephan Lichtenauer"
 title: Jitsi Meet (Nomad)
-summary: This is a JITSI MEET jail that can be deployed via nomad.
+summary: This is a complete JITSI MEET instance that can be deployed via nomad.
 tags: ["jitsi", "jitsi-meet", "video conference", "nomad"]
 ---
 
@@ -13,7 +13,7 @@ The jail configures itself on the first start for your environment (see notes be
 
 NGINX is started as blocking task when the jail is started, all other services are started as services.
 
-Deploying the image or flavour should be quite straight forward and not take more than a few minutes:
+Deploying the image or flavour should be quite straight forward and not take more than a few minutes.
 
 # Installation
 
