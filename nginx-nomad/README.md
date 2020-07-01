@@ -1,6 +1,6 @@
 ---
 author: "Luca Pizzamiglio & Stephan Lichtenauer"
-title: NGINX (NOMAD)
+title: Nginx (Nomad)
 summary: This is a NGINX jail that can be deployed via nomad.
 tags: ["nginx", "http", "httpd", "web server", "nomad"]
 ---
