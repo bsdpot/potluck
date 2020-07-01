@@ -18,7 +18,8 @@ Deploying the image or flavour should be quite straight forward and not take mor
 # Installation
 
 * Create your local jail from the image or the flavour files as with every other jail (see documentation below).
-* Adjust to your environment: ```pot set-env -p test -E DOMAINNAME=<yourdomain> -E PUBLICIP=<yourpublicip> -E PRIVATEIP=<yourpotip>```
+* Adjust to your environment: ```pot set-env -p <yourjailname> -E DOMAINNAME=<yourdomain> -E PUBLICIP=<yourpublicip> -E PRIVATEIP=<yourpotip>```
+  * <yourjailname> is the name of the newly created/imported jail, e.g. jitsi-meet-nomad-fbsd-amd64-12_1_0_9
   * <yourdomain> should be the FQDN of your server that users can connect to in their web browser, e.g. jitsi.honeyguide.net
   * <yourpublicip> is the public IP address associated with the server behind this domain name
   * <yourpotip> is the IP address that has been created by '''pot''' when importing/creating the jail (see the output of ```pot import``` or ```pot create```, e.g. 10.192.0.3.
