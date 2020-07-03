@@ -9,7 +9,7 @@ tags: ["jitsi", "jitsi-meet", "video conference", "nomad"]
 
 This is a complete ```jitsi-meet``` installation in one jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
 
-The jail configures itself on the first start for your environment (see notes below).
+The jail configures itself on the first start for your environment (see notes below), for details about how to run ```jitsi-meet``` in a FreeBSD jail in general, see [this blog post](https://honeyguide.eu/posts/jitsi-freebsd/).
 
 NGINX is started as blocking task when the jail is started, all other services are started as services.
 
