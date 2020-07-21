@@ -16,7 +16,7 @@ Please note that a specific network configuration is suggested (see Installation
 * Create your local jail from the image or the flavour files.    
   * It is suggested that you create it with an alias network similar to the following command:    
 ```pot import -p traefik-consul-fbsd-amd64-12_1 -t 1.0 -N alias -i "em0|192.168.178.102“ -U https://potluck.honeyguide.net/traefik-consul```
-  * Otherwise export the ports:    
+  * Otherwise export the ports after creating the jail:    
   ```pot export-ports -p <jailname> -e 8080:8080 -e 9002:9002```
 * Adjust to your environment: ```sudo pot set-env -p <jailname> -E CONSULSERVER=<IP or hostname of consulserver>```
 * Start jail with ```pot start```
