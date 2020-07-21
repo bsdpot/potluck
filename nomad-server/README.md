@@ -1,6 +1,6 @@
 ---
 author: "Stephan Lichtenauer"
-title: Nomad (Server Instance)
+title: Nomad (Server)
 summary: Nomad is a scalable orchestration tool to run jobs on many hosts.
 tags: ["micro-services", "traefik", "nomad", "consul"]
 ---
