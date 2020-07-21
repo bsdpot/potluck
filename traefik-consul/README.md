@@ -1,7 +1,7 @@
 ---
 author: "Stephan Lichtenauer"
 title: Traefik (Consul)
-summary: traefik reverse proxy/load-balancer preconfigured for use with consul.
+summary: Traefik reverse proxy/load-balancer preconfigured for use with consul.
 tags: ["reverse proxy", "traefik", "http", "load balancer", "web server", "consul"]
 ---
 
