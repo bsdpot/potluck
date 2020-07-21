@@ -13,7 +13,7 @@ This flavour is configured as orchestration server. You need one or more ```noma
 
 Since clients need to run jobs e.g. via ```pot```, you need to install the client directly on a host; therefore you will not find a ```nomad``` client flavour on potluck.
 
-Together with [consul](https://potluck.honeyguide.net/blog/consul/] and the [traefik](https://potluck.honeyguide.net/blog/traefik-consul/] ```pot``` flavours on this site, you can easily set up a virtual datacenter.
+Together with [consul](https://potluck.honeyguide.net/blog/consul/) and the [traefik](https://potluck.honeyguide.net/blog/traefik-consul/) ```pot``` flavours on this site, you can easily set up a virtual datacenter.
 
 Please note that a specific network configuration is suggested (see Installation-chapter).
 
