@@ -16,7 +16,8 @@ Please note that a specific network configuration is suggested (see Installation
 * Create your local jail from the image or the flavour files.    
 * Export the ports after creating the jail:    
   ```pot export-ports -p <jailname> -e 8080:8080 -e 9002:9002```
-* Adjust to your environment: ```sudo pot set-env -p <jailname> -E CONSULSERVER=<IP or hostname of consulserver>```
+* Adjust to your environment:    
+  ```sudo pot set-env -p <jailname> -E CONSULSERVER=<IP or hostname of consulserver>```
 * Start jail with ```pot start```
 
 # Usage
