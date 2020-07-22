@@ -16,11 +16,10 @@ Please note that a specific network configuration is suggested (see Installation
 # Installation
 
 * Create your local jail from the image or the flavour files. 
-  * It is suggested that you create it with an alias network similar to the following command:    
-```pot import -p consul-fbsd-amd64-12_1 -t 1.0 -N alias -i "em0|192.168.178.101“ -U https://potluck.honeyguide.net/consul```
-  * Otherwise export the ports after creating the jail:     
+* Export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 8500:8500```
-* Adjust to your environment: ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<consul-nodename> -E IP=<IP address of this consul node>```
+* Adjust to your environment:    
+```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<consul-nodename> -E IP=<IP address of this consul node>```
 
 # Usage
 
