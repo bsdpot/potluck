@@ -20,14 +20,13 @@ Please note that a specific network configuration is suggested (see Installation
 # Installation
 
 * Create your local jail from the image or the flavour files. 
-  * It is suggested that you create it with an alias network similar to the following command:    
-```pot import -p consul-fbsd-amd64-12_1 -t 1.0 -N alias -i "em0|192.168.178.100“ -U https://potluck.honeyguide.net/nomad```
-  * Otherwise export the ports after creating the jail:     
+* Export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 4646:4646 -e 4647:4647 -e 4648:4648```
-* Adjust to your environment: ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E IP=<IP address of this nomad instance>  -E CONSULSERVER=<IP or hostname of consulserver>```
+* Adjust to your environment:    
+  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E IP=<IP address of this nomad instance>  -E CONSULSERVER=<IP or hostname of consulserver>```
 
 # Usage
 
-You can connect to the dashboard on port 4646 of your jail IP address, with the example above that would be http://192.168.178.100:4646.
+You can connect to the dashboard on port 4646 of your jail IP address.
 
-To run a new job, connect to the jail via ```pot term <jailname>``` and run a ```nomad``` job description via ```nomad run <jobfile>```.
+To run a new job, connect to the jail via ```pot term <jailname>``` and run a ```nomad``` job description via ```nomad run -address=http://<jailip>:4646 <jobfile>```.
