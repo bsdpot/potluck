@@ -29,4 +29,4 @@ Please note that a specific network configuration is suggested (see Installation
 
 You can connect to the dashboard on port 4646 of your jail IP address.
 
-To run a new job, connect to the jail via ```pot term <jailname>``` and run a ```nomad``` job description via ```nomad run -address=http://<jailip>:4646 <jobfile>```.
+To run a new job, connect to the jail via ```pot term <jailname>``` and run a ```nomad``` job description via ```nomad run -address=http://<jailip>:4646 <jobfile>``` or place the job via the dashboard.
