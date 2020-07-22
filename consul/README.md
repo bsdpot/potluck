@@ -23,4 +23,4 @@ Please note that a specific network configuration is suggested (see Installation
 
 # Usage
 
-You can connect to the dashboard on port 8500 of your jail IP address, with the example above that would be http://192.168.178.102:8500.
+You can connect to the dashboard on port 8500 of your jail IP address.
