@@ -87,7 +87,7 @@ fi
 echo \"
 bind_addr = \\\"\$IP\\\"
 plugin_dir = \\\"/usr/local/libexec/nomad/plugins\\\"
-datacenter = \\\"$DATACENTER\\\"
+datacenter = \\\"\$DATACENTER\\\"
 
 advertise {
   # This should be the IP of THIS MACHINE and must be routable by every node
