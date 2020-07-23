@@ -15,15 +15,17 @@ Since clients need to run jobs e.g. via ```pot```, you need to install the clien
 
 Together with [consul](https://potluck.honeyguide.net/blog/consul/) and the [traefik](https://potluck.honeyguide.net/blog/traefik-consul/) ```pot``` flavours on this site, you can easily set up a virtual datacenter.
 
-Please note that a specific network configuration is suggested (see Installation-chapter).
+Please note that a specific network configuration is suggested (see Installation-chapter) as this jail does not work behind the NAT of a public-bridge.
 
 # Installation
 
 * Create your local jail from the image or the flavour files. 
-* Export the ports after creating the jail:     
-  ```pot export-ports -p <jailname> -e 4646:4646 -e 4647:4647 -e 4648:4648```
+* This jail does not work with a public bridge, so clone it to use an IP address directly on your host:     
+  ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```   
+  e.g.
+  ```sudo pot clone -P nomad-server-amd64-12_1_1_0 -p my-nomad-server -N alias -i "em0|10.10.10.11"```   
 * Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E IP=<IP address of this nomad instance>  -E CONSULSERVER=<IP or hostname of consulserver>```
+  ```sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E IP=<IP address of this nomad instance>  -E CONSULSERVER=<IP or hostname of consulserver>```
 
 # Usage
 
