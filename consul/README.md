@@ -11,8 +11,6 @@ This is a flavour containing the ```consul``` service discovery platform.
 
 Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-server/] and the [traefik](https://potluck.honeyguide.net/blog/traefik-consul/] ```pot``` flavours on this site, you can easily set up a virtual datacenter.
 
-Please note that a specific network configuration is suggested (see Installation-chapter).
-
 # Installation
 
 * Create your local jail from the image or the flavour files. 
