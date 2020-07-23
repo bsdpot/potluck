@@ -9,8 +9,6 @@ tags: ["reverse proxy", "traefik", "http", "load balancer", "web server", "consu
 
 This is a flavour containing the ```traefik``` reverse proxy and load balancer preconfigured for usage with ```consul``` (e.g. [consul pot image on potluck](https://potluck.honeyguide.net/blog/consul/).
 
-Please note that a specific network configuration is suggested (see Installation-chapter).
-
 # Installation
 
 * Create your local jail from the image or the flavour files.    
