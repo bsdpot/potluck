@@ -1,24 +1,3 @@
-#!/bin/sh
-
-# EDIT THE FOLLOWING FOR NEW FLAVOUR:
-# 1. RUNS_IN_NOMAD - yes or no
-# 2. Adjust package installation between BEGIN & END PACKAGE SETUP
-# 3. Adjust jail configuration script generation between BEGIN & END COOK
-
-# Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
-# You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script 
-RUNS_IN_NOMAD=false
-
-# -------------- BEGIN PACKAGE SETUP -------------
-[ -w /etc/pkg/FreeBSD.conf ] && sed -i '' 's/quarterly/latest/' /etc/pkg/FreeBSD.conf
-ASSUME_ALWAYS_YES=yes pkg bootstrap
-touch /etc/rc.conf
-sysrc sendmail_enable="NO"
-sysrc traefik_enable="YES"
-
-# Install packages
-pkg install -y traefik 
 pkg clean -y
 # -------------- END PACKAGE SETUP -------------
 
@@ -34,7 +13,6 @@ pkg clean -y
 
 # ----------------- BEGIN COOK ------------------ 
 echo "#!/bin/sh
-
 # No need to change this, just ensures configuration is done only once
 if [ -e /usr/local/etc/pot-is-seasoned ]
 then
@@ -46,10 +24,8 @@ then
     fi
     exit 0
 fi
-
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
 /usr/local/etc/rc.d/traefik stop  || true
-
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
 # where pot is storing it in this case
@@ -57,34 +33,18 @@ if [ -e /tmp/environment.sh ]
 then
     . /tmp/environment.sh
 fi
-
 #
-# ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
+# ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
 # Check config variables are set
 #
-if [ -z \${CONSULSERVER+x} ];
-then
-    echo 'CONSULSERVER is unset - see documentation how to configure this flavour'
-    exit 1
-fi
-
-# ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
-# Don't forget to double(!)-escape quotes and dollar signs in the config files
-
-# Create traefik server config file 
-echo \"
-[entryPoints]
-  [entryPoints.http]
-    address = \\\"0.0.0.0:8080\\\"
-  [entryPoints.traefik]
-    address = \\\"0.0.0.0:9002\\\"
+if [ -z \${CONSULS
+    keyFile = \\\"/usr/local/etc/ssl/cert.key\\\"
 
 logLevel=\\\"INFO\\\"
 [traefikLog]
   filePath = \\\"/var/log/traefik.log\\\"
 [accessLog]
   filePath = \\\"/var/log/traefik-access.log\\\"
-
 [api]
   dashboard = true
 [consulcatalog]
@@ -94,12 +54,15 @@ logLevel=\\\"INFO\\\"
   frontEndRule = \\\"Host:{{ .ServiceName }}\\\"\" > /usr/local/etc/traefik.toml
 echo \"traefik_conf=\\\"/usr/local/etc/traefik.toml\\\"\" >> /etc/rc.conf
 
+mkdir -p /usr/local/etc/ssl/
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /usr/local/etc/ssl/cert.key -out /usr/local/etc/ssl/cert.crt -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com"
+chmod 644 /usr/local/etc/ssl/cert.crt
+chmod 600 /usr/local/etc/ssl/cert.key
+
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 /usr/local/etc/rc.d/traefik start
-
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
-
 # If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh
 # created by pot and we now after configuration block indefinitely
 if [ ! -e /tmp/environment.sh ]
@@ -127,26 +90,19 @@ chmod u+x /usr/local/bin/cook
 
 # Create rc.d script for "normal" mode:
 echo "#!/bin/sh
-
 #
 # PROVIDE: cook 
 # REQUIRE: LOGIN
 # KEYWORD: shutdown
 #
-
 . /etc/rc.subr
-
 name=cook
 rcvar=cook_enable
-
 load_rc_config $name
-
 : ${cook_enable:=\"NO\"}
 : ${cook_env:=\"\"}
-
 command=\"/usr/local/bin/cook\"
 command_args=\"\"
-
 run_rc_command \"\$1\"
 " > /usr/local/etc/rc.d/cook
 
