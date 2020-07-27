@@ -20,7 +20,7 @@ This is a flavour containing the ```traefik``` reverse proxy and load balancer p
 
 # Usage
 
-```traefik``` in the jail is listening on port 8080.
+```traefik``` in the jail is listening on port 8080 (HTTP) and 8443 (HTTPS with self signed certificate).
 
 You can connect to the dashboard on port 9002 of your jail IP address.
 
