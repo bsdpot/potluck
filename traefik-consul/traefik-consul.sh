@@ -1,3 +1,24 @@
+#!/bin/sh
+
+# EDIT THE FOLLOWING FOR NEW FLAVOUR:
+# 1. RUNS_IN_NOMAD - yes or no
+# 2. Adjust package installation between BEGIN & END PACKAGE SETUP
+# 3. Adjust jail configuration script generation between BEGIN & END COOK
+
+# Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
+# You can then query it in the cook script generation below and the script is installed
+# appropriately at the end of this script 
+RUNS_IN_NOMAD=false
+
+# -------------- BEGIN PACKAGE SETUP -------------
+[ -w /etc/pkg/FreeBSD.conf ] && sed -i '' 's/quarterly/latest/' /etc/pkg/FreeBSD.conf
+ASSUME_ALWAYS_YES=yes pkg bootstrap
+touch /etc/rc.conf
+sysrc sendmail_enable="NO"
+sysrc traefik_enable="YES"
+
+# Install packages
+pkg install -y openssl traefik 
 pkg clean -y
 # -------------- END PACKAGE SETUP -------------
 
@@ -37,7 +58,28 @@ fi
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
 # Check config variables are set
 #
-if [ -z \${CONSULS
+if [ -z \${CONSULSERVER+x} ];
+then
+    echo 'CONSULSERVER is unset - see documentation how to configure this flavour'
+    exit 1
+fi
+# ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
+# Don't forget to double(!)-escape quotes and dollar signs in the config files
+# Create traefik server config file 
+echo \"
+[entryPoints]
+  [entryPoints.http]
+    address = \\\"0.0.0.0:8080\\\"
+  [entryPoints.traefik]
+    address = \\\"0.0.0.0:9002\\\"
+  [entryPoints.httpSSL]
+    address = \\\"0.0.0.0:8443\\\"
+      [entryPoints.httpSSL.tls]
+
+[[tls]]
+  entryPoints = [\\\"httpSSL\\\"]
+  [tls.certificate]
+    certFile = \\\"/usr/local/etc/ssl/cert.crt\\\"
     keyFile = \\\"/usr/local/etc/ssl/cert.key\\\"
 
 logLevel=\\\"INFO\\\"
