@@ -68,7 +68,7 @@ fi
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 # Create traefik server config file 
 
-pw user add -n git -c 'Git Server' -d /var/db/git -G wheel -m -s /usr/sbin/nologin
+pw user add -n git -c 'Git Server' -d /var/db/git -G wheel -m -s /bin/sh
 mkdir -p /var/db/git/.ssh
 chown git:git /var/db/git/.ssh
 touch /var/db/git/.ssh/authorized_keys
