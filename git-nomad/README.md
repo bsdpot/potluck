@@ -16,6 +16,8 @@ Since some ```fusefs``` filesystems (e.g. ```s3fs```) make setting up correct pe
 
 Git is started as blocking task when the jail is started (see ```git-nomad+4.sh```).
 
+The image also is slimmed (see ```git-nomad+3.sh```)
+
 For more details about ```nomad```images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
 # Nomad Job Description Example
