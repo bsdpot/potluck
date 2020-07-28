@@ -15,7 +15,8 @@ Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-serve
 
 * Create your local jail from the image or the flavour files. 
 * Export the ports after creating the jail:     
-  ```pot export-ports -p <jailname> -e 8500:8500```
+  ```pot export-ports -p <jailname> -e 8500:8500```   
+  Note: If you want to use the ```consul``` DNS service, you either need to expose the DNS UDP port like for the [Jitsi Meet Nomad potluck image](https://potluck.honeyguide.net/blog/jitsi-meet-nomad/) or you need to clone the jail and assign a host IP address (like for the [Nomad Server image](https://potluck.honeyguide.net/blog/nomad-server/)).
 * Adjust to your environment:    
 ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<consul-nodename> -E IP=<IP address of this consul node>```
 
