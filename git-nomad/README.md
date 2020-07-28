@@ -55,7 +55,7 @@ job "examplegit" {
          "/mnt/s3/web/git:/var/db/git"
        ]
         port_map = {
-          http = "22"
+          ssh = "22"
         }
       }
 
