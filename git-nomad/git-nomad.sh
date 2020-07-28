@@ -43,6 +43,7 @@ then
     # we block indefinitely
     if [ \$RUNS_IN_NOMAD ]
     then
+        . /etc/rc
         tail -f /dev/null 
     fi
     exit 0
@@ -83,6 +84,7 @@ touch /usr/local/etc/pot-is-seasoned
 # created by pot and we now after configuration block indefinitely
 if [ \$RUNS_IN_NOMAD ]
 then
+    . /etc/rc
     tail -f /dev/null
 fi
 " > /usr/local/bin/cook
