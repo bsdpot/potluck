@@ -12,6 +12,8 @@ This is a Git jail that can be started with ```pot``` but it can also be deploye
 The git user home directory is in ```/var/db/git``` where also a directory ```.ssh``` for authorized key access resides.    
 It is suggested that this directory is mounted from outside the jail when it is run as a ```nomad``` task so that it is persistent (see example below).
 
+Since some ```fusefs``` filesystems (e.g. ```s3fs```) make setting up correct permissions for mounts impossible at the moment due to bugs, ```sshd``` is run with ```StrictModes no``` in ```/etc/ssh/sshd_config```.
+
 Git is started as blocking task when the jail is started (see ```git-nomad+4.sh```).
 
 For more details about ```nomad```images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
