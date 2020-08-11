@@ -69,16 +69,19 @@ fi
 #
 if [ -z \${MYNETWORKS+x} ]; 
 then 
+    echo 'MYNETWORKS is unset - setting it to 192.168.0.0/16,10.0.0.0/8' >> /var/log/cook.log
     echo 'MYNETWORKS is unset - setting it to 192.168.0.0/16,10.0.0.0/8'
     MYNETWORKS=\"192.168.0.0/16,10.0.0.0/8\" 
 fi
 if [ -z \${RELAYDOMAINS+x} ];
 then
+    echo 'RELAYDOMAINS is unset - see documentation how to configure this flavour' >> /var/log/cook.log
     echo 'RELAYDOMAINS is unset - see documentation how to configure this flavour'
     exit 1
 fi
 if [ -z \${SMTPDBANNER+x} ];
 then
+    echo 'SMTPDBANNER is unset - setting it to \"\\\$myhostname ESMTP \\\$mail_name (\\\$mail_version)\"' >> /var/log/cook.log
     echo 'SMTPDBANNER is unset - setting it to \"\\\$myhostname ESMTP \\\$mail_name (\\\$mail_version)\"'
     SMTPDBANNER=\"\\\$myhostname ESMTP \\\$mail_name (\\\$mail_version)\" 
 fi
