@@ -63,10 +63,23 @@ then
     . /tmp/environment.sh
 fi
 
+
 #
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
-# Check config variables are set
 #
+
+# Convert parameters to variables if passed (overwrite environment)
+while getopts n:d:b: option
+do
+case "${option}"
+in
+n) MYNETWORKS=${OPTARG};;
+d) RELAYDOMAINS=${OPTARG};;
+b) SMTPDBANNER=${OPTARG};;
+esac
+done
+
+# Check config variables are set
 if [ -z \${MYNETWORKS+x} ]; 
 then 
     echo 'MYNETWORKS is unset - setting it to 192.168.0.0/16,10.0.0.0/8' >> /var/log/cook.log
