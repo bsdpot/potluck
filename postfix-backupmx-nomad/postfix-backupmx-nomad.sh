@@ -101,9 +101,9 @@ then
 fi
 if [ -z \${HOSTNAME+x} ];
 then
-    echo 'HOSTNAME is unset - setting it to \"\\\$mydomain\"' >> /var/log/cook.log
-    echo 'HOSTNAME is unset - setting it to \"\\\$mydomain\"'
-    HOSTNAME=\"\\\$mydomain\" 
+    echo 'HOSTNAME is unset - setting it to \"backupmx\"' >> /var/log/cook.log
+    echo 'HOSTNAME is unset - setting it to \"backupmx\"'
+    HOSTNAME=\"backupmx\" 
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE ADJUSTED & COPIED:
