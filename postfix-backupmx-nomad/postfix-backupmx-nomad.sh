@@ -69,10 +69,11 @@ fi
 #
 
 # Convert parameters to variables if passed (overwrite environment)
-while getopts n:d:b: option
+while getopts h:n:d:b: option
 do
     case \"\${option}\"
     in
+      h) HOSTNAME=\${OPTARG};;
       n) MYNETWORKS=\${OPTARG};;
       d) RELAYDOMAINS=\${OPTARG};;
       b) SMTPDBANNER=\${OPTARG};;
@@ -98,6 +99,12 @@ then
     echo 'SMTPDBANNER is unset - setting it to \"\\\$myhostname ESMTP \\\$mail_name (\\\$mail_version)\"'
     SMTPDBANNER=\"\\\$myhostname ESMTP \\\$mail_name (\\\$mail_version)\" 
 fi
+if [ -z \${HOSTNAME+x} ];
+then
+    echo 'HOSTNAME is unset - setting it to \"\\\$mydomain\"' >> /var/log/cook.log
+    echo 'HOSTNAME is unset - setting it to \"\\\$mydomain\"'
+    HOSTNAME=\"\\\$mydomain\" 
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE ADJUSTED & COPIED:
 
@@ -105,6 +112,7 @@ fi
 [ -w /root/main.cf ] && sed -i '' \"s&\\\$MYNETWORKS&\$MYNETWORKS&\" /root/main.cf 
 [ -w /root/main.cf ] && sed -i '' \"s/\\\$RELAYDOMAINS/\$RELAYDOMAINS/\" /root/main.cf
 [ -w /root/main.cf ] && sed -i '' \"s/\\\$SMTPDBANNER/\$SMTPDBANNER/\" /root/main.cf
+[ -w /root/main.cf ] && sed -i '' \"s/\\\$HOSTNAME/\$HOSTNAME/\" /root/main.cf
 
 mkdir -p /usr/local/etc/postfix
 mv /root/main.cf /usr/local/etc/postfix
