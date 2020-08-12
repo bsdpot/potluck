@@ -71,12 +71,12 @@ fi
 # Convert parameters to variables if passed (overwrite environment)
 while getopts n:d:b: option
 do
-case \"\${option}\"
-in
-n) MYNETWORKS=\${OPTARG};;
-d) RELAYDOMAINS=\${OPTARG};;
-b) SMTPDBANNER=\${OPTARG};;
-esac
+    case \"\${option}\"
+    in
+      n) MYNETWORKS=\${OPTARG};;
+      d) RELAYDOMAINS=\${OPTARG};;
+      b) SMTPDBANNER=\${OPTARG};;
+    esac
 done
 
 # Check config variables are set
