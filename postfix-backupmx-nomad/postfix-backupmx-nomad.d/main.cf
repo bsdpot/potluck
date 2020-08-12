@@ -92,7 +92,7 @@ mail_owner = postfix
 # other configuration parameters.
 #
 #myhostname = host.domain.tld
-#myhostname = virtual.domain.tld
+myhostname = $HOSTNAME
 
 # The mydomain parameter specifies the local internet domain name.
 # The default is to use $myhostname minus the first component.
