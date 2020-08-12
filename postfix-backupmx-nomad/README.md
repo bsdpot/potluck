@@ -17,10 +17,10 @@ The jail exposes these parameters that can either be set via the environment or 
 
 | Environment      | cook parameter     | Content      |
 | :--------------- | :----------------: | :-----------|
+| HOSTNAME       | -h              | Optional: ```myhostname``` in ```main.cf``` |
 | MYNETWORKS       | -n                 | Optional: ```mynetworks``` in ```main.cf``` (private network addresses that are permitted to send outbound) |
 | RELAYDOMAINS       | -d                 | ```relay_domains``` in ```main.cf``` (domains this server feels responsible for) |
 | SMTPDBANNER       | -b               | Optional: ```smtpd_banner``` in ```main.cf``` |
-| HOSTNAME       | -b               | Optional: ```myhostname``` in ```main.cf``` |
 
 
 
