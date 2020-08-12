@@ -120,10 +120,13 @@ mv /root/main.cf /usr/local/etc/postfix
 mkdir -p /usr/local/etc/mail
 install -m 0644 /usr/local/share/postfix/mailer.conf.postfix /usr/local/etc/mail/mailer.conf
 
+[ -w /etc/syslog.conf ] && sed -i '' \"s/# mail.info/mail.info/\" /etc/syslog.conf
+
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 sysrc postfix_enable=\"YES\"
 /usr/local/etc/rc.d/postfix restart
+/etc/rc.d/syslogd restart
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
