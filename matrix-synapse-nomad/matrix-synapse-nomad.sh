@@ -15,7 +15,7 @@
 # appropriately at the end of this script 
 RUNS_IN_NOMAD=true
 
-# -------------- BEGIN PACKAGE SETUP -------------
+# -------- BEGIN PACKAGE & MOUNTPOINT SETUP -------------
 [ -w /etc/pkg/FreeBSD.conf ] && sed -i '' 's/quarterly/latest/' /etc/pkg/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
@@ -24,7 +24,11 @@ sysrc sendmail_enable="NO"
 # Install packages
 pkg install -y py37-matrix-synapse py37-matrix-synapse-ldap3 acme.sh nginx 
 pkg clean -y
-# -------------- END PACKAGE SETUP -------------
+
+# Create mountpoints
+mkdir -p /var/db/control
+mkdir -p /var/db/matrix-synapse
+# ---------- END PACKAGE & MOUNTPOINT SETUP -------------
 
 #
 # Create configurations
