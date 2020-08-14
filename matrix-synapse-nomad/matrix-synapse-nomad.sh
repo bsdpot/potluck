@@ -68,7 +68,7 @@ fi
 # 
 
 # Convert parameters to variables if passed (overwrite environment)
-while getopts n:d:b: option
+while getopts s:e:r:k:h:u:p:l:b:d:w: option
 do
     case \"\${option}\"
     in
