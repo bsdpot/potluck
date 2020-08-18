@@ -1,6 +1,7 @@
 set-attribute -A persistent -V OFF
 set-attribute -A no-rc-script -V ON
 copy-in -s /usr/local/etc/pot/flavours/matrix-synapse-nomad.d/nginx.conf -d /root
+copy-in -s /usr/local/etc/pot/flavours/matrix-synapse-nomad.d/nginx.nossl.conf -d /root
 copy-in -s /usr/local/etc/pot/flavours/matrix-synapse-nomad.d/homeserver.yaml -d /root
 copy-in -s /usr/local/etc/pot/flavours/matrix-synapse-nomad.d/homeserver.log.config -d /root
 copy-in -s /usr/local/etc/pot/flavours/matrix-synapse-nomad.d/homeserver.yaml.ldappart -d /root

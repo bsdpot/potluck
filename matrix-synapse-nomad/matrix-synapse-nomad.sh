@@ -72,7 +72,7 @@ fi
 # 
 
 # Convert parameters to variables if passed (overwrite environment)
-while getopts s:e:r:k:h:u:p:l:b:d:w: option
+while getopts s:e:r:k:h:u:p:l:b:d:w:n: option
 do
     case \"\${option}\"
     in
@@ -87,6 +87,7 @@ do
       b) LDAPBASE=\${OPTARG};;
       d) LDAPBINDDN=\${OPTARG};;
       w) LDAPBINDPWD=\${OPTARG};;
+      n) NOSSL=\${OPTARG};;
     esac
 done
 
@@ -132,6 +133,12 @@ then
     echo 'SMTPPWD is unset - see documentation how to configure this flavour' >> /var/log/cook.log
     echo 'SMTPPWD is unset - see documentation how to configure this flavour'
     exit 1
+fi
+if [ -z \${NOSSL+x} ];
+then
+    echo 'NOSSL is unset - setting it to false' >> /var/log/cook.log
+    echo 'NOSSL is unset - setting it to false'
+    NOSSL=false 
 fi
 if [ ! -z \${LDAPURI+x} ];
 then
@@ -181,8 +188,8 @@ fi
 
 /usr/local/bin/python3.7 -B -m synapse.app.homeserver -c /usr/local/etc/matrix-synapse/homeserver.yaml --generate-config -H \$SERVERNAME --report-stats no
 
-mkdir -p /var/db/media_store
-chmod ugo+rw /var/db/media_store
+mkdir -p /var/db/media_store && chown -R synapse /var/db/media_store && chmod -R ugo+rw /var/db/media_store
+mkdir -p /var/db/matrix-synapse && chown -R synapse /var/db/matrix-synapse && chmod -R ugo+rw /var/db/matrix-synapse
 
 # ...we bring our own config though, so we backup & replace the generated one
 mv /usr/local/etc/matrix-synapse/homeserver.yaml /usr/local/etc/matrix-synapse/homeserver.yaml.generated
@@ -192,15 +199,23 @@ mv /root/homeserver.yaml /usr/local/etc/matrix-synapse
 mv /root/homeserver.log.config /usr/local/etc/matrix-synapse
 
 
-# nginx.conf
-[ -w /root/nginx.conf ] && sed -i '' \"s/\\\$SERVERNAME/\$SERVERNAME/\" /root/nginx.conf
-mkdir -p /usr/local/etc/nginx
-mv /root/nginx.conf /usr/local/etc/nginx
+if [ \"\$NOSSL\" = true ];
+then
+    # nginx.conf
+    [ -w /root/nginx.nossl.conf ] && sed -i '' \"s/\\\$SERVERNAME/\$SERVERNAME/\" /root/nginx.nossl.conf
+    mkdir -p /usr/local/etc/nginx
+    mv /root/nginx.nossl.conf /usr/local/etc/nginx/nginx.conf
+else
+    # nginx.conf
+    [ -w /root/nginx.conf ] && sed -i '' \"s/\\\$SERVERNAME/\$SERVERNAME/\" /root/nginx.conf
+    mkdir -p /usr/local/etc/nginx
+    mv /root/nginx.conf /usr/local/etc/nginx
 
-# certrenew.sh
-[ -w /root/nginx.conf ] && sed -i '' \"s/\\\$SERVERNAME/\$SERVERNAME/\" /root/nginx.conf
-chmod u+x /root/certrenew.sh
-echo \"30      4       1       *       *       root   /bin/sh /root/certrenew.sh\" >> /etc/crontab 
+    # certrenew.sh
+    [ -w /root/nginx.conf ] && sed -i '' \"s/\\\$SERVERNAME/\$SERVERNAME/\" /root/nginx.conf
+    chmod u+x /root/certrenew.sh
+    echo \"30      4       1       *       *       root   /bin/sh /root/certrenew.sh\" >> /etc/crontab 
+fi
 
 # sshd (control user)
 pw user add -n control -c 'Control Account' -d /var/db/control -G wheel -m -s /bin/sh
@@ -217,12 +232,14 @@ sysrc synapse_enable=\"YES\"
 sysrc nginx_enable=\"YES\"
 sysrc sshd_enable=\"YES\"
 
-/usr/local/etc/rc.d/synapse start
-/usr/local/etc/rc.d/nginx start
-/etc/rc.d/sshd start
+/usr/local/etc/rc.d/synapse restart
+/usr/local/etc/rc.d/nginx restart
+/etc/rc.d/sshd restart
 
-. /root/certrenew.sh
-
+if [ \"\$NOSSL\" = false ];
+then
+    . /root/certrenew.sh
+fi
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
 # If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh
@@ -278,4 +295,5 @@ then
     # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
     echo "cook_enable=\"YES\"" >> /etc/rc.conf
 fi
+
 
