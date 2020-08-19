@@ -124,7 +124,7 @@ chown traefik:traefik /var/log/traefik/traefik.log
 chown traefik:traefik /var/log/traefik/traefik-access.log
 
 mkdir -p /usr/local/etc/ssl/
-openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /usr/local/etc/ssl/cert.key -out /usr/local/etc/ssl/cert.crt -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com"
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /usr/local/etc/ssl/cert.key -out /usr/local/etc/ssl/cert.crt -subj \"/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com\"
 chmod 644 /usr/local/etc/ssl/cert.crt
 chmod 600 /usr/local/etc/ssl/cert.key
 
