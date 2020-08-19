@@ -18,8 +18,11 @@ sysrc sendmail_enable="NO"
 sysrc traefik_enable="YES"
 
 # Install packages
-pkg install -y openssl traefik 
+pkg install -y openssl traefik2
 pkg clean -y
+
+# To allow mount in of this directory, create mountpoint
+mkdir -p /var/log/traefik
 # -------------- END PACKAGE SETUP -------------
 
 #
@@ -63,6 +66,7 @@ then
     echo 'CONSULSERVER is unset - see documentation how to configure this flavour'
     exit 1
 fi
+
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 # Create traefik server config file 
@@ -84,9 +88,9 @@ echo \"
 
 logLevel=\\\"INFO\\\"
 [traefikLog]
-  filePath = \\\"/var/log/traefik.log\\\"
+  filePath = \\\"/var/log/traefik/traefik.log\\\"
 [accessLog]
-  filePath = \\\"/var/log/traefik-access.log\\\"
+  filePath = \\\"/var/log/traefik/traefik-access.log\\\"
 [api]
   dashboard = true
 [consulcatalog]
@@ -95,6 +99,11 @@ logLevel=\\\"INFO\\\"
   exposedByDefault = true
   frontEndRule = \\\"Host:{{ .ServiceName }}\\\"\" > /usr/local/etc/traefik.toml
 echo \"traefik_conf=\\\"/usr/local/etc/traefik.toml\\\"\" >> /etc/rc.conf
+
+touch /var/log/traefik/traefik.log
+touch /var/log/traefik/traefik-access.log
+chown traefik:traefik /var/log/traefik/traefik.log
+chown traefik:traefik /var/log/traefik/traefik-access.log
 
 mkdir -p /usr/local/etc/ssl/
 openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /usr/local/etc/ssl/cert.key -out /usr/local/etc/ssl/cert.crt -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com"
