@@ -114,7 +114,7 @@ echo \"
   stale = false
   exposedByDefault = true
   [providers.consulCatalog.endpoint]
-    address = \\\"\$CONSULSERVER:8500\\\"" > /usr/local/etc/traefik.toml
+    address = \\\"\$CONSULSERVER:8500\\\"\" > /usr/local/etc/traefik.toml
 
 echo \"traefik_conf=\\\"/usr/local/etc/traefik.toml\\\"\" >> /etc/rc.conf
 
