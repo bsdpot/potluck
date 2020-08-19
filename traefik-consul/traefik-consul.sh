@@ -78,26 +78,44 @@ echo \"
     address = \\\"0.0.0.0:9002\\\"
   [entryPoints.httpSSL]
     address = \\\"0.0.0.0:8443\\\"
-      [entryPoints.httpSSL.tls]
 
-[[tls]]
-  entryPoints = [\\\"httpSSL\\\"]
-  [tls.certificate]
-    certFile = \\\"/usr/local/etc/ssl/cert.crt\\\"
-    keyFile = \\\"/usr/local/etc/ssl/cert.key\\\"
+[http.routers.my-api]
+  entryPoints = [\\\"traefik\\\"]
+  # Catch every request (only available rule for non-tls routers. See below.)
+  rule = \\\"HostSNI(`*`)\\\"
+  service = \\\"api@internal\\\"
 
-logLevel=\\\"INFO\\\"
-[traefikLog]
+[[tls.certificates]]
+  certFile = \\\"/usr/local/etc/ssl/cert.crt\\\"
+  keyFile = \\\"/usr/local/etc/ssl/cert.key\\\"
+
+[tls.options]
+  [tls.options.myTLSOptions]
+    minVersion = \\\"VersionTLS12\\\"
+    cipherSuites = [
+      \\\"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256\\\",
+      \\\"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384\\\",
+      \\\"TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256\\\",
+      \\\"TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256\\\",
+      \\\"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256\\\",
+      \\\"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256\\\",
+    ]
+
+[api]
+  dashboard = true
+  insecure = true
+
+[log]
   filePath = \\\"/var/log/traefik/traefik.log\\\"
 [accessLog]
   filePath = \\\"/var/log/traefik/traefik-access.log\\\"
-[api]
-  dashboard = true
-[consulcatalog]
-  endpoint = \\\"\$CONSULSERVER:8500\\\"
+
+[providers.consulCatalog]
   stale = false
   exposedByDefault = true
-  frontEndRule = \\\"Host:{{ .ServiceName }}\\\"\" > /usr/local/etc/traefik.toml
+  [providers.consulCatalog.endpoint]
+    address = \\\"\$CONSULSERVER:8500\\\"" > /usr/local/etc/traefik.toml
+
 echo \"traefik_conf=\\\"/usr/local/etc/traefik.toml\\\"\" >> /etc/rc.conf
 
 touch /var/log/traefik/traefik.log
