@@ -1,0 +1,4 @@
+set-attribute -A persistent -V OFF
+set-attribute -A no-rc-script -V ON
+copy-in -s /usr/local/etc/pot/flavours/backuppc-nomad.d/backuppc.conf -d /root
+copy-in -s /usr/local/etc/pot/flavours/backuppc-nomad.d/smb4.conf -d /root
