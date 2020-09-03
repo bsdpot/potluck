@@ -22,7 +22,7 @@ The jail exposes these parameters that can either be set via the environment or 
 | :--------------- | :----------------: | :-----------|
 | PASSWORD         | -p              | Password for user ```admin``` in the web interface |
 
-**Note: The jail does not yet send any BackupPC emails. Patches welcome...**
+**Note: The jail does not yet send any BackupPC emails. Flavour patches for this or for making the configuration more persistent (see job description below) are welcome :) ...**
 
 # Nomad Job Description Example
 
