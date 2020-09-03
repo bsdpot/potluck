@@ -14,13 +14,80 @@ It is suggested that this directory is mounted from outside the jail when it is 
 
 The admin interface can be accessed via web browser through port 80. 
 
-@@@PARAMETERS TO BE EXPLAINED
-
 For more details about ```nomad```images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
+
+The jail exposes these parameters that can either be set via the environment or by setting the ```cook```parameters (the latter either via ```nomad```, see example below, or by editing the downloaded jails ```pot.conf``` file):
+
+| Environment      | cook parameter     | Content      |
+| :--------------- | :----------------: | :-----------|
+| PASSWORD         | -p              | Password for user ```admin``` in the web interface |
+
+**Note: The jail does not yet send any BackupPC emails. Patches welcome...**
 
 # Nomad Job Description Example
 
-It is suggested to mount the jail directory ```/var/db/BackupPC``` from outside as this contains the backup database and settings:
+It is suggested to mount the jail directories ```/var/db/BackupPC``` and ```/usr/local/etc/backuppc/pc``` from outside as these contain the backup database and the host specific settings which both probably should be persistent. 
 
-@@@NOMAD EXAMPLE FOLLOWS
+Also, it is suggested to copy in the hosts file (as this will otherwise be recreated on each job scheduling, so also edit this file by hand outside of the jail and *not* via the admin GUI as the changes otherwise will be lost when the jail is rescheduled by ```nomad```):
+
+```
+job "backuppc" {
+  datacenters = ["mydc"]
+  type        = "service"
+
+  group "group1" {
+    count = 1 
+
+    task "www1" {
+      driver = "pot"
+
+      service {
+        tags = ["backuppc", "www"]
+        name = "backuppc"
+        port = "http"
+
+         check {
+            type     = "tcp"
+            name     = "tcp"
+            interval = "60s"
+            timeout  = "30s"
+          }
+          check_restart {
+            limit = 5
+            grace = "120s"
+            ignore_warnings = false
+          }
+      }
+
+      config {
+        image = "https://potluck.honeyguide.net/backuppc-nomad"
+        pot = "backuppc-nomad-amd64-12_1"
+        tag = "1.0"
+        command = "/usr/local/bin/cook"
+        args = ["-p","myadminpassword"]
+        mount = [
+          "/mnt/backupdb:/var/db/BackupPC",
+          "/mnt/etc_pc:/usr/local/etc/backuppc/pc"
+        ]
+        copy = [
+          "/mnt/hosts:/usr/local/etc/backuppc/hosts"
+        ]
+        port_map = {
+          http = "80"
+        }
+      }
+
+      resources {
+        cpu = 500
+        memory = 512
+
+        network {
+          mbits = 50
+          port "http" {}
+        }
+      }
+    }
+  }
+}
+```
 
