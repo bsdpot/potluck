@@ -29,6 +29,7 @@ pkg clean -y
 mkdir -p /var/db/BackupPC/
 mkdir -p /home/backuppc
 mkdir -p /home/backuppc/.ssh
+mkdir -p /usr/local/etc/backuppc && mkdir -p /usr/local/etc/backuppc/pc
 # ---------- END PACKAGE & MOUNTPOINT SETUP -------------
 
 #
