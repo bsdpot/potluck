@@ -101,6 +101,7 @@ sed -i .bak 's|^\$Conf{CgiAdminUsers}.*|\$Conf{CgiAdminUsers}     = \"*\";|g' /u
 sed -i .bak 's|^\$Conf{CgiImageDirURL}.*|\$Conf{CgiImageDirURL} = \"\";|g' /usr/local/etc/backuppc/config.pl
 
 chown -R backuppc:backuppc /usr/local/etc/backuppc/
+chown -R backuppc:backuppc /var/db/BackupPC/
 sysrc backuppc_enable=\"YES\" 
 
 #htpasswd -b -c /usr/local/etc/backuppc/htpasswd backuppc \"\$PASSWORD\"
