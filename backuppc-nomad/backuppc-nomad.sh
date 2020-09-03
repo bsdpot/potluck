@@ -27,6 +27,8 @@ pkg clean -y
 
 # Create mountpoints
 mkdir -p /var/db/BackupPC/
+mkdir -p /home/backuppc
+mkdir -p /home/backuppc/.ssh
 # ---------- END PACKAGE & MOUNTPOINT SETUP -------------
 
 #
@@ -94,14 +96,21 @@ mv /root/backuppc.conf /usr/local/etc/apache24/Includes/
 
 echo | sh /usr/local/etc/backuppc/update.sh 
 
-#[ -w /usr/local/etc/backuppc/config.pl ] && sed -i '' \"s/\\\$Conf{CgiAdminUsers}     = '';/\\\$Conf{CgiAdminUsers}     = 'backuppc';/\" /usr/local/etc/backuppc/config.pl 
-
 sed -i .bak 's|^\$Conf{SCGIServerPort}.*|\$Conf{SCGIServerPort} = 10268;|g' /usr/local/etc/backuppc/config.pl
 sed -i .bak 's|^\$Conf{CgiAdminUsers}.*|\$Conf{CgiAdminUsers}     = \"*\";|g' /usr/local/etc/backuppc/config.pl
 sed -i .bak 's|^\$Conf{CgiImageDirURL}.*|\$Conf{CgiImageDirURL} = \"\";|g' /usr/local/etc/backuppc/config.pl
 
 chown -R backuppc:backuppc /usr/local/etc/backuppc/
 chown -R backuppc:backuppc /var/db/BackupPC/
+
+# Change backuppc user to home directory for ssh keys file and fix .ssh permissions for files (possibly) having been copied in
+chown -R backuppc:backuppc /home/backuppc/
+chmod -R 700 /home/backuppc/.ssh
+chmod 644 /home/backuppc/.ssh/*.pub || true
+chmod 600 /home/backuppc/.ssh/id_rsa || true
+[ -w /etc/master.passwd ] && sed -i '' \"s|BackupPC pseudo-user:/nonexistent|BackupPC pseudo-user:/home/backuppc|\" /etc/master.passwd
+pwd_mkdb -p /etc/master.passwd
+
 sysrc backuppc_enable=\"YES\" 
 
 #htpasswd -b -c /usr/local/etc/backuppc/htpasswd backuppc \"\$PASSWORD\"
