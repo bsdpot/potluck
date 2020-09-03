@@ -28,7 +28,9 @@ The jail exposes these parameters that can either be set via the environment or 
 
 It is suggested to mount the jail directories ```/var/db/BackupPC``` and ```/usr/local/etc/backuppc/pc``` from outside as these contain the backup database and the host specific settings which both probably should be persistent. 
 
-Also, it is suggested to copy in the hosts file (as this will otherwise be recreated on each job scheduling, so also edit this file by hand outside of the jail and *not* via the admin GUI as the changes otherwise will be lost when the jail is rescheduled by ```nomad```):
+Also, it is suggested to copy in the hosts file (as this will otherwise be recreated on each job scheduling, so also edit this file by hand outside of the jail and *not* via the admin GUI as the changes otherwise will be lost when the jail is rescheduled by ```nomad```). The main BackupPC configuration will be recreated as well, so store configuration in your per host settings that are stored in the mounted in directory ```/usr/local/etc/backuppc/pc```.
+
+Last not least, if you use ```ssh``` to access clients, you probably also want to copy your private/public key pair to ```/home/backuppc/.ssh``` so the BackupPC server can access your clients.
 
 ```
 job "backuppc" {
@@ -70,7 +72,9 @@ job "backuppc" {
           "/mnt/etc_pc:/usr/local/etc/backuppc/pc"
         ]
         copy = [
-          "/mnt/hosts:/usr/local/etc/backuppc/hosts"
+          "/mnt/hosts:/usr/local/etc/backuppc/hosts",
+          "/mnt/id_rsa:/home/backuppc/.ssh/id_rsa",
+          "/mnt/id_rsa.pub:/home/backuppc/.ssh/id_rsa.pub"
         ]
         port_map = {
           http = "80"
