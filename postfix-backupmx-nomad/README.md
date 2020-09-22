@@ -7,8 +7,6 @@ tags: ["postfix", "smtpd", "backup mx", "mail server", "nomad"]
 
 # Overview
 
-**IMPORTANT NOTE: THIS IS A BETA IMAGE!**
-
 This is a Postfix jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
 
 For more details about ```nomad```images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
