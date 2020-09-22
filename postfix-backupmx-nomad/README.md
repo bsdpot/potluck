@@ -9,7 +9,7 @@ tags: ["postfix", "smtpd", "backup mx", "mail server", "nomad"]
 
 This is a Postfix jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
 
-For more details about ```nomad```images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
+For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
 The jail exposes these parameters that can either be set via the environment or by setting the ```cook```parameters (the latter either via ```nomad```, see example below, or by editing the downloaded jails ```pot.conf``` file):
 
