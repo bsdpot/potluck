@@ -7,7 +7,7 @@ tags: ["rsnapshot", "rsync", "backup", "nomad"]
 
 # Overview
 
-This is a Rsnapshot jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
+This is a ```rsnapshot``` jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
 
 For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
