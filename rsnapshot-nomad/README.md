@@ -25,7 +25,7 @@ The frequency is given in the standard cron entry format, e.g. "0 */4 * * *" or 
 
 # Nomad Job Description Example
 
-It is suggested to mount the jail directory ```/.snapshots``` from outside as it contains the backups.
+It is suggested to mount the jail directory ```/.snapshots``` from outside as it contains the backups (or any other backup directory that you define in your configuration below).
 
 Also, you should copy in the ```rsnapshot.conf``` file to ```/usr/local/etc``` with your configuration settings. 
 
