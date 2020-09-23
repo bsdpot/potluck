@@ -26,7 +26,8 @@ pkg install -y rsnapshot
 pkg clean -y
 
 # Create mountpoints
-mkdir /.snapshots
+mkdir -p /.snapshots
+mkdir -p /root/.ssh
 # ---------- END PACKAGE & MOUNTPOINT SETUP -------------
 
 #
@@ -112,6 +113,10 @@ then
    echo \"\$GAMMA       root   /usr/local/bin/rsnapshot gamma\" >> /etc/crontab
 fi  
 
+chown -R root:wheel /root/.ssh
+chmod -R 700 /root/.ssh
+chmod 644 /root/.ssh/*.pub || true
+chmod 600 /root/.ssh/id_rsa || true
 
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
