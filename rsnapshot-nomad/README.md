@@ -46,7 +46,7 @@ job "rsnapshot" {
 
       config {
         image = "https://potluck.honeyguide.net/rsnapshot-nomad"
-        pot = "postfix-backupmx-nomad-amd64-12_1"
+        pot = "rsnapshot-nomad-amd64-12_1"
         tag = "1.0"
         command = "/usr/local/bin/cook"
         args = ["-a","40 23 * * 6"]
