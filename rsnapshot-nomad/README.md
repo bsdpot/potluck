@@ -29,6 +29,8 @@ It is suggested to mount the jail directory ```/.snapshots``` from outside as it
 
 Also, you should copy in the ```rsnapshot.conf``` file to ```/usr/local/etc``` with your configuration settings. 
 
+Last not least, since you probably will use ssh to access clients, you also want to copy your private/public key pair to /root/.ssh so the BackupPC server can access your clients.
+
 Example with passing parameters to the ```cook``` script:
 
 ```
@@ -53,6 +55,8 @@ job "rsnapshot" {
         ]
         copy = [
           "/mnt/rsnapshot.conf:/usr/local/etc/rsnapshot.conf"
+          "/mnt/id_rsa:/root/.ssh/id_rsa",
+          "/mnt/id_rsa.pub:/root/.ssh/id_rsa.pub"
         ]
       }
 
