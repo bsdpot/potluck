@@ -49,7 +49,7 @@ job "rsnapshot" {
         pot = "rsnapshot-nomad-amd64-12_1"
         tag = "1.0"
         command = "/usr/local/bin/cook"
-        args = ["-a","40 23 * * 6"]
+        args = ["-a","\"40 23 * * 6\""]
         mount = [
           "/mnt/backups:/.snapshots"
         ]
