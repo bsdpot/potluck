@@ -29,7 +29,7 @@ It is suggested to mount the jail directory ```/.snapshots``` from outside as it
 
 Also, you should copy in the ```rsnapshot.conf``` file to ```/usr/local/etc``` with your configuration settings. 
 
-Last not least, since you probably will use ssh to access clients, you also want to copy your private/public key pair to /root/.ssh so the BackupPC server can access your clients.
+Last not least, since you probably will use ssh to access clients, you also want to copy your private/public key pair to ```/root/.ssh``` so the BackupPC server can access your clients.
 
 Assuming that you don't copy in a ```known_hosts``` file, ```ssh``` would prompt on the first connection attempt to your clients that are to be backed up for your confirmation to add the unknown ```ssh``` host keys to your ```known_hosts``` file within the jail, a prompt that you won't see of course as the job is run inside the jail via ```cron```. Therefore, it is suggested that you add ```ssh_args        -o "StrictHostKeyChecking=no"``` to your ```rsnapshot.conf``` to suppress the prompt and make sure the backup runs correctly in batch mode.
 
