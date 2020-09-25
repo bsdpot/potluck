@@ -63,8 +63,8 @@ job "rsnapshot" {
       }
 
       resources {
-        cpu = 200
-        memory = 64
+        cpu = 500
+        memory = 1024
       }
     }
   }
