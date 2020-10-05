@@ -8,7 +8,7 @@ To learn about pot & pot flavours, go to [pot.pizzamig.dev](https://pot.pizzamig
 
 To learn how to use these pot flavours & images (spoiler alert: it is just one command...), go to [potluck.honeyguide.net](https://potluck.honeyguide.net).
 
-*Please note:*
+
 
 **Additional flavours or fixes/updates to existing flavours are very welcome via pull requests!**
 
