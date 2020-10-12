@@ -14,7 +14,7 @@ It is suggested that this directory is mounted from outside the jail when it is 
 
 The ```logstash``` configuration (```logstash.yml```, ```logstash.conf```, ```pipelines.yml```) is located in ```/usr/local/etc/logstash``` and you probably want to copy in your own configuration and potentially mount some source directories that can be accessed depending on your monitoring and aggregation needs.
 
-The kibana web interface can be accessed via web browser through port 5601. 
+The ```kibana``` web interface can be accessed via web browser through port 5601. 
 
 For more details about ```nomad```images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
