@@ -56,7 +56,8 @@ job "elkstack" {
         tag = "1.0"
         command = "/usr/local/bin/cook"
         mount = [
-          "/mnt/logfiles:/mnt"
+          "/mnt/logfiles:/mnt",
+          "/mnt/elastic_db:/var/db/elasticsearch"
         ]
         copy = [
           "/mnt/logstash.conf:/usr/local/etc/logstash/logstash.conf",
