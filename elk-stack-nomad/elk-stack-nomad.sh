@@ -27,6 +27,7 @@ pkg clean -y
 
 # Create mountpoints
 mkdir -p /var/db/elasticsearch/
+chmod ugo+rw /var/db/elasticsearch/
 # ---------- END PACKAGE & MOUNTPOINT SETUP -------------
 
 #
