@@ -26,6 +26,7 @@ pkg install -y elasticsearch7 logstash7 kibana7
 pkg clean -y
 
 # Create mountpoints
+mkdir -p /var/db/elasticsearch/
 # ---------- END PACKAGE & MOUNTPOINT SETUP -------------
 
 #
@@ -68,26 +69,6 @@ fi
 #
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
 # 
-
-# Convert parameters to variables if passed (overwrite environment)
-#while getopts a:b:d:g: option
-#do
-#    case \"\${option}\"
-#    in
-#      a) ALPHA=\${OPTARG};;
-#      b) BETA=\${OPTARG};;
-#      d) DELTA=\${OPTARG};;
-#      g) GAMMA=\${OPTARG};;
-#    esac
-#done
-
-# Check config variables are set
-#if [ -z \${ALPHA+x} ]; 
-#then 
-#    echo 'ALPHA is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-#    echo 'ALPHA is unset - see documentation how to configure this flavour'
-#    exit 1
-#fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE ADJUSTED & COPIED:
 hostip=\$(ifconfig | sed -n '/.inet /{s///;s/ .*//;p;}' | sed -r 's/^127.0.0.1//' | tr -d '\\n')
