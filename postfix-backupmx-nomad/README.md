@@ -20,7 +20,7 @@ The jail exposes these parameters that can either be set via the environment or 
 | RELAYDOMAINS       | -d                 | ```relay_domains``` in ```main.cf``` (domains this server feels responsible for) |
 | SMTPDBANNER       | -b               | Optional: ```smtpd_banner``` in ```main.cf``` |
 
-*Note: If you schedule this jail via ´´´nomad´´´ and the job gets restarted for whatever reason, mails that are still in the queue and not forwarded will not be part of the newly schedule instance and could get lost because a completely new jail is created in that case. If that happens, you might want to manually start the old, stopped jail to flush the queue before the jail gets pruned by ´´´pot prune´´´ (which does not happen automatically at the time of this writing)*
+*Note: If you schedule this jail via ```nomad``` and the job gets restarted for whatever reason, mails that are still in the queue and not forwarded will not be part of the newly schedule instance and could get lost because a completely new jail is created in that case. If that happens, you might want to manually start the old, stopped jail to flush the queue before the jail gets pruned by ```pot prune``` (which does not happen automatically at the time of this writing)*
 
 
 # Nomad Job Description Example
