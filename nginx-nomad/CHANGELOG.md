@@ -1,3 +1,9 @@
+1.1.3
+
+* Trigger build of FreeBSD 12.2 image & rebuild FreeBSD 11.4 image to update packages
+
+---
+
 1.1.2
 
 * Added nomad job example file
