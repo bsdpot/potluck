@@ -23,7 +23,8 @@ For more details about ```nomad```images, see [about potluck](https://potluck.ho
 * Theoretically, the ```elasticsearch``` database directory can be mounted if on the host one has previously set ```enforce_statfs=1``` (e.g. via ```sysctl```) - see also https://github.com/elastic/elasticsearch/issues/12018#issuecomment-146840836
 * Practically, this still does not work as ```elasticsearch``` fails to start with _java.lang.IllegalStateException: failed to obtain node locks_ - no workaround or solution for this is known at the moment
 
-That means the image does only work without mounting in an outside database directory. That should not be a problem as long as the jail is run stand-alone, but when it is scheduled via ```nomad```, this implies that the database is completely erased on every restart.
+That means the image does only work without mounting in an outside database directory. That should not be a problem as long as the jail is run stand-alone, but when it is scheduled via ```nomad```, this implies that the database is completely erased on every restart.   
+To run it this way, remove the line ```          "/mnt/elastic_db:/var/db/elasticsearch"``` from the ```mount``` stanza in the job description example below.
 
 
 # Nomad Job Description Example
