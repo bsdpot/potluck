@@ -20,12 +20,12 @@ The jail exposes these parameters that can either be set via the environment or 
 | RELAYDOMAINS       | -d                 | ```relay_domains``` in ```main.cf``` (domains this server feels responsible for) |
 | SMTPDBANNER       | -b               | Optional: ```smtpd_banner``` in ```main.cf``` |
 
-*Note: If you schedule this jail via ```nomad``` and the job gets restarted for whatever reason, mails that are still in the queue and not forwarded will not be part of the newly schedule instance and could get lost because a completely new jail is created in that case. If that happens, you might want to manually start the old, stopped jail to flush the queue before the jail gets pruned by ```pot prune``` (which does not happen automatically at the time of this writing)*
+*Note: If you schedule this jail via ```nomad``` **and you do not mount in the spool directory from persistent storage like in the example below** and the job gets restarted for whatever reason, mails that are still in the queue and not forwarded will not be part of the newly schedule instance and will be lost because a completely new jail is created in that case. If that happens, you might want to manually start the old, stopped jail to flush the queue before the jail gets pruned by ```pot prune``` (which does not happen automatically at the time of this writing)*
 
 
 # Nomad Job Description Example
 
-Example with passing parameters to the ```cook``` script:
+Example with passing parameters to the ```cook``` script and mounting a persistent spool directory to ensure that mails are not discarded on job restarts:
 
 ```
 job "backupmx" {
@@ -57,6 +57,9 @@ job "backupmx" {
         tag = "1.0"
         command = "/usr/local/bin/cook"
         args = ["-n","10.10.10.10/32","-d","'example1.com, example2.com, example.de'","-b","'mx2.example1.com ESMTP \\$mail_name'","-h","mx2.example1.com"]
+        mount = [
+          "/mnt/spool:/var/spool/postfix"
+        ]
 
         port_map = {
           smtp = "25"
