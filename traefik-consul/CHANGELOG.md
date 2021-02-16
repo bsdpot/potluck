@@ -1,3 +1,9 @@
+1.2.2
+
+* Install traefik instead of traefik2 since the traefik pkg is now v2
+
+---
+
 1.2.1
 
 * Trigger build of FreeBSD 12.2 image & rebuild FreeBSD 11.4 image to update packages
