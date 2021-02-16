@@ -18,7 +18,7 @@ sysrc sendmail_enable="NO"
 sysrc traefik_enable="YES"
 
 # Install packages
-pkg install -y openssl traefik2
+pkg install -y openssl traefik
 pkg clean -y
 
 # To allow mount in of this directory, create mountpoint
