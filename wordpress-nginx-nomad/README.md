@@ -11,7 +11,7 @@ This is a Wordpress on ```nginx``` jail that can be started with ```pot``` but i
 
 For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
-You should mount an outside directory that can (but does not need to) contain a ```wordpress``` installation into ```/usr/local/share/www/wordpress```. If the directory is empty, ```wordpress``` is installed when the jail is started and it can be configured through the normal ```wordpress``` configuration website that is shown when it is started the first time. That means if the instance is discarded and restarted by ```nomad``` later on, the ```wordpress``` instance that has been installed will be reused.
+You should mount an outside directory that can (but does not need to) contain a ```wordpress``` installation into ```/usr/local/www/wordpress```. If the directory is empty, ```wordpress``` is installed when the jail is started and it can be configured through the normal ```wordpress``` configuration website that is shown when it is started the first time. That means if the instance is discarded and restarted by ```nomad``` later on, the ```wordpress``` instance that has been installed will be reused.
 
 If there already is a ```wordpress``` installation present, only ```nginx``` is started so that all following updates of Wordpress can be done through the Wordpress web gui itself.
 
