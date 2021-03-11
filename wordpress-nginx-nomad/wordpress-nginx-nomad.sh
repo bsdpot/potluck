@@ -80,14 +80,11 @@ fi
 # 
 
 # Convert parameters to variables if passed (overwrite environment)
-#while getopts a:b:d:g: option
+#while getopts a: option
 #do
 #    case \"\${option}\"
 #    in
 #      a) ALPHA=\${OPTARG};;
-#      b) BETA=\${OPTARG};;
-#      d) DELTA=\${OPTARG};;
-#      g) GAMMA=\${OPTARG};;
 #    esac
 #done
 
@@ -100,11 +97,6 @@ fi
 #fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE ADJUSTED & COPIED:
-
-#if [ ! -z \${ALPHA+x} ];
-#then
-#   echo \"\$ALPHA       root   /usr/local/bin/rsnapshot alpha\" >> /etc/crontab 
-#fi
 
 # If we do not find a Wordpress installation, we install it. If we do find something though,
 # we do not install/overwrite anything as we assume that updates/modifications are happening
@@ -130,6 +122,7 @@ cp /root/99-custom.ini /usr/local/etc/php/99-custom.ini
 cp /root/nginx.conf /usr/local/etc/nginx/nginx.conf 
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
+killall nginx
 /usr/local/etc/rc.d/php-fpm restart
 /usr/local/etc/rc.d/nginx restart
 
