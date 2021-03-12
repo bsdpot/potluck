@@ -19,4 +19,60 @@ Since the service is expected to be published via ```consul``` and a web proxy l
 
 # Nomad Job Description Example
 
-Follows.
+```
+job "example" {
+  datacenters = ["datacenter"]
+  type        = "service"
+
+  group "group1" {
+    count = 1 
+
+    task "www1" {
+      driver = "pot"
+
+      service {
+        tags = ["nginx", "www", "wordpress"]
+        name = "wordpress-example-server"
+        port = "http"
+
+         check {
+            type     = "tcp"
+            name     = "tcp"
+            interval = "60s"
+            timeout  = "30s"
+          }
+          check_restart {
+            limit = 5
+            grace = "120s"
+            ignore_warnings = false
+          }
+      }
+
+      config {
+        image = "https://potluck.honeyguide.net/wordpress-nginx-nomad"
+        pot = "wordpress-nginx-nomad-amd64-12_2"
+        tag = "1.0"
+        command = "/usr/local/bin/cook"
+        args = [""]
+
+        mount = [
+         "/mnt/s3/web/wordpress:/usr/local/www/wordpress"
+        ]
+        port_map = {
+          http = "80"
+        }
+      }
+
+      resources {
+        cpu = 1000
+        memory = 1024
+
+        network {
+          mbits = 10
+          port "http" {}
+        }
+      }
+    }
+  }
+}
+```
