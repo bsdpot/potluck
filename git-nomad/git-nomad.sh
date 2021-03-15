@@ -76,7 +76,7 @@ chown git:git /var/db/git/.ssh/authorized_keys
 chmod u+rw /var/db/git/.ssh/authorized_keys
 chmod go-w /var/db/git/.ssh/authorized_keys
 
-echo "StrictModes no" >> /etc/ssh/sshd_config
+echo \"StrictModes no\" >> /etc/ssh/sshd_config
 /etc/rc.d/sshd restart
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
