@@ -20,6 +20,7 @@ RUNS_IN_NOMAD=true
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
 sysrc sendmail_enable="NO"
+sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
 # Wordpress package at the moment is installed with php74, so we use that as base
@@ -117,6 +118,10 @@ echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf
 # Configure PHP
 cp /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 cp /root/99-custom.ini /usr/local/etc/php/99-custom.ini
+
+# Fix www group memberships so it works with fuse mounted directories
+pw addgroup -n newwww -g 1001
+pw moduser www -u 1001 -G 80,0,1001
 
 # Configure NGINX
 cp /root/nginx.conf /usr/local/etc/nginx/nginx.conf 
