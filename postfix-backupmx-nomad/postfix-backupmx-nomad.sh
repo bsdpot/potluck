@@ -20,6 +20,7 @@ RUNS_IN_NOMAD=true
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
 sysrc sendmail_enable="NO"
+sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
 pkg install -y postfix 
