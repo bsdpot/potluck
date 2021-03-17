@@ -1,3 +1,9 @@
+1.0.2
+
+* Increase PHP timeout
+
+---
+
 1.0.1
 
 * Fix www group membership to 1001 (so it works with fuse mounted directories)
