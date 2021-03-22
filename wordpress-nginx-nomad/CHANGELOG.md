@@ -1,3 +1,9 @@
+1.0.3
+
+* Add .user.ini setting for users that run Wordfence
+
+---
+
 1.0.2
 
 * Increase PHP timeout
