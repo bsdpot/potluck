@@ -57,6 +57,16 @@ job "minio-example" {
         }
       }
 
+      template {
+        data = <<EOH
+MINIO_ACCESS_KEY="superSecretMinioAccessKey"
+MINIO_SECRET_KEY="superSecretMinioSecretKey"
+EOH
+        destination   = "secrets/file.env"
+	env           = true
+      }
+
+
       resources {
         cpu = 200
         memory = 64
