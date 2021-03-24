@@ -1,0 +1,1 @@
+set-cmd -c "minio server --config-dir /usr/local/etc/minio /minio/"
