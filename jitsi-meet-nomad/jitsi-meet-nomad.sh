@@ -8,6 +8,7 @@ sysrc jitsi_videobridge_enable="YES"
 sysrc jitsi_videobridge_flags="--apis=rest,xmpp"
 sysrc prosody_enable="YES"
 sysrc jicofo_enable="YES"
+sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
 pkg install -y acme.sh nginx prosody jicofo jitsi-meet jitsi-videobridge 
