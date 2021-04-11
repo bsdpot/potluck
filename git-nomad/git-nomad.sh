@@ -17,6 +17,7 @@ ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
 sysrc sendmail_enable="NO"
 sysrc sshd_enable="YES"
+sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
 pkg install -y git 
