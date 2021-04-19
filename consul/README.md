@@ -9,7 +9,7 @@ tags: ["micro-services", "traefik", "nomad", "consul"]
 
 This is a flavour containing the ```consul``` service discovery platform.
 
-Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-server/] and the [traefik](https://potluck.honeyguide.net/blog/traefik-consul/] ```pot``` flavours on this site, you can easily set up a virtual datacenter.
+Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-server/) and the [traefik](https://potluck.honeyguide.net/blog/traefik-consul/) ```pot``` flavours on this site, you can easily set up a virtual datacenter.
 
 # Installation
 
