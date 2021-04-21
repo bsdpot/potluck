@@ -1,3 +1,9 @@
+2.0
+
+* Updated to use latest flavour script, initial tweaks for nomad cluster in config
+
+---
+
 1.0.2
 
 * Trigger build of FreeBSD 12.2 image & rebuild FreeBSD 11.4 image to update packages

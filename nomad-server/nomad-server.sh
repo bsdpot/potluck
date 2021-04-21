@@ -1,27 +1,93 @@
 #!/bin/sh
 
+# Based on POTLUCK TEMPLATE v3.0
+# Altered by Michael Gmelin
+#
 # EDIT THE FOLLOWING FOR NEW FLAVOUR:
-# 1. RUNS_IN_NOMAD - yes or no
-# 2. Adjust package installation between BEGIN & END PACKAGE SETUP
-# 3. Adjust jail configuration script generation between BEGIN & END COOK
+# 1. RUNS_IN_NOMAD - true or false
+# 2. Create a matching <flavour> file with this <flavour>.sh file that
+#    contains the copy-in commands for the config files from <flavour>.d/
+#    Remember that the package directories don't exist yet, so likely copy to /root
+# 3. Adjust package installation between BEGIN & END PACKAGE SETUP
+# 4. Check tarball extraction works for you between BEGIN & END EXTRACT TARBALL
+# 5. Adjust jail configuration script generation between BEGIN & END COOK
+#    Configure the config files that have been copied in where necessary
 
 # Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
 # You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script 
+# appropriately at the end of this script
 RUNS_IN_NOMAD=false
 
-# -------------- BEGIN PACKAGE SETUP -------------
-[ -w /etc/pkg/FreeBSD.conf ] && sed -i '' 's/quarterly/latest/' /etc/pkg/FreeBSD.conf
-ASSUME_ALWAYS_YES=yes pkg bootstrap
-touch /etc/rc.conf
-sysrc sendmail_enable="NO"
-sysrc nomad_enable="YES"
-sysrc nomad_user="root"
-sysrc nomad_env="PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/sbin:/bin"
+# set the cook log path/filename
+COOKLOG=/var/log/cook.log
 
-# Install packages
-pkg install -y nomad 
+# check if cooklog exists, create it if not
+if [ ! -e $COOKLOG ]
+then
+    echo "Creating $COOKLOG" | tee -a $COOKLOG
+else
+    echo "WARNING $COOKLOG already exists"  | tee -a $COOKLOG
+fi
+date >> $COOKLOG
+
+# -------------------- COMMON ---------------
+
+STEPCOUNT=0
+step() {
+  STEPCOUNT=$(expr "$STEPCOUNT" + 1)
+  STEP="$@"
+  echo "Step $STEPCOUNT: $STEP" | tee -a $COOKLOG
+}
+
+exit_ok() {
+  trap - EXIT
+  exit 0
+}
+
+FAILED=" failed"
+exit_error() {
+  STEP="$@"
+  FAILED=""
+  exit 1
+}
+
+set -e
+trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
+
+# -------------- BEGIN PACKAGE SETUP -------------
+
+step "Bootstrap package repo"
+mkdir -p /usr/local/etc/pkg/repos
+echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
+  >/usr/local/etc/pkg/repos/FreeBSD.conf
+ASSUME_ALWAYS_YES=yes pkg bootstrap
+
+step "Touch /etc/rc.conf"
+touch /etc/rc.conf
+
+# this is important, otherwise running /etc/rc from cook will
+# overwrite the IP address set in tinirc
+step "Remove ifconfig_epair0b from config"
+sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
+
+step "Disable sendmail"
+service sendmail disable
+
+step "Create /usr/local/etc/rc.d"
+mkdir -p /usr/local/etc/rc.d
+
+step "Install package nomad"
+pkg install -y nomad
+
+step "Install package sudo"
+pkg install -y sudo
+
+step "Install package vault"
+pkg install -y vault
+
+step "Clean package installation"
 pkg clean -y
+
 # -------------- END PACKAGE SETUP -------------
 
 #
@@ -30,21 +96,32 @@ pkg clean -y
 
 #
 # Now generate the run command script "cook"
-# It configures the system on the first run by creating the config file(s) 
-# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits 
+# It configures the system on the first run by creating the config file(s)
+# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
 #
 
-# ----------------- BEGIN COOK ------------------ 
-echo "#!/bin/sh
+# clear any old cook runtime file
+step "Remove pre-existing cook script (if any)"
+rm -f /usr/local/bin/cook
 
+# this runs when image boots
+
+# ----------------- BEGIN COOK ------------------ 
+step "Create cook script"
+echo "#!/bin/sh
+RUNS_IN_NOMAD=$RUNS_IN_NOMAD
+# declare this again for the pot image, might work carrying variable through like
+# with above
+COOKLOG=/var/log/cook.log
 # No need to change this, just ensures configuration is done only once
 if [ -e /usr/local/etc/pot-is-seasoned ]
 then
-    # If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh
-    # created by pot and we block indefinitely
-    if [ ! -e /tmp/environment.sh ]
+    # If this pot flavour is blocking (i.e. it should not return),
+    # we block indefinitely
+    if [ \"\$RUNS_IN_NOMAD\" = \"true\" ]
     then
-        tail -f /dev/null 
+        /bin/sh /etc/rc
+        tail -f /dev/null
     fi
     exit 0
 fi
@@ -61,7 +138,7 @@ then
 fi
 
 #
-# ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
+# ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
 # Check config variables are set
 #
 if [ -z \${DATACENTER+x} ]; 
@@ -78,6 +155,11 @@ if [ -z \${CONSULSERVER+x} ];
 then
     echo 'CONSULSERVER is unset - see documentation how to configure this flavour'
     exit 1
+fi
+if [ -z \${BOOTSTRAP+x} ];
+then
+    echo 'BOOSTRAP is unset - see documentation how to configure this flavour, defaulting to 1'
+    BOOTSTRAP=1
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
@@ -97,7 +179,8 @@ advertise {
 
 server {
   enabled = true
-  bootstrap_expect = 1
+  # set this to 3 or 5 for cluster setup
+  bootstrap_expect = \\\"\$BOOTSTRAP\\\"
 }
 
 consul {
@@ -117,6 +200,9 @@ consul {
 enable_syslog=true
 log_level=\\\"INFO\\\"
 syslog_facility=\\\"LOCAL1\\\"\" > /usr/local/etc/nomad/server.hcl
+
+# set the rc startup
+sysrc nomad_enable=yes
 echo \"nomad_args=\\\"-config=/usr/local/etc/nomad/server.hcl -network-interface=\$IP\\\"\" >> /etc/rc.conf
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
@@ -127,8 +213,9 @@ touch /usr/local/etc/pot-is-seasoned
 
 # If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh
 # created by pot and we now after configuration block indefinitely
-if [ ! -e /tmp/environment.sh ]
+if [ \"\$RUNS_IN_NOMAD\" = \"true\" ]
 then
+    /bin/sh /etc/rc
     tail -f /dev/null
 fi
 " > /usr/local/bin/cook
@@ -138,7 +225,14 @@ fi
 
 # ---------- NO NEED TO EDIT BELOW ------------
 
-chmod u+x /usr/local/bin/cook
+step "Make cook script executable"
+if [ -e /usr/local/bin/cook ]
+then
+    echo "setting executable bit on /usr/local/bin/cook" | tee -a $COOKLOG
+    chmod u+x /usr/local/bin/cook
+else
+    exit_error "there is no /usr/local/bin/cook to make executable"
+fi
 
 #
 # There are two ways of running a pot jail: "Normal", non-blocking mode and
@@ -148,39 +242,47 @@ chmod u+x /usr/local/bin/cook
 # the "cook" script generated above each time, for the "Nomad" mode, the cook
 # script is started by pot (configuration through flavour file), therefore
 # we do not need to do anything here.
-# 
+#
 
 # Create rc.d script for "normal" mode:
-echo "#!/bin/sh
+step "Create rc.d script to start cook"
+echo "creating rc.d script to start cook" | tee -a $COOKLOG
 
+echo "#!/bin/sh
 #
-# PROVIDE: cook 
+# PROVIDE: cook
 # REQUIRE: LOGIN
 # KEYWORD: shutdown
 #
-
 . /etc/rc.subr
-
-name=cook
-rcvar=cook_enable
-
-load_rc_config $name
-
-: ${cook_enable:=\"NO\"}
-: ${cook_env:=\"\"}
-
+name=\"cook\"
+rcvar=\"cook_enable\"
+load_rc_config \$name
+: \${cook_enable:=\"NO\"}
+: \${cook_env:=\"\"}
 command=\"/usr/local/bin/cook\"
 command_args=\"\"
-
 run_rc_command \"\$1\"
 " > /usr/local/etc/rc.d/cook
 
-chmod u+x /usr/local/etc/rc.d/cook
-
-if [ $RUNS_IN_NOMAD = false ]
+step "Make rc.d script to start cook executable"
+if [ -e /usr/local/etc/rc.d/cook ]
 then
-    # This is a non-nomad (non-blocking) jail, so we need to make sure the script
-    # gets started when the jail is started:
-    # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
-    echo "cook_enable=\"YES\"" >> /etc/rc.conf
+  echo "Setting executable bit on cook rc file" | tee -a $COOKLOG
+  chmod u+x /usr/local/etc/rc.d/cook
+else
+  exit_error "/usr/local/etc/rc.d/cook does not exist"
 fi
+
+if [ "$RUNS_IN_NOMAD" != "true" ]
+then
+  step "Enable cook service"
+  # This is a non-nomad (non-blocking) jail, so we need to make sure the script
+  # gets started when the jail is started:
+  # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
+  echo "enabling cook" | tee -a $COOKLOG
+  service cook enable
+fi
+
+# -------------------- DONE ---------------
+exit_ok
