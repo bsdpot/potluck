@@ -1,5 +1,5 @@
 ---
-author: "Stephan Lichtenauer"
+author: "Stephan Lichtenauer & Bretton Vine"
 title: Nomad (Server)
 summary: Nomad is a scalable orchestration tool to run jobs on many hosts.
 tags: ["micro-services", "traefik", "nomad", "consul"]
@@ -25,7 +25,9 @@ Please note that a specific network configuration is suggested (see Installation
   e.g.
   ```sudo pot clone -P nomad-server-amd64-12_1_1_0 -p my-nomad-server -N alias -i "em0|10.10.10.11"```   
 * Adjust to your environment:    
-  ```sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E IP=<IP address of this nomad instance>  -E CONSULSERVER=<IP or hostname of consulserver>```
+  ```sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E IP=<IP address of this nomad instance>  -E CONSULSERVER=<IP or hostname of consulserver> [-E BOOTSTRAP=<1|3|5>]```
+
+The BOOTSTRAP parameter defines the expected number of cluster nodes, it defaults to 1 (no cluster) if it is not set.
 
 # Usage
 
