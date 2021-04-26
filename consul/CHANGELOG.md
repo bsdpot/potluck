@@ -1,3 +1,9 @@
+2.0.1
+
+* Fixed wrong "BOOTSTRAP"-escaping
+
+---
+
 2.0
 
 * Updated to use latest flavour scripts, cluster enable
