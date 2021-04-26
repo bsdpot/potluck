@@ -188,7 +188,7 @@ echo \"
  \\\"translate_wan_addrs\\\": true,
  \\\"ui\\\": true,
  \\\"server\\\": true,
- \\\"bootstrap_expect\\\": \\\"\$BOOTSTRAP\\\"
+ \\\"bootstrap_expect\\\": \$BOOTSTRAP
 }\" > /usr/local/etc/consul.d/agent.json
 echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
 
