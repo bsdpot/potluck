@@ -19,9 +19,9 @@ To ensure that software and database file versions match, ```mysql_upgrade``` is
 
 * Create your local jail from the image or the flavour files. 
 * If you want to automatically create database dumps for consistent backups from outside the jail, adjust to your environment:    
-    Optional but advisable: ```pot mount-in -p <mariadbjailname> -d </host/databasedirectory> -m /var/db/mysql```
-    Optional: ```pot set-env -p <mariadbjailname> -E DUMPSCHEDULE="<cronschedule>" [-E DUMPUSER=<backupuser>] [-E DUMPFILE=</insidejail/dumpfile.sql>]```
-    Optional: ```pot copy-in -p <mariadbjailname> -s <host/configdirectory/>server.cnf -d /usr/local/etc/mysql/conf.d/server.cnf```
+   * Optional but advisable: ```pot mount-in -p <mariadbjailname> -d </host/databasedirectory> -m /var/db/mysql```   
+   * Optional: ```pot set-env -p <mariadbjailname> -E DUMPSCHEDULE="<cronschedule>" [-E DUMPUSER=<backupuser>] [-E DUMPFILE=</insidejail/dumpfile.sql>]```   
+   * Optional: ```pot copy-in -p <mariadbjailname> -s <host/configdirectory/>server.cnf -d /usr/local/etc/mysql/conf.d/server.cnf```   
 
     Cron schedule is in the scheduling format of crontab, e.g. "*/5 * * * *".
 
