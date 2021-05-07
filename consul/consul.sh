@@ -5,11 +5,13 @@
 #
 # EDIT THE FOLLOWING FOR NEW FLAVOUR:
 # 1. RUNS_IN_NOMAD - true or false
-# 2. Create a matching <flavour> file with this <flavour>.sh file that
+# 2. If RUNS_IN_NOMAD is false, can delete the <flavour>+4 file, else
+#    make sure pot create command doesn't include it
+# 3. Create a matching <flavour> file with this <flavour>.sh file that
 #    contains the copy-in commands for the config files from <flavour>.d/
-#    Remember that the package directories don't exist yet, so likely copy to /root
-# 3. Adjust package installation between BEGIN & END PACKAGE SETUP
-# 4. Check tarball extraction works for you between BEGIN & END EXTRACT TARBALL
+#    Remember that the package directories don't exist yet, so likely copy
+#    to /root
+# 4. Adjust package installation between BEGIN & END PACKAGE SETUP
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
@@ -58,6 +60,7 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
+#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
 echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
   >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
@@ -159,12 +162,16 @@ then
     echo 'IP is unset - see documentation how to configure this flavour'
     exit 1
 fi
+if [ -z \${PEERS+x} ];
+then
+    echo 'PEERS is unset - see documentation how to configure this flavour'
+    PEERS='\"\"'
+fi
 if [ -z \${BOOTSTRAP+x} ];
 then
-    echo 'BOOTSTRAP is unset - see documentation how to configure this flavour, defaulting to 1'
+    echo 'BOOTSTRAP is unset - see documentation how to configure this flavour'
     BOOTSTRAP=1
 fi
-
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -172,25 +179,68 @@ fi
 # Create consul server config file, set the bootstrap_expect value to number
 # of servers in the cluster, 3 or 5
 mkdir /usr/local/etc/consul.d
-echo \"
-{
- \\\"bind_addr\\\": \\\"0.0.0.0\\\",
- \\\"client_addr\\\": \\\"0.0.0.0\\\",
- \\\"datacenter\\\": \\\"\$DATACENTER\\\",
- \\\"dns_config\\\": {
-   \\\"a_record_limit\\\": 3,
-   \\\"enable_truncate\\\": true
- },
- \\\"enable_syslog\\\": true,
- \\\"leave_on_terminate\\\": true,
- \\\"log_level\\\": \\\"WARN\\\",
- \\\"node_name\\\": \\\"\$NODENAME\\\",
- \\\"translate_wan_addrs\\\": true,
- \\\"ui\\\": true,
- \\\"server\\\": true,
- \\\"bootstrap_expect\\\": \$BOOTSTRAP
-}\" > /usr/local/etc/consul.d/agent.json
-echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
+
+# There are two different configs whether consul is a single server or 3 or 5
+# The BOOTSTRAP parameter MUST be set, and the PEERS variable MUST be in the
+# correct format
+
+case \$BOOTSTRAP in
+
+  1)
+    echo \"{
+     \\\"bind_addr\\\": \\\"0.0.0.0\\\",
+     \\\"client_addr\\\": \\\"0.0.0.0\\\",
+     \\\"datacenter\\\": \\\"\$DATACENTER\\\",
+     \\\"data_dir\\\":  \\\"/var/db/consul\\\",
+     \\\"dns_config\\\": {
+       \\\"a_record_limit\\\": 3,
+       \\\"enable_truncate\\\": true
+     },
+     \\\"enable_syslog\\\": true,
+     \\\"leave_on_terminate\\\": true,
+     \\\"log_level\\\": \\\"WARN\\\",
+     \\\"node_name\\\": \\\"\$NODENAME\\\",
+     \\\"translate_wan_addrs\\\": true,
+     \\\"ui\\\": true,
+     \\\"server\\\": true,
+     \\\"bootstrap_expect\\\": \$BOOTSTRAP
+  }\" > /usr/local/etc/consul.d/agent.json
+
+     echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
+     ;;
+
+  3|5)
+    echo \"{
+     \\\"bind_addr\\\": \\\"0.0.0.0\\\",
+     \\\"client_addr\\\": \\\"0.0.0.0\\\",
+     \\\"datacenter\\\": \\\"\$DATACENTER\\\",
+     \\\"data_dir\\\":  \\\"/var/db/consul\\\",
+     \\\"dns_config\\\": {
+       \\\"a_record_limit\\\": 3,
+       \\\"enable_truncate\\\": true
+     },
+     \\\"enable_syslog\\\": true,
+     \\\"leave_on_terminate\\\": true,
+     \\\"log_level\\\": \\\"WARN\\\",
+     \\\"node_name\\\": \\\"\$NODENAME\\\",
+     \\\"translate_wan_addrs\\\": true,
+     \\\"ui\\\": true,
+     \\\"server\\\": true,
+     \\\"bootstrap_expect\\\": \$BOOTSTRAP,
+     \\\"rejoin_after_leave\\\": true,
+     \\\"start_join\\\": [\\\"\$IP\\\", \$PEERS]
+  }\" > /usr/local/etc/consul.d/agent.json
+
+     echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
+
+    ;;
+
+  *)
+    echo \"there is a problem with the BOOTSTRAP VARIABLE\"
+    exit 1
+    ;;
+
+esac
 
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
