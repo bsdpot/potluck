@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# PROVIDE: patroni
+
+. /etc/rc.subr
+
+name="patroni"
+rcvar=patroni_enable
+
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+reload_cmd="${name}_reload"
+list_cmd="${name}_list"
+history_cmd="${name}_history"
+extra_commands="list history"
+
+
+load_rc_config $name
+load_rc_config postgresql # load postgres configuration for user and group permission
+: ${patroni_enable:=no}
+: ${patroni_config:="/usr/local/etc/patroni/patroni.yml"}
+: ${patroni_pid:="/var/run/patroni.pid"}
+: ${patroni_cmd:="/usr/local/bin/patroni"}
+: ${patroni_ctl:="/usr/local/bin/patronictl"}
+: ${postgresql_user:="postgres"}
+: ${su_cmd:="/usr/bin/su"}
+: ${daemon_cmd:="/usr/sbin/daemon"}
+: ${kill_cmd:="/bin/kill"}
+: ${cat_cmd:="/bin/cat"}
+
+
+patroni_start()
+{
+  # -S -> syslog output
+  # -R 10 restart after 10s when patroni denied
+  # -P daemon pidfile
+  # -T syslog Tag
+
+  ${daemon_cmd} -S -R 10 -u ${postgresql_user} -P ${patroni_pid} -T ${name} ${patroni_cmd} ${patroni_config}
+}
+
+patroni_stop()
+{
+	${kill_cmd} `${cat_cmd} ${patroni_pid}`
+}
+
+patroni_reload()
+{
+	${patroni_ctl} -c ${patroni_config} reload
+}
+
+patroni_list()
+{
+	${patroni_ctl} -c ${patroni_config} list
+}
+
+patroni_history()
+{
+	${patroni_ctl} -c ${patroni_config} history
+}
+
+run_rc_command "$1"
