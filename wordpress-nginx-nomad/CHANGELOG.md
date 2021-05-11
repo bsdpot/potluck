@@ -1,3 +1,9 @@
+1.0.4
+
+* Rebuild for FreeBSD 13 & new packages
+
+---
+
 1.0.3
 
 * Add .user.ini setting for users that run Wordfence
