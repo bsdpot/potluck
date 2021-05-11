@@ -1,3 +1,9 @@
+2.0.3
+
+* Rebuild for FreeBSD 13 & new packages
+
+---
+
 2.0.2
 
 * Accepts BOOTSTRAP=1 for single server; and BOOTSTRAP=3 or BOOTSTRAP=5 provided correct PEERS variable set
