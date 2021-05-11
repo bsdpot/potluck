@@ -1,3 +1,9 @@
+1.2.3
+
+* Rebuild for FreeBSD 13 & new packages
+
+---
+
 1.2.2
 
 * Install traefik instead of traefik2 since the traefik pkg is now v2
