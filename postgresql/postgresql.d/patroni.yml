@@ -1,0 +1,53 @@
+scope: patronipsql
+#namespace: /service/
+name: MYNAME
+
+restapi:
+  listen: MYIP:8008
+  connect_address: MYIP:8008
+
+consul:
+  host: CONSULIP:8500 # local IP
+  service_tags: SERVICETAG #master/replica/standby-leader
+  register_service: true
+  service_check_interval: 30
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      use_pg_rewind: true
+      parameters:
+  initdb:  # Note: It needs to be a list (some options need values, others are switches)
+  - encoding: UTF8
+  - data-checksums
+  pg_hba:  # Add following lines to pg_hba.conf after running 'initdb'
+  - host replication replicator 0.0.0.0/0 md5
+  - host all all 0.0.0.0/0 md5
+  users:
+    admin:
+      password: ADMPASS
+      options:
+        - createrole
+        - createdb
+
+postgresql:
+  listen: MYIP:5432
+  connect_address: MYIP:5432
+  data_dir: /var/db/postgres
+  pgpass: /tmp/pgpass0
+  authentication:
+    replication:
+      username: replicator
+      password: rep-pass
+    superuser:
+      username: postgres
+      password: KEKPASS
+    rewind:  # Has no effect on postgres 10 and lower
+      username: rewind_user
+      password: rewind_password
+  parameters:
+    unix_socket_directories: '.'

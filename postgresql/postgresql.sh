@@ -76,26 +76,60 @@ sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 step "Disable sendmail"
 service sendmail disable
 
-step "Enable consul startup"
-sysrc consul_enable="YES"
-
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
-step "Install package consul"
-pkg install -y consul
+step "Update package repository"
+pkg update -f
 
 step "Install package sudo"
 pkg install -y sudo
 
+step "Install package openssl"
+pkg install -y openssl
+
 step "Install package vault"
 pkg install -y vault
+
+step "Install package consul"
+pkg install -y consul
+
+step "Install package postgresql-client"
+pkg install -y postgresql12-client
+
+step "Install package postgresql-server"
+pkg install -y postgresql12-server
+
+step "Install package python37"
+pkg install -y python37
+
+step "Install package python3-pip"
+pkg install -y py37-pip
+
+step "Install package python-consul2"
+pkg install -y py37-python-consul2
+
+step "Install package psycopg2"
+pkg install -y py37-psycopg2
+#
+# pip MUST ONLY be used:
+# * With the --user flag, OR
+# * To install or manage Python packages in virtual environments
+# using -prefix here to force install in /usr/local/bin
+
+step "Install pip package patroni"
+pip install patroni --prefix="/usr/local"
+#
+## WARNING: The scripts patroni, patroni_aws, patroni_raft_controller,
+## patroni_wale_restore and patronictl are installed in
+## '--prefix=/usr/local/bin' which is not on PATH.
+## Consider adding this directory to PATH or, if you prefer to suppress
+## this warning, use --no-warn-script-location.
 
 step "Clean package installation"
 pkg clean -y
 
 # -------------- END PACKAGE SETUP -------------
-
 #
 # Create configurations
 #
@@ -119,6 +153,7 @@ RUNS_IN_NOMAD=$RUNS_IN_NOMAD
 # declare this again for the pot image, might work carrying variable through like
 # with above
 COOKLOG=/var/log/cook.log
+
 # No need to change this, just ensures configuration is done only once
 if [ -e /usr/local/etc/pot-is-seasoned ]
 then
@@ -133,7 +168,10 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/consul stop  || true
+#
+
+# stop consul agent
+/usr/local/etc/rc.d/consul stop || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -142,109 +180,166 @@ if [ -e /tmp/environment.sh ]
 then
     . /tmp/environment.sh
 fi
-
 #
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
 # Check config variables are set
 #
-if [ -z \${DATACENTER+x} ]; 
-then 
+if [ -z \${DATACENTER+x} ];
+then
     echo 'DATACENTER is unset - see documentation how to configure this flavour'
     exit 1
 fi
-if [ -z \${NODENAME+x} ]; 
-then 
-    echo 'NODENAME is unset - see documentation how to configure this flavour'
+if [ -z \${CONSULSERVERONE+x} ];
+then
+    echo 'CONSULSERVERONE is unset - see documentation how to configure this flavour'
     exit 1
 fi
-if [ -z \${IP+x} ];
+if [ -z \${CONSULSERVERTWO+x} ];
 then
-    echo 'IP is unset - see documentation how to configure this flavour'
+    echo 'CONSULSERVERTWO is unset - see documentation how to configure this flavour'
     exit 1
 fi
-if [ -z \${PEERS+x} ];
+if [ -z \${CONSULSERVERTHREE+x} ];
 then
-    echo 'PEERS is unset - see documentation how to configure this flavour'
-    PEERS='\"\"'
-fi
-if [ -z \${BOOTSTRAP+x} ];
-then
-    echo 'BOOTSTRAP is unset - see documentation how to configure this flavour, defaulting to 1'
-    BOOTSTRAP=1
-fi
-
-# ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
-# Don't forget to double(!)-escape quotes and dollar signs in the config files
-
-# Create consul server config file, set the bootstrap_expect value to number
-# of servers in the cluster, 3 or 5
-mkdir /usr/local/etc/consul.d
-
-# There are two different configs whether consul is a single server or 3 or 5
-# The BOOTSTRAP parameter MUST be set, and the PEERS variable MUST be in the
-# correct format
-
-case \$BOOTSTRAP in
-
-  1)
-    echo \"{
-     \\\"bind_addr\\\": \\\"0.0.0.0\\\",
-     \\\"client_addr\\\": \\\"0.0.0.0\\\",
-     \\\"datacenter\\\": \\\"\$DATACENTER\\\",
-     \\\"data_dir\\\":  \\\"/var/db/consul\\\",
-     \\\"dns_config\\\": {
-       \\\"a_record_limit\\\": 3,
-       \\\"enable_truncate\\\": true
-     },
-     \\\"enable_syslog\\\": true,
-     \\\"leave_on_terminate\\\": true,
-     \\\"log_level\\\": \\\"WARN\\\",
-     \\\"node_name\\\": \\\"\$NODENAME\\\",
-     \\\"translate_wan_addrs\\\": true,
-     \\\"ui\\\": true,
-     \\\"server\\\": true,
-     \\\"bootstrap_expect\\\": \$BOOTSTRAP
-  }\" > /usr/local/etc/consul.d/agent.json
-
-     echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
-     ;;
-
-  3|5)
-    echo \"{
-     \\\"bind_addr\\\": \\\"0.0.0.0\\\",
-     \\\"client_addr\\\": \\\"0.0.0.0\\\",
-     \\\"datacenter\\\": \\\"\$DATACENTER\\\",
-     \\\"data_dir\\\":  \\\"/var/db/consul\\\",
-     \\\"dns_config\\\": {
-       \\\"a_record_limit\\\": 3,
-       \\\"enable_truncate\\\": true
-     },
-     \\\"enable_syslog\\\": true,
-     \\\"leave_on_terminate\\\": true,
-     \\\"log_level\\\": \\\"WARN\\\",
-     \\\"node_name\\\": \\\"\$NODENAME\\\",
-     \\\"translate_wan_addrs\\\": true,
-     \\\"ui\\\": true,
-     \\\"server\\\": true,
-     \\\"bootstrap_expect\\\": \$BOOTSTRAP,
-     \\\"rejoin_after_leave\\\": true,
-     \\\"start_join\\\": [\\\"\$IP\\\", \$PEERS]
-  }\" > /usr/local/etc/consul.d/agent.json
-
-     echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
-
-    ;;
-
-  *)
-    echo \"there is a problem with the BOOTSTRAP VARIABLE\"
+    echo 'CONSULSERVERTHREE is unset - see documentation how to configure this flavour'
     exit 1
-    ;;
+fi
+if [ -z \${CONSULSERVERFOUR+x} ];
+then
+    echo 'CONSULSERVERFOUR is unset - see documentation how to configure this flavour'
+    exit 1
+fi
+if [ -z \${CONSULSERVERFIVE+x} ];
+then
+    echo 'CONSULSERVERFIVE is unset - see documentation how to configure this flavour'
+    exit 1
+fi
+if [ -z \${NODENAME+x} ];
+then
+    echo 'The unique option NODENAME is unset - see documentation how to configure this flavour'
+    exit 1
+fi
+if [ -z \${MYIP+x} ];
+then
+    echo 'MYIP is unset - see documentation how to configure this flavour'
+    MYIP=\"127.0.0.1\"
+fi
+if [ -z \${SERVICETAG+x} ];
+then
+    echo 'SERVICETAG is unset - see documentation how to configure this flavour'
+    SERVICETAG=master
+fi
+if [ -z \${ADMPASS+x} ];
+then
+    echo 'ADMPASS is unset - see documentation how to configure this flavour'
+    ADMPASS=admin
+fi
+if [ -z \${KEKPASS+x} ];
+then
+    echo 'KEKPASS is unset - see documentation how to configure this flavour'
+    KEKPASS=kekpass
+fi
 
-esac
+# make consul configuration directory and set permissions
+mkdir -p /usr/local/etc/consul.d
+chmod 750 /usr/local/etc/consul.d
 
-#
+# Create the consul agent config file with imported variables
+echo \"{
+ \\\"advertise_addr\\\": \\\"\$MYIP\\\",
+ \\\"datacenter\\\": \\\"\$DATACENTER\\\",
+ \\\"node_name\\\": \\\"\$NODENAME\\\",
+ \\\"data_dir\\\":  \\\"/var/db/consul\\\",
+ \\\"dns_config\\\": {
+  \\\"a_record_limit\\\": 3,
+  \\\"enable_truncate\\\": true
+ },
+ \\\"log_file\\\": \\\"/var/log/consul/\\\",
+ \\\"log_level\\\": \\\"WARN\\\",
+ \\\"start_join\\\": [
+  \\\"\$CONSULSERVERONE\\\",
+  \\\"\$CONSULSERVERTWO\\\",
+  \\\"\$CONSULSERVERTHREE\\\",
+  \\\"\$CONSULSERVERFOUR\\\",
+  \\\"\$CONSULSERVERFIVE\\\"
+ ]
+}\" > /usr/local/etc/consul.d/agent.json
+
+# set owner and perms on agent.json
+chown consul:wheel /usr/local/etc/consul.d/agent.json
+chmod 640 /usr/local/etc/consul.d/agent.json
+
+# enable consul
+sysrc consul_enable=\"YES\"
+
+# set load parameter for consul config
+sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
+#sysrc consul_datadir=\"/var/db/consul\"
+
+# Workaround for bug in rc.d/consul script:
+sysrc consul_group=\"wheel\"
+
+# setup consul logs, might be redundant if not specified in agent.json above
+mkdir -p /var/log/consul
+touch /var/log/consul/consul.log
+chown -R consul:wheel /var/log/consul
+
+# add the consul user to the wheel group, this seems to be required for
+# consul to start on this instance. May need to figure out why. 
+# I'm not entirely sure this is the correct way to do it
+/usr/sbin/pw usermod consul -G wheel
+
+# set patroni variables in /root/patroni.yml before copy
+if [ -f /root/patroni.yml ]; then
+    # steps go here for replacing MYIP with this node IP and
+    # MYNAME with var NODENAME 
+    # CONSULIP with var CONSULSERVERONE
+    # SERVICETAG with master/replica/standby-leader
+    # KEKPASS with master postgresql password
+
+    # replace MYNAME with imported variable NODENAME which must be unique
+    /usr/bin/sed -i .orig \"/MYNAME/s/MYNAME/\$NODENAME/g\" /root/patroni.yml
+
+    # replace MYIP with imported variable MYIP
+    /usr/bin/sed -i .orig \"/MYIP/s/MYIP/\$MYIP/g\" /root/patroni.yml
+
+    # replace SERVICETAG with imported variable SERVICETAG
+    /usr/bin/sed -i .orig \"/SERVICETAG/s/SERVICETAG/\$SERVICETAG/g\" /root/patroni.yml
+
+    # replace CONSULIP with imported variable MYIP, as using local consul agent
+    /usr/bin/sed -i .orig \"/CONSULIP/s/CONSULIP/\$MYIP/g\" /root/patroni.yml
+
+    # replace ADMPASS with imported variable ADMPASS
+    /usr/bin/sed -i .orig \"/ADMPASS/s/ADMPASS/\$ADMPASS/g\" /root/patroni.yml
+
+    # replace KEKPASS with imported variable KEKPASS
+    /usr/bin/sed -i .orig \"/KEKPASS/s/KEKPASS/\$KEKPASS/g\" /root/patroni.yml
+fi
+
+# create /usr/local/etc/patroni/
+mkdir -p /usr/local/etc/patroni/
+
+# copy the file to startup location
+cp /root/patroni.yml /usr/local/etc/patroni/patroni.yml
+
+# copy patroni startup script to /usr/local/etc/rc.d/
+cp /root/patroni.rc /usr/local/etc/rc.d/patroni
+
+# enable postgresql
+sysrc postgresql_enable=\"YES\"
+
+# enable patroni
+sysrc patroni_enable=\"YES\"
+
+# end postgresql
+
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
+
+# start consul agent
 /usr/local/etc/rc.d/consul start
+
+# start patroni, which should start postgresql
+/usr/local/etc/rc.d/patroni start
 
 #
 # Do not touch this:

@@ -22,6 +22,10 @@ Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-serve
 
 The BOOTSTRAP parameter defines the expected number of cluster nodes, it defaults to 1 (no cluster) if it is not set.
 
+For 3 and 5 node clusters the other peers must be passed in via the PEERS variable in the following format.
+
+```-E IP=10.0.0.1 -E PEERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5"'```
+
 # Usage
 
 You can connect to the dashboard on port 8500 of your jail IP address.
