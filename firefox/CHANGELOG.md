@@ -1,3 +1,9 @@
+1.0.3
+
+* Rebuild for FreeBSD 13 & new packages
+
+---
+
 1.0.2
 
 * Trigger rebuild for latest Firefox pkg version
