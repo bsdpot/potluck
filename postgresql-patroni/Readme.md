@@ -1,3 +1,10 @@
+---
+author: "Bretton Vine"
+title: Patroni PostgreSQL
+summary: This is a PostgreSQL server jail that supports redundancy via Patroni.
+tags: ["postgresql", "patroni", "sql", "database"]
+---
+
 # Overview
 
 This is a ```patroni postgresql``` jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
