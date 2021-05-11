@@ -1,15 +1,3 @@
-1.0.2
+1.0
 
-* Working cluster version 
-
----
-
-1.0.1
-
-* First bash at Postgres single server image
-
----
-
-1.0.0
-
-* Initial commit
+* Initial commit with PostgreSQL Patroni configuration that connects to Consul
