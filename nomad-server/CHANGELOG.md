@@ -1,3 +1,9 @@
+2.0.1
+
+* Rebuild for FreeBSD 13 & new packages
+
+---
+
 2.0
 
 * Updated to use latest flavour script, initial tweaks for nomad cluster in config
