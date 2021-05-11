@@ -1,3 +1,9 @@
+1.0.3
+
+* Rebuild for FreeBSD 13 & new packages
+
+---
+
 1.0.2
 
 * Apply epair0b patch from https://raw.githubusercontent.com/grembo/potman/master/flavours/example/example.sh
