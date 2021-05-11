@@ -1,6 +1,6 @@
 # Overview
 
-This is a patroni postgresql jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
+This is a ```patroni postgresql``` jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
 
 It requires 5 ```consul-cluster``` servers running and the IPs passed in as part of the ```pot env``` setup.
 
