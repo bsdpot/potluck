@@ -23,11 +23,13 @@ Please note that a specific network configuration is suggested (see Installation
 * This jail does not work with a public bridge, so clone it to use an IP address directly on your host:     
   ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```   
   e.g.
-  ```sudo pot clone -P nomad-server-amd64-12_1_1_0 -p my-nomad-server -N alias -i "em0|10.10.10.11"```   
+  ```sudo pot clone -P nomad-server-amd64-13_2_0_2 -p my-nomad-server -N alias -i "em0|10.10.10.11"```   
 * Adjust to your environment:    
-  ```sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E IP=<IP address of this nomad instance>  -E CONSULSERVER=<IP or hostname of consulserver> [-E BOOTSTRAP=<1|3|5>]```
+  ```sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> -E BOOTSTRAP=<1|3|5>```
 
-The BOOTSTRAP parameter defines the expected number of cluster nodes, it defaults to 1 (no cluster) if it is not set.
+The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'```` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+
+The BOOTSTRAP parameter defines the expected number of cluster nodes, it defaults to 1 (no cluster) if it is not set. You MUST still pass in a consul IP under CONSULSERVERS.
 
 # Usage
 

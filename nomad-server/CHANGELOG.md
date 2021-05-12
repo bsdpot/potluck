@@ -1,3 +1,9 @@
+2.0.2
+
+* Updated to use local consul agent
+
+---
+
 2.0.1
 
 * Rebuild for FreeBSD 13 & new packages
