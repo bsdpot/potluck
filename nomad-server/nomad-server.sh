@@ -172,7 +172,7 @@ then
 fi
 if [ -z \${BOOTSTRAP+x} ];
 then
-    echo 'BOOTSTRAP is unset - see documentation how to configure this flavour'
+    echo 'BOOTSTRAP is unset - see documentation how to configure this flavour, defaulting to 1'
     BOOTSTRAP=1
 fi
 
