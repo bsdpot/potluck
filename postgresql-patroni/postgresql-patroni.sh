@@ -60,7 +60,6 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
 echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
   >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
@@ -95,10 +94,10 @@ step "Install package consul"
 pkg install -y consul
 
 step "Install package postgresql-client"
-pkg install -y postgresql12-client
+pkg install -y postgresql13-client
 
 step "Install package postgresql-server"
-pkg install -y postgresql12-server
+pkg install -y postgresql13-server
 
 step "Install package python37"
 pkg install -y python37
@@ -189,29 +188,9 @@ then
     echo 'DATACENTER is unset - see documentation how to configure this flavour'
     exit 1
 fi
-if [ -z \${CONSULSERVERONE+x} ];
+if [ -z \${CONSULSERVERS+x} ];
 then
-    echo 'CONSULSERVERONE is unset - see documentation how to configure this flavour'
-    exit 1
-fi
-if [ -z \${CONSULSERVERTWO+x} ];
-then
-    echo 'CONSULSERVERTWO is unset - see documentation how to configure this flavour'
-    exit 1
-fi
-if [ -z \${CONSULSERVERTHREE+x} ];
-then
-    echo 'CONSULSERVERTHREE is unset - see documentation how to configure this flavour'
-    exit 1
-fi
-if [ -z \${CONSULSERVERFOUR+x} ];
-then
-    echo 'CONSULSERVERFOUR is unset - see documentation how to configure this flavour'
-    exit 1
-fi
-if [ -z \${CONSULSERVERFIVE+x} ];
-then
-    echo 'CONSULSERVERFIVE is unset - see documentation how to configure this flavour'
+    echo 'CONSULSERVERS is unset - see documentation how to configure this flavour'
     exit 1
 fi
 if [ -z \${NODENAME+x} ];
@@ -256,13 +235,7 @@ echo \"{
  },
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
- \\\"start_join\\\": [
-  \\\"\$CONSULSERVERONE\\\",
-  \\\"\$CONSULSERVERTWO\\\",
-  \\\"\$CONSULSERVERTHREE\\\",
-  \\\"\$CONSULSERVERFOUR\\\",
-  \\\"\$CONSULSERVERFIVE\\\"
- ]
+ \\\"start_join\\\": [ \$CONSULSERVERS ],
 }\" > /usr/local/etc/consul.d/agent.json
 
 # set owner and perms on agent.json
@@ -291,12 +264,6 @@ chown -R consul:wheel /var/log/consul
 
 # set patroni variables in /root/patroni.yml before copy
 if [ -f /root/patroni.yml ]; then
-    # steps go here for replacing MYIP with this node IP and
-    # MYNAME with var NODENAME 
-    # CONSULIP with var CONSULSERVERONE
-    # SERVICETAG with master/replica/standby-leader
-    # KEKPASS with master postgresql password
-
     # replace MYNAME with imported variable NODENAME which must be unique
     /usr/bin/sed -i .orig \"/MYNAME/s/MYNAME/\$NODENAME/g\" /root/patroni.yml
 
