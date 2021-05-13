@@ -1,3 +1,9 @@
+2.0.4
+
+* Minor fix (mainly directory creation)
+
+---
+
 2.0.3
 
 * Rebuild for FreeBSD 13 & new packages
