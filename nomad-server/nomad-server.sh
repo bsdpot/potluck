@@ -5,11 +5,13 @@
 #
 # EDIT THE FOLLOWING FOR NEW FLAVOUR:
 # 1. RUNS_IN_NOMAD - true or false
-# 2. Create a matching <flavour> file with this <flavour>.sh file that
+# 2. If RUNS_IN_NOMAD is false, can delete the <flavour>+4 file, else
+#    make sure pot create command doesn't include it
+# 3. Create a matching <flavour> file with this <flavour>.sh file that
 #    contains the copy-in commands for the config files from <flavour>.d/
-#    Remember that the package directories don't exist yet, so likely copy to /root
-# 3. Adjust package installation between BEGIN & END PACKAGE SETUP
-# 4. Check tarball extraction works for you between BEGIN & END EXTRACT TARBALL
+#    Remember that the package directories don't exist yet, so likely copy
+#    to /root
+# 4. Adjust package installation between BEGIN & END PACKAGE SETUP
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
@@ -76,12 +78,18 @@ service sendmail disable
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
+# we need consul for consul agent
+step "Install package consul"
+pkg install -y consul
+
 step "Install package nomad"
 pkg install -y nomad
 
 step "Install package sudo"
 pkg install -y sudo
 
+# we need vault for authentication and certificates
+# not yet configured
 step "Install package vault"
 pkg install -y vault
 
@@ -127,7 +135,8 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/nomad stop  || true
+/usr/local/etc/rc.d/consul stop || true
+/usr/local/etc/rc.d/nomad stop || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -141,29 +150,88 @@ fi
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
 # Check config variables are set
 #
-if [ -z \${DATACENTER+x} ]; 
-then 
+if [ -z \${DATACENTER+x} ];
+then
     echo 'DATACENTER is unset - see documentation how to configure this flavour'
     exit 1
 fi
-if [ -z \${IP+x} ]; 
-then 
+if [ -z \${NODENAME+x} ];
+then
+    echo 'NODENAME is unset - see documentation how to configure this flavour'
+    exit 1
+fi
+if [ -z \${IP+x} ];
+then
     echo 'IP is unset - see documentation how to configure this flavour'
     exit 1
 fi
-if [ -z \${CONSULSERVER+x} ];
+if [ -z \${CONSULSERVERS+x} ];
 then
-    echo 'CONSULSERVER is unset - see documentation how to configure this flavour'
+    echo 'CONSULSERVERS is unset - you must include at least one consul server IP'
     exit 1
 fi
 if [ -z \${BOOTSTRAP+x} ];
 then
-    echo 'BOOSTRAP is unset - see documentation how to configure this flavour, defaulting to 1'
+    echo 'BOOTSTRAP is unset - see documentation how to configure this flavour'
     BOOTSTRAP=1
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
+
+# start consul #
+
+# Create consul client config file, set the bootstrap_expect value to number
+# of servers in the cluster, 1, 3 or 5
+
+# first create configuration directory
+
+# make consul configuration directory and set permissions
+mkdir -p /usr/local/etc/consul.d
+chmod 750 /usr/local/etc/consul.d
+
+# Create the consul agent config file with imported variables
+echo \"{
+ \\\"advertise_addr\\\": \\\"\$MYIP\\\",
+ \\\"datacenter\\\": \\\"\$DATACENTER\\\",
+ \\\"node_name\\\": \\\"\$NODENAME\\\",
+ \\\"data_dir\\\":  \\\"/var/db/consul\\\",
+ \\\"dns_config\\\": {
+  \\\"a_record_limit\\\": 3,
+  \\\"enable_truncate\\\": true
+ },
+ \\\"log_file\\\": \\\"/var/log/consul/\\\",
+ \\\"log_level\\\": \\\"WARN\\\",
+ \\\"start_join\\\": [ \$CONSULSERVERS ]
+}\" > /usr/local/etc/consul.d/agent.json
+
+# set owner and perms on agent.json
+chown consul:wheel /usr/local/etc/consul.d/agent.json
+chmod 640 /usr/local/etc/consul.d/agent.json
+
+# enable consul
+sysrc consul_enable=\"YES\"
+
+# set load parameter for consul config
+sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
+#sysrc consul_datadir=\"/var/db/consul\"
+
+# Workaround for bug in rc.d/consul script:
+sysrc consul_group=\"wheel\"
+
+# setup consul logs, might be redundant if not specified in agent.json above
+mkdir -p /var/log/consul
+touch /var/log/consul/consul.log
+chown -R consul:wheel /var/log/consul
+
+# add the consul user to the wheel group, this seems to be required for
+# consul to start on this instance. May need to figure out why. 
+# I'm not entirely sure this is the correct way to do it
+/usr/sbin/pw usermod consul -G wheel
+
+# end consul #
+
+# start nomad #
 
 # Create nomad server config file 
 echo \"
@@ -184,15 +252,12 @@ server {
 }
 
 consul {
-  # The address to the Consul agent.
-  address = \\\"\$CONSULSERVER:8500\\\"
-
+  # The address to the local Consul agent.
+  address = \\\"\$IP:8500\\\"
   # The service name to register the server and client with Consul.
   server_service_name = \\\"\$DATACENTER-server\\\"
-
   # Enables automatically registering the services.
   auto_advertise = true
-
   # Enabling the server and client to bootstrap using Consul.
   server_auto_join = true
 }
@@ -206,6 +271,11 @@ sysrc nomad_enable=yes
 echo \"nomad_args=\\\"-config=/usr/local/etc/nomad/server.hcl -network-interface=\$IP\\\"\" >> /etc/rc.conf
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
+
+# start consul agent
+/usr/local/etc/rc.d/consul start
+
+# start nomad
 /usr/local/etc/rc.d/nomad start
 
 # Do not touch this:
