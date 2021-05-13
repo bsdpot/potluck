@@ -60,7 +60,6 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
 echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
   >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
@@ -147,13 +146,13 @@ fi
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
 # Check config variables are set
 #
-if [ -z \${DATACENTER+x} ]; 
-then 
+if [ -z \${DATACENTER+x} ];
+then
     echo 'DATACENTER is unset - see documentation how to configure this flavour'
     exit 1
 fi
-if [ -z \${NODENAME+x} ]; 
-then 
+if [ -z \${NODENAME+x} ];
+then
     echo 'NODENAME is unset - see documentation how to configure this flavour'
     exit 1
 fi
@@ -178,7 +177,7 @@ fi
 
 # Create consul server config file, set the bootstrap_expect value to number
 # of servers in the cluster, 3 or 5
-mkdir /usr/local/etc/consul.d
+mkdir -p /usr/local/etc/consul.d
 
 # There are two different configs whether consul is a single server or 3 or 5
 # The BOOTSTRAP parameter MUST be set, and the PEERS variable MUST be in the
