@@ -235,7 +235,7 @@ echo \"{
  },
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
- \\\"start_join\\\": [ \$CONSULSERVERS ],
+ \\\"start_join\\\": [ \$CONSULSERVERS ]
 }\" > /usr/local/etc/consul.d/agent.json
 
 # set owner and perms on agent.json
