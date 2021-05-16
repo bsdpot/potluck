@@ -18,13 +18,15 @@ Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-serve
   ```pot export-ports -p <jailname> -e 8500:8500```   
   Note: If you want to use the ```consul``` DNS service, you either need to expose the DNS UDP port like for the [Jitsi Meet Nomad potluck image](https://potluck.honeyguide.net/blog/jitsi-meet-nomad/) or you need to clone the jail and assign a host IP address (like for the [Nomad Server image](https://potluck.honeyguide.net/blog/nomad-server/)).
 * Adjust to your environment:    
-```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<consul-nodename> -E IP=<IP address of this consul node> [-E BOOTSTRAP=<1|3|5>]```
+```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<consul-nodename> -E IP=<IP address of this consul node> [-E BOOTSTRAP=<1|3|5>] -E VAULT=<IP address of a vault server>```
 
 The BOOTSTRAP parameter defines the expected number of cluster nodes, it defaults to 1 (no cluster) if it is not set.
 
 For 3 and 5 node clusters the other peers must be passed in via the PEERS variable in the following format.
 
 ```-E IP=10.0.0.1 -E PEERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5"'```
+
+The VAULT parameter is for a ```vault``` server that may not exist yet, so defaults to empty variable. 
 
 # Usage
 

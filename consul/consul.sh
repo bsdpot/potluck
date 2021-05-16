@@ -84,6 +84,9 @@ mkdir -p /usr/local/etc/rc.d
 step "Install package consul"
 pkg install -y consul
 
+step "Install consul-template"
+pkg install -y consul-template
+
 step "Install package sudo"
 pkg install -y sudo
 
@@ -163,13 +166,18 @@ then
 fi
 if [ -z \${PEERS+x} ];
 then
-    echo 'PEERS is unset - see documentation how to configure this flavour'
+    echo 'PEERS is unset - see documentation how to configure this flavour, defaulting to null'
     PEERS='\"\"'
 fi
 if [ -z \${BOOTSTRAP+x} ];
 then
     echo 'BOOTSTRAP is unset - see documentation how to configure this flavour, defaulting to 1'
     BOOTSTRAP=1
+fi
+if [ -z \${VAULT+x} ];
+then
+    echo 'VAULT is unset - see documentation how to configure this flavour, defaulting to null'
+    VAULT='\"\"'
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
@@ -241,9 +249,61 @@ case \$BOOTSTRAP in
 
 esac
 
+## start Vault agent config
+
+# remove any existing config
+if [ -f /usr/local/etc/vault/vault-server.hcl ]; then
+    rm /usr/local/etc/vault/vault-server.hcl
+fi
+
+# Note:
+# check http/https when enabling encryption, and tls_disable
+
+# Create vault agent configuration file
+# this is very incomplete
+echo \"vault {
+  address = \\\"http://\$VAULT:8200\\\"
+  retry {
+    num_retries = 5
+  }
+}
+\" > /usr/local/etc/vault-agent.hcl
+
+# setup rc.conf entries
+# we don't set 'vault_user=vault' because vault won't start
+sysrc vault_enable=yes
+sysrc vault_login_class=root
+
+## end vault
+
+## start consul-template
+
+# create a very generic console-template config file for now
+echo \"consul {
+  address = \\\"\$IP:8500\\\"
+  auth {
+    enabled = false
+    username = \\\"disabled\\\"
+    password = \\\"disabled\\\"
+  }
+}
+log_level = \\\"warn\\\"
+\" > /usr/local/etc/consul-template.hcl
+
+#
+# call consul-template with
+# consul-template -config \"/usr/local/etc/consul-template.hcl\"
+#
+# end consul-template
+
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
+
+# start consul
 /usr/local/etc/rc.d/consul start
+
+# start vault - running agent
+# /usr/local/etc/rc.d/vault start
 
 #
 # Do not touch this:
