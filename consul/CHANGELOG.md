@@ -1,3 +1,9 @@
+2.0.5
+
+* Inclusion of consul-template and vault-agentl.hcl
+
+---
+
 2.0.4
 
 * Minor fix (mainly directory creation)
