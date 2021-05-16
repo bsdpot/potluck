@@ -6,9 +6,10 @@
 
 1.0.1
 
-* First Vault pot image
+* Rebuild for FreeBSD 13 & new packages
 
 ---
+-
 
 1.0
 
