@@ -5,11 +5,13 @@
 #
 # EDIT THE FOLLOWING FOR NEW FLAVOUR:
 # 1. RUNS_IN_NOMAD - true or false
-# 2. Create a matching <flavour> file with this <flavour>.sh file that
+# 2. If RUNS_IN_NOMAD is false, can delete the <flavour>+4 file, else
+#    make sure pot create command doesn't include it
+# 3. Create a matching <flavour> file with this <flavour>.sh file that
 #    contains the copy-in commands for the config files from <flavour>.d/
-#    Remember that the package directories don't exist yet, so likely copy to /root
-# 3. Adjust package installation between BEGIN & END PACKAGE SETUP
-# 4. Check tarball extraction works for you between BEGIN & END EXTRACT TARBALL
+#    Remember that the package directories don't exist yet, so likely copy
+#    to /root
+# 4. Adjust package installation between BEGIN & END PACKAGE SETUP
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
@@ -76,6 +78,10 @@ service sendmail disable
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
+# we need consul for consul agent
+step "Install package consul"
+pkg install -y consul
+
 step "Install package vault"
 pkg install -y vault
 
@@ -127,7 +133,9 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
+/usr/local/etc/rc.d/consul stop || true
 /usr/local/etc/rc.d/vault onestop  || true
+
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -139,25 +147,21 @@ fi
 
 #
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
-# Convert parameters to variables if passed (overwrite environment)
-while getopts d:c:i: option
-do
-    case \"\${option}\"
-    in
-      d) DATACENTER=\${OPTARG};;
-      c) CONSULSERVER=\${OPTARG};;
-      i) IP=\${OPTARG};;
-    esac
-done
+#
 
 # Check config variables are set
 #
-if [ -z \${DATACENTER+x} ]; then 
+if [ -z \${DATACENTER+x} ]; then
     echo 'DATACENTER is unset - see documentation how to configure this flavour'
     exit 1
 fi
-if [ -z \${CONSULSERVER+x} ]; then 
-    echo 'CONSULSERVER is unset - see documentation how to configure this flavour'
+if [ -z \${NODENAME+x} ];
+then
+    echo 'NODENAME is unset - see documentation how to configure this flavour'
+    exit 1
+fi
+if [ -z \${CONSULSERVERS+x} ]; then
+    echo 'CONSULSERVERS is unset - see documentation how to configure this flavour'
     exit 1
 fi
 if [ -z \${IP+x} ]; then
@@ -168,11 +172,60 @@ fi
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 
+## start consul
+
+# make consul configuration directory and set permissions
+mkdir -p /usr/local/etc/consul.d
+chmod 750 /usr/local/etc/consul.d
+
+# Create the consul agent config file with imported variables
+echo \"{
+ \\\"advertise_addr\\\": \\\"\$IP\\\",
+ \\\"datacenter\\\": \\\"\$DATACENTER\\\",
+ \\\"node_name\\\": \\\"\$NODENAME\\\",
+ \\\"data_dir\\\":  \\\"/var/db/consul\\\",
+ \\\"dns_config\\\": {
+  \\\"a_record_limit\\\": 3,
+  \\\"enable_truncate\\\": true
+ },
+ \\\"log_file\\\": \\\"/var/log/consul/\\\",
+ \\\"log_level\\\": \\\"WARN\\\",
+ \\\"start_join\\\": [ \$CONSULSERVERS ]
+}\" > /usr/local/etc/consul.d/agent.json
+
+# set owner and perms on agent.json
+chown consul:wheel /usr/local/etc/consul.d/agent.json
+chmod 640 /usr/local/etc/consul.d/agent.json
+
+# enable consul
+sysrc consul_enable=\"YES\"
+
+# set load parameter for consul config
+sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
+#sysrc consul_datadir=\"/var/db/consul\"
+
+# Workaround for bug in rc.d/consul script:
+sysrc consul_group=\"wheel\"
+
+# setup consul logs, might be redundant if not specified in agent.json above
+mkdir -p /var/log/consul
+touch /var/log/consul/consul.log
+chown -R consul:wheel /var/log/consul
+
+# add the consul user to the wheel group, this seems to be required for
+# consul to start on this instance. May need to figure out why.
+# I'm not entirely sure this is the correct way to do it
+/usr/sbin/pw usermod consul -G wheel
+
+## end consul
+
+## start Vault
+
 if [ -f /usr/local/etc/vault/vault-server.hcl ]; then
     rm /usr/local/etc/vault/vault-server.hcl
 fi
 
-# default freebsd vault.hcl is /usr/local/etc/vault.hcl and 
+# default freebsd vault.hcl is /usr/local/etc/vault.hcl and
 # the init script /usr/local/etc/rc.d/vault refers to this
 # but many vault docs refer to /usr/local/etc/vault/vault-server.hcl
 # or similar
@@ -185,15 +238,16 @@ listener \\\"tcp\\\" {
   tls_disable = 1
 }
 storage \\\"consul\\\" {
-  address = \\\"\$CONSULSERVER:8500\\\"
+  address = \\\"\$IP:8500\\\"
   server_service_name = \\\"\$DATACENTER-server\\\"
-  path = \\\"vault\\\"
+  path = \\\"vault/\\\"
 }
 telemetry {
   statsite_address = \\\"\$IP:8125\\\"
   disable_hostname = true
 }
 api_addr = \\\"http://\$IP:8200\\\"
+cluster_addr = \\\"http://\$IP:8201\\\"
 \" > /usr/local/etc/vault.hcl
 
 # setup rc.conf entries
@@ -203,6 +257,11 @@ sysrc vault_login_class=root
 
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
+
+# start consul agent
+/usr/local/etc/rc.d/consul start
+
+# start vault
 /usr/local/etc/rc.d/vault start
 
 #
