@@ -1,3 +1,9 @@
+2.0.6
+
+* Setup consul to use a default gossip encryption key
+
+---
+
 2.0.5
 
 * Inclusion of consul-template and vault-agentl.hcl

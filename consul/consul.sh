@@ -179,6 +179,13 @@ then
     echo 'VAULT is unset - see documentation how to configure this flavour, defaulting to null'
     VAULT='\"\"'
 fi
+# GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen
+# you must generate this key on a live consul server
+if [ -z \${GOSSIPKEY+x} ];
+then
+    echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
+    GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -210,8 +217,9 @@ case \$BOOTSTRAP in
      \\\"translate_wan_addrs\\\": true,
      \\\"ui\\\": true,
      \\\"server\\\": true,
+     \\\"encrypt\\\": \$GOSSIPKEY,
      \\\"bootstrap_expect\\\": \$BOOTSTRAP
-  }\" > /usr/local/etc/consul.d/agent.json
+}\" > /usr/local/etc/consul.d/agent.json
 
      echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
      ;;
@@ -233,10 +241,11 @@ case \$BOOTSTRAP in
      \\\"translate_wan_addrs\\\": true,
      \\\"ui\\\": true,
      \\\"server\\\": true,
+     \\\"encrypt\\\": \$GOSSIPKEY,
      \\\"bootstrap_expect\\\": \$BOOTSTRAP,
      \\\"rejoin_after_leave\\\": true,
      \\\"start_join\\\": [\\\"\$IP\\\", \$PEERS]
-  }\" > /usr/local/etc/consul.d/agent.json
+}\" > /usr/local/etc/consul.d/agent.json
 
      echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
 
