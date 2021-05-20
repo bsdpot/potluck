@@ -9,7 +9,7 @@ tags: ["postgresql", "patroni", "sql", "database"]
 
 This is a ```patroni postgresql``` jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
 
-It requires 5 ```consul``` servers running and the IPs passed in as part of the ```pot env``` setup. The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'```` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+It requires 5 ```consul``` servers running and the IPs passed in as part of the ```pot env``` setup. The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
 For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
