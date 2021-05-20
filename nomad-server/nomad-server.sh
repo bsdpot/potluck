@@ -175,6 +175,22 @@ then
     echo 'BOOTSTRAP is unset - see documentation how to configure this flavour, defaulting to 1'
     BOOTSTRAP=1
 fi
+# GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
+# Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
+# We'll re-use the one from the consul flavour
+if [ -z \${GOSSIPKEY+x} ];
+then
+    echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
+    GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
+fi
+# NOMADKEY is a 32 byte, Base64 encoded key generated with 'openssl rand -base64 32'.
+# 'nomad operator keygen' usually produces a 16 byte key but supports 32 byte, Base64 encoded keys
+# We'll re-use the GOSSIPKEY variable consul but you can set own different key for nomad
+if [ -z \${NOMADKEY+x} ];
+then
+    echo 'NOMADKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
+    NOMADKEY=\$GOSSIPKEY
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -202,6 +218,7 @@ echo \"{
  },
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
+ \\\"encrypt\\\": \$GOSSIPKEY,
  \\\"start_join\\\": [ \$CONSULSERVERS ]
 }\" > /usr/local/etc/consul.d/agent.json
 
@@ -249,6 +266,8 @@ server {
   enabled = true
   # set this to 3 or 5 for cluster setup
   bootstrap_expect = \\\"\$BOOTSTRAP\\\"
+  # Encrypt gossip communication
+  encrypt = \$NOMADKEY
 }
 
 consul {

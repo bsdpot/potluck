@@ -1,3 +1,9 @@
+2.0.3
+
+* Updated to use gossip encryption for consul and nomad (re-using key)
+
+---
+
 2.0.2
 
 * Updated to use local consul agent
