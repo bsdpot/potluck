@@ -23,7 +23,7 @@ The flavour expects a local ```consul``` agent instance to be available that it 
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
-The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key. Do not use in production.
+The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
 
 # Usage
 
