@@ -218,6 +218,14 @@ then
     echo 'KEKPASS is unset - see documentation how to configure this flavour'
     KEKPASS=kekpass
 fi
+# GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
+# Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
+# We'll re-use the one from the consul flavour
+if [ -z \${GOSSIPKEY+x} ];
+then
+    echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
+    GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
+fi
 
 # make consul configuration directory and set permissions
 mkdir -p /usr/local/etc/consul.d
@@ -235,6 +243,7 @@ echo \"{
  },
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
+ \\\"encrypt\\\": \$GOSSIPKEY,
  \\\"start_join\\\": [ \$CONSULSERVERS ]
 }\" > /usr/local/etc/consul.d/agent.json
 
@@ -258,7 +267,7 @@ touch /var/log/consul/consul.log
 chown -R consul:wheel /var/log/consul
 
 # add the consul user to the wheel group, this seems to be required for
-# consul to start on this instance. May need to figure out why. 
+# consul to start on this instance. May need to figure out why.
 # I'm not entirely sure this is the correct way to do it
 /usr/sbin/pw usermod consul -G wheel
 
