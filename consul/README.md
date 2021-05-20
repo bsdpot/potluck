@@ -28,7 +28,7 @@ For 3 and 5 node clusters the other peers must be passed in via the PEERS variab
 
 The VAULT parameter is for a ```vault``` server that may not exist yet, so defaults to empty variable. 
 
-The GOSSIPKEY parameter is to enable custom gossip encryption and defaults to a standard key. Do not use this key in production.
+The GOSSIPKEY parameter is to enable custom gossip encryption and defaults to a standard key. Do not use the default key for production encryption, instead provide your own.
 
 # Usage
 
