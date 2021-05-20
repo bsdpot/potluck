@@ -1,3 +1,8 @@
+2.0.1
+
+* Updated to use pre-generated consol encryption key for gossip, planning for TLS
+
+---
 2.0
 
 * Updated to use local consol agent and a consul cluster for data store

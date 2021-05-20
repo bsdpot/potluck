@@ -168,6 +168,14 @@ if [ -z \${IP+x} ]; then
     echo 'IP is unset - see documentation how to configure this flavour'
     exit 1
 fi
+# GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
+# Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
+# We'll re-use the one from the consul flavour
+if [ -z \${GOSSIPKEY+x} ];
+then
+    echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
+    GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -190,6 +198,7 @@ echo \"{
  },
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
+ \\\"encrypt\\\": \$GOSSIPKEY,
  \\\"start_join\\\": [ \$CONSULSERVERS ]
 }\" > /usr/local/etc/consul.d/agent.json
 
@@ -241,6 +250,14 @@ storage \\\"consul\\\" {
   address = \\\"\$IP:8500\\\"
   server_service_name = \\\"\$DATACENTER-server\\\"
   path = \\\"vault/\\\"
+  scheme = \\\"http\\\"
+  # for future usage with https and keys
+  # set tls_disable to 0 above when enabling
+  #token = \\\"abcd1234\\\"
+  #scheme = \\\"https\\\"
+  #tls_ca_file   = \\\"/etc/pem/vault.ca\\\"
+  #tls_cert_file = \\\"/etc/pem/vault.cert\\\"
+  #tls_key_file  = \\\"/etc/pem/vault.key\\\"
 }
 telemetry {
   statsite_address = \\\"\$IP:8125\\\"
