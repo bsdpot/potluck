@@ -31,7 +31,7 @@ The CONSULSERVERS parameter defines the consul server instances, and must be set
 
 The BOOTSTRAP parameter defines the expected number of cluster nodes, it defaults to 1 (no cluster) if it is not set. You MUST still pass in a consul IP under CONSULSERVERS.
 
-The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key. Do not use in production.
+The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if the parameter is not set, do not use the default key for production encryption, instead provide your own.
 
 The NOMADKEY parameter is the gossip encryption key for nomad. We're re-using the default key from consul as nomad supports 32 byte Base64 keys, but the common one is a 16 byte Bas64 key from ```nomad operator keygen```
 
