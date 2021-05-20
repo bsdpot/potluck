@@ -19,9 +19,11 @@ The flavour expects a local ```consul``` agent instance to be available that it 
 * Export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 8200:8200```   
 * Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> -E IP=<IP address of this vault node>```
+  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> -E IP=<IP address of this vault node> [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+
+The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key. Do not use in production.
 
 # Usage
 
