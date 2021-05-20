@@ -1,3 +1,9 @@
+2.0.2
+
+* Consul pre-generated gossip encryption key added
+
+---
+
 2.0.1
 
 * Fixing up minor type with trailing comma in consul agent.json setup
