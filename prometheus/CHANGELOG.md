@@ -1,9 +1,4 @@
-1.0.1
+0.9
 
-* Release build of Prometheus with node_exporter and Grafana7
+* First test build of Prometheus with node_exporter and Grafana7
 
----
-
-1.0
-
-* initiate file
