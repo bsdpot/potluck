@@ -1,3 +1,9 @@
+2.0.3
+
+* Added node_exporter and setup consul service "node-exporter"
+
+---
+
 2.0.2
 
 * Consul pre-generated gossip encryption key added

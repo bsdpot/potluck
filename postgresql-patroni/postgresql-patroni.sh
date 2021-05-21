@@ -93,6 +93,9 @@ pkg install -y vault
 step "Install package consul"
 pkg install -y consul
 
+step "Install package node_exporter"
+pkg install -y node_exporter
+
 step "Install package postgresql-client"
 pkg install -y postgresql13-client
 
@@ -244,7 +247,12 @@ echo \"{
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
  \\\"encrypt\\\": \$GOSSIPKEY,
- \\\"start_join\\\": [ \$CONSULSERVERS ]
+ \\\"start_join\\\": [ \$CONSULSERVERS ],
+ \\\"service\\\": {
+  \\\"name\\\": \\\"node_exporter\\\",
+  \\\"tags\\\": [\\\"_app=postgresql\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+  \\\"port\\\": 9100
+ }
 }\" > /usr/local/etc/consul.d/agent.json
 
 # set owner and perms on agent.json
@@ -270,6 +278,9 @@ chown -R consul:wheel /var/log/consul
 # consul to start on this instance. May need to figure out why.
 # I'm not entirely sure this is the correct way to do it
 /usr/sbin/pw usermod consul -G wheel
+
+# enable node_exporter service
+sysrc node_exporter_enable=\"YES\"
 
 # set patroni variables in /root/patroni.yml before copy
 if [ -f /root/patroni.yml ]; then
@@ -316,6 +327,9 @@ sysrc patroni_enable=\"YES\"
 
 # start patroni, which should start postgresql
 /usr/local/etc/rc.d/patroni start
+
+# start node_exporter
+/usr/local/etc/rc.d/node_exporter start
 
 #
 # Do not touch this:
