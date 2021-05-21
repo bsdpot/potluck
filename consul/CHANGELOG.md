@@ -1,3 +1,9 @@
+2.0.7
+
+* Adding prometheus node_exporter and setting up consul to publish as service "node-exporter" 
+
+---
+
 2.0.6
 
 * Setup consul to use a default gossip encryption key

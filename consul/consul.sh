@@ -93,6 +93,9 @@ pkg install -y sudo
 step "Install package vault"
 pkg install -y vault
 
+step "Install package node_exporter"
+pkg install -y node_exporter
+
 step "Clean package installation"
 pkg clean -y
 
@@ -218,7 +221,12 @@ case \$BOOTSTRAP in
      \\\"ui\\\": true,
      \\\"server\\\": true,
      \\\"encrypt\\\": \$GOSSIPKEY,
-     \\\"bootstrap_expect\\\": \$BOOTSTRAP
+     \\\"bootstrap_expect\\\": \$BOOTSTRAP,
+     \\\"service\\\": {
+      \\\"name\\\": \\\"node_exporter\\\",
+      \\\"tags\\\": [\\\"_app=consul\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+      \\\"port\\\": 9100
+  }
 }\" > /usr/local/etc/consul.d/agent.json
 
      echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
@@ -244,7 +252,12 @@ case \$BOOTSTRAP in
      \\\"encrypt\\\": \$GOSSIPKEY,
      \\\"bootstrap_expect\\\": \$BOOTSTRAP,
      \\\"rejoin_after_leave\\\": true,
-     \\\"start_join\\\": [\\\"\$IP\\\", \$PEERS]
+     \\\"start_join\\\": [\\\"\$IP\\\", \$PEERS],
+     \\\"service\\\": {
+      \\\"name\\\": \\\"node_exporter\\\",
+      \\\"tags\\\": [\\\"_app=consul\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+      \\\"port\\\": 9100
+  }
 }\" > /usr/local/etc/consul.d/agent.json
 
      echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
@@ -257,6 +270,11 @@ case \$BOOTSTRAP in
     ;;
 
 esac
+
+## end consul setup
+
+# enable node_exporter service
+sysrc node_exporter_enable=\"YES\"
 
 ## start Vault agent config
 
@@ -310,6 +328,9 @@ log_level = \\\"warn\\\"
 
 # start consul
 /usr/local/etc/rc.d/consul start
+
+# start node_exporter
+/usr/local/etc/rc.d/node_exporter start
 
 # start vault - running agent
 # /usr/local/etc/rc.d/vault start
