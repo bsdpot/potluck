@@ -209,7 +209,7 @@ echo \"{
  \\\"start_join\\\": [ \$CONSULSERVERS ],
  \\\"service\\\": {
   \\\"name\\\": \\\"node_exporter\\\",
-  \\\"tags\\\": [\\\"_app=prometheus\\\", \\\"_service=node_exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+  \\\"tags\\\": [\\\"_app=prometheus\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
   \\\"port\\\": 9100
  }
 }\" > /usr/local/etc/consul.d/agent.json
