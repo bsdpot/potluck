@@ -93,6 +93,9 @@ pkg install -y sudo
 step "Install package vault"
 pkg install -y vault
 
+step "Install package node_exporter"
+pkg install -y node_exporter
+
 step "Clean package installation"
 pkg clean -y
 
@@ -219,7 +222,12 @@ echo \"{
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
  \\\"encrypt\\\": \$GOSSIPKEY,
- \\\"start_join\\\": [ \$CONSULSERVERS ]
+ \\\"start_join\\\": [ \$CONSULSERVERS ],
+ \\\"service\\\": {
+  \\\"name\\\": \\\"node_exporter\\\",
+  \\\"tags\\\": [\\\"_app=nomad-server\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+  \\\"port\\\": 9100
+ }
 }\" > /usr/local/etc/consul.d/agent.json
 
 # set owner and perms on agent.json
@@ -247,6 +255,9 @@ chown -R consul:wheel /var/log/consul
 /usr/sbin/pw usermod consul -G wheel
 
 # end consul #
+
+# enable node_exporter service
+sysrc node_exporter_enable=\"YES\"
 
 # start nomad #
 
@@ -296,6 +307,9 @@ echo \"nomad_args=\\\"-config=/usr/local/etc/nomad/server.hcl -network-interface
 
 # start nomad
 /usr/local/etc/rc.d/nomad start
+
+# start node_exporter
+/usr/local/etc/rc.d/node_exporter start
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
