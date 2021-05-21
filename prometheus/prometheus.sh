@@ -206,7 +206,12 @@ echo \"{
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
  \\\"encrypt\\\": \$GOSSIPKEY,
- \\\"start_join\\\": [ \$CONSULSERVERS ]
+ \\\"start_join\\\": [ \$CONSULSERVERS ],
+ \\\"service\\\": {
+  \\\"name\\\": \\\"node_exporter\\\",
+  \\\"tags\\\": [\\\"_app=prometheus\\\", \\\"_service=node_exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+  \\\"port\\\": 9100
+ }
 }\" > /usr/local/etc/consul.d/agent.json
 
 # set owner and perms on agent.json
