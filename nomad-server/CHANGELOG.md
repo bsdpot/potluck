@@ -1,3 +1,9 @@
+2.0.4
+
+* Adding node_exporter and configuring consul to publish service at "node-exporter"
+
+---
+
 2.0.3
 
 * Updated to use gossip encryption for consul and nomad (re-using key)
