@@ -1,3 +1,9 @@
+2.0.8
+
+* Adjusting consul service "node-exporter" 
+
+---
+
 2.0.7
 
 * Adding prometheus node_exporter and setting up consul to publish as service "node-exporter" 
