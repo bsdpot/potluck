@@ -204,8 +204,9 @@ echo \"{
  \\\"encrypt\\\": \$GOSSIPKEY,
  \\\"start_join\\\": [ \$CONSULSERVERS ],
  \\\"service\\\": {
-  \\\"name\\\": \\\"node_exporter\\\",
-  \\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+  \\\"address\\\": \\\"\$IP\\\",
+  \\\"name\\\": \\\"node-exporter\\\",
+  \\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
   \\\"port\\\": 9100
  }
 }\" > /usr/local/etc/consul.d/agent.json

@@ -1,3 +1,9 @@
+2.0.3
+
+* Adjusting parameters for node-exporter service
+
+---
+
 2.0.2
 
 * Adding prometheus node_exporter and setting up as consul service
