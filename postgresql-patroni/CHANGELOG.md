@@ -1,3 +1,9 @@
+2.0.4
+
+* Adjusting parameters for node-exporter service
+
+---
+
 2.0.3
 
 * Added node_exporter and setup consul service "node-exporter"
