@@ -21,12 +21,9 @@ The flavour includes a local ```consul``` agent instance to be available that it
 * Adjust to your environment:    
   ```sudo pot set-env -p prometheus-clone -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
       -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
-      -E TARGETS='"<IP address of this system>:9100", "<IP2>:9100", "<IP3>:9100", "<IP4>:9100", "<IP5>:9100", "<IP6>:9100"' \
       [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
-
-The TARGETS parameter defines the list of node_exporter targets to scrapre and must be set as ```-E TARGETS='"<IP address of this system>:9100", "10.0.0.1:9100", "10.0.0.2:9100", "10.0.0.3:9100", "10.0.0.4:9100", "10.0.0.5:9100"'```
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
 

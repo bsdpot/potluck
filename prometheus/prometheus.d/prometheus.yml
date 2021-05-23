@@ -1,6 +1,6 @@
 global:
-  scrape_interval:     60s # Scrape job runs every 1 min.
-  evaluation_interval: 60s # Evaluate rules every 1 min.
+  scrape_interval:     15s # Scrape job runs every 1 min.
+  evaluation_interval: 15s # Evaluate rules every 1 min.
 
 alerting:
   alertmanagers:
@@ -14,18 +14,37 @@ rule_files:
   # - "second_rules.yml"
 
 scrape_configs:
-  - job_name: 'prometheus'
-    static_configs:
-    - targets: ['localhost:9090']
-  - job_name: 'node'
-    static_configs:
-    - targets: [ MYTARGETS ]
-  - job_name: 'consul'
+# temp disabling, rather use consul for sources
+#  - job_name: 'node'
+#    static_configs:
+#    - targets: [ MYTARGETS ]
+  - job_name: 'consul_registered_services'
+    metrics_path: '/metrics'
     consul_sd_configs:
     - server: 'localhost:8500'
+      services: ["node-exporter"]
     relabel_configs:
-      - source_labels: [__meta_consul_tags]
-        regex: .*,prometheus,.*
-        action: keep
-      - source_labels: [__meta_consul_service]
-        target_label: job
+    - source_labels: ['__meta_consul_service']
+      regex:         '(.*)'
+      target_label:  'job'
+      replacement:   '$1'
+    - source_labels: ['__meta_consul_node']
+      regex:         '(.*)'
+      target_label:  'instance'
+      replacement:   '$1'
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_app=([^,]+),.*
+      replacement: ${1}
+      target_label: _app
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_service=([^,]+),.*
+      replacement: ${1}
+      target_label: _service
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_hostname=([^,]+),.*
+      replacement: ${1}
+      target_label: _hostname
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_datacenter=([^,]+),.*
+      replacement: ${1}
+      target_label: _datacenter

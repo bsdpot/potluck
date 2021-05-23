@@ -1,3 +1,9 @@
+0.9.3
+
+* Updates for grafana default datasource and dashboard, removing specific targets adjustment in favour of consul
+
+---
+
 0.9.2
 
 * Correcting consul published service name to use "node-exporter"

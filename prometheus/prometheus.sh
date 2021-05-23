@@ -171,10 +171,11 @@ if [ -z \${IP+x} ]; then
     echo 'IP is unset - see documentation how to configure this flavour'
     exit 1
 fi
-if [ -z \${TARGETS+x} ]; then
-    echo 'TARGETS is unset - see documentation how to configure this flavour. Setting default of localhost'
-    TARGETS=\"'localhost:9100'\"
-fi
+# temp disabling, using consul for list of server to query
+#if [ -z \${TARGETS+x} ]; then
+#    echo 'TARGETS is unset - see documentation how to configure this flavour. Setting default of localhost'
+#    TARGETS=\"'localhost:9100'\"
+#fi
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
 # Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
 # We'll re-use the one from the consul flavour
@@ -208,8 +209,9 @@ echo \"{
  \\\"encrypt\\\": \$GOSSIPKEY,
  \\\"start_join\\\": [ \$CONSULSERVERS ],
  \\\"service\\\": {
-  \\\"name\\\": \\\"node_exporter\\\",
-  \\\"tags\\\": [\\\"_app=prometheus\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+  \\\"address\\\": \\\"\$IP\\\",
+  \\\"name\\\": \\\"node-exporter\\\",
+  \\\"tags\\\": [\\\"_app=prometheus\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
   \\\"port\\\": 9100
  }
 }\" > /usr/local/etc/consul.d/agent.json
@@ -242,18 +244,20 @@ chown -R consul:wheel /var/log/consul
 
 ## start prometheus config
 
+# removing to test using consul for sources
 # set some parameters for prometheus.yml before copy to /usr/local/etc/
+#if [ -f /root/prometheus.yml ]; then
+#    # replace MYTARGETS with imported variable TARGETS which must be in correct quoting format
+#    # this is opposite to other pot images, uses single quotes
+#    /usr/bin/sed -i .orig \"/MYTARGETS/s/MYTARGETS/\$TARGETS/g\" /root/prometheus.yml
+#fi
+
+# copy the file to /usr/local/etc/prometheus.yml
 if [ -f /root/prometheus.yml ]; then
-    # replace MYTARGETS with imported variable TARGETS which must be in correct quoting format
-    # this is opposite to other pot images, uses single quotes
-    /usr/bin/sed -i .orig \"/MYTARGETS/s/MYTARGETS/\$TARGETS/g\" /root/prometheus.yml
+    cp -f /root/prometheus.yml /usr/local/etc/prometheus.yml
+else
+    echo \"ERROR - NO PROMETHEUS FILE FOUND\"
 fi
-
-# move old file out the way
-mv /usr/local/etc/prometheus.yml /usr/local/etc/prometheus.yml.removed
-
-# copy the edited file to /usr/local/etc/prometheus.yml
-cp /root/prometheus.yml /usr/local/etc/prometheus.yml
 
 # enable prometheus service
 sysrc prometheus_enable=\"YES\"
@@ -269,8 +273,28 @@ sysrc node_exporter_enable=\"YES\"
 
 ## start grafana7 config
 
+# copy in the datasource.yml file to /var/db/grafana/provisioning/datasources
+if [ -f /root/datasource.yml ]; then
+    cp -f /root/datasource.yml /var/db/grafana/provisioning/datasources/prometheus.yml
+    chown grafana:grafana /var/db/grafana/provisioning/datasources/prometheus.yml
+else
+    echo \"ERROR - NO DATASOURCE FILE FOUND\"
+fi
+
+# copy in the dashboard.yml file to /var/db/grafana/provisioning/dashboards
+# include the relevant .json for actual dashboard when available
+if [ -f /root/dashboard.yml ]; then
+    cp -f /root/dashboard.yml /var/db/grafana/provisioning/dashboards/default.yml
+    chown grafana:grafana /var/db/grafana/provisioning/dashboards/default.yml
+else
+    echo \"ERROR - NO DASHBOARD FILE FOUND\"
+fi
+
 # enable grafana7 service
 sysrc grafana_enable=\"YES\"
+sysrc grafana_config=\"/usr/local/etc/grafana.conf\"
+sysrc grafana_homepath=\"/usr/local/share/grafana\"
+sysrc grafana_syslog_output_enable=\"YES\"
 
 ## end grafana7 config
 
@@ -280,11 +304,11 @@ sysrc grafana_enable=\"YES\"
 # start consul agent
 /usr/local/etc/rc.d/consul start
 
-# start prometheus
-/usr/local/etc/rc.d/prometheus start
-
 # start node_exporter
 /usr/local/etc/rc.d/node_exporter start
+
+# start prometheus
+/usr/local/etc/rc.d/prometheus start
 
 # start grafana
 /usr/local/etc/rc.d/grafana start
