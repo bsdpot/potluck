@@ -137,7 +137,8 @@ fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
 /usr/local/etc/rc.d/consul stop || true
-/usr/local/etc/rc.d/prometheus stop  || true
+/usr/local/etc/rc.d/prometheus stop || true
+/usr/local/etc/rc.d/grafana stop || true
 
 
 # No need to adjust this:
@@ -171,11 +172,6 @@ if [ -z \${IP+x} ]; then
     echo 'IP is unset - see documentation how to configure this flavour'
     exit 1
 fi
-# temp disabling, using consul for list of server to query
-#if [ -z \${TARGETS+x} ]; then
-#    echo 'TARGETS is unset - see documentation how to configure this flavour. Setting default of localhost'
-#    TARGETS=\"'localhost:9100'\"
-#fi
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
 # Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
 # We'll re-use the one from the consul flavour
@@ -244,14 +240,6 @@ chown -R consul:wheel /var/log/consul
 
 ## start prometheus config
 
-# removing to test using consul for sources
-# set some parameters for prometheus.yml before copy to /usr/local/etc/
-#if [ -f /root/prometheus.yml ]; then
-#    # replace MYTARGETS with imported variable TARGETS which must be in correct quoting format
-#    # this is opposite to other pot images, uses single quotes
-#    /usr/bin/sed -i .orig \"/MYTARGETS/s/MYTARGETS/\$TARGETS/g\" /root/prometheus.yml
-#fi
-
 # copy the file to /usr/local/etc/prometheus.yml
 if [ -f /root/prometheus.yml ]; then
     cp -f /root/prometheus.yml /usr/local/etc/prometheus.yml
@@ -294,6 +282,8 @@ fi
 sysrc grafana_enable=\"YES\"
 sysrc grafana_config=\"/usr/local/etc/grafana.conf\"
 sysrc grafana_homepath=\"/usr/local/share/grafana\"
+sysrc grafana_user=\"grafana\"
+sysrc grafana_group=\"grafana\"
 sysrc grafana_syslog_output_enable=\"YES\"
 
 ## end grafana7 config
@@ -311,7 +301,7 @@ sysrc grafana_syslog_output_enable=\"YES\"
 /usr/local/etc/rc.d/prometheus start
 
 # start grafana
-/usr/local/etc/rc.d/grafana start
+service grafana start
 
 #
 # Do not touch this:

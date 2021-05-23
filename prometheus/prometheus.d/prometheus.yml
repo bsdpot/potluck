@@ -14,10 +14,6 @@ rule_files:
   # - "second_rules.yml"
 
 scrape_configs:
-# temp disabling, rather use consul for sources
-#  - job_name: 'node'
-#    static_configs:
-#    - targets: [ MYTARGETS ]
   - job_name: 'consul_registered_services'
     metrics_path: '/metrics'
     consul_sd_configs:

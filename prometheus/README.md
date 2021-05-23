@@ -33,12 +33,16 @@ To access prometheus open the following in a browser:
 * http(s)://<prometheus-host>:9090
 * http(s)://<prometheus-host>:9090/targets/
 
-To access Grafana open the following in a browser:
-* http(s)://<prometheus-host>:3000
-
-If Grafana doesn't start, wait a few minutes and try again.
-
 To access this node's own metrics, visit:
 * http(s)://<prometheus-host>:9100/metrics
 
 or run ```fetch -o - 'https://127.0.0.1:9100/metrics'```
+
+To see the targets being captured via consul, visit
+* http://<prometheus-host>:9090/targets
+
+To access Grafana open the following in a browser:
+* http(s)://<prometheus-host>:3000
+
+Note: Grafana should start automatically, and starts up with ```service grafana start``` instead of ```/usr/local/etc/rc.d/grafana start``` which wasn't working.
+
