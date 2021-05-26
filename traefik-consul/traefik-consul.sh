@@ -13,7 +13,7 @@ RUNS_IN_NOMAD=false
 # -------------- BEGIN PACKAGE SETUP -------------
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
-sysrc sendmail_enable="NO"
+service sendmail onedisable
 sysrc traefik_enable="YES"
 
 # Install packages
