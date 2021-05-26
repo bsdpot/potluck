@@ -2,7 +2,7 @@
 
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
-sysrc sendmail_enable="NO"
+service sendmail onedisable
 sysrc nginx_enable="YES"
 pkg install -y nginx
 echo "error_log /dev/stderr;" >> /usr/local/etc/nginx/nginx.conf
