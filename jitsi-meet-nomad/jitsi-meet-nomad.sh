@@ -2,7 +2,7 @@
 
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
-sysrc sendmail_enable="NO"
+service sendmail onedisable
 sysrc jitsi_videobridge_enable="YES"
 sysrc jitsi_videobridge_flags="--apis=rest,xmpp"
 sysrc prosody_enable="YES"
