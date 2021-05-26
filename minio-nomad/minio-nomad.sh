@@ -2,7 +2,7 @@
 
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
-sysrc sendmail_enable="NONE"
+service sendmail onedisable
 pkg install -y minio
 mkdir /minio
 sysrc minio_disks="/minio"
