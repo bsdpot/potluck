@@ -2,7 +2,7 @@
 
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
-sysrc sendmail_enable="NO"
+service sendmail onedisable
 sysrc sshd_enable="YES"
 
 echo myjailpassword | pw add user ffoxuser -h 0
