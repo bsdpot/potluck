@@ -18,7 +18,7 @@ RUNS_IN_NOMAD=true
 # -------- BEGIN PACKAGE & MOUNTPOINT SETUP -------------
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
-sysrc sendmail_enable="NO"
+service sendmail onedisable
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
