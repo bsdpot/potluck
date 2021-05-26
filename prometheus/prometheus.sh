@@ -247,8 +247,16 @@ else
     echo \"ERROR - NO PROMETHEUS FILE FOUND\"
 fi
 
+# if /mnt/prometheus does not exist, create it and set permissions
+if [ ! -d /mnt/prometheus ]; then
+    mkdir -p /mnt/prometheus
+    chown -R prometheus:prometheus /mnt/prometheus
+fi
+
 # enable prometheus service
 sysrc prometheus_enable=\"YES\"
+sysrc prometheus_data_dir=\"/mnt/prometheus\"
+sysrc prometheus_syslog_output_enable=\"YES\"
 
 ## end prometheus config
 
@@ -259,34 +267,76 @@ sysrc node_exporter_enable=\"YES\"
 
 ## end node_exporter config
 
-## start grafana7 config
+## start grafana config
 
-# copy in the datasource.yml file to /var/db/grafana/provisioning/datasources
-if [ -f /root/datasource.yml ]; then
-    cp -f /root/datasource.yml /var/db/grafana/provisioning/datasources/prometheus.yml
-    chown grafana:grafana /var/db/grafana/provisioning/datasources/prometheus.yml
+# we're mounting in a blank-or-filled ZFS dataset from root system at
+# zroot/prometheusdata to /mnt
+
+# if /mnt/grafana is empty, copy in /var/db/grafana
+
+if [ ! -d /mnt/grafana ]; then
+    # if empty we need to copy in the directory structure from install
+    cp -a /var/db/grafana /mnt
+
+    # make sure permissions are good for /mnt/grafana
+    chown -R grafana:grafana /mnt/grafana
+
+    # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
+    if [ -f /root/datasource.yml ]; then
+        cp -f /root/datasource.yml /mnt/grafana/provisioning/datasources/prometheus.yml
+        chown grafana:grafana /mnt/grafana/provisioning/datasources/prometheus.yml
+    else
+        echo \"ERROR - NO DATASOURCE CONFIG FILE FOUND\"
+    fi
+
+    # copy in the dashboard.yml file to /mnt/grafana/provisioning/dashboards
+    if [ -f /root/dashboard.yml ]; then
+        cp -f /root/dashboard.yml /mnt/grafana/provisioning/dashboards/default.yml
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/default.yml
+    else
+        echo \"ERROR - NO DASHBOARD DEFAULT CONFIG FILE FOUND\"
+    fi
+    # include the relevant .json for actual dashboard when available
 else
-    echo \"ERROR - NO DATASOURCE FILE FOUND\"
+    # if /mnt/grafana exists then don't copy in /var/db/grafana
+    #
+    # make sure permissions are good for /mnt/grafana
+    chown -R grafana:grafana /mnt/grafana
+
+    # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
+    if [ -f /root/datasource.yml ]; then
+        cp -f /root/datasource.yml /mnt/grafana/provisioning/datasources/prometheus.yml
+        chown grafana:grafana /mnt/grafana/provisioning/datasources/prometheus.yml
+    else
+        echo \"ERROR - NO DATASOURCE CONFIG FILE FOUND\"
+    fi
+
+    # copy in the dashboard.yml file to /mnt/grafana/provisioning/dashboards
+    if [ -f /root/dashboard.yml ]; then
+        cp -f /root/dashboard.yml /mnt/grafana/provisioning/dashboards/default.yml
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/default.yml
+    else
+        echo \"ERROR - NO DASHBOARD DEFAULT CONFIG FILE FOUND\"
+    fi
+    # include the relevant .json for actual dashboard when available below here
+    #
+    # insert here
 fi
 
-# copy in the dashboard.yml file to /var/db/grafana/provisioning/dashboards
-# include the relevant .json for actual dashboard when available
-if [ -f /root/dashboard.yml ]; then
-    cp -f /root/dashboard.yml /var/db/grafana/provisioning/dashboards/default.yml
-    chown grafana:grafana /var/db/grafana/provisioning/dashboards/default.yml
-else
-    echo \"ERROR - NO DASHBOARD FILE FOUND\"
+# local edits for grafana.conf here
+# the mount path for some options is set to /mnt/grafana/...
+if [ -f /root/grafana.conf ]; then
+    cp -f /root/grafana.conf /usr/local/etc/grafana.conf
 fi
 
-# enable grafana7 service
+# enable grafana service
 sysrc grafana_enable=\"YES\"
 sysrc grafana_config=\"/usr/local/etc/grafana.conf\"
-sysrc grafana_homepath=\"/usr/local/share/grafana\"
 sysrc grafana_user=\"grafana\"
 sysrc grafana_group=\"grafana\"
 sysrc grafana_syslog_output_enable=\"YES\"
 
-## end grafana7 config
+## end grafana config
 
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION

@@ -15,11 +15,16 @@ The flavour includes a local ```consul``` agent instance to be available that it
 
 # Installation
 
+* Create a ZFS dataset on the parent system beforehand
+  ```zfs create -o mountpoint=/mnt/prometheusdata zroot/prometheusdata```
 * Create your local jail from the image or the flavour files. 
-* Export the ports after creating the jail:     
-  ```pot export-ports -p <jailname> -e 8200:8200```   
+* Clone the local jail
+* Mount in the ZFS dataset you created
+  ```pot mount-in -p <jailname> -m /mnt -d /mnt/prometheusdata```
+* Optionally export the ports after creating the jail:     
+  ```pot export-ports -p <jailname> -e 9090:9090 -e 9100:9100 -e 3000:3000```
 * Adjust to your environment:    
-  ```sudo pot set-env -p prometheus-clone -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
+  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
       -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
       [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
 
@@ -46,3 +51,11 @@ To access Grafana open the following in a browser:
 
 Note: Grafana should start automatically, and starts up with ```service grafana start``` instead of ```/usr/local/etc/rc.d/grafana start``` which wasn't working.
 
+# Persistent Storage
+Persistent storage will be in the ZFS dataset zroot/prometheusdata, available inside the image at /mnt
+
+If you stop the image, the data will still exist, and a new image can be started up and still use it.
+
+If you need to change the directory parameters for the ZFS dataset, adjust the ```mount-in``` command accordingly for the source directory as mounted by the parent OS.
+
+Do not adjust the image destination mount point at /mnt because Prometheus & Grafana are configured to use this directory for data.

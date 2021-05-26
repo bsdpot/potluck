@@ -1,3 +1,9 @@
+0.9.5
+
+* Persistent storage added at /mnt
+
+---
+
 0.9.4
 
 * Changed method of Grafana startup to fix non-starting instance
