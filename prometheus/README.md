@@ -15,11 +15,11 @@ The flavour includes a local ```consul``` agent instance to be available that it
 
 # Installation
 
-* Create a ZFS dataset on the parent system beforehand
+* Create a ZFS dataset on the parent system beforehand:    
   ```zfs create -o mountpoint=/mnt/prometheusdata zroot/prometheusdata```
-* Create your local jail from the image or the flavour files. 
-* Clone the local jail
-* Mount in the ZFS dataset you created
+* Create your local jail from the image or the flavour files or import prebuilt
+* Clone the created jail
+* Mount in the ZFS dataset you created:    
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/prometheusdata```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 9090:9090 -e 9100:9100 -e 3000:3000```

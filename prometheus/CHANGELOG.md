@@ -1,3 +1,9 @@
+0.9.6
+
+* Version bump for build process
+
+---
+
 0.9.5
 
 * Persistent storage added at /mnt
