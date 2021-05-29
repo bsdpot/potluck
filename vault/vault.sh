@@ -136,9 +136,8 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/consul stop || true
+/usr/local/etc/rc.d/consul onestop || true
 /usr/local/etc/rc.d/vault onestop  || true
-
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -179,6 +178,19 @@ then
     echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
     GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
 fi
+# set to 1 or yes to provide an unseal token to a secondary node for autounseal
+# this defaults to off for a primary node which still needs vault operator init performed to get unseal keys and token
+if [ -z \${VAULTTYPE+x} ];
+then
+    echo 'VAULTTYPE is unset - see documentation how to configure this flavour, defaulting to unseal instead of cluster.'
+    VAULTTYPE=\"unseal\"
+fi
+# IP address of the unseal server
+if [ -z \${UNSEALIP+x} ];
+then
+    echo 'UNSEALIP is unset - see documentation how to configure this flavour, defaulting to preset value. Do not use this in production!'
+    UNSEALIP=\"127.0.0.1\"
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -204,9 +216,8 @@ echo \"{
  \\\"encrypt\\\": \$GOSSIPKEY,
  \\\"start_join\\\": [ \$CONSULSERVERS ],
  \\\"service\\\": {
-  \\\"address\\\": \\\"\$IP\\\",
   \\\"name\\\": \\\"node-exporter\\\",
-  \\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
+  \\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
   \\\"port\\\": 9100
  }
 }\" > /usr/local/etc/consul.d/agent.json
@@ -252,35 +263,86 @@ fi
 # or similar
 
 # Create vault configuration file
-echo \"disable_mlock = true
+# if UNSEAL is set to 1 or YES then we want to include the token for automatic unseal
+
+case \$VAULTTYPE in
+  # -E VAULTTYPE=\\\"unseal\\\"
+  unseal)
+    echo \"disable_mlock = true
 ui = true
 listener \\\"tcp\\\" {
   address = \\\"\$IP:8200\\\"
   tls_disable = 1
 }
-storage \\\"consul\\\" {
-  address = \\\"\$IP:8500\\\"
-  server_service_name = \\\"\$DATACENTER-server\\\"
-  path = \\\"vault/\\\"
-  scheme = \\\"http\\\"
-  # for future usage with https and keys
-  # set tls_disable to 0 above when enabling
-  #token = \\\"abcd1234\\\"
-  #scheme = \\\"https\\\"
-  #tls_ca_file   = \\\"/etc/pem/vault.ca\\\"
-  #tls_cert_file = \\\"/etc/pem/vault.cert\\\"
-  #tls_key_file  = \\\"/etc/pem/vault.key\\\"
+# make sure you create a zfs partition and mount it into /mnt
+# if you want persistent vault data
+storage \\\"file\\\" {
+  path    = \\\"/mnt/vault-unseal\\\"
 }
-telemetry {
-  statsite_address = \\\"\$IP:8125\\\"
-  disable_hostname = true
+api_addr = \\\"http://\$IP:8200\\\"
+\" > /usr/local/etc/vault.hcl
+
+    # setup autounseal config
+    echo \"path \\\"transit/encrypt/autounseal\\\" {
+  capabilities = [ \\\"update\\\" ]
+}
+path \\\"transit/decrypt/autounseal\\\" {
+  capabilities = [ \\\"update\\\" ]
+}
+\" > /root/autounseal.hcl
+     ;;
+
+  # -E VAULTTYPE=\\\"cluster\\\"
+  cluster)
+    echo \"disable_mlock = true
+ui = true
+listener \\\"tcp\\\" {
+address = \\\"\$IP:8200\\\"
+  tls_disable = 1
+}
+# make sure you create a zfs partition and mount it into /mnt
+# if you want persistent vault data
+storage \\\"raft\\\" {
+  path    = \\\"/mnt\\\"
+  node_id = \\\"\$NODENAME\\\"
+}
+# we are a secondary server joining a cluster
+seal \\\"transit\\\" {
+  address = \\\"http://\$UNSEALIP:8200\\\"
+  disable_renewal = \\\"false\\\"
+  key_name = \\\"autounseal\\\"
+  mount_path = \\\"transit/\\\"
+  #tls_ca_cert = \\\"/etc/pem/vault.pem\\\"
+  #tls_client_cert = \\\"/etc/pem/client_cert.pem\\\"
+  #tls_client_key = \\\"/etc/pem/ca_cert.pem\\\"
+  #tls_server_name = \\\"vault\\\"
+  #tls_skip_verify = \\\"false\\\"
+}
+service_registration \\\"consul\\\" {
+  address = \\\"\$IP:8500\\\"
+  scheme = \\\"http\\\"
+  service = \\\"vault\\\"
+  #tls_ca_file = \\\"/etc/pem/vault.ca\\\"
+  #tls_cert_file = \\\"/etc/pem/vault.cert\\\"
+  #tls_key_file = \\\"/etc/pem/vault.key\\\"
 }
 api_addr = \\\"http://\$IP:8200\\\"
 cluster_addr = \\\"http://\$IP:8201\\\"
 \" > /usr/local/etc/vault.hcl
+    ;;
+
+  *)
+    echo \"there is a problem with the VAULTTYPE variable - set to unseal or cluster\"
+    exit 1
+    ;;
+
+esac
+
+# set permissions on /mnt for vault data
+chown -R vault:wheel /mnt
 
 # setup rc.conf entries
-# we don't set 'vault_user=vault' because vault won't start
+# we do not set vault_user=vault because vault will not start
 sysrc vault_enable=yes
 sysrc vault_login_class=root
 
@@ -290,12 +352,25 @@ sysrc vault_login_class=root
 # start consul agent
 /usr/local/etc/rc.d/consul start
 
-# start vault
-/usr/local/etc/rc.d/vault start
-
 # start node_exporter
 /usr/local/etc/rc.d/node_exporter start
 
+# start vault
+/usr/local/etc/rc.d/vault start
+
+# echo useful message
+echo \"If this is an unseal node you must login and run:\"
+echo \"  vault operator init -address=http://\$IP:8200\"
+echo \"to get started, then unseal the node with the keys, and perform other steps in the documentation to get it ready for use by the cluster\"
+echo \" \"
+echo \"If this is a cluster node you must first create a wrapped unseal key on the unseal node:\"
+echo \"  vault token create -address=http://UNSEALIP:8200 -policy=\\\"autounseal\\\" -wrap-ttl=1h \"
+echo \"and then run the following on this node:\"
+echo \"  vault unwrap -address=http://UNSEALIP:8200 \\\"s.t0k3n12344ddre\\\" \"
+echo \"and this node will automatically unseal.\"
+echo \" \"
+echo \"Important: every node in the cluster needs a new wrapped key generated to unseal! Using a key consumes it.\"
+echo \" \"
 #
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned

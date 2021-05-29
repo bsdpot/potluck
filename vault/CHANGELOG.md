@@ -1,3 +1,9 @@
+2.0.4
+
+* Unseal or cluster type with raft storage, along with persistent mount-in dataset at /mnt
+
+---
+
 2.0.3
 
 * Adjusting parameters for node-exporter service
