@@ -1,3 +1,9 @@
+2.0.5
+
+* Updating for persistent postgresql storage
+
+---
+
 2.0.4
 
 * Adjusting parameters for node-exporter service

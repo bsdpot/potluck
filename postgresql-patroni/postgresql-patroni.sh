@@ -201,10 +201,10 @@ then
     echo 'The unique option NODENAME is unset - see documentation how to configure this flavour'
     exit 1
 fi
-if [ -z \${MYIP+x} ];
+if [ -z \${IP+x} ];
 then
-    echo 'MYIP is unset - see documentation how to configure this flavour'
-    MYIP=\"127.0.0.1\"
+    echo 'IP is unset - see documentation how to configure this flavour'
+    IP=\"127.0.0.1\"
 fi
 if [ -z \${SERVICETAG+x} ];
 then
@@ -236,7 +236,7 @@ chmod 750 /usr/local/etc/consul.d
 
 # Create the consul agent config file with imported variables
 echo \"{
- \\\"advertise_addr\\\": \\\"\$MYIP\\\",
+ \\\"advertise_addr\\\": \\\"\$IP\\\",
  \\\"datacenter\\\": \\\"\$DATACENTER\\\",
  \\\"node_name\\\": \\\"\$NODENAME\\\",
  \\\"data_dir\\\":  \\\"/var/db/consul\\\",
@@ -288,14 +288,14 @@ if [ -f /root/patroni.yml ]; then
     # replace MYNAME with imported variable NODENAME which must be unique
     /usr/bin/sed -i .orig \"/MYNAME/s/MYNAME/\$NODENAME/g\" /root/patroni.yml
 
-    # replace MYIP with imported variable MYIP
-    /usr/bin/sed -i .orig \"/MYIP/s/MYIP/\$MYIP/g\" /root/patroni.yml
+    # replace MYIP with imported variable IP
+    /usr/bin/sed -i .orig \"/MYIP/s/MYIP/\$IP/g\" /root/patroni.yml
 
     # replace SERVICETAG with imported variable SERVICETAG
     /usr/bin/sed -i .orig \"/SERVICETAG/s/SERVICETAG/\$SERVICETAG/g\" /root/patroni.yml
 
-    # replace CONSULIP with imported variable MYIP, as using local consul agent
-    /usr/bin/sed -i .orig \"/CONSULIP/s/CONSULIP/\$MYIP/g\" /root/patroni.yml
+    # replace CONSULIP with imported variable IP, as using local consul agent
+    /usr/bin/sed -i .orig \"/CONSULIP/s/CONSULIP/\$IP/g\" /root/patroni.yml
 
     # replace ADMPASS with imported variable ADMPASS
     /usr/bin/sed -i .orig \"/ADMPASS/s/ADMPASS/\$ADMPASS/g\" /root/patroni.yml
@@ -319,6 +319,9 @@ sysrc postgresql_enable=\"YES\"
 # enable patroni
 sysrc patroni_enable=\"YES\"
 
+# ensure permissions are good for /var/db/postgres mount-in
+chown -R postgres:postgres /var/db/postgres
+
 # end postgresql
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
@@ -326,11 +329,11 @@ sysrc patroni_enable=\"YES\"
 # start consul agent
 /usr/local/etc/rc.d/consul start
 
-# start patroni, which should start postgresql
-/usr/local/etc/rc.d/patroni start
-
 # start node_exporter
 /usr/local/etc/rc.d/node_exporter start
+
+# start patroni, which should start postgresql
+/usr/local/etc/rc.d/patroni start
 
 #
 # Do not touch this:
