@@ -33,18 +33,18 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 
 # Architecture
 * vault-unseal: is initialized and unsealed. The root token creates a transit key that enables the other Vaults auto-unseal. This Vault server is not a part of the cluster.
-* vault-clone-1: is initialized and unsealed. This Vault starts as the cluster leader. A K/V-V2 secret is created.
-* vault-clone-2: is only started. You will join it to the cluster.
-* vault-clone-3: is only started. You will join it to the cluster.
+* vault-clone-1: is initialized and unsealed automatically with the passed in wrapped unseal key.
+* vault-clone-2: is initialized and unsealed automatically with the passed in NEW wrapped unseal key.
+* vault-clone-n+: is initialized and unsealed automatically with the passed in NEW wrapped unseal key.
 
 # Usage
 
 ```vault``` is then running on port 8200 of your jail IP address.
 
 ## Unseal Node
-This vault instance exists to generate unseal keys. It must first be initialised.
+(This stage of development of the pot image doesn't yet include HTTPS. Please include the parameter ```-address=http://<IP>:8200``` to any ```vault``` commands```)
 
-(This stage of the image doesn't yet include HTTPS. Please include the parameter ```-address=http://<IP>:8200``` to any ```vault``` commands```)
+This vault instance exists to generate unseal keys. It must first be initialised.
 
 ```
 $ pot term vault-unseal
@@ -89,12 +89,12 @@ Success! Data written to: transit/keys/autounseal
 $ vault policy write -address=http://<IP>:8200 autounseal /root/autounseal.hcl 
 Success! Uploaded policy: autounseal
 
-$ vault token create -address=http://<IP>:8200 -policy="autounseal" -wrap-ttl=1h
+$ vault token create -address=http://<IP>:8200 -policy="autounseal" -wrap-ttl=24h
 Key                              Value
 ---                              -----
 wrapping_token:                  s.newtoken
 wrapping_accessor:               REDACTED
-wrapping_token_ttl:              1h
+wrapping_token_ttl:              24h
 wrapping_token_creation_time:    2021-05-29 13:52:13.743971005 +0000 UTC
 wrapping_token_creation_path:    auth/token/create
 wrapped_accessor:                REDACTED
@@ -103,20 +103,14 @@ wrapped_accessor:                REDACTED
 This new token ```s.newtoken``` can be used to unseal the cluster nodes. A new token must be generated for each node in the cluster.
 
 ## Cluster Node using raft storage
-This is still a work in progress.
+To unseal a cluster node, make use of a wrapped key generated on the unseal node. Pass it in with ```-E UNSEALTOKEN=<wrapped token>```
 
-To unseal a cluster node, make use of the wrapped key generated on the unseal node:
+The cluster node will be automatically unsealed and join the cluster. Repeat for 3 or 5 nodes in the vault cluster.
+
+This cluster can then be used as a kv store.
 
 ```
-$ vault unwrap -address=http://<IP>:8200 "s.newtoken"
-
-(get new token)
-
-$ vault login -address=http://<IP>:8200
-
-(use new token)
+vault secrets enable -address=http://<IP>:8200 -path=kv kv-v2
+vault kv -address=http://<IP>:8200 put kv/testkey webapp=TESTKEY
+vault kv -address=http://<IP>:8200 get kv/testkey
 ```
-
-And the cluster node will be automatically unsealed. Repeat for 3 or 5 nodes in the vault cluster.
-
-(To do: add steps to initiate raft cluster, or join the cluster)

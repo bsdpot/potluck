@@ -94,6 +94,9 @@ pkg install -y sudo
 step "Install package node_exporter"
 pkg install -y node_exporter
 
+step "Install package jq"
+pkg install -y jq
+
 step "Clean package installation"
 pkg clean -y
 
@@ -190,6 +193,12 @@ if [ -z \${UNSEALIP+x} ];
 then
     echo 'UNSEALIP is unset - see documentation how to configure this flavour, defaulting to preset value. Do not use this in production!'
     UNSEALIP=\"127.0.0.1\"
+fi
+# Unwrap token to pass into cluster
+if [ -z \${UNSEALTOKEN+x} ];
+then
+    echo 'UNSEALTOKEN is unset - see documentation how to configure this flavour, defaulting to unset value. Do not use this in production!'
+    UNSEALTOKEN=\"unset\"
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
@@ -290,6 +299,9 @@ path \\\"transit/decrypt/autounseal\\\" {
   capabilities = [ \\\"update\\\" ]
 }
 \" > /root/autounseal.hcl
+
+    # do not unwrap
+    UNWRAPME=0
      ;;
 
   # -E VAULTTYPE=\\\"cluster\\\"
@@ -297,7 +309,8 @@ path \\\"transit/decrypt/autounseal\\\" {
     echo \"disable_mlock = true
 ui = true
 listener \\\"tcp\\\" {
-address = \\\"\$IP:8200\\\"
+  address = \\\"\$IP:8200\\\"
+  cluster_address = \\\"\$IP:8201\\\"
   tls_disable = 1
 }
 # make sure you create a zfs partition and mount it into /mnt
@@ -312,6 +325,7 @@ seal \\\"transit\\\" {
   disable_renewal = \\\"false\\\"
   key_name = \\\"autounseal\\\"
   mount_path = \\\"transit/\\\"
+  token = \\\"UNWRAPPEDTOKEN\\\"
   #tls_ca_cert = \\\"/etc/pem/vault.pem\\\"
   #tls_client_cert = \\\"/etc/pem/client_cert.pem\\\"
   #tls_client_key = \\\"/etc/pem/ca_cert.pem\\\"
@@ -329,6 +343,9 @@ service_registration \\\"consul\\\" {
 api_addr = \\\"http://\$IP:8200\\\"
 cluster_addr = \\\"http://\$IP:8201\\\"
 \" > /usr/local/etc/vault.hcl
+
+    # we want to unwrap with the passed in token
+    UNWRAPME=1
     ;;
 
   *)
@@ -355,23 +372,17 @@ sysrc vault_login_class=root
 # start node_exporter
 /usr/local/etc/rc.d/node_exporter start
 
+# if we need to autounseal with passed in unwrap token
+if [ \$UNWRAPME -eq 1 ]; then
+    /usr/local/bin/vault unwrap -address=http://\$UNSEALIP:8200 -format=json \$UNSEALTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unseal.token
+    VAULT_TOKEN=\$(/bin/cat /root/unseal.token)
+    /usr/bin/sed -i .orig \"/UNWRAPPEDTOKEN/s/UNWRAPPEDTOKEN/\$VAULT_TOKEN/g\" /usr/local/etc/vault.hcl
+fi
+
 # start vault
 /usr/local/etc/rc.d/vault start
 
-# echo useful message
-echo \"If this is an unseal node you must login and run:\"
-echo \"  vault operator init -address=http://\$IP:8200\"
-echo \"to get started, then unseal the node with the keys, and perform other steps in the documentation to get it ready for use by the cluster\"
-echo \" \"
-echo \"If this is a cluster node you must first create a wrapped unseal key on the unseal node:\"
-echo \"  vault token create -address=http://UNSEALIP:8200 -policy=\\\"autounseal\\\" -wrap-ttl=1h \"
-echo \"and then run the following on this node:\"
-echo \"  vault unwrap -address=http://UNSEALIP:8200 \\\"s.t0k3n12344ddre\\\" \"
-echo \"and this node will automatically unseal.\"
-echo \" \"
-echo \"Important: every node in the cluster needs a new wrapped key generated to unseal! Using a key consumes it.\"
-echo \" \"
-#
+
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
 

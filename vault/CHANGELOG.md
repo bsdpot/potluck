@@ -1,3 +1,9 @@
+2.0.5
+
+* Fixups for raft storage cluster wuth automatic unseal based on wrapped token
+
+---
+
 2.0.4
 
 * Unseal or cluster type with raft storage, along with persistent mount-in dataset at /mnt
