@@ -1,6 +1,6 @@
 2.0.5
 
-* Fixups for raft storage cluster wuth automatic unseal based on wrapped token
+* Fixups for raft storage cluster with automatic unseal based on wrapped token
 
 ---
 
