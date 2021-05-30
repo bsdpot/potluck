@@ -22,7 +22,7 @@ The jail exposes these parameters that can either be set via the environment or 
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 5432:5432```    
 * Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E MYIP=<IP address of this node> -E SERVICETAG=<master/replica/standby-leader> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> [-E ADMPASS=<custom admin password> -E KEKPASS=<custom postgresql superuser password -E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
+  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E IP=<IP address of this node> -E SERVICETAG=<master/replica/standby-leader> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> [-E ADMPASS=<custom admin password> -E KEKPASS=<custom postgresql superuser password -E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
 
 The SERVICETAG parameter defines if this is a master, replica or standby-leader node in the cluster,
 
