@@ -33,9 +33,9 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 
 # Architecture
 * vault-unseal: is initialized and unsealed. The root token creates a transit key that enables the other Vaults auto-unseal. This Vault server is not a part of the cluster.
-* vault-clone-1: is initialized and unsealed automatically with the passed in wrapped unseal key.
-* vault-clone-2: is initialized and unsealed automatically with the passed in NEW wrapped unseal key.
-* vault-clone-n+: is initialized and unsealed automatically with the passed in NEW wrapped unseal key.
+* vault-clone-1: is initialized and unsealed automatically with the passed in wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
+* vault-clone-2: is initialized and unsealed automatically with the passed in NEW wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
+* vault-clone-n+: is initialized and unsealed automatically with the passed in NEW wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
 
 # Usage
 

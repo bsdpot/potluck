@@ -272,7 +272,6 @@ fi
 # or similar
 
 # Create vault configuration file
-# if UNSEAL is set to 1 or YES then we want to include the token for automatic unseal
 
 case \$VAULTTYPE in
   # -E VAULTTYPE=\\\"unseal\\\"
@@ -286,9 +285,10 @@ listener \\\"tcp\\\" {
 # make sure you create a zfs partition and mount it into /mnt
 # if you want persistent vault data
 storage \\\"file\\\" {
-  path    = \\\"/mnt/vault-unseal\\\"
+  path    = \\\"/mnt/\\\"
 }
 api_addr = \\\"http://\$IP:8200\\\"
+log_level = \\\"Warn\\\"
 \" > /usr/local/etc/vault.hcl
 
     # setup autounseal config
@@ -300,9 +300,15 @@ path \\\"transit/decrypt/autounseal\\\" {
 }
 \" > /root/autounseal.hcl
 
-    # do not unwrap
+    # set variables, but don't all seem to be honoured
+    VAULT_ADDR=\\\"http://\$IP:8200\\\"
+    VAULT_API_ADDR=\\\"http://\$IP:8200\\\"
+    VAULT_CLIENT_TIMEOUT=90s
+    VAULT_MAX_RETRIES=5
+    # do not unwrap a token, this is unseal node
     UNWRAPME=0
-     ;;
+    AUTHORISED=0
+    ;;
 
   # -E VAULTTYPE=\\\"cluster\\\"
   cluster)
@@ -316,7 +322,7 @@ listener \\\"tcp\\\" {
 # make sure you create a zfs partition and mount it into /mnt
 # if you want persistent vault data
 storage \\\"raft\\\" {
-  path    = \\\"/mnt\\\"
+  path    = \\\"/mnt/\\\"
   node_id = \\\"\$NODENAME\\\"
 }
 # we are a secondary server joining a cluster
@@ -344,6 +350,12 @@ api_addr = \\\"http://\$IP:8200\\\"
 cluster_addr = \\\"http://\$IP:8201\\\"
 \" > /usr/local/etc/vault.hcl
 
+    # set variables, but don't all seem to be honoured
+    VAULT_ADDR=\\\"http://\$IP:8200\\\"
+    VAULT_CLUSTER_ADDR=\\\"http://\$IP:8201\\\"
+    VAULT_API_ADDR=\\\"http://\$IP:8200\\\"
+    VAULT_CLIENT_TIMEOUT=90s
+    VAULT_MAX_RETRIES=5
     # we want to unwrap with the passed in token
     UNWRAPME=1
     ;;
@@ -362,6 +374,8 @@ chown -R vault:wheel /mnt
 # we do not set vault_user=vault because vault will not start
 sysrc vault_enable=yes
 sysrc vault_login_class=root
+sysrc vault_syslog_output_enable=\"YES\"
+sysrc vault_syslog_output_priority=\"warn\"
 
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
@@ -374,14 +388,119 @@ sysrc vault_login_class=root
 
 # if we need to autounseal with passed in unwrap token
 if [ \$UNWRAPME -eq 1 ]; then
-    /usr/local/bin/vault unwrap -address=http://\$UNSEALIP:8200 -format=json \$UNSEALTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unseal.token
-    VAULT_TOKEN=\$(/bin/cat /root/unseal.token)
-    /usr/bin/sed -i .orig \"/UNWRAPPEDTOKEN/s/UNWRAPPEDTOKEN/\$VAULT_TOKEN/g\" /usr/local/etc/vault.hcl
+    # vault unwrap [options] [TOKEN]
+    /usr/local/bin/vault unwrap -address=http://\$UNSEALIP:8200 -format=json \$UNSEALTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unwrapped.token
+    if [ -s /root/unwrapped.token ]; then
+        THIS_TOKEN=\$(/bin/cat /root/unwrapped.token)
+        /usr/bin/sed -i .orig \"/UNWRAPPEDTOKEN/s/UNWRAPPEDTOKEN/\$THIS_TOKEN/g\" /usr/local/etc/vault.hcl
+    fi
 fi
 
 # start vault
 /usr/local/etc/rc.d/vault start
 
+# login
+if [ \$UNWRAPME -eq 1 ]; then
+    echo \"Logging in to unseal vault\"
+    /usr/local/bin/vault login -address=http://\$UNSEALIP:8200 -format=json \$THIS_TOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/this.token
+fi
+
+sleep 5
+
+# check vault is unsealed
+if [ \$UNWRAPME -eq 1 ]; then
+    #SEALEDSTATUS=\$(/usr/local/bin/vault status -address=http://\$IP:8200 -format=json | /usr/local/bin/jq -r '.sealed')
+    echo \"initiating raft cluster with operator init\"
+    # perform operator init on unsealed node and get recovery keys instead of unseal keys, save to file
+    /usr/local/bin/vault operator init -address=http://\$IP:8200 -format=json > /root/recovery.keys
+
+    # set some variables from the saved file
+    # this saved file may be a security risk?
+    echo \"Setting variables from recovery.keys\"
+    KEY1=\$(/bin/cat /root/recovery.keys | /usr/local/bin/jq -r '.recovery_keys_b64[0]')
+    KEY2=\$(/bin/cat /root/recovery.keys | /usr/local/bin/jq -r '.recovery_keys_b64[1]')
+    KEY3=\$(/bin/cat /root/recovery.keys | /usr/local/bin/jq -r '.recovery_keys_b64[2]')
+    KEY4=\$(/bin/cat /root/recovery.keys | /usr/local/bin/jq -r '.recovery_keys_b64[3]')
+    KEY5=\$(/bin/cat /root/recovery.keys | /usr/local/bin/jq -r '.recovery_keys_b64[4]')
+    ROOTKEY=\$(/bin/cat /root/recovery.keys | /usr/local/bin/jq -r '.root_token')
+
+    echo \"Unsealing raft cluster\"
+    /usr/local/bin/vault operator unseal -address=http://\$IP:8200 \$KEY1
+    /usr/local/bin/vault operator unseal -address=http://\$IP:8200 \$KEY2
+    /usr/local/bin/vault operator unseal -address=http://\$IP:8200 \$KEY3
+
+    echo \"Please wait for cluster...\"
+    sleep 5
+
+    echo \"Joining the raft cluster\"
+    /usr/local/bin/vault operator raft join -address=http://\$IP:8200
+
+    # we need to wait a period for the cluster to initialise correctly and elect leader
+    echo \"Please wait for raft cluster to contemplate self...\"
+    sleep 10
+
+    echo \"Logging in to local raft instance\"
+    echo \"\$ROOTKEY\" | /usr/local/bin/vault login -address=http://\$IP:8200 -method=token -field=token token=- > /root/login.token
+
+    if [ -s /root/login.token ]; then
+        TOKENOUT=\$(/bin/cat /root/login.token)
+        echo \"Your token is \$TOKENOUT\"
+        echo \"Also available in /root/login.token\"
+
+        # enable pki and become a CA
+        echo \"Setting up raft cluster CA\"
+        echo \"\"
+        # vault secrets enable [options] TYPE
+        echo \"Enabling PKI\"
+        /usr/local/bin/vault secrets enable -address=http://\$IP:8200 pki
+        # vault secrets tune [options] PATH
+        echo \"Tuning PKI\"
+        /usr/local/bin/vault secrets tune -max-lease-ttl=87600h -address=http://\$IP:8200 pki/
+        # vault write [options] PATH [DATA K=V...]
+        echo \"Generating internal certificate\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 -field=certificate pki/root/generate/internal common_name=\"\$DATACENTER\" ttl=87600h > /root/CA_cert.crt
+        echo \"Writing certificate URLs\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki/config/urls issuing_certificates=\"http://\$IP:8200/v1/pki/ca\" crl_distribution_points=\"http://\$IP:8200/v1/pki/crl\"
+
+        # setup intermediate CA
+        echo \"Setting up raft cluster intermediate CA\"
+
+        # vault secrets enable [options] TYPE
+        echo \"Enabling PKI Intermediate\"
+        /usr/local/bin/vault secrets enable -address=http://\$IP:8200 -path=pki_int pki
+
+        # vault secrets tune [options] PATH
+        echo \"Tuning PKI Intermediate\"
+        /usr/local/bin/vault secrets tune -max-lease-ttl=43800h -address=http://\$IP:8200 pki_int/
+
+        # vault write [options] PATH [DATA K=V...]
+        echo \"Writing intermediate certificate to file\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/internal common_name=\"\$DATACENTER Intermediate Authority\" | /usr/local/bin/jq -r '.data.csr' > /root/pki_intermediate.csr
+        echo \"Signing intermediate certificate\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki/root/sign-intermediate csr=@pki_intermediate.csr format=pem_bundle ttl=\"43800h\" | /usr/local/bin/jq -r '.data.certificate' > /root/intermediate.cert.pem
+        echo \"Storing intermediate certificate\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/intermediate/set-signed certificate=@intermediate.cert.pem
+
+        # setup roles
+        echo \"Setting up roles\"
+        # vault write [options] PATH [DATA K=V...]
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/roles/dot-\$DATACENTER allow_any_name=true allow_bare_domains=true allowed_domains=\"\$DATACENTER\" allow_subdomains=true max_ttl=\"720h\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/issue/dot-\$DATACENTER common_name=\"\$DATACENTER\" ttl=\"24h\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki/roles/dot-\$DATACENTER allow_any_name=true allow_bare_domains=true allowed_domains=\"\$DATACENTER\" allow_subdomains=true max_ttl=\"72h\"
+
+        # set policy in a file, will import next
+        echo \"Writing draft policy to file /root/policy\"
+        echo \"path \\\"pki*\\\" { capabilities = [\\\"read\\\", \\\"list\\\"] }
+path \\\"pki/roles/dot-\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
+path \\\"pki/sign/dot-\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
+path \\\"pki/issue/dot-\$DATACENTER\\\" { capabilities = [\\\"create\\\"] }
+\" > /root/vault.policy
+
+        echo \"Writing vault policy to Vault\"
+        # vault policy write [options] NAME PATH
+        /usr/local/bin/vault policy write -address=http://\$IP:8200 pki /root/vault.policy
+    fi
+fi
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned

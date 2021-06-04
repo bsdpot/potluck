@@ -1,3 +1,9 @@
+2.0.6
+
+* Vault login and setup raft cluster for PKI and self-signed CA
+
+---
+
 2.0.5
 
 * Fixups for raft storage cluster with automatic unseal based on wrapped token
