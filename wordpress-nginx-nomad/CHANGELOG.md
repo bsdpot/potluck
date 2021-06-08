@@ -1,3 +1,9 @@
+1.0.5
+
+* Install php74-openssl to support plugins that require openssl
+
+---
+
 1.0.4
 
 * Rebuild for FreeBSD 13 & new packages
