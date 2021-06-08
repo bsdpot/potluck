@@ -25,7 +25,7 @@ sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 # Wordpress package at the moment is installed with php74, so we use that as base
 # Also we (pre-)install all the packages that wordpress lists as dependencies
 pkg install -y nginx mariadb105-client postgresql13-client 
-pkg install -y php74 php74-extensions
+pkg install -y php74 php74-extensions php74-openssl
 pkg install -y ImageMagick6-nox11 avahi-app bash bash-completion cups dbus dbus-glib expat fftw3 fontconfig freetype2 fribidi gdbm ghostscript9-agpl-base giflib glib gmp gnome_subr gnutls graphite2 gsfonts harfbuzz jbig2dec jbigkit jpeg-turbo lcms2 libICE libSM libX11 libXau libXdmcp libdaemon libevent libffi libgd libidn libidn2 liblqr-1 libltdl libpaper libpthread-stubs libraqm libraw libtasn1 libunistring libwmf-nox11 libxcb libzip nettle openjpeg p11-kit perl5 php74-curl php74-exif php74-fileinfo php74-ftp php74-gd php74-mysqli php74-pecl-imagick php74-zip php74-zlib pkgconf png poppler-data python37 tiff tpm-emulator trousers webp xorgproto
 
 pkg clean -y
