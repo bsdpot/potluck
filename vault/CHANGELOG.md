@@ -1,3 +1,9 @@
+2.0.7
+
+* Removed autostart from vault file
+
+---
+
 2.0.6
 
 * Vault login and setup raft cluster for PKI and self-signed CA
