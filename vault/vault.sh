@@ -484,16 +484,24 @@ if [ \$UNWRAPME -eq 1 ]; then
         # setup roles
         echo \"Setting up roles\"
         # vault write [options] PATH [DATA K=V...]
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/roles/dot-\$DATACENTER allow_any_name=true allow_bare_domains=true allowed_domains=\"\$DATACENTER\" allow_subdomains=true max_ttl=\"720h\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/roles/dot-\$DATACENTER allow_any_name=true allow_bare_domains=true max_ttl=\"720h\" generate_lease=true
         /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/issue/dot-\$DATACENTER common_name=\"\$DATACENTER\" ttl=\"24h\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki/roles/dot-\$DATACENTER allow_any_name=true allow_bare_domains=true allowed_domains=\"\$DATACENTER\" allow_subdomains=true max_ttl=\"72h\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki/roles/dot-\$DATACENTER allow_any_name=true allow_bare_domains=true max_ttl=\"72h\"
 
         # set policy in a file, will import next
-        echo \"Writing draft policy to file /root/policy\"
+        # this needs a review, combined from multiple sources
+        echo \"Writing detailed vault policy to file /root/policy\"
         echo \"path \\\"pki*\\\" { capabilities = [\\\"read\\\", \\\"list\\\"] }
 path \\\"pki/roles/dot-\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki/sign/dot-\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki/issue/dot-\$DATACENTER\\\" { capabilities = [\\\"create\\\"] }
+path \\\"pki_int/issue/*\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
+path \\\"pki_int/certs\\\" { capabilities = [\\\"list\\\"] }
+path \\\"pki_int/revoke\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
+path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
+path \\\"pki/cert/ca\\\" { capabilities = [\\\"read\\\"] }
+path \\\"auth/token/renew\\\" { capabilities = [\\\"update\\\"] }
+path \\\"auth/token/renew-self\\\" { capabilities = [\\\"update\\\"] }
 \" > /root/vault.policy
 
         echo \"Writing vault policy to Vault\"

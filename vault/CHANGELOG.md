@@ -1,3 +1,9 @@
+2.0.8
+
+* Adjustments for policy and CA
+
+---
+
 2.0.7
 
 * Removed autostart from vault file
