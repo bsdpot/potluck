@@ -211,7 +211,7 @@ chmod 750 /usr/local/etc/consul.d
 
 # Create the consul agent config file with imported variables
 echo \"{
- \\\"advertise_addr\\\": \\\"\$MYIP\\\",
+ \\\"advertise_addr\\\": \\\"\$IP\\\",
  \\\"datacenter\\\": \\\"\$DATACENTER\\\",
  \\\"node_name\\\": \\\"\$NODENAME\\\",
  \\\"data_dir\\\":  \\\"/var/db/consul\\\",
