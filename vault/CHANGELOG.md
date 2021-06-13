@@ -1,3 +1,9 @@
+2.0.9
+
+* More adjustments to vault policies
+
+---
+
 2.0.8
 
 * Adjustments for policy and CA

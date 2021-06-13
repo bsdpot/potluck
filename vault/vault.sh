@@ -484,17 +484,17 @@ if [ \$UNWRAPME -eq 1 ]; then
         # setup roles
         echo \"Setting up roles\"
         # vault write [options] PATH [DATA K=V...]
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/roles/dot-\$DATACENTER allow_any_name=true allow_bare_domains=true max_ttl=\"720h\" generate_lease=true
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/issue/dot-\$DATACENTER common_name=\"\$DATACENTER\" ttl=\"24h\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki/roles/dot-\$DATACENTER allow_any_name=true allow_bare_domains=true max_ttl=\"72h\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"720h\" require_cn=false generate_lease=true
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/issue/\$DATACENTER common_name=\"\$DATACENTER\" ttl=\"24h\"
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"72h\" require_cn=false
 
         # set policy in a file, will import next
         # this needs a review, combined from multiple sources
         echo \"Writing detailed vault policy to file /root/policy\"
         echo \"path \\\"pki*\\\" { capabilities = [\\\"read\\\", \\\"list\\\"] }
-path \\\"pki/roles/dot-\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
-path \\\"pki/sign/dot-\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
-path \\\"pki/issue/dot-\$DATACENTER\\\" { capabilities = [\\\"create\\\"] }
+path \\\"pki/roles/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
+path \\\"pki/sign/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
+path \\\"pki/issue/\$DATACENTER\\\" { capabilities = [\\\"create\\\"] }
 path \\\"pki_int/issue/*\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki_int/certs\\\" { capabilities = [\\\"list\\\"] }
 path \\\"pki_int/revoke\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
