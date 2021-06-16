@@ -101,6 +101,9 @@ pkg install -y node_exporter
 step "Install package jq"
 pkg install -y jq
 
+step "Install package curl"
+pkg install -y curl
+
 step "Clean package installation"
 pkg clean -y
 
@@ -360,6 +363,11 @@ listener \\\"tcp\\\" {
   cluster_address = \\\"\$IP:8201\\\"
   # set to zero to enable TLS only
   tls_disable = 1
+  # To configure the listener to use a CA certificate, concatenate the primary certificate and the CA certificate together
+  # The primary certificate should appear first in the combined file.
+  #xyz#tls_ca_file = /tmp/certs/vaultca.pem
+  #xyz#tls_cert_file = /tmp/certs/vaultcert.pem
+  #xyz#tls_key_file = /tmp/certs/vaultkey.pem
 }
 # make sure you create a zfs partition and mount it into /mnt
 # if you want persistent vault data
@@ -379,9 +387,9 @@ service_registration \\\"consul\\\" {
   address = \\\"\$IP:8500\\\"
   scheme = \\\"http\\\"
   service = \\\"vault\\\"
-  #tls_ca_file = \\\"/tmp/certs/ca\\\"
-  #tls_cert_file = \\\"/tmp/certs/cert.pem\\\"
-  #tls_key_file = \\\"/tmp/certs/cert.key\\\"
+  #tls_ca_file = \\\"/tmp/certs/consulca.pem\\\"
+  #tls_cert_file = \\\"/tmp/certs/consulcert.pem\\\"
+  #tls_key_file = \\\"/tmp/certs/consulkey.pem\\\"
 }
 api_addr = \\\"http://\$IP:8200\\\"
 cluster_addr = \\\"http://\$IP:8201\\\"
@@ -519,17 +527,78 @@ path \\\"auth/token/renew-self\\\" { capabilities = [\\\"update\\\"] }
         /usr/local/bin/vault policy write -address=http://\$IP:8200 pki /root/vault.policy
     fi
 
+    # setup template files for certificates
+    echo \"{{- /* /tmp/templates/cert.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" }}
+{{ .Data.certificate }}{{ end }}
+\" > /tmp/templates/cert.tpl
+
+    echo \"{{- /* /tmp/templates/ca.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" }}
+{{ .Data.issuing_ca }}{{ end }}
+\" > /tmp/templates/ca.tpl
+
+    echo \"{{- /* /tmp/templates/key.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" }}
+{{ .Data.private_key }}{{ end }}
+\" > /tmp/templates/key.tpl
+
+    # update vault.hcl
+    echo \"
+template {
+  source = \\\"/tmp/templates/cert.tpl\\\"
+  destination = \\\"/tmp/certs/vaultcert.pem\\\"
+}
+template {
+  source = \\\"/tmp/templates/ca.tpl\\\"
+  destination = \\\"/tmp/certs/vaultca.pem\\\"
+}
+template {
+  source = \\\"/tmp/templates/key.tpl\\\"
+  destination = \\\"/tmp/certs/vaultkey.pem\\\"
+}
+\" >> /usr/local/etc/vault.hcl
+
+    # generate certificates to use
+    # were using curl to get the certificates in json format as regular issue only has format pem, pem_bundle and der
+    if [ -s /root/login.token ]; then
+        HEADER=\$(/bin/cat /root/login.token)
+        /usr/local/bin/curl --header \"X-Vault-Token: \$HEADER\" --request POST --data '{\"common_name\": \"'\"\$NODENAME\"'\", \"ttl\": \"24h\"}' http://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmp/certs/vaultissue.json
+        # cli requires [], but web api does not
+        #/usr/local/bin/jq -r '.data.issuing_ca[]' /tmp/certs/vaultissue.json > /tmp/certs/vaultca.pem
+        # if left in for this script, you will get error 'Cannot iterate over string'
+        /usr/local/bin/jq -r '.data.issuing_ca' /tmp/certs/vaultissue.json > /tmp/certs/vaultca.pem
+        /usr/local/bin/jq -r '.data.certificate' /tmp/certs/vaultissue.json > /tmp/certs/vaultcert.pem
+        /usr/local/bin/jq -r '.data.private_key' /tmp/certs/vaultissue.json > /tmp/certs/vaultkey.pem
+    fi
+
+    # if we get a successful private key, update vault.hcl and reload
+    if [ -s /tmp/certs/vaultkey.pem ]; then
+        # enable TLS by removing the config line disabling it
+        /usr/bin/sed -i .orig 's/tls_disable/#tls_disable/g' /usr/local/etc/vault.hcl
+
+        # remove the comment #xyz# to enable certificates
+        /usr/bin/sed -i .orig 's/#xyz#tls/tls/g' /usr/local/etc/vault.hcl
+
+        # reload vault
+        /usr/local/etc/rc.d/vault reload
+    fi
+
     # setup auto-login script
     echo \"#!/bin/sh
 if [ -s /root/login.token ]; then
     /bin/cat /root/login.token | /usr/local/bin/vault login -address=http://\$IP:8200 token=-
 fi\" > /root/cli-vault-auto-login.sh
+
+    # make executable
     chmod +x /root/cli-vault-auto-login.sh
 
     # setup script to issue pki tokens
     echo \"#!/bin/sh
 /usr/local/bin/vault token create -address=http://\$IP:8200 -policy=\\\"default\\\" -policy=\\\"pki\\\" -wrap-ttl=24h
 \" > /root/issue-pki-token.sh
+
+    # make executable
     chmod +x /root/issue-pki-token.sh
 
     # start consul agent
