@@ -25,7 +25,7 @@ The flavour expects a local ```consul``` agent instance to be available that it 
 * Export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 8200:8200```   
 * Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> -E IP=<IP address of this vault node> -E VAULTTYPE=<unseal or cluster> [-E GOSSIPKEY=<32 byte Base64 key from consul keygen> -E UNSEALIP=<unseal vault node> -E UNSEALTOKEN=<wrapped token generated on unseal node>]```
+  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> -E IP=<IP address of this vault node> -E VAULTTYPE=<unseal|leader|follower> [-E GOSSIPKEY=<32 byte Base64 key from consul keygen> -E UNSEALIP=<unseal vault node> -E UNSEALTOKEN=<wrapped token generated on unseal node> -E VAULTLEADER=<IP> -E LEADERTOKEN=<token> ]```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
@@ -35,7 +35,6 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 * vault-unseal: is initialized and unsealed. The root token creates a transit key that enables the other Vaults auto-unseal. This Vault server is not a part of the cluster.
 * vault-clone-1: is initialized and unsealed automatically with the passed in wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
 * vault-clone-2: is initialized and unsealed automatically with the passed in NEW wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
-* vault-clone-n+: is initialized and unsealed automatically with the passed in NEW wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
 
 # Usage
 
@@ -102,11 +101,23 @@ wrapped_accessor:                REDACTED
 
 This new token ```s.newtoken``` can be used to unseal the cluster nodes. A new token must be generated for each node in the cluster.
 
-## Cluster Node using raft storage
+## Cluster leader node using raft storage
+To unseal a cluster leader, make use of a wrapped key generated on the unseal node. Pass it in with ```-E UNSEALTOKEN=<wrapped token>```
+
+Once running, you can login and run the script ```/root/cli-vault-auto-login.sh``` to automatically login to vault in the CLI and return a token for use in additional vault instances, in addition to an unseal token.
+
+To generate a token for PKI, run ```pot term vault-clone``` and then ```/root/issue-pki-token.sh```.
+
+## Cluster follower node using raft storage
 To unseal a cluster node, make use of a wrapped key generated on the unseal node. Pass it in with ```-E UNSEALTOKEN=<wrapped token>```
 
-The cluster node will be automatically unsealed and join the cluster. Repeat for 3 or 5 nodes in the vault cluster.
+A leader node should already exist, and must be passed in with the parameter ```-E VAULTLEADER=<IP>```.
 
+A leader token is also required and must be passed in the the paramter ```-E LEADERTOKEN=<login token from unsealed leader>```.
+
+The cluster node will be automatically unsealed and join the cluster. Repeat for all additional nodes in the vault cluster.
+
+## Example Cluster usage
 This cluster can then be used as a kv store.
 
 ```

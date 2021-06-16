@@ -82,6 +82,10 @@ mkdir -p /usr/local/etc/rc.d
 step "Install package consul"
 pkg install -y consul
 
+# vault can handle templating now but may still be required
+step "Install package consul-template"
+pkg install -y consul-template
+
 step "Install package vault"
 pkg install -y vault
 
@@ -181,11 +185,10 @@ then
     echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
     GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
 fi
-# set to 1 or yes to provide an unseal token to a secondary node for autounseal
-# this defaults to off for a primary node which still needs vault operator init performed to get unseal keys and token
+# this defaults to unseal. Other options are leader for a raft cluster leader, and cluster, for a raft cluster peer.
 if [ -z \${VAULTTYPE+x} ];
 then
-    echo 'VAULTTYPE is unset - see documentation how to configure this flavour, defaulting to unseal instead of cluster.'
+    echo 'VAULTTYPE is unset - see documentation how to configure this flavour, defaulting to unseal instead of leader or follower.'
     VAULTTYPE=\"unseal\"
 fi
 # IP address of the unseal server
@@ -200,9 +203,26 @@ then
     echo 'UNSEALTOKEN is unset - see documentation how to configure this flavour, defaulting to unset value. Do not use this in production!'
     UNSEALTOKEN=\"unset\"
 fi
+# Vault leader IP
+if [ -z \${VAULTLEADER+x} ];
+then
+    echo 'VAULTLEADER is unset - see documentation how to configure this flavour, defaulting to own IP.'
+    VAULTLEADER=\"\$IP\"
+fi
+# Vault leader token
+if [ -z \${LEADERTOKEN+x} ];
+then
+    echo 'LEADERTOKEN is unset - see documentation how to configure this flavour, defaulting to unset.'
+    VAULTLEADER=\"unset\"
+fi
+
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
+
+# setup /tmp/templates and /tmp/certs for vault usage
+mkdir -p /tmp/templates
+mkdir -p /tmp/certs
 
 ## start consul
 
@@ -272,9 +292,14 @@ fi
 # or similar
 
 # Create vault configuration file
+# Three types of vault servers
+# - unseal (unseal node)
+# - leader (raft cluster leader)
+# - cluster (raft cluster member)
 
 case \$VAULTTYPE in
-  # -E VAULTTYPE=\\\"unseal\\\"
+
+  ### Vault type: Gapped Unseal Node
   unseal)
     echo \"disable_mlock = true
 ui = true
@@ -305,18 +330,35 @@ path \\\"transit/decrypt/autounseal\\\" {
     VAULT_API_ADDR=\\\"http://\$IP:8200\\\"
     VAULT_CLIENT_TIMEOUT=90s
     VAULT_MAX_RETRIES=5
-    # do not unwrap a token, this is unseal node
-    UNWRAPME=0
-    AUTHORISED=0
+
+    # set permissions on /mnt for vault data
+    chown -R vault:wheel /mnt
+    # setup rc.conf entries
+    # we do not set vault_user=vault because vault will not start
+    sysrc vault_enable=yes
+    sysrc vault_login_class=root
+    sysrc vault_syslog_output_enable=\"YES\"
+    sysrc vault_syslog_output_priority=\"warn\"
+
+    # start vault
+    echo \"Starting Vault Unseal Node\"
+    /usr/local/etc/rc.d/vault start
+
+    # start consul agent
+    /usr/local/etc/rc.d/consul start
+
+    # start node_exporter
+    /usr/local/etc/rc.d/node_exporter start
     ;;
 
-  # -E VAULTTYPE=\\\"cluster\\\"
-  cluster)
+    ### Vault type: RAFT Leader
+    leader)
     echo \"disable_mlock = true
 ui = true
 listener \\\"tcp\\\" {
   address = \\\"\$IP:8200\\\"
   cluster_address = \\\"\$IP:8201\\\"
+  # set to zero to enable TLS only
   tls_disable = 1
 }
 # make sure you create a zfs partition and mount it into /mnt
@@ -332,19 +374,14 @@ seal \\\"transit\\\" {
   key_name = \\\"autounseal\\\"
   mount_path = \\\"transit/\\\"
   token = \\\"UNWRAPPEDTOKEN\\\"
-  #tls_ca_cert = \\\"/etc/pem/vault.pem\\\"
-  #tls_client_cert = \\\"/etc/pem/client_cert.pem\\\"
-  #tls_client_key = \\\"/etc/pem/ca_cert.pem\\\"
-  #tls_server_name = \\\"vault\\\"
-  #tls_skip_verify = \\\"false\\\"
 }
 service_registration \\\"consul\\\" {
   address = \\\"\$IP:8500\\\"
   scheme = \\\"http\\\"
   service = \\\"vault\\\"
-  #tls_ca_file = \\\"/etc/pem/vault.ca\\\"
-  #tls_cert_file = \\\"/etc/pem/vault.cert\\\"
-  #tls_key_file = \\\"/etc/pem/vault.key\\\"
+  #tls_ca_file = \\\"/tmp/certs/ca\\\"
+  #tls_cert_file = \\\"/tmp/certs/cert.pem\\\"
+  #tls_key_file = \\\"/tmp/certs/cert.key\\\"
 }
 api_addr = \\\"http://\$IP:8200\\\"
 cluster_addr = \\\"http://\$IP:8201\\\"
@@ -356,60 +393,28 @@ cluster_addr = \\\"http://\$IP:8201\\\"
     VAULT_API_ADDR=\\\"http://\$IP:8200\\\"
     VAULT_CLIENT_TIMEOUT=90s
     VAULT_MAX_RETRIES=5
-    # we want to unwrap with the passed in token
-    UNWRAPME=1
-    ;;
-
-  *)
-    echo \"there is a problem with the VAULTTYPE variable - set to unseal or cluster\"
-    exit 1
-    ;;
-
-esac
-
-# set permissions on /mnt for vault data
-chown -R vault:wheel /mnt
-
-# setup rc.conf entries
-# we do not set vault_user=vault because vault will not start
-sysrc vault_enable=yes
-sysrc vault_login_class=root
-sysrc vault_syslog_output_enable=\"YES\"
-sysrc vault_syslog_output_priority=\"warn\"
-
-#
-# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-
-# start consul agent
-/usr/local/etc/rc.d/consul start
-
-# start node_exporter
-/usr/local/etc/rc.d/node_exporter start
-
-# if we need to autounseal with passed in unwrap token
-if [ \$UNWRAPME -eq 1 ]; then
+    # set permissions on /mnt for vault data
+    chown -R vault:wheel /mnt
+    # setup rc.conf entries
+    # we do not set vault_user=vault because vault will not start
+    sysrc vault_enable=yes
+    sysrc vault_login_class=root
+    sysrc vault_syslog_output_enable=\"YES\"
+    sysrc vault_syslog_output_priority=\"warn\"
+    # if we need to autounseal with passed in unwrap token
     # vault unwrap [options] [TOKEN]
     /usr/local/bin/vault unwrap -address=http://\$UNSEALIP:8200 -format=json \$UNSEALTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unwrapped.token
     if [ -s /root/unwrapped.token ]; then
         THIS_TOKEN=\$(/bin/cat /root/unwrapped.token)
         /usr/bin/sed -i .orig \"/UNWRAPPEDTOKEN/s/UNWRAPPEDTOKEN/\$THIS_TOKEN/g\" /usr/local/etc/vault.hcl
     fi
-fi
-
-# start vault
-/usr/local/etc/rc.d/vault start
-
-# login
-if [ \$UNWRAPME -eq 1 ]; then
+    # start vault
+    echo \"Starting Vault Leader\"
+    /usr/local/etc/rc.d/vault start
+    # login
     echo \"Logging in to unseal vault\"
     /usr/local/bin/vault login -address=http://\$UNSEALIP:8200 -format=json \$THIS_TOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/this.token
-fi
-
-sleep 5
-
-# check vault is unsealed
-if [ \$UNWRAPME -eq 1 ]; then
-    #SEALEDSTATUS=\$(/usr/local/bin/vault status -address=http://\$IP:8200 -format=json | /usr/local/bin/jq -r '.sealed')
+    sleep 5
     echo \"initiating raft cluster with operator init\"
     # perform operator init on unsealed node and get recovery keys instead of unseal keys, save to file
     /usr/local/bin/vault operator init -address=http://\$IP:8200 -format=json > /root/recovery.keys
@@ -430,14 +435,15 @@ if [ \$UNWRAPME -eq 1 ]; then
     /usr/local/bin/vault operator unseal -address=http://\$IP:8200 \$KEY3
 
     echo \"Please wait for cluster...\"
-    sleep 5
+    sleep 2
 
     echo \"Joining the raft cluster\"
     /usr/local/bin/vault operator raft join -address=http://\$IP:8200
 
     # we need to wait a period for the cluster to initialise correctly and elect leader
+    # cluster requires 10 seconds to bootstrap, even if single server, we can only login after
     echo \"Please wait for raft cluster to contemplate self...\"
-    sleep 10
+    sleep 11
 
     echo \"Logging in to local raft instance\"
     echo \"\$ROOTKEY\" | /usr/local/bin/vault login -address=http://\$IP:8200 -method=token -field=token token=- > /root/login.token
@@ -446,6 +452,10 @@ if [ \$UNWRAPME -eq 1 ]; then
         TOKENOUT=\$(/bin/cat /root/login.token)
         echo \"Your token is \$TOKENOUT\"
         echo \"Also available in /root/login.token\"
+
+        # setup logging
+        echo \"enabling /mnt/audit.log\"
+        /usr/local/bin/vault audit enable -address=http://\$IP:8200 file file_path=/mnt/audit.log
 
         # enable pki and become a CA
         echo \"Setting up raft cluster CA\"
@@ -458,7 +468,7 @@ if [ \$UNWRAPME -eq 1 ]; then
         /usr/local/bin/vault secrets tune -max-lease-ttl=87600h -address=http://\$IP:8200 pki/
         # vault write [options] PATH [DATA K=V...]
         echo \"Generating internal certificate\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 -field=certificate pki/root/generate/internal common_name=\"\$DATACENTER\" ttl=87600h > /root/CA_cert.crt
+        /usr/local/bin/vault write -address=http://\$IP:8200 -field=certificate pki/root/generate/internal common_name=\"\$DATACENTER\" ttl=87600h > /tmp/certs/CA_cert.crt
         echo \"Writing certificate URLs\"
         /usr/local/bin/vault write -address=http://\$IP:8200 pki/config/urls issuing_certificates=\"http://\$IP:8200/v1/pki/ca\" crl_distribution_points=\"http://\$IP:8200/v1/pki/crl\"
 
@@ -475,11 +485,11 @@ if [ \$UNWRAPME -eq 1 ]; then
 
         # vault write [options] PATH [DATA K=V...]
         echo \"Writing intermediate certificate to file\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/internal common_name=\"\$DATACENTER Intermediate Authority\" | /usr/local/bin/jq -r '.data.csr' > /root/pki_intermediate.csr
+        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/internal common_name=\"\$DATACENTER Intermediate Authority\" | /usr/local/bin/jq -r '.data.csr' > /tmp/certs/pki_intermediate.csr
         echo \"Signing intermediate certificate\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki/root/sign-intermediate csr=@pki_intermediate.csr format=pem_bundle ttl=\"43800h\" | /usr/local/bin/jq -r '.data.certificate' > /root/intermediate.cert.pem
+        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki/root/sign-intermediate csr=@/tmp/certs/pki_intermediate.csr format=pem_bundle ttl=\"43800h\" | /usr/local/bin/jq -r '.data.certificate' > /tmp/certs/intermediate.cert.pem
         echo \"Storing intermediate certificate\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/intermediate/set-signed certificate=@intermediate.cert.pem
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/intermediate/set-signed certificate=@/tmp/certs/intermediate.cert.pem
 
         # setup roles
         echo \"Setting up roles\"
@@ -508,7 +518,143 @@ path \\\"auth/token/renew-self\\\" { capabilities = [\\\"update\\\"] }
         # vault policy write [options] NAME PATH
         /usr/local/bin/vault policy write -address=http://\$IP:8200 pki /root/vault.policy
     fi
-fi
+
+    # setup auto-login script
+    echo \"#!/bin/sh
+if [ -s /root/login.token ]; then
+    /bin/cat /root/login.token | /usr/local/bin/vault login -address=http://\$IP:8200 token=-
+fi\" > /root/cli-vault-auto-login.sh
+    chmod +x /root/cli-vault-auto-login.sh
+
+    # setup script to issue pki tokens
+    echo \"#!/bin/sh
+/usr/local/bin/vault token create -address=http://\$IP:8200 -policy=\\\"default\\\" -policy=\\\"pki\\\" -wrap-ttl=24h
+\" > /root/issue-pki-token.sh
+    chmod +x /root/issue-pki-token.sh
+
+    # start consul agent
+    /usr/local/etc/rc.d/consul start
+
+    # start node_exporter
+    /usr/local/etc/rc.d/node_exporter start
+
+    ;;
+
+    ### Vault type: RAFT cluster follower
+    follower)
+
+    echo \"disable_mlock = true
+ui = true
+listener \\\"tcp\\\" {
+  address = \\\"\$IP:8200\\\"
+  cluster_address = \\\"\$IP:8201\\\"
+  # set to zero to enable TLS only
+  tls_disable = 1
+}
+# make sure you create a zfs partition and mount it into /mnt
+# if you want persistent vault data
+storage \\\"raft\\\" {
+  path    = \\\"/mnt/\\\"
+  node_id = \\\"\$NODENAME\\\"
+  retry_join {
+    leader_api_addr = \\\"http://\$VAULTLEADER:8200\\\"
+    #leader_ca_cert_file = \\\"/tmp/certs/ca\\\"
+    #leader_client_cert_file = \\\"/tmp/certs/cert.pem\\\"
+    #leader_client_key_file = \\\"/tmp/certs/cert.key\\\"
+  }
+}
+# we are a secondary server joining a cluster
+seal \\\"transit\\\" {
+  address = \\\"http://\$UNSEALIP:8200\\\"
+  disable_renewal = \\\"false\\\"
+  key_name = \\\"autounseal\\\"
+  mount_path = \\\"transit/\\\"
+  token = \\\"UNWRAPPEDTOKEN\\\"
+}
+service_registration \\\"consul\\\" {
+  address = \\\"\$IP:8500\\\"
+  scheme = \\\"http\\\"
+  service = \\\"vault\\\"
+  #tls_ca_file = \\\"/tmp/certs/ca\\\"
+  #tls_cert_file = \\\"/tmp/certs/cert.pem\\\"
+  #tls_key_file = \\\"/tmp/certs/vert.key\\\"
+}
+api_addr = \\\"http://\$IP:8200\\\"
+cluster_addr = \\\"http://\$IP:8201\\\"
+\" > /usr/local/etc/vault.hcl
+
+    # set variables, but don't all seem to be honoured
+    VAULT_ADDR=\\\"http://\$IP:8200\\\"
+    VAULT_CLUSTER_ADDR=\\\"http://\$IP:8201\\\"
+    VAULT_API_ADDR=\\\"http://\$IP:8200\\\"
+    VAULT_CLIENT_TIMEOUT=90s
+    VAULT_MAX_RETRIES=5
+
+    # set permissions on /mnt for vault data
+    chown -R vault:wheel /mnt
+    # setup rc.conf entries
+    # we do not set vault_user=vault because vault will not start
+    sysrc vault_enable=yes
+    sysrc vault_login_class=root
+    sysrc vault_syslog_output_enable=\"YES\"
+    sysrc vault_syslog_output_priority=\"warn\"
+
+    # if we need to autounseal with passed in unwrap token
+    # vault unwrap [options] [TOKEN]
+    /usr/local/bin/vault unwrap -address=http://\$UNSEALIP:8200 -format=json \$UNSEALTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unwrapped.token
+    if [ -s /root/unwrapped.token ]; then
+        THIS_TOKEN=\$(/bin/cat /root/unwrapped.token)
+        /usr/bin/sed -i .orig \"/UNWRAPPEDTOKEN/s/UNWRAPPEDTOKEN/\$THIS_TOKEN/g\" /usr/local/etc/vault.hcl
+    fi
+    # start vault
+    echo \"Starting Vault Leader\"
+    /usr/local/etc/rc.d/vault start
+    # login
+    echo \"Logging in to unseal vault\"
+    /usr/local/bin/vault login -address=http://\$UNSEALIP:8200 -format=json \$THIS_TOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/this.token
+    sleep 5
+
+    echo \"Joining the raft cluster\"
+    /usr/local/bin/vault operator raft join -address=http://\$VAULTLEADER:8200
+
+    # we need to wait a period for the cluster to initialise correctly and elect leader
+    # cluster requires 10 seconds to bootstrap, even if single server, we can only login after
+    echo \"Please wait for raft cluster to contemplate self...\"
+    sleep 11
+
+    echo \"Logging in to local raft instance\"
+    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=http://\$IP:8200 -method=token -field=token token=- > /root/login.token
+
+    if [ -s /root/login.token ]; then
+        TOKENOUT=\$(/bin/cat /root/login.token)
+        echo \"Your token is \$TOKENOUT\"
+        echo \"Also available in /root/login.token\"
+    fi
+
+    # setup auto-login script
+    echo \"#!/bin/sh
+if [ -s /root/login.token ]; then
+    /bin/cat /root/login.token | /usr/local/bin/vault login -address=http://\$IP:8200 token=-
+fi\" > /root/cli-vault-auto-login.sh
+    chmod +x /root/cli-vault-auto-login.sh
+
+    # start consul agent
+    /usr/local/etc/rc.d/consul start
+
+    # start node_exporter
+    /usr/local/etc/rc.d/node_exporter start
+    ;;
+
+    *)
+    echo \"there is a problem with the VAULTTYPE variable - set to unseal or leader or cluster\"
+    exit 1
+    ;;
+
+esac
+
+# end vault case statements #
+
+# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned

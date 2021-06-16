@@ -1,3 +1,9 @@
+2.0.10
+
+* Enabling audit.log, split to case statement for three server types unseal, leader, cluster
+
+---
+
 2.0.9
 
 * More adjustments to vault policies
