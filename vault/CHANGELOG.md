@@ -1,3 +1,9 @@
+2.0.12
+
+* Follower generate certificates for self, reload with TLS
+
+---
+
 2.0.11
 
 * Generate certificates for self, reload with TLS

@@ -82,7 +82,7 @@ mkdir -p /usr/local/etc/rc.d
 step "Install package consul"
 pkg install -y consul
 
-# vault can handle templating now but may still be required
+# vault can handle templating now but this may still be required
 step "Install package consul-template"
 pkg install -y consul-template
 
@@ -219,7 +219,6 @@ then
     VAULTLEADER=\"unset\"
 fi
 
-
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 
@@ -227,67 +226,13 @@ fi
 mkdir -p /tmp/templates
 mkdir -p /tmp/certs
 
-## start consul
-
-# make consul configuration directory and set permissions
-mkdir -p /usr/local/etc/consul.d
-chmod 750 /usr/local/etc/consul.d
-
-# Create the consul agent config file with imported variables
-echo \"{
- \\\"advertise_addr\\\": \\\"\$IP\\\",
- \\\"datacenter\\\": \\\"\$DATACENTER\\\",
- \\\"node_name\\\": \\\"\$NODENAME\\\",
- \\\"data_dir\\\":  \\\"/var/db/consul\\\",
- \\\"dns_config\\\": {
-  \\\"a_record_limit\\\": 3,
-  \\\"enable_truncate\\\": true
- },
- \\\"log_file\\\": \\\"/var/log/consul/\\\",
- \\\"log_level\\\": \\\"WARN\\\",
- \\\"encrypt\\\": \$GOSSIPKEY,
- \\\"start_join\\\": [ \$CONSULSERVERS ],
- \\\"service\\\": {
-  \\\"name\\\": \\\"node-exporter\\\",
-  \\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
-  \\\"port\\\": 9100
- }
-}\" > /usr/local/etc/consul.d/agent.json
-
-# set owner and perms on agent.json
-chown consul:wheel /usr/local/etc/consul.d/agent.json
-chmod 640 /usr/local/etc/consul.d/agent.json
-
-# enable consul
-sysrc consul_enable=\"YES\"
-
-# set load parameter for consul config
-sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
-#sysrc consul_datadir=\"/var/db/consul\"
-
-# Workaround for bug in rc.d/consul script:
-sysrc consul_group=\"wheel\"
-
-# setup consul logs, might be redundant if not specified in agent.json above
-mkdir -p /var/log/consul
-touch /var/log/consul/consul.log
-chown -R consul:wheel /var/log/consul
-
-# add the consul user to the wheel group, this seems to be required for
-# consul to start on this instance. May need to figure out why.
-# I'm not entirely sure this is the correct way to do it
-/usr/sbin/pw usermod consul -G wheel
-
-## end consul
-
-# enable node_exporter service
-sysrc node_exporter_enable=\"YES\"
-
 ## start Vault
 
+# first remove any existing vault configuration
 if [ -f /usr/local/etc/vault/vault-server.hcl ]; then
     rm /usr/local/etc/vault/vault-server.hcl
 fi
+# then setup a fresh vault.hcl specific to the type of image
 
 # default freebsd vault.hcl is /usr/local/etc/vault.hcl and
 # the init script /usr/local/etc/rc.d/vault refers to this
@@ -302,21 +247,31 @@ fi
 
 case \$VAULTTYPE in
 
-  ### Vault type: Gapped Unseal Node
+  ### Vault type: Unseal Node - no consul or node_template setup
   unseal)
+    #begin vault config
     echo \"disable_mlock = true
 ui = true
+# enable when vnet interface in use by pot
+#listener \\\"tcp\\\" {
+#  address = \\\"127.0.0.1:8200\\\"
+#  tls_disable = 1
+#}
 listener \\\"tcp\\\" {
   address = \\\"\$IP:8200\\\"
   tls_disable = 1
+  telemetry {
+    unauthenticated_metrics_access = true
+  }
 }
 # make sure you create a zfs partition and mount it into /mnt
 # if you want persistent vault data
+# if using another directory update this path accordingly
 storage \\\"file\\\" {
   path    = \\\"/mnt/\\\"
 }
-api_addr = \\\"http://\$IP:8200\\\"
 log_level = \\\"Warn\\\"
+api_addr = \\\"http://\$IP:8200\\\"
 \" > /usr/local/etc/vault.hcl
 
     # setup autounseal config
@@ -328,54 +283,118 @@ path \\\"transit/decrypt/autounseal\\\" {
 }
 \" > /root/autounseal.hcl
 
-    # set variables, but don't all seem to be honoured
-    VAULT_ADDR=\\\"http://\$IP:8200\\\"
-    VAULT_API_ADDR=\\\"http://\$IP:8200\\\"
-    VAULT_CLIENT_TIMEOUT=90s
-    VAULT_MAX_RETRIES=5
-
     # set permissions on /mnt for vault data
     chown -R vault:wheel /mnt
+
     # setup rc.conf entries
     # we do not set vault_user=vault because vault will not start
     sysrc vault_enable=yes
     sysrc vault_login_class=root
     sysrc vault_syslog_output_enable=\"YES\"
-    sysrc vault_syslog_output_priority=\"warn\"
+    sysrc vault_syslog_output_priority=\"debug\"
 
     # start vault
     echo \"Starting Vault Unseal Node\"
     /usr/local/etc/rc.d/vault start
+
+    # end unseal config
+    ;;
+
+    ### Vault type: RAFT Leader
+    leader)
+
+    ## start consul config
+    # make consul configuration directory and set permissions
+    mkdir -p /usr/local/etc/consul.d
+    chmod 750 /usr/local/etc/consul.d
+
+    # Create the consul agent config file with imported variables
+    echo \"{
+\\\"advertise_addr\\\": \\\"\$IP\\\",
+\\\"datacenter\\\": \\\"\$DATACENTER\\\",
+\\\"node_name\\\": \\\"\$NODENAME\\\",
+\\\"data_dir\\\":  \\\"/var/db/consul\\\",
+\\\"dns_config\\\": {
+\\\"a_record_limit\\\": 3,
+\\\"enable_truncate\\\": true
+},
+\\\"log_file\\\": \\\"/var/log/consul/\\\",
+\\\"log_level\\\": \\\"WARN\\\",
+\\\"encrypt\\\": \$GOSSIPKEY,
+\\\"start_join\\\": [ \$CONSULSERVERS ],
+\\\"service\\\": {
+\\\"name\\\": \\\"node-exporter\\\",
+\\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+\\\"port\\\": 9100
+}
+}\" > /usr/local/etc/consul.d/agent.json
+
+    # set owner and perms on agent.json
+    chown consul:wheel /usr/local/etc/consul.d/agent.json
+    chmod 640 /usr/local/etc/consul.d/agent.json
+
+    # enable consul
+    sysrc consul_enable=\"YES\"
+
+    # set load parameter for consul config
+    sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
+    #sysrc consul_datadir=\"/var/db/consul\"
+
+    # Workaround for bug in rc.d/consul script:
+    sysrc consul_group=\"wheel\"
+
+    # setup consul logs, might be redundant if not specified in agent.json above
+    mkdir -p /var/log/consul
+    touch /var/log/consul/consul.log
+    chown -R consul:wheel /var/log/consul
+
+    # add the consul user to the wheel group, this seems to be required for
+    # consul to start on this instance. May need to figure out why.
+    # I'm not entirely sure this is the correct way to do it
+    /usr/sbin/pw usermod consul -G wheel
+
+    ## end consul
+
+    # enable node_exporter service
+    sysrc node_exporter_enable=\"YES\"
 
     # start consul agent
     /usr/local/etc/rc.d/consul start
 
     # start node_exporter
     /usr/local/etc/rc.d/node_exporter start
-    ;;
 
-    ### Vault type: RAFT Leader
-    leader)
+    # begin vault config
     echo \"disable_mlock = true
 ui = true
+# enable when vnet interface in use by pot
+#listener \\\"tcp\\\" {
+#  address = \\\"127.0.0.1:8200\\\"
+#  tls_disable = 1
+#}
 listener \\\"tcp\\\" {
   address = \\\"\$IP:8200\\\"
   cluster_address = \\\"\$IP:8201\\\"
+  telemetry {
+    unauthenticated_metrics_access = true
+  }
   # set to zero to enable TLS only
   tls_disable = 1
-  # To configure the listener to use a CA certificate, concatenate the primary certificate and the CA certificate together
-  # The primary certificate should appear first in the combined file.
-  #xyz#tls_ca_file = /tmp/certs/vaultca.pem
-  #xyz#tls_cert_file = /tmp/certs/vaultcert.pem
-  #xyz#tls_key_file = /tmp/certs/vaultkey.pem
+  #xyz#tls_ca_file = \\\"/etc/ssl/certs/Combined_CA.pem\\\"
+  #xyz#tls_cert_file = \\\"/tmp/certs/vaultcert.pem\\\"
+  #xyz#tls_key_file = \\\"/tmp/certs/vaultkey.pem\\\"
 }
 # make sure you create a zfs partition and mount it into /mnt
 # if you want persistent vault data
+# if using another directory update this path accordingly
 storage \\\"raft\\\" {
   path    = \\\"/mnt/\\\"
   node_id = \\\"\$NODENAME\\\"
+  #xyz#leader_api_addr = \\\"http://\$IP:8200\\\"
+  #xyz#leader_ca_cert_file = \\\"/etc/ssl/certs/Combined_CA.pem\\\"
+  #xyz#leader_client_cert_file = \\\"/tmp/certs/vaultcert.pem\\\"
+  #xyz#leader_client_key_file = \\\"/tmp/certs/vaultkey.pem\\\"
 }
-# we are a secondary server joining a cluster
 seal \\\"transit\\\" {
   address = \\\"http://\$UNSEALIP:8200\\\"
   disable_renewal = \\\"false\\\"
@@ -391,24 +410,21 @@ service_registration \\\"consul\\\" {
   #tls_cert_file = \\\"/tmp/certs/consulcert.pem\\\"
   #tls_key_file = \\\"/tmp/certs/consulkey.pem\\\"
 }
+log_level = \\\"Warn\\\"
 api_addr = \\\"http://\$IP:8200\\\"
 cluster_addr = \\\"http://\$IP:8201\\\"
 \" > /usr/local/etc/vault.hcl
 
-    # set variables, but don't all seem to be honoured
-    VAULT_ADDR=\\\"http://\$IP:8200\\\"
-    VAULT_CLUSTER_ADDR=\\\"http://\$IP:8201\\\"
-    VAULT_API_ADDR=\\\"http://\$IP:8200\\\"
-    VAULT_CLIENT_TIMEOUT=90s
-    VAULT_MAX_RETRIES=5
     # set permissions on /mnt for vault data
     chown -R vault:wheel /mnt
+
     # setup rc.conf entries
     # we do not set vault_user=vault because vault will not start
     sysrc vault_enable=yes
     sysrc vault_login_class=root
     sysrc vault_syslog_output_enable=\"YES\"
     sysrc vault_syslog_output_priority=\"warn\"
+
     # if we need to autounseal with passed in unwrap token
     # vault unwrap [options] [TOKEN]
     /usr/local/bin/vault unwrap -address=http://\$UNSEALIP:8200 -format=json \$UNSEALTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unwrapped.token
@@ -416,14 +432,17 @@ cluster_addr = \\\"http://\$IP:8201\\\"
         THIS_TOKEN=\$(/bin/cat /root/unwrapped.token)
         /usr/bin/sed -i .orig \"/UNWRAPPEDTOKEN/s/UNWRAPPEDTOKEN/\$THIS_TOKEN/g\" /usr/local/etc/vault.hcl
     fi
+
     # start vault
     echo \"Starting Vault Leader\"
     /usr/local/etc/rc.d/vault start
+
     # login
     echo \"Logging in to unseal vault\"
     /usr/local/bin/vault login -address=http://\$UNSEALIP:8200 -format=json \$THIS_TOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/this.token
     sleep 5
     echo \"initiating raft cluster with operator init\"
+
     # perform operator init on unsealed node and get recovery keys instead of unseal keys, save to file
     /usr/local/bin/vault operator init -address=http://\$IP:8200 -format=json > /root/recovery.keys
 
@@ -458,7 +477,7 @@ cluster_addr = \\\"http://\$IP:8201\\\"
 
     if [ -s /root/login.token ]; then
         TOKENOUT=\$(/bin/cat /root/login.token)
-        echo \"Your token is \$TOKENOUT\"
+        echo \"Your new login token is \$TOKENOUT\"
         echo \"Also available in /root/login.token\"
 
         # setup logging
@@ -468,12 +487,15 @@ cluster_addr = \\\"http://\$IP:8201\\\"
         # enable pki and become a CA
         echo \"Setting up raft cluster CA\"
         echo \"\"
+
         # vault secrets enable [options] TYPE
         echo \"Enabling PKI\"
         /usr/local/bin/vault secrets enable -address=http://\$IP:8200 pki
+
         # vault secrets tune [options] PATH
         echo \"Tuning PKI\"
         /usr/local/bin/vault secrets tune -max-lease-ttl=87600h -address=http://\$IP:8200 pki/
+
         # vault write [options] PATH [DATA K=V...]
         echo \"Generating internal certificate\"
         /usr/local/bin/vault write -address=http://\$IP:8200 -field=certificate pki/root/generate/internal common_name=\"\$DATACENTER\" ttl=87600h > /tmp/certs/CA_cert.crt
@@ -512,7 +534,8 @@ cluster_addr = \\\"http://\$IP:8201\\\"
         echo \"path \\\"pki*\\\" { capabilities = [\\\"read\\\", \\\"list\\\"] }
 path \\\"pki/roles/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki/sign/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
-path \\\"pki/issue/\$DATACENTER\\\" { capabilities = [\\\"create\\\"] }
+path \\\"pki_int/roles/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
+path \\\"pki_int/sign/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki_int/issue/*\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki_int/certs\\\" { capabilities = [\\\"list\\\"] }
 path \\\"pki_int/revoke\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
@@ -529,7 +552,7 @@ path \\\"auth/token/renew-self\\\" { capabilities = [\\\"update\\\"] }
 
     # setup template files for certificates
     echo \"{{- /* /tmp/templates/cert.tpl */ -}}
-{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" }}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
 {{ .Data.certificate }}{{ end }}
 \" > /tmp/templates/cert.tpl
 
@@ -539,13 +562,12 @@ path \\\"auth/token/renew-self\\\" { capabilities = [\\\"update\\\"] }
 \" > /tmp/templates/ca.tpl
 
     echo \"{{- /* /tmp/templates/key.tpl */ -}}
-{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" }}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
 {{ .Data.private_key }}{{ end }}
 \" > /tmp/templates/key.tpl
 
     # update vault.hcl
-    echo \"
-template {
+    echo \"template {
   source = \\\"/tmp/templates/cert.tpl\\\"
   destination = \\\"/tmp/certs/vaultcert.pem\\\"
 }
@@ -559,35 +581,50 @@ template {
 }
 \" >> /usr/local/etc/vault.hcl
 
+	# using this payload.json approach to avoid nested single and double quotes for expansion
+    echo \"{
+  \\\"common_name\\\": \\\"\$NODENAME\\\",
+  \\\"ttl\\\": \\\"24h\\\",
+  \\\"ip_sans\\\": \\\"\$IP\\\"
+}\" > /tmp/templates/payload.json
+
     # generate certificates to use
-    # were using curl to get the certificates in json format as regular issue only has format pem, pem_bundle and der
+    # we use curl to get the certificates in json format as the issue command only has formats: pem, pem_bundle, der
+    # but no json format except via the API
     if [ -s /root/login.token ]; then
         HEADER=\$(/bin/cat /root/login.token)
-        /usr/local/bin/curl --header \"X-Vault-Token: \$HEADER\" --request POST --data '{\"common_name\": \"'\"\$NODENAME\"'\", \"ttl\": \"24h\"}' http://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmp/certs/vaultissue.json
+        /usr/local/bin/curl --header \"X-Vault-Token: \$HEADER\" --request POST --data @/tmp/templates/payload.json http://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmp/certs/vaultissue.json
         # cli requires [], but web api does not
         #/usr/local/bin/jq -r '.data.issuing_ca[]' /tmp/certs/vaultissue.json > /tmp/certs/vaultca.pem
-        # if left in for this script, you will get error 'Cannot iterate over string'
+        # if [] left in for this script, you will get error 'Cannot iterate over string'
         /usr/local/bin/jq -r '.data.issuing_ca' /tmp/certs/vaultissue.json > /tmp/certs/vaultca.pem
         /usr/local/bin/jq -r '.data.certificate' /tmp/certs/vaultissue.json > /tmp/certs/vaultcert.pem
         /usr/local/bin/jq -r '.data.private_key' /tmp/certs/vaultissue.json > /tmp/certs/vaultkey.pem
+        # set permissions on /tmp/certs for vault
+        chown -R vault:wheel /tmp/certs
     fi
 
-    # if we get a successful private key, update vault.hcl and reload
+    # if we get a successful private key, update vault.hcl and restart vault
     if [ -s /tmp/certs/vaultkey.pem ]; then
         # enable TLS by removing the config line disabling it
-        /usr/bin/sed -i .orig 's/tls_disable/#tls_disable/g' /usr/local/etc/vault.hcl
+        /usr/bin/sed -i .orig 's/tls_disable = 1/tls_disable = 0/g' /usr/local/etc/vault.hcl
+
+        # update http to https, this will include leader_api_addr
+        /usr/bin/sed -i .orig '/api_addr/s/http/https/' /usr/local/etc/vault.hcl
+        /usr/bin/sed -i .orig '/cluster_addr/s/http/https/' /usr/local/etc/vault.hcl
 
         # remove the comment #xyz# to enable certificates
         /usr/bin/sed -i .orig 's/#xyz#tls/tls/g' /usr/local/etc/vault.hcl
+        /usr/bin/sed -i .orig 's/#xyz#leader/leader/g' /usr/local/etc/vault.hcl
 
-        # reload vault
-        /usr/local/etc/rc.d/vault reload
+        # restart vault, requires SIGHUP
+        /usr/local/etc/rc.d/vault restart
     fi
 
     # setup auto-login script
     echo \"#!/bin/sh
 if [ -s /root/login.token ]; then
-    /bin/cat /root/login.token | /usr/local/bin/vault login -address=http://\$IP:8200 token=-
+    /bin/cat /root/login.token | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/tmp/certs/vaultca.pem token=-
 fi\" > /root/cli-vault-auto-login.sh
 
     # make executable
@@ -595,11 +632,72 @@ fi\" > /root/cli-vault-auto-login.sh
 
     # setup script to issue pki tokens
     echo \"#!/bin/sh
-/usr/local/bin/vault token create -address=http://\$IP:8200 -policy=\\\"default\\\" -policy=\\\"pki\\\" -wrap-ttl=24h
+/usr/local/bin/vault token create -address=https://\$IP:8200 -ca-cert=/tmp/certs/vaultca.pem -policy=\\\"default\\\" -policy=\\\"pki\\\" -wrap-ttl=24h
 \" > /root/issue-pki-token.sh
 
     # make executable
     chmod +x /root/issue-pki-token.sh
+
+    # end leader config
+    ;;
+
+    ### Vault type: RAFT cluster follower
+    follower)
+
+    ## start consul config
+    # make consul configuration directory and set permissions
+    mkdir -p /usr/local/etc/consul.d
+    chmod 750 /usr/local/etc/consul.d
+
+    # Create the consul agent config file with imported variables
+    echo \"{
+\\\"advertise_addr\\\": \\\"\$IP\\\",
+\\\"datacenter\\\": \\\"\$DATACENTER\\\",
+\\\"node_name\\\": \\\"\$NODENAME\\\",
+\\\"data_dir\\\":  \\\"/var/db/consul\\\",
+\\\"dns_config\\\": {
+\\\"a_record_limit\\\": 3,
+\\\"enable_truncate\\\": true
+},
+\\\"log_file\\\": \\\"/var/log/consul/\\\",
+\\\"log_level\\\": \\\"WARN\\\",
+\\\"encrypt\\\": \$GOSSIPKEY,
+\\\"start_join\\\": [ \$CONSULSERVERS ],
+\\\"service\\\": {
+\\\"name\\\": \\\"node-exporter\\\",
+\\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+\\\"port\\\": 9100
+}
+}\" > /usr/local/etc/consul.d/agent.json
+
+    # set owner and perms on agent.json
+    chown consul:wheel /usr/local/etc/consul.d/agent.json
+    chmod 640 /usr/local/etc/consul.d/agent.json
+
+    # enable consul
+    sysrc consul_enable=\"YES\"
+
+    # set load parameter for consul config
+    sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
+    #sysrc consul_datadir=\"/var/db/consul\"
+
+    # Workaround for bug in rc.d/consul script:
+    sysrc consul_group=\"wheel\"
+
+    # setup consul logs, might be redundant if not specified in agent.json above
+    mkdir -p /var/log/consul
+    touch /var/log/consul/consul.log
+    chown -R consul:wheel /var/log/consul
+
+    # add the consul user to the wheel group, this seems to be required for
+    # consul to start on this instance. May need to figure out why.
+    # not entirely sure this is the correct way to do it
+    /usr/sbin/pw usermod consul -G wheel
+
+    ## end consul
+
+    # enable node_exporter service
+    sysrc node_exporter_enable=\"YES\"
 
     # start consul agent
     /usr/local/etc/rc.d/consul start
@@ -607,32 +705,39 @@ fi\" > /root/cli-vault-auto-login.sh
     # start node_exporter
     /usr/local/etc/rc.d/node_exporter start
 
-    ;;
-
-    ### Vault type: RAFT cluster follower
-    follower)
-
+    #begin vault config
     echo \"disable_mlock = true
 ui = true
+# enable when vnet interface in use by pot
+#listener \\\"tcp\\\" {
+#  address = \\\"127.0.0.1:8200\\\"
+#  tls_disable = 1
+#}
 listener \\\"tcp\\\" {
   address = \\\"\$IP:8200\\\"
   cluster_address = \\\"\$IP:8201\\\"
+  telemetry {
+    unauthenticated_metrics_access = true
+  }
   # set to zero to enable TLS only
-  tls_disable = 1
+  tls_disable = 0
+  tls_ca_file = \\\"/tmp/certs/vaultca.pem\\\"
+  tls_cert_file = \\\"/tmp/certs/vaultcert.pem\\\"
+  tls_key_file = \\\"/tmp/certs/vaultkey.pem\\\"
 }
 # make sure you create a zfs partition and mount it into /mnt
 # if you want persistent vault data
+# if using another directory update this path accordingly
 storage \\\"raft\\\" {
   path    = \\\"/mnt/\\\"
   node_id = \\\"\$NODENAME\\\"
   retry_join {
-    leader_api_addr = \\\"http://\$VAULTLEADER:8200\\\"
-    #leader_ca_cert_file = \\\"/tmp/certs/ca\\\"
-    #leader_client_cert_file = \\\"/tmp/certs/cert.pem\\\"
-    #leader_client_key_file = \\\"/tmp/certs/cert.key\\\"
+    leader_api_addr = \\\"https://\$VAULTLEADER:8200\\\"
+    leader_ca_cert_file = \\\"/tmp/certs/vaultca.pem\\\"
+    leader_client_cert_file = \\\"/tmp/certs/vaultcert.pem\\\"
+    leader_client_key_file = \\\"/tmp/certs/vaultkey.pem\\\"
   }
 }
-# we are a secondary server joining a cluster
 seal \\\"transit\\\" {
   address = \\\"http://\$UNSEALIP:8200\\\"
   disable_renewal = \\\"false\\\"
@@ -644,23 +749,46 @@ service_registration \\\"consul\\\" {
   address = \\\"\$IP:8500\\\"
   scheme = \\\"http\\\"
   service = \\\"vault\\\"
-  #tls_ca_file = \\\"/tmp/certs/ca\\\"
-  #tls_cert_file = \\\"/tmp/certs/cert.pem\\\"
-  #tls_key_file = \\\"/tmp/certs/vert.key\\\"
+  #tls_ca_file = \\\"/tmp/certs/consulca.pem\\\"
+  #tls_cert_file = \\\"/tmp/certs/consulcert.pem\\\"
+  #tls_key_file = \\\"/tmp/certs/consulkey.pem\\\"
 }
-api_addr = \\\"http://\$IP:8200\\\"
-cluster_addr = \\\"http://\$IP:8201\\\"
+template {
+  source = \\\"/tmp/templates/cert.tpl\\\"
+  destination = \\\"/tmp/certs/vaultcert.pem\\\"
+}
+template {
+  source = \\\"/tmp/templates/ca.tpl\\\"
+  destination = \\\"/tmp/certs/vaultca.pem\\\"
+}
+template {
+  source = \\\"/tmp/templates/key.tpl\\\"
+  destination = \\\"/tmp/certs/vaultkey.pem\\\"
+}
+log_level = \\\"Warn\\\"
+api_addr = \\\"https://\$IP:8200\\\"
+cluster_addr = \\\"https://\$IP:8201\\\"
 \" > /usr/local/etc/vault.hcl
 
-    # set variables, but don't all seem to be honoured
-    VAULT_ADDR=\\\"http://\$IP:8200\\\"
-    VAULT_CLUSTER_ADDR=\\\"http://\$IP:8201\\\"
-    VAULT_API_ADDR=\\\"http://\$IP:8200\\\"
-    VAULT_CLIENT_TIMEOUT=90s
-    VAULT_MAX_RETRIES=5
+    # setup template files for certificates
+    echo \"{{- /* /tmp/templates/cert.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
+{{ .Data.certificate }}{{ end }}
+\" > /tmp/templates/cert.tpl
+
+    echo \"{{- /* /tmp/templates/ca.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" }}
+{{ .Data.issuing_ca }}{{ end }}
+\" > /tmp/templates/ca.tpl
+
+    echo \"{{- /* /tmp/templates/key.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
+{{ .Data.private_key }}{{ end }}
+\" > /tmp/templates/key.tpl
 
     # set permissions on /mnt for vault data
     chown -R vault:wheel /mnt
+
     # setup rc.conf entries
     # we do not set vault_user=vault because vault will not start
     sysrc vault_enable=yes
@@ -675,48 +803,88 @@ cluster_addr = \\\"http://\$IP:8201\\\"
         THIS_TOKEN=\$(/bin/cat /root/unwrapped.token)
         /usr/bin/sed -i .orig \"/UNWRAPPEDTOKEN/s/UNWRAPPEDTOKEN/\$THIS_TOKEN/g\" /usr/local/etc/vault.hcl
     fi
-    # start vault
-    echo \"Starting Vault Leader\"
-    /usr/local/etc/rc.d/vault start
-    # login
-    echo \"Logging in to unseal vault\"
+
+    # retrieve CA certificates from vault leader
+    echo \"Retrieving CA certificates from Vault leader\"
+    /usr/local/bin/vault read -address=https://\$VAULTLEADER:8200 -tls-skip-verify -field=certificate pki/cert/ca > /tmp/certs/CA_cert.crt
+    /usr/local/bin/vault read -address=https://\$VAULTLEADER:8200 -tls-skip-verify -field=certificate pki_int/cert/ca > /tmp/certs/intermediate.cert.pem
+    /bin/cat /tmp/certs/CA_cert.crt /tmp/certs/intermediate.cert.pem > /tmp/certs/combined_CA.pem
+
+    # login to unseal vault to get a root token
+    echo \"Logging in to unseal vault to unseal\"
     /usr/local/bin/vault login -address=http://\$UNSEALIP:8200 -format=json \$THIS_TOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/this.token
     sleep 5
 
-    echo \"Joining the raft cluster\"
-    /usr/local/bin/vault operator raft join -address=http://\$VAULTLEADER:8200
-
-    # we need to wait a period for the cluster to initialise correctly and elect leader
-    # cluster requires 10 seconds to bootstrap, even if single server, we can only login after
-    echo \"Please wait for raft cluster to contemplate self...\"
-    sleep 11
-
-    echo \"Logging in to local raft instance\"
-    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=http://\$IP:8200 -method=token -field=token token=- > /root/login.token
+    echo \"Logging in to vault leader instance to authenticate\"
+    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -ca-cert=/tmp/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
+    sleep 5
 
     if [ -s /root/login.token ]; then
-        TOKENOUT=\$(/bin/cat /root/login.token)
-        echo \"Your token is \$TOKENOUT\"
-        echo \"Also available in /root/login.token\"
+        # generate certificates to use
+        # using this payload.json approach to avoid nested single and double quotes for expansion
+        echo \"{
+  \\\"common_name\\\": \\\"\$NODENAME\\\",
+  \\\"ttl\\\": \\\"24h\\\",
+  \\\"ip_sans\\\": \\\"\$IP\\\"
+}\" > /tmp/templates/payload.json
+
+        # we use curl to get the certificates in json format as the issue command only has formats: pem, pem_bundle, der
+        # but no json format except via the API
+        echo \"Generating certificates to use from Vault leader\"
+        HEADER=\$(/bin/cat /root/login.token)
+        /usr/local/bin/curl --cacert /tmp/certs/intermediate.cert.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/tmp/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /tmp/certs/vaultissue.json
+
+        # cli requires [], but web api does not
+        #/usr/local/bin/jq -r '.data.issuing_ca[]' /tmp/certs/vaultissue.json > /tmp/certs/vaultca.pem
+        # if [] left in for this script, you will get error: Cannot iterate over string
+        /usr/local/bin/jq -r '.data.issuing_ca' /tmp/certs/vaultissue.json > /tmp/certs/vaultca.pem
+        /usr/local/bin/jq -r '.data.certificate' /tmp/certs/vaultissue.json > /tmp/certs/vaultcert.pem
+        /usr/local/bin/jq -r '.data.private_key' /tmp/certs/vaultissue.json > /tmp/certs/vaultkey.pem
+
+        # set permissions on /tmp/certs for vault
+        chown -R vault:wheel /tmp/certs
+
+        # start vault
+        echo \"Starting Vault Follower\"
+        /usr/local/etc/rc.d/vault start
+
+        echo \"Joining the raft cluster\"
+        /usr/local/bin/vault operator raft join -address=https://\$VAULTLEADER:8200 -ca-cert=/tmp/certs/vaultca.pem
+
+        # we need to wait a period for the cluster to initialise correctly and elect leader
+        # cluster requires 10 seconds to bootstrap, even if single server, we can only login after
+        echo \"Please wait for raft cluster to contemplate self...\"
+        sleep 11
+
+        echo \"Logging in to local raft instance\"
+        echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/tmp/certs/vaultca.pem -method=token -field=token token=- > /root/login.token
+
+        if [ -s /root/login.token ]; then
+            TOKENOUT=\$(/bin/cat /root/login.token)
+            echo \"Your token is \$TOKENOUT\"
+            echo \"Also available in /root/login.token\"
+        fi
+    else
+        echo \"ERROR: There was a problem logging into the vault leader and no certificates were retrieved. Vault not started.\"
     fi
 
     # setup auto-login script
     echo \"#!/bin/sh
 if [ -s /root/login.token ]; then
-    /bin/cat /root/login.token | /usr/local/bin/vault login -address=http://\$IP:8200 token=-
+    /bin/cat /root/login.token | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/tmp/certs/vaultca.pem token=-
 fi\" > /root/cli-vault-auto-login.sh
+
+    # set executable perms
     chmod +x /root/cli-vault-auto-login.sh
 
-    # start consul agent
-    /usr/local/etc/rc.d/consul start
-
-    # start node_exporter
-    /usr/local/etc/rc.d/node_exporter start
+    # end follower config
     ;;
 
+    # catch all, exit because bad VAULTTYPE
     *)
     echo \"there is a problem with the VAULTTYPE variable - set to unseal or leader or cluster\"
     exit 1
+    # end catchall config
     ;;
 
 esac
