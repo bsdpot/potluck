@@ -60,6 +60,8 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
+# we need latest for vault 1.7.3
+#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
 echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
   >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
@@ -86,12 +88,6 @@ pkg install -y consul
 step "Install package consul-template"
 pkg install -y consul-template
 
-step "Install package vault"
-pkg install -y vault
-
-step "Add vault user to daemon class"
-pw usermod vault -G daemon
-
 step "Install package sudo"
 pkg install -y sudo
 
@@ -106,6 +102,87 @@ pkg install -y curl
 
 step "Clean package installation"
 pkg clean -y
+
+step "Install package vault"
+# removed - using ports to get 1.7.3
+# we install vault to get the correct rc files
+#pkg install -y vault
+#
+# using ports for vault.1.7.3
+# using git approach instead of portsnap cron which has long random delay
+pkg install -y git
+git clone https://git.FreeBSD.org/ports.git /usr/ports
+git -C /usr/ports pull
+cd /usr/ports/security/vault/ && make install clean
+cd ~
+
+step "Add vault user to daemon class"
+pw usermod vault -G daemon
+
+step "Trim ports tree"
+# doing this to free up some space, leaving security
+echo \"Trimming ports tree to save some space\"
+rm -r /usr/ports/accessibility
+rm -r /usr/ports/arabic
+rm -r /usr/ports/archivers
+rm -r /usr/ports/astro
+rm -r /usr/ports/audio
+rm -r /usr/ports/base
+rm -r /usr/ports/benchmarks
+rm -r /usr/ports/biology
+rm -r /usr/ports/cad
+rm -r /usr/ports/chinese
+rm -r /usr/ports/comms
+rm -r /usr/ports/converters
+rm -r /usr/ports/databases
+rm -r /usr/ports/deskutils
+rm -r /usr/ports/devel
+rm -r /usr/ports/dns
+rm -r /usr/ports/editors
+rm -r /usr/ports/emulators
+rm -r /usr/ports/finance
+rm -r /usr/ports/french
+rm -r /usr/ports/ftp
+rm -r /usr/ports/games
+rm -r /usr/ports/german
+rm -r /usr/ports/graphics
+rm -r /usr/ports/hebrew
+rm -r /usr/ports/hungarian
+rm -r /usr/ports/irc
+rm -r /usr/ports/japanese
+rm -r /usr/ports/java
+rm -r /usr/ports/korean
+rm -r /usr/ports/lang
+rm -r /usr/ports/mail
+rm -r /usr/ports/math
+rm -r /usr/ports/misc
+rm -r /usr/ports/multimedia
+rm -r /usr/ports/net
+rm -r /usr/ports/net-im
+rm -r /usr/ports/net-mgmt
+rm -r /usr/ports/net-p2p
+rm -r /usr/ports/news
+rm -r /usr/ports/polish
+rm -r /usr/ports/ports-mgmt
+rm -r /usr/ports/portuguese
+rm -r /usr/ports/print
+rm -r /usr/ports/russian
+rm -r /usr/ports/science
+rm -r /usr/ports/shells
+rm -r /usr/ports/sysutils
+rm -r /usr/ports/textproc
+rm -r /usr/ports/ukrainian
+rm -r /usr/ports/vietnamese
+rm -r /usr/ports/www
+rm -r /usr/ports/x11
+rm -r /usr/ports/x11-clocks
+rm -r /usr/ports/x11-drivers
+rm -r /usr/ports/x11-fm
+rm -r /usr/ports/x11-fonts
+rm -r /usr/ports/x11-servers
+rm -r /usr/ports/x11-themes
+rm -r /usr/ports/x11-toolkits
+rm -r /usr/ports/x11-wm
 
 # -------------- END PACKAGE SETUP -------------
 
@@ -222,9 +299,9 @@ fi
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 
-# setup /tmp/templates and /tmp/certs for vault usage
-mkdir -p /tmp/templates
-mkdir -p /tmp/certs
+# setup directories for vault usage
+mkdir -p /mnt/templates
+mkdir -p /mnt/certs
 
 ## start Vault
 
@@ -380,9 +457,9 @@ listener \\\"tcp\\\" {
   }
   # set to zero to enable TLS only
   tls_disable = 1
-  #xyz#tls_ca_file = \\\"/etc/ssl/certs/Combined_CA.pem\\\"
-  #xyz#tls_cert_file = \\\"/tmp/certs/vaultcert.pem\\\"
-  #xyz#tls_key_file = \\\"/tmp/certs/vaultkey.pem\\\"
+  #xyz#tls_ca_file = \\\"/mnt/certs/vaultca.pem\\\"
+  #xyz#tls_cert_file = \\\"/mnt/certs/vaultcert.pem\\\"
+  #xyz#tls_key_file = \\\"/mnt/certs/vaultkey.pem\\\"
 }
 # make sure you create a zfs partition and mount it into /mnt
 # if you want persistent vault data
@@ -390,10 +467,13 @@ listener \\\"tcp\\\" {
 storage \\\"raft\\\" {
   path    = \\\"/mnt/\\\"
   node_id = \\\"\$NODENAME\\\"
-  #xyz#leader_api_addr = \\\"http://\$IP:8200\\\"
-  #xyz#leader_ca_cert_file = \\\"/etc/ssl/certs/Combined_CA.pem\\\"
-  #xyz#leader_client_cert_file = \\\"/tmp/certs/vaultcert.pem\\\"
-  #xyz#leader_client_key_file = \\\"/tmp/certs/vaultkey.pem\\\"
+  retry_join {
+    #xyz#leader_api_addr = \\\"http://\$IP:8200\\\"
+    #xyz#leader_ca_cert_file = \\\"/mnt/certs/vaultca.pem\\\"
+    #xyz#leader_client_cert_file = \\\"/mnt/certs/vaultcert.pem\\\"
+    #xyz#leader_client_key_file = \\\"/mnt/certs/vaultkey.pem\\\"
+  }
+  autopilot_reconcile_interval = \\\"5s\\\"
 }
 seal \\\"transit\\\" {
   address = \\\"http://\$UNSEALIP:8200\\\"
@@ -406,9 +486,9 @@ service_registration \\\"consul\\\" {
   address = \\\"\$IP:8500\\\"
   scheme = \\\"http\\\"
   service = \\\"vault\\\"
-  #tls_ca_file = \\\"/tmp/certs/consulca.pem\\\"
-  #tls_cert_file = \\\"/tmp/certs/consulcert.pem\\\"
-  #tls_key_file = \\\"/tmp/certs/consulkey.pem\\\"
+  #tls_ca_file = \\\"/mnt/certs/consulca.pem\\\"
+  #tls_cert_file = \\\"/mnt/certs/consulcert.pem\\\"
+  #tls_key_file = \\\"/mnt/certs/consulkey.pem\\\"
 }
 log_level = \\\"Warn\\\"
 api_addr = \\\"http://\$IP:8200\\\"
@@ -487,6 +567,9 @@ cluster_addr = \\\"http://\$IP:8201\\\"
         # enable pki and become a CA
         echo \"Setting up raft cluster CA\"
         echo \"\"
+        # tweak raft autopilot settings
+        # requires vault 1.7
+        /usr/local/bin/vault operator raft autopilot set-config -address=http://\$IP:8200 -dead-server-last-contact-threshold=5 -server-stabilization-time=30 -cleanup-dead-servers=true -min-quorum=3
 
         # vault secrets enable [options] TYPE
         echo \"Enabling PKI\"
@@ -498,7 +581,7 @@ cluster_addr = \\\"http://\$IP:8201\\\"
 
         # vault write [options] PATH [DATA K=V...]
         echo \"Generating internal certificate\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 -field=certificate pki/root/generate/internal common_name=\"\$DATACENTER\" ttl=87600h > /tmp/certs/CA_cert.crt
+        /usr/local/bin/vault write -address=http://\$IP:8200 -field=certificate pki/root/generate/internal common_name=\"\$DATACENTER\" ttl=87600h > /mnt/certs/CA_cert.crt
         echo \"Writing certificate URLs\"
         /usr/local/bin/vault write -address=http://\$IP:8200 pki/config/urls issuing_certificates=\"http://\$IP:8200/v1/pki/ca\" crl_distribution_points=\"http://\$IP:8200/v1/pki/crl\"
 
@@ -515,11 +598,11 @@ cluster_addr = \\\"http://\$IP:8201\\\"
 
         # vault write [options] PATH [DATA K=V...]
         echo \"Writing intermediate certificate to file\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/internal common_name=\"\$DATACENTER Intermediate Authority\" | /usr/local/bin/jq -r '.data.csr' > /tmp/certs/pki_intermediate.csr
+        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/internal common_name=\"\$DATACENTER Intermediate Authority\" | /usr/local/bin/jq -r '.data.csr' > /mnt/certs/pki_intermediate.csr
         echo \"Signing intermediate certificate\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki/root/sign-intermediate csr=@/tmp/certs/pki_intermediate.csr format=pem_bundle ttl=\"43800h\" | /usr/local/bin/jq -r '.data.certificate' > /tmp/certs/intermediate.cert.pem
+        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki/root/sign-intermediate csr=@/mnt/certs/pki_intermediate.csr format=pem_bundle ttl=\"43800h\" | /usr/local/bin/jq -r '.data.certificate' > /mnt/certs/intermediate.cert.pem
         echo \"Storing intermediate certificate\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/intermediate/set-signed certificate=@/tmp/certs/intermediate.cert.pem
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/intermediate/set-signed certificate=@/mnt/certs/intermediate.cert.pem
 
         # setup roles
         echo \"Setting up roles\"
@@ -529,7 +612,7 @@ cluster_addr = \\\"http://\$IP:8201\\\"
         /usr/local/bin/vault write -address=http://\$IP:8200 pki/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"72h\" require_cn=false
 
         # set policy in a file, will import next
-        # this needs a review, combined from multiple sources
+        # this needs a review, from multiple sources
         echo \"Writing detailed vault policy to file /root/policy\"
         echo \"path \\\"pki*\\\" { capabilities = [\\\"read\\\", \\\"list\\\"] }
 path \\\"pki/roles/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
@@ -551,33 +634,33 @@ path \\\"auth/token/renew-self\\\" { capabilities = [\\\"update\\\"] }
     fi
 
     # setup template files for certificates
-    echo \"{{- /* /tmp/templates/cert.tpl */ -}}
+    echo \"{{- /* /mnt/templates/cert.tpl */ -}}
 {{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
 {{ .Data.certificate }}{{ end }}
-\" > /tmp/templates/cert.tpl
+\" > /mnt/templates/cert.tpl
 
-    echo \"{{- /* /tmp/templates/ca.tpl */ -}}
+    echo \"{{- /* /mnt/templates/ca.tpl */ -}}
 {{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" }}
 {{ .Data.issuing_ca }}{{ end }}
-\" > /tmp/templates/ca.tpl
+\" > /mnt/templates/ca.tpl
 
-    echo \"{{- /* /tmp/templates/key.tpl */ -}}
+    echo \"{{- /* /mnt/templates/key.tpl */ -}}
 {{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
 {{ .Data.private_key }}{{ end }}
-\" > /tmp/templates/key.tpl
+\" > /mnt/templates/key.tpl
 
     # update vault.hcl
     echo \"template {
-  source = \\\"/tmp/templates/cert.tpl\\\"
-  destination = \\\"/tmp/certs/vaultcert.pem\\\"
+  source = \\\"/mnt/templates/cert.tpl\\\"
+  destination = \\\"/mnt/certs/vaultcert.pem\\\"
 }
 template {
-  source = \\\"/tmp/templates/ca.tpl\\\"
-  destination = \\\"/tmp/certs/vaultca.pem\\\"
+  source = \\\"/mnt/templates/ca.tpl\\\"
+  destination = \\\"/mnt/certs/vaultca.pem\\\"
 }
 template {
-  source = \\\"/tmp/templates/key.tpl\\\"
-  destination = \\\"/tmp/certs/vaultkey.pem\\\"
+  source = \\\"/mnt/templates/key.tpl\\\"
+  destination = \\\"/mnt/certs/vaultkey.pem\\\"
 }
 \" >> /usr/local/etc/vault.hcl
 
@@ -586,26 +669,26 @@ template {
   \\\"common_name\\\": \\\"\$NODENAME\\\",
   \\\"ttl\\\": \\\"24h\\\",
   \\\"ip_sans\\\": \\\"\$IP\\\"
-}\" > /tmp/templates/payload.json
+}\" > /mnt/templates/payload.json
 
     # generate certificates to use
     # we use curl to get the certificates in json format as the issue command only has formats: pem, pem_bundle, der
     # but no json format except via the API
     if [ -s /root/login.token ]; then
         HEADER=\$(/bin/cat /root/login.token)
-        /usr/local/bin/curl --header \"X-Vault-Token: \$HEADER\" --request POST --data @/tmp/templates/payload.json http://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmp/certs/vaultissue.json
+        /usr/local/bin/curl --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json http://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
         # cli requires [], but web api does not
-        #/usr/local/bin/jq -r '.data.issuing_ca[]' /tmp/certs/vaultissue.json > /tmp/certs/vaultca.pem
+        #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/vaultca.pem
         # if [] left in for this script, you will get error 'Cannot iterate over string'
-        /usr/local/bin/jq -r '.data.issuing_ca' /tmp/certs/vaultissue.json > /tmp/certs/vaultca.pem
-        /usr/local/bin/jq -r '.data.certificate' /tmp/certs/vaultissue.json > /tmp/certs/vaultcert.pem
-        /usr/local/bin/jq -r '.data.private_key' /tmp/certs/vaultissue.json > /tmp/certs/vaultkey.pem
-        # set permissions on /tmp/certs for vault
-        chown -R vault:wheel /tmp/certs
+        /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/vaultca.pem
+        /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/vaultcert.pem
+        /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/vaultkey.pem
+        # set permissions on /mnt/certs for vault
+        chown -R vault:wheel /mnt/certs
     fi
 
     # if we get a successful private key, update vault.hcl and restart vault
-    if [ -s /tmp/certs/vaultkey.pem ]; then
+    if [ -s /mnt/certs/vaultkey.pem ]; then
         # enable TLS by removing the config line disabling it
         /usr/bin/sed -i .orig 's/tls_disable = 1/tls_disable = 0/g' /usr/local/etc/vault.hcl
 
@@ -624,7 +707,7 @@ template {
     # setup auto-login script
     echo \"#!/bin/sh
 if [ -s /root/login.token ]; then
-    /bin/cat /root/login.token | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/tmp/certs/vaultca.pem token=-
+    /bin/cat /root/login.token | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/mnt/certs/vaultca.pem token=-
 fi\" > /root/cli-vault-auto-login.sh
 
     # make executable
@@ -632,7 +715,7 @@ fi\" > /root/cli-vault-auto-login.sh
 
     # setup script to issue pki tokens
     echo \"#!/bin/sh
-/usr/local/bin/vault token create -address=https://\$IP:8200 -ca-cert=/tmp/certs/vaultca.pem -policy=\\\"default\\\" -policy=\\\"pki\\\" -wrap-ttl=24h
+/usr/local/bin/vault token create -address=https://\$IP:8200 -ca-cert=/mnt/certs/vaultca.pem -policy=\\\"default\\\" -policy=\\\"pki\\\" -wrap-ttl=24h
 \" > /root/issue-pki-token.sh
 
     # make executable
@@ -721,9 +804,9 @@ listener \\\"tcp\\\" {
   }
   # set to zero to enable TLS only
   tls_disable = 0
-  tls_ca_file = \\\"/tmp/certs/vaultca.pem\\\"
-  tls_cert_file = \\\"/tmp/certs/vaultcert.pem\\\"
-  tls_key_file = \\\"/tmp/certs/vaultkey.pem\\\"
+  tls_ca_file = \\\"/mnt/certs/vaultca.pem\\\"
+  tls_cert_file = \\\"/mnt/certs/vaultcert.pem\\\"
+  tls_key_file = \\\"/mnt/certs/vaultkey.pem\\\"
 }
 # make sure you create a zfs partition and mount it into /mnt
 # if you want persistent vault data
@@ -733,10 +816,17 @@ storage \\\"raft\\\" {
   node_id = \\\"\$NODENAME\\\"
   retry_join {
     leader_api_addr = \\\"https://\$VAULTLEADER:8200\\\"
-    leader_ca_cert_file = \\\"/tmp/certs/vaultca.pem\\\"
-    leader_client_cert_file = \\\"/tmp/certs/vaultcert.pem\\\"
-    leader_client_key_file = \\\"/tmp/certs/vaultkey.pem\\\"
+    leader_ca_cert_file = \\\"/mnt/certs/vaultca.pem\\\"
+    leader_client_cert_file = \\\"/mnt/certs/vaultcert.pem\\\"
+    leader_client_key_file = \\\"/mnt/certs/vaultkey.pem\\\"
   }
+  retry_join {
+    leader_api_addr = \\\"https://\$IP:8200\\\"
+    leader_ca_cert_file = \\\"/mnt/certs/vaultca.pem\\\"
+    leader_client_cert_file = \\\"/mnt/certs/vaultcert.pem\\\"
+    leader_client_key_file = \\\"/mnt/certs/vaultkey.pem\\\"
+  }
+  autopilot_reconcile_interval = \\\"5s\\\"
 }
 seal \\\"transit\\\" {
   address = \\\"http://\$UNSEALIP:8200\\\"
@@ -749,21 +839,21 @@ service_registration \\\"consul\\\" {
   address = \\\"\$IP:8500\\\"
   scheme = \\\"http\\\"
   service = \\\"vault\\\"
-  #tls_ca_file = \\\"/tmp/certs/consulca.pem\\\"
-  #tls_cert_file = \\\"/tmp/certs/consulcert.pem\\\"
-  #tls_key_file = \\\"/tmp/certs/consulkey.pem\\\"
+  #tls_ca_file = \\\"/mnt/certs/consulca.pem\\\"
+  #tls_cert_file = \\\"/mnt/certs/consulcert.pem\\\"
+  #tls_key_file = \\\"/mnt/certs/consulkey.pem\\\"
 }
 template {
-  source = \\\"/tmp/templates/cert.tpl\\\"
-  destination = \\\"/tmp/certs/vaultcert.pem\\\"
+  source = \\\"/mnt/templates/cert.tpl\\\"
+  destination = \\\"/mnt/certs/vaultcert.pem\\\"
 }
 template {
-  source = \\\"/tmp/templates/ca.tpl\\\"
-  destination = \\\"/tmp/certs/vaultca.pem\\\"
+  source = \\\"/mnt/templates/ca.tpl\\\"
+  destination = \\\"/mnt/certs/vaultca.pem\\\"
 }
 template {
-  source = \\\"/tmp/templates/key.tpl\\\"
-  destination = \\\"/tmp/certs/vaultkey.pem\\\"
+  source = \\\"/mnt/templates/key.tpl\\\"
+  destination = \\\"/mnt/certs/vaultkey.pem\\\"
 }
 log_level = \\\"Warn\\\"
 api_addr = \\\"https://\$IP:8200\\\"
@@ -771,20 +861,20 @@ cluster_addr = \\\"https://\$IP:8201\\\"
 \" > /usr/local/etc/vault.hcl
 
     # setup template files for certificates
-    echo \"{{- /* /tmp/templates/cert.tpl */ -}}
+    echo \"{{- /* /mnt/templates/cert.tpl */ -}}
 {{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
 {{ .Data.certificate }}{{ end }}
-\" > /tmp/templates/cert.tpl
+\" > /mnt/templates/cert.tpl
 
-    echo \"{{- /* /tmp/templates/ca.tpl */ -}}
+    echo \"{{- /* /mnt/templates/ca.tpl */ -}}
 {{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" }}
 {{ .Data.issuing_ca }}{{ end }}
-\" > /tmp/templates/ca.tpl
+\" > /mnt/templates/ca.tpl
 
-    echo \"{{- /* /tmp/templates/key.tpl */ -}}
+    echo \"{{- /* /mnt/templates/key.tpl */ -}}
 {{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
 {{ .Data.private_key }}{{ end }}
-\" > /tmp/templates/key.tpl
+\" > /mnt/templates/key.tpl
 
     # set permissions on /mnt for vault data
     chown -R vault:wheel /mnt
@@ -806,9 +896,8 @@ cluster_addr = \\\"https://\$IP:8201\\\"
 
     # retrieve CA certificates from vault leader
     echo \"Retrieving CA certificates from Vault leader\"
-    /usr/local/bin/vault read -address=https://\$VAULTLEADER:8200 -tls-skip-verify -field=certificate pki/cert/ca > /tmp/certs/CA_cert.crt
-    /usr/local/bin/vault read -address=https://\$VAULTLEADER:8200 -tls-skip-verify -field=certificate pki_int/cert/ca > /tmp/certs/intermediate.cert.pem
-    /bin/cat /tmp/certs/CA_cert.crt /tmp/certs/intermediate.cert.pem > /tmp/certs/combined_CA.pem
+    /usr/local/bin/vault read -address=https://\$VAULTLEADER:8200 -tls-skip-verify -field=certificate pki/cert/ca > /mnt/certs/CA_cert.crt
+    /usr/local/bin/vault read -address=https://\$VAULTLEADER:8200 -tls-skip-verify -field=certificate pki_int/cert/ca > /mnt/certs/intermediate.cert.pem
 
     # login to unseal vault to get a root token
     echo \"Logging in to unseal vault to unseal\"
@@ -816,7 +905,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
     sleep 5
 
     echo \"Logging in to vault leader instance to authenticate\"
-    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -ca-cert=/tmp/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
+    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
     sleep 5
 
     if [ -s /root/login.token ]; then
@@ -826,30 +915,30 @@ cluster_addr = \\\"https://\$IP:8201\\\"
   \\\"common_name\\\": \\\"\$NODENAME\\\",
   \\\"ttl\\\": \\\"24h\\\",
   \\\"ip_sans\\\": \\\"\$IP\\\"
-}\" > /tmp/templates/payload.json
+}\" > /mnt/templates/payload.json
 
         # we use curl to get the certificates in json format as the issue command only has formats: pem, pem_bundle, der
         # but no json format except via the API
         echo \"Generating certificates to use from Vault leader\"
         HEADER=\$(/bin/cat /root/login.token)
-        /usr/local/bin/curl --cacert /tmp/certs/intermediate.cert.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/tmp/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /tmp/certs/vaultissue.json
+        /usr/local/bin/curl --cacert /mnt/certs/intermediate.cert.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
 
         # cli requires [], but web api does not
-        #/usr/local/bin/jq -r '.data.issuing_ca[]' /tmp/certs/vaultissue.json > /tmp/certs/vaultca.pem
+        #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/vaultca.pem
         # if [] left in for this script, you will get error: Cannot iterate over string
-        /usr/local/bin/jq -r '.data.issuing_ca' /tmp/certs/vaultissue.json > /tmp/certs/vaultca.pem
-        /usr/local/bin/jq -r '.data.certificate' /tmp/certs/vaultissue.json > /tmp/certs/vaultcert.pem
-        /usr/local/bin/jq -r '.data.private_key' /tmp/certs/vaultissue.json > /tmp/certs/vaultkey.pem
+        /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/vaultca.pem
+        /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/vaultcert.pem
+        /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/vaultkey.pem
 
-        # set permissions on /tmp/certs for vault
-        chown -R vault:wheel /tmp/certs
+        # set permissions on /mnt/certs for vault
+        chown -R vault:wheel /mnt/certs
 
         # start vault
         echo \"Starting Vault Follower\"
         /usr/local/etc/rc.d/vault start
 
         echo \"Joining the raft cluster\"
-        /usr/local/bin/vault operator raft join -address=https://\$VAULTLEADER:8200 -ca-cert=/tmp/certs/vaultca.pem
+        /usr/local/bin/vault operator raft join -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/vaultca.pem
 
         # we need to wait a period for the cluster to initialise correctly and elect leader
         # cluster requires 10 seconds to bootstrap, even if single server, we can only login after
@@ -857,7 +946,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         sleep 11
 
         echo \"Logging in to local raft instance\"
-        echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/tmp/certs/vaultca.pem -method=token -field=token token=- > /root/login.token
+        echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/mnt/certs/vaultca.pem -method=token -field=token token=- > /root/login.token
 
         if [ -s /root/login.token ]; then
             TOKENOUT=\$(/bin/cat /root/login.token)
@@ -871,7 +960,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
     # setup auto-login script
     echo \"#!/bin/sh
 if [ -s /root/login.token ]; then
-    /bin/cat /root/login.token | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/tmp/certs/vaultca.pem token=-
+    /bin/cat /root/login.token | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/mnt/certs/vaultca.pem token=-
 fi\" > /root/cli-vault-auto-login.sh
 
     # set executable perms

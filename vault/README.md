@@ -13,6 +13,11 @@ You can e.g. store certificates, passwords etc to be used with the [nomad-server
 
 The flavour expects a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```.
 
+# Disclaimer
+This image uses the ports tree from github to obtain the latest version of ```vault```. Expect 25-30min build times if building this image from scratch.
+
+As this results in a large potluck image, it will be a temporary solution, until ```pkg``` has it.
+
 # Installation
 
 * [unseal node] Create a ZFS dataset on the parent system beforehand:    
@@ -35,6 +40,7 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 * vault-unseal: is initialized and unsealed. The root token creates a transit key that enables the other Vaults auto-unseal. This Vault server is not a part of the cluster.
 * vault-clone-1: is initialized and unsealed automatically with the passed in wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
 * vault-clone-2: is initialized and unsealed automatically with the passed in NEW wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
+* vault-clone-n+: is initialized and unsealed automatically with the passed in NEW wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
 
 # Usage
 
@@ -108,16 +114,19 @@ Once running, you can login and run the script ```/root/cli-vault-auto-login.sh`
 
 To generate a token for PKI, run ```pot term vault-clone``` and then ```/root/issue-pki-token.sh```.
 
-## Cluster follower node using raft storage
-To unseal a cluster node, make use of a wrapped key generated on the unseal node. Pass it in with ```-E UNSEALTOKEN=<wrapped token>```
+## Cluster follower follower using raft storage
+To unseal a cluster follower, make use of a wrapped key generated on the unseal node. Pass it in with ```-E UNSEALTOKEN=<wrapped token>```
 
 A leader node should already exist, and must be passed in with the parameter ```-E VAULTLEADER=<IP>```.
 
-A leader token is also required and must be passed in the the paramter ```-E LEADERTOKEN=<login token from unsealed leader>```.
+A leader token is also required and must be passed in with the parameter ```-E LEADERTOKEN=<login token from unsealed leader>```. You can get this token from ```/root/cli-vault-auto-login.sh``` on the leader.
 
 The cluster node will be automatically unsealed and join the cluster. Repeat for all additional nodes in the vault cluster.
 
-## Example Cluster usage
+## Deafult cluster usage
+This cluster will generate, issue, renew certificates. 
+
+## Other example cluster usage
 This cluster can then be used as a kv store.
 
 ```
