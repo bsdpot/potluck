@@ -107,13 +107,19 @@ step "Install package vault"
 # removed - using ports to get 1.7.3
 # we install vault to get the correct rc files
 #pkg install -y vault
-#
-# using ports for vault.1.7.3
+
 # using git approach instead of portsnap cron which has long random delay
-pkg install -y git
-git clone https://git.FreeBSD.org/ports.git /usr/ports
-git -C /usr/ports pull
-cd /usr/ports/security/vault/ && make install clean
+# now using Michael's sparse git clone method for faster download
+pkg install -y git-lite go
+mkdir -p /usr/ports
+cd /usr/ports
+git init -b main
+git remote add origin https://git.freebsd.org/ports.git
+git sparse-checkout init
+git sparse-checkout set GIDs Mk/ Templates/ UIDs security/vault/
+git pull --depth=1 origin main
+cd /usr/ports/security/vault/
+make install clean
 cd ~
 
 step "Add vault user to daemon class"
@@ -122,67 +128,10 @@ pw usermod vault -G daemon
 step "Trim ports tree"
 # doing this to free up some space, leaving security
 echo \"Trimming ports tree to save some space\"
-rm -r /usr/ports/accessibility
-rm -r /usr/ports/arabic
-rm -r /usr/ports/archivers
-rm -r /usr/ports/astro
-rm -r /usr/ports/audio
-rm -r /usr/ports/base
-rm -r /usr/ports/benchmarks
-rm -r /usr/ports/biology
-rm -r /usr/ports/cad
-rm -r /usr/ports/chinese
-rm -r /usr/ports/comms
-rm -r /usr/ports/converters
-rm -r /usr/ports/databases
-rm -r /usr/ports/deskutils
-rm -r /usr/ports/devel
-rm -r /usr/ports/dns
-rm -r /usr/ports/editors
-rm -r /usr/ports/emulators
-rm -r /usr/ports/finance
-rm -r /usr/ports/french
-rm -r /usr/ports/ftp
-rm -r /usr/ports/games
-rm -r /usr/ports/german
-rm -r /usr/ports/graphics
-rm -r /usr/ports/hebrew
-rm -r /usr/ports/hungarian
-rm -r /usr/ports/irc
-rm -r /usr/ports/japanese
-rm -r /usr/ports/java
-rm -r /usr/ports/korean
-rm -r /usr/ports/lang
-rm -r /usr/ports/mail
-rm -r /usr/ports/math
-rm -r /usr/ports/misc
-rm -r /usr/ports/multimedia
-rm -r /usr/ports/net
-rm -r /usr/ports/net-im
-rm -r /usr/ports/net-mgmt
-rm -r /usr/ports/net-p2p
-rm -r /usr/ports/news
-rm -r /usr/ports/polish
-rm -r /usr/ports/ports-mgmt
-rm -r /usr/ports/portuguese
-rm -r /usr/ports/print
-rm -r /usr/ports/russian
-rm -r /usr/ports/science
-rm -r /usr/ports/shells
-rm -r /usr/ports/sysutils
-rm -r /usr/ports/textproc
-rm -r /usr/ports/ukrainian
-rm -r /usr/ports/vietnamese
-rm -r /usr/ports/www
-rm -r /usr/ports/x11
-rm -r /usr/ports/x11-clocks
-rm -r /usr/ports/x11-drivers
-rm -r /usr/ports/x11-fm
-rm -r /usr/ports/x11-fonts
-rm -r /usr/ports/x11-servers
-rm -r /usr/ports/x11-themes
-rm -r /usr/ports/x11-toolkits
-rm -r /usr/ports/x11-wm
+rm -rf /usr/ports
+pkg delete -y go git-lite
+pkg autoremove -y
+pkg clean -y
 
 # -------------- END PACKAGE SETUP -------------
 

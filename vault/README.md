@@ -14,9 +14,7 @@ You can e.g. store certificates, passwords etc to be used with the [nomad-server
 The flavour expects a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```.
 
 # Disclaimer
-This image uses the ports tree from github to obtain the latest version of ```vault```. Expect 25-30min build times if building this image from scratch.
-
-As this results in a large potluck image, it will be a temporary solution, until ```pkg``` has it.
+This image uses the ports tree from github to obtain the latest version of ```vault```. An optimised ```git-lite``` sparse clone of github packages, and build process, reduces the build time for 5-6mins.
 
 # Installation
 
@@ -47,7 +45,7 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 ```vault``` is then running on port 8200 of your jail IP address.
 
 ## Unseal Node
-(This stage of development of the pot image doesn't yet include HTTPS. Please include the parameter ```-address=http://<IP>:8200``` to any ```vault``` commands```)
+(This stage of development of the pot image doesn't yet include HTTPS on the unseal node. Please include the parameter ```-address=http://<IP>:8200``` to any ```vault``` commands```)
 
 This vault instance exists to generate unseal keys. It must first be initialised.
 
@@ -114,6 +112,19 @@ Once running, you can login and run the script ```/root/cli-vault-auto-login.sh`
 
 To generate a token for PKI, run ```pot term vault-clone``` and then ```/root/issue-pki-token.sh```.
 
+To run other ```vault``` commands pass in the extra parameters ```-address=https://<IP-being-queried>:8200``` and one of:
+* ```-tls-skip-verify``` to skip verifying the certificate; or
+* ```-ca-cert=/mnt/certs/vaultca.pem``` to verify with the CA certificate obtained (if everything working)
+
+(This should fall away in the transition to vnet for pot networking and localhost can be queried in a jail)
+
+### Example vault command with parameters
+```
+vault status -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/vaultca.pem
+vault operator raft list-peers -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/vaultca.pem
+vault operator raft autopilot state -address=https://10.0.0.3:8200 -tls-skip-verify
+```
+
 ## Cluster follower follower using raft storage
 To unseal a cluster follower, make use of a wrapped key generated on the unseal node. Pass it in with ```-E UNSEALTOKEN=<wrapped token>```
 
@@ -123,6 +134,19 @@ A leader token is also required and must be passed in with the parameter ```-E L
 
 The cluster node will be automatically unsealed and join the cluster. Repeat for all additional nodes in the vault cluster.
 
+To run other ```vault``` commands pass in the extra parameters ```-address=https://<IP-being-queried>:8200``` and one of:
+* ```-tls-skip-verify``` to skip verifying the certificate; or
+* ```-ca-cert=/mnt/certs/vaultca.pem``` to verify with the CA certificate obtained (if everything working)
+
+(This should fall away in the transition to vnet for pot networking and localhost can be queried in a jail)
+
+### Example vault command with parameters
+```
+vault status -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/vaultca.pem
+vault operator raft list-peers -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/vaultca.pem
+vault operator raft autopilot state -address=https://10.0.0.3:8200 -tls-skip-verify
+```
+
 ## Deafult cluster usage
 This cluster will generate, issue, renew certificates. 
 
@@ -130,7 +154,7 @@ This cluster will generate, issue, renew certificates.
 This cluster can then be used as a kv store.
 
 ```
-vault secrets enable -address=http://<IP>:8200 -path=kv kv-v2
-vault kv -address=http://<IP>:8200 put kv/testkey webapp=TESTKEY
-vault kv -address=http://<IP>:8200 get kv/testkey
+vault secrets enable -address=https://<IP>:8200 -ca-cert=/mnt/certs/vaultca.pem -path=kv kv-v2
+vault kv -address=https://<IP>:8200 -ca-cert=/mnt/certs/vaultca.pem put kv/testkey webapp=TESTKEY
+vault kv -address=https://<IP>:8200 -ca-cert=/mnt/certs/vaultca.pem get kv/testkey
 ```

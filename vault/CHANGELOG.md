@@ -1,3 +1,9 @@
+2.0.14
+
+* New and improved git-lite build process from sparse package source
+
+---
+
 2.0.13
 
 * Using /mnt for vault AND template and certificate store. Requires a mount-in dataset for persistence. Using latest vault from port sources instead of package version.
