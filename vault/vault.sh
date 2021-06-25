@@ -491,7 +491,7 @@ cluster_addr = \\\"http://\$IP:8201\\\"
     /usr/local/bin/vault operator unseal -address=http://\$IP:8200 \$KEY3
 
     echo \"Please wait for cluster...\"
-    sleep 2
+    sleep 3
 
     echo \"Joining the raft cluster\"
     /usr/local/bin/vault operator raft join -address=http://\$IP:8200
@@ -562,8 +562,14 @@ cluster_addr = \\\"http://\$IP:8201\\\"
 
         # set policy in a file, will import next
         # this needs a review, from multiple sources
-        echo \"Writing detailed vault policy to file /root/policy\"
-        echo \"path \\\"pki*\\\" { capabilities = [\\\"read\\\", \\\"list\\\"] }
+        echo \"Writing detailed vault policy to file /root/vault.policy\"
+        echo \"
+path \\\"sys/mounts/*\\\" { capabilities = [ \\\"create\\\", \\\"read\\\", \\\"update\\\", \\\"delete\\\", \\\"list\\\"] }
+path \\\"sys/mounts\\\" { capabilities = [ \\\"read\\\", \\\"list\\\"] }
+path \\\"auth/token/roles/\$DATACENTER\\\" { capabilities = [ \\\"read\\\", \\\"update\\\"] }
+path \\\"auth/token/revoke-accessor\\\" { capabilities = [ \\\"update\\\"] }
+path \\\"auth/token/create/*\\\" { capabilities = [ \\\"update\\\"] }
+path \\\"pki*\\\" { capabilities = [\\\"read\\\", \\\"list\\\", \\\"update\\\", \\\"delete\\\", \\\"list\\\", \\\"sudo\\\"] }
 path \\\"pki/roles/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki/sign/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki_int/roles/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
@@ -573,8 +579,6 @@ path \\\"pki_int/certs\\\" { capabilities = [\\\"list\\\"] }
 path \\\"pki_int/revoke\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki/cert/ca\\\" { capabilities = [\\\"read\\\"] }
-path \\\"auth/token/renew\\\" { capabilities = [\\\"update\\\"] }
-path \\\"auth/token/renew-self\\\" { capabilities = [\\\"update\\\"] }
 \" > /root/vault.policy
 
         echo \"Writing vault policy to Vault\"
@@ -664,11 +668,31 @@ fi\" > /root/cli-vault-auto-login.sh
 
     # setup script to issue pki tokens
     echo \"#!/bin/sh
-/usr/local/bin/vault token create -address=https://\$IP:8200 -ca-cert=/mnt/certs/vaultca.pem -policy=\\\"default\\\" -policy=\\\"pki\\\" -wrap-ttl=24h
+/usr/local/bin/vault token create -address=https://\$IP:8200 -ca-cert=/mnt/certs/vaultca.pem -policy=default -policy=pki -wrap-ttl=24h
 \" > /root/issue-pki-token.sh
 
     # make executable
     chmod +x /root/issue-pki-token.sh
+
+    # setup certificate rotation
+    echo \"#!/bin/sh
+if [ -s /root/login.token ]; then
+    /usr/local/bin/curl -k --header \\\"X-Vault-Token: \$(/bin/cat /root/login.token)\\\" --request POST --data @/mnt/templates/payload.json https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/vaultca.pem
+    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/vaultcert.pem
+    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/vaultkey.pem
+    # set permissions on /mnt/certs for vault
+    chown -R vault:wheel /mnt/certs
+fi
+/bin/pkill -HUP vault
+
+\" > /usr/local/bin/rotate-certs.sh
+
+    # make executable
+    chmod +x /usr/local/bin/rotate-certs.sh
+
+    # add a crontab entry for every hour
+    echo \"0  *       *       *       *       root /usr/local/bin/rotate-certs >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
 
     # end leader config
     ;;
@@ -851,11 +875,11 @@ cluster_addr = \\\"https://\$IP:8201\\\"
     # login to unseal vault to get a root token
     echo \"Logging in to unseal vault to unseal\"
     /usr/local/bin/vault login -address=http://\$UNSEALIP:8200 -format=json \$THIS_TOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/this.token
-    sleep 5
+    sleep 6
 
     echo \"Logging in to vault leader instance to authenticate\"
     echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
-    sleep 5
+    sleep 6
 
     if [ -s /root/login.token ]; then
         # generate certificates to use
@@ -892,7 +916,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         # we need to wait a period for the cluster to initialise correctly and elect leader
         # cluster requires 10 seconds to bootstrap, even if single server, we can only login after
         echo \"Please wait for raft cluster to contemplate self...\"
-        sleep 11
+        sleep 12
 
         echo \"Logging in to local raft instance\"
         echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/mnt/certs/vaultca.pem -method=token -field=token token=- > /root/login.token
@@ -914,6 +938,26 @@ fi\" > /root/cli-vault-auto-login.sh
 
     # set executable perms
     chmod +x /root/cli-vault-auto-login.sh
+
+    # setup certificate rotation
+    echo \"#!/bin/sh
+if [ -s /root/login.token ]; then
+    /usr/local/bin/curl -k --header \\\"X-Vault-Token: \$(/bin/cat /root/login.token)\\\" --request POST --data @/mnt/templates/payload.json https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/vaultca.pem
+    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/vaultcert.pem
+    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/vaultkey.pem
+    # set permissions on /mnt/certs for vault
+    chown -R vault:wheel /mnt/certs
+fi
+/bin/pkill -HUP vault
+\" > /usr/local/bin/rotate-certs.sh
+
+    # make executable
+    chmod +x /usr/local/bin/rotate-certs.sh
+
+    # add a crontab entry for every hour
+    echo \"0  *       *       *       *       root /usr/local/bin/rotate-certs >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
+
 
     # end follower config
     ;;

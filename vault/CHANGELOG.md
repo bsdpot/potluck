@@ -1,3 +1,9 @@
+2.0.15
+
+* Fixes to vault policy permissions, fixing typos in docs, longer sleep timers to avoid occassional lockup
+
+---
+
 2.0.14
 
 * New and improved git-lite build process from sparse package source
@@ -78,13 +84,13 @@
 
 2.0.1
 
-* Updated to use pre-generated consol encryption key for gossip, planning for TLS
+* Updated to use pre-generated consul encryption key for gossip, planning for TLS
 
 ---
 
 2.0
 
-* Updated to use local consol agent and a consul cluster for data store
+* Updated to use local consul agent and a consul cluster for data store
 
 ---
 
