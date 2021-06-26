@@ -1,3 +1,9 @@
+2.0.16
+
+* Added missing role, fixing rotation scripts
+
+---
+
 2.0.15
 
 * Fixes to vault policy permissions, fixing typos in docs, longer sleep timers to avoid occassional lockup

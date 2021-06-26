@@ -312,6 +312,11 @@ path \\\"transit/decrypt/autounseal\\\" {
     # set permissions on /mnt for vault data
     chown -R vault:wheel /mnt
 
+    # remove the copied in rotate-certs.sh file, not needed on unseal node
+    if [ -f /root/rotate-certs.sh ]; then
+        rm -f /root/rotate-certs.sh
+    fi
+
     # setup rc.conf entries
     # we do not set vault_user=vault because vault will not start
     sysrc vault_enable=yes
@@ -584,6 +589,9 @@ path \\\"pki/cert/ca\\\" { capabilities = [\\\"read\\\"] }
         echo \"Writing vault policy to Vault\"
         # vault policy write [options] NAME PATH
         /usr/local/bin/vault policy write -address=http://\$IP:8200 pki /root/vault.policy
+
+        # setup role
+        /usr/local/bin/vault write -address=http://\$IP:8200 auth/token/roles/\$DATACENTER allowed_policies=\"pki\" orphan=true period=\"24h\"
     fi
 
     # setup template files for certificates
@@ -630,9 +638,6 @@ template {
     if [ -s /root/login.token ]; then
         HEADER=\$(/bin/cat /root/login.token)
         /usr/local/bin/curl --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json http://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
-        # cli requires [], but web api does not
-        #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/vaultca.pem
-        # if [] left in for this script, you will get error 'Cannot iterate over string'
         /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/vaultca.pem
         /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/vaultcert.pem
         /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/vaultkey.pem
@@ -674,25 +679,45 @@ fi\" > /root/cli-vault-auto-login.sh
     # make executable
     chmod +x /root/issue-pki-token.sh
 
-    # setup certificate rotation
+    # setup certificate rotation script
     echo \"#!/bin/sh
 if [ -s /root/login.token ]; then
-    /usr/local/bin/curl -k --header \\\"X-Vault-Token: \$(/bin/cat /root/login.token)\\\" --request POST --data @/mnt/templates/payload.json https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    LOGINTOKEN=\\\$(/bin/cat /root/login.token)
+    HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
+    /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/vaultca.pem
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/vaultcert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/vaultkey.pem
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
+    /bin/pkill -HUP vault
+else
+    echo "/root/login.token does not contain a token. Certificates cannot be renewed."
 fi
-/bin/pkill -HUP vault
+\" > /root/rotate-certs.sh
 
-\" > /usr/local/bin/rotate-certs.sh
+    if [ -f /root/rotate-certs.sh ]; then
+        # make executable
+        chmod +x /root/rotate-certs.sh
+        # add a crontab entry for every hour
+        echo \"0 * * * * root /root/rotate-certs >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
+    fi
 
-    # make executable
-    chmod +x /usr/local/bin/rotate-certs.sh
-
-    # add a crontab entry for every hour
-    echo \"0  *       *       *       *       root /usr/local/bin/rotate-certs >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
+###### not working
+#    # setup token renewals
+#    echo \"
+#if [ -s /root/login.token ]; then
+#    LOGINTOKEN=\\\$(/bin/cat /root/login.token)
+#    echo \\\$LOGINTOKEN | /usr/local/bin/vault token renew -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/vaultca.pem token=-
+#else
+#    echo "/root/login.token does not contain a token to be renewed."
+#fi
+#\" > /root/token-renew.sh
+#
+#    if [ -f /root/token-renew.sh ]; then
+#        chmod +x /root/token-renew.sh
+#    fi
+########
 
     # end leader config
     ;;
@@ -939,25 +964,45 @@ fi\" > /root/cli-vault-auto-login.sh
     # set executable perms
     chmod +x /root/cli-vault-auto-login.sh
 
-    # setup certificate rotation
+    # setup certificate rotation script
     echo \"#!/bin/sh
 if [ -s /root/login.token ]; then
-    /usr/local/bin/curl -k --header \\\"X-Vault-Token: \$(/bin/cat /root/login.token)\\\" --request POST --data @/mnt/templates/payload.json https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    LOGINTOKEN=\\\$(/bin/cat /root/login.token)
+    HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
+    /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/vaultca.pem
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/vaultcert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/vaultkey.pem
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
+    /bin/pkill -HUP vault
+else
+    echo "/root/login.token does not contain a token. Certificates cannot be renewed."
 fi
-/bin/pkill -HUP vault
-\" > /usr/local/bin/rotate-certs.sh
+\" > /root/rotate-certs.sh
 
-    # make executable
-    chmod +x /usr/local/bin/rotate-certs.sh
+    if [ -f /root/rotate-certs.sh ]; then
+        # make executable
+        chmod +x /root/rotate-certs.sh
+        # add a crontab entry for every hour
+        echo \"0 * * * * root /root/rotate-certs >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
+    fi
 
-    # add a crontab entry for every hour
-    echo \"0  *       *       *       *       root /usr/local/bin/rotate-certs >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
-
+######## not working
+#    # setup token renewals
+#    echo \"
+#if [ -s /root/login.token ]; then
+#    LOGINTOKEN=\\\$(/bin/cat /root/login.token)
+#    echo \\\$LOGINTOKEN | /usr/local/bin/vault token renew -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/vaultca.pem token=-
+#else
+#    echo "/root/login.token does not contain a token to be renewed."
+#fi
+#\" > /root/token-renew.sh
+#
+#    if [ -f /root/token-renew.sh ]; then
+#        chmod +x /root/token-renew.sh
+#    fi
+#######
 
     # end follower config
     ;;
