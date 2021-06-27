@@ -99,32 +99,33 @@ pkg install -y jq
 step "Install package vault"
 # removed - using ports to get 1.7.3
 # we install vault to get the correct rc files
-#pkg install -y vault
+# reverting to using pkg install instead of source
+pkg install -y vault
 
 # using git approach instead of portsnap cron which has long random delay
 # now using Michael's sparse git clone method for faster download
-pkg install -y git-lite go
-mkdir -p /usr/ports
-cd /usr/ports
-git init -b main
-git remote add origin https://git.freebsd.org/ports.git
-git sparse-checkout init
-git sparse-checkout set GIDs Mk/ Templates/ UIDs security/vault/
-git pull --depth=1 origin main
-cd /usr/ports/security/vault/
-make install clean
-cd ~
+#pkg install -y git-lite go
+#mkdir -p /usr/ports
+#cd /usr/ports
+#git init -b main
+#git remote add origin https://git.freebsd.org/ports.git
+#git sparse-checkout init
+#git sparse-checkout set GIDs Mk/ Templates/ UIDs security/vault/
+#git pull --depth=1 origin main
+#cd /usr/ports/security/vault/
+#make install clean
+#cd ~
 
 step "Add vault user to daemon class"
 pw usermod vault -G daemon
 
-step "Remove ports tree"
+#step "Remove ports tree"
 # doing this to free up some space, leaving security
-echo \"Removing sparse ports and git-lite\"
-rm -rf /usr/ports
+#echo \"Removing sparse ports and git-lite\"
+#rm -rf /usr/ports
 
-step "Remove packages go and git-lite"
-pkg delete -y go git-lite
+#step "Remove packages go and git-lite"
+#pkg delete -y go git-lite
 
 step "Clean package installation"
 pkg autoremove -y

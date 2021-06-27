@@ -1,3 +1,9 @@
+2.0.18
+
+* Using pkg vault
+
+---
+
 2.0.17
 
 * Improvements for consul
