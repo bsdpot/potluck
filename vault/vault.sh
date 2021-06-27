@@ -242,7 +242,7 @@ fi
 if [ -z \${LEADERTOKEN+x} ];
 then
     echo 'LEADERTOKEN is unset - see documentation how to configure this flavour, defaulting to unset.'
-    VAULTLEADER=\"unset\"
+    LEADERTOKEN=\"unset\"
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
@@ -334,67 +334,6 @@ path \\\"transit/decrypt/autounseal\\\" {
     ### Vault type: RAFT Leader
     leader)
 
-    ## start consul config
-    # make consul configuration directory and set permissions
-    mkdir -p /usr/local/etc/consul.d
-    chmod 750 /usr/local/etc/consul.d
-
-    # Create the consul agent config file with imported variables
-    echo \"{
-\\\"advertise_addr\\\": \\\"\$IP\\\",
-\\\"datacenter\\\": \\\"\$DATACENTER\\\",
-\\\"node_name\\\": \\\"\$NODENAME\\\",
-\\\"data_dir\\\":  \\\"/var/db/consul\\\",
-\\\"dns_config\\\": {
-\\\"a_record_limit\\\": 3,
-\\\"enable_truncate\\\": true
-},
-\\\"log_file\\\": \\\"/var/log/consul/\\\",
-\\\"log_level\\\": \\\"WARN\\\",
-\\\"encrypt\\\": \$GOSSIPKEY,
-\\\"start_join\\\": [ \$CONSULSERVERS ],
-\\\"service\\\": {
-\\\"name\\\": \\\"node-exporter\\\",
-\\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
-\\\"port\\\": 9100
-}
-}\" > /usr/local/etc/consul.d/agent.json
-
-    # set owner and perms on agent.json
-    chown consul:wheel /usr/local/etc/consul.d/agent.json
-    chmod 640 /usr/local/etc/consul.d/agent.json
-
-    # enable consul
-    sysrc consul_enable=\"YES\"
-
-    # set load parameter for consul config
-    sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
-    #sysrc consul_datadir=\"/var/db/consul\"
-
-    # Workaround for bug in rc.d/consul script:
-    sysrc consul_group=\"wheel\"
-
-    # setup consul logs, might be redundant if not specified in agent.json above
-    mkdir -p /var/log/consul
-    touch /var/log/consul/consul.log
-    chown -R consul:wheel /var/log/consul
-
-    # add the consul user to the wheel group, this seems to be required for
-    # consul to start on this instance. May need to figure out why.
-    # I'm not entirely sure this is the correct way to do it
-    /usr/sbin/pw usermod consul -G wheel
-
-    ## end consul
-
-    # enable node_exporter service
-    sysrc node_exporter_enable=\"YES\"
-
-    # start consul agent
-    /usr/local/etc/rc.d/consul start
-
-    # start node_exporter
-    /usr/local/etc/rc.d/node_exporter start
-
     # begin vault config
     echo \"disable_mlock = true
 ui = true
@@ -440,9 +379,9 @@ service_registration \\\"consul\\\" {
   address = \\\"\$IP:8500\\\"
   scheme = \\\"http\\\"
   service = \\\"vault\\\"
-  #tls_ca_file = \\\"/mnt/certs/consulca.pem\\\"
-  #tls_cert_file = \\\"/mnt/certs/consulcert.pem\\\"
-  #tls_key_file = \\\"/mnt/certs/consulkey.pem\\\"
+#brb#  tls_ca_file = \\\"/mnt/certs/vaultca.pem\\\"
+#brb#  tls_cert_file = \\\"/mnt/certs/vaultcert.pem\\\"
+#brb#  tls_key_file = \\\"/mnt/certs/vaultkey.pem\\\"
 }
 log_level = \\\"Warn\\\"
 api_addr = \\\"http://\$IP:8200\\\"
@@ -658,6 +597,76 @@ template {
         /usr/bin/sed -i .orig 's/#xyz#tls/tls/g' /usr/local/etc/vault.hcl
         /usr/bin/sed -i .orig 's/#xyz#leader/leader/g' /usr/local/etc/vault.hcl
 
+        # enable consul components
+        /usr/bin/sed -i .orig 's/#brb#//g' /usr/local/etc/vault.hcl
+
+        ## start consul config
+        # make consul configuration directory and set permissions
+        mkdir -p /usr/local/etc/consul.d
+        chmod 750 /usr/local/etc/consul.d
+
+        # Create the consul agent config file with imported variables
+        echo \"{
+\\\"advertise_addr\\\": \\\"\$IP\\\",
+\\\"datacenter\\\": \\\"\$DATACENTER\\\",
+\\\"node_name\\\": \\\"\$NODENAME\\\",
+\\\"data_dir\\\":  \\\"/var/db/consul\\\",
+\\\"dns_config\\\": {
+ \\\"a_record_limit\\\": 3,
+ \\\"enable_truncate\\\": true
+},
+\\\"verify_incoming\\\": true,
+\\\"verify_outgoing\\\": true,
+\\\"verify_server_hostname\\\": false,
+\\\"ca_file\\\": \\\"/mnt/certs/vaultca.pem\\\",
+\\\"cert_file\\\": \\\"/mnt/certs/vaultcert.pem\\\",
+\\\"key_file\\\": \\\"/mnt/certs/vaultkey.pem\\\",
+\\\"log_file\\\": \\\"/var/log/consul/\\\",
+\\\"log_level\\\": \\\"WARN\\\",
+\\\"encrypt\\\": \$GOSSIPKEY,
+\\\"start_join\\\": [ \$CONSULSERVERS ],
+\\\"service\\\": {
+\\\"name\\\": \\\"node-exporter\\\",
+\\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+\\\"port\\\": 9100
+}
+}\" > /usr/local/etc/consul.d/agent.json
+
+        # set owner and perms on agent.json
+        chown consul:wheel /usr/local/etc/consul.d/agent.json
+        chmod 640 /usr/local/etc/consul.d/agent.json
+
+        # enable consul
+        sysrc consul_enable=\"YES\"
+
+        # set load parameter for consul config
+        sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
+        #sysrc consul_datadir=\"/var/db/consul\"
+
+        # Workaround for bug in rc.d/consul script:
+        sysrc consul_group=\"wheel\"
+
+        # setup consul logs, might be redundant if not specified in agent.json above
+        mkdir -p /var/log/consul
+        touch /var/log/consul/consul.log
+        chown -R consul:wheel /var/log/consul
+
+        # add the consul user to the wheel group, this seems to be required for
+        # consul to start on this instance. May need to figure out why.
+        # I'm not entirely sure this is the correct way to do it
+        /usr/sbin/pw usermod consul -G wheel
+
+        ## end consul
+
+        # enable node_exporter service
+        sysrc node_exporter_enable=\"YES\"
+
+        # start consul agent
+        /usr/local/etc/rc.d/consul start
+
+        # start node_exporter
+        /usr/local/etc/rc.d/node_exporter start
+
         # restart vault, requires SIGHUP
         /usr/local/etc/rc.d/vault restart
     fi
@@ -691,6 +700,7 @@ if [ -s /root/login.token ]; then
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
     /bin/pkill -HUP vault
+    /usr/local/bin/consul reload
 else
     echo "/root/login.token does not contain a token. Certificates cannot be renewed."
 fi
@@ -724,67 +734,6 @@ fi
 
     ### Vault type: RAFT cluster follower
     follower)
-
-    ## start consul config
-    # make consul configuration directory and set permissions
-    mkdir -p /usr/local/etc/consul.d
-    chmod 750 /usr/local/etc/consul.d
-
-    # Create the consul agent config file with imported variables
-    echo \"{
-\\\"advertise_addr\\\": \\\"\$IP\\\",
-\\\"datacenter\\\": \\\"\$DATACENTER\\\",
-\\\"node_name\\\": \\\"\$NODENAME\\\",
-\\\"data_dir\\\":  \\\"/var/db/consul\\\",
-\\\"dns_config\\\": {
-\\\"a_record_limit\\\": 3,
-\\\"enable_truncate\\\": true
-},
-\\\"log_file\\\": \\\"/var/log/consul/\\\",
-\\\"log_level\\\": \\\"WARN\\\",
-\\\"encrypt\\\": \$GOSSIPKEY,
-\\\"start_join\\\": [ \$CONSULSERVERS ],
-\\\"service\\\": {
-\\\"name\\\": \\\"node-exporter\\\",
-\\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
-\\\"port\\\": 9100
-}
-}\" > /usr/local/etc/consul.d/agent.json
-
-    # set owner and perms on agent.json
-    chown consul:wheel /usr/local/etc/consul.d/agent.json
-    chmod 640 /usr/local/etc/consul.d/agent.json
-
-    # enable consul
-    sysrc consul_enable=\"YES\"
-
-    # set load parameter for consul config
-    sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
-    #sysrc consul_datadir=\"/var/db/consul\"
-
-    # Workaround for bug in rc.d/consul script:
-    sysrc consul_group=\"wheel\"
-
-    # setup consul logs, might be redundant if not specified in agent.json above
-    mkdir -p /var/log/consul
-    touch /var/log/consul/consul.log
-    chown -R consul:wheel /var/log/consul
-
-    # add the consul user to the wheel group, this seems to be required for
-    # consul to start on this instance. May need to figure out why.
-    # not entirely sure this is the correct way to do it
-    /usr/sbin/pw usermod consul -G wheel
-
-    ## end consul
-
-    # enable node_exporter service
-    sysrc node_exporter_enable=\"YES\"
-
-    # start consul agent
-    /usr/local/etc/rc.d/consul start
-
-    # start node_exporter
-    /usr/local/etc/rc.d/node_exporter start
 
     #begin vault config
     echo \"disable_mlock = true
@@ -837,9 +786,9 @@ service_registration \\\"consul\\\" {
   address = \\\"\$IP:8500\\\"
   scheme = \\\"http\\\"
   service = \\\"vault\\\"
-  #tls_ca_file = \\\"/mnt/certs/consulca.pem\\\"
-  #tls_cert_file = \\\"/mnt/certs/consulcert.pem\\\"
-  #tls_key_file = \\\"/mnt/certs/consulkey.pem\\\"
+#brb#  tls_ca_file = \\\"/mnt/certs/vaultca.pem\\\"
+#brb#  tls_cert_file = \\\"/mnt/certs/vaultcert.pem\\\"
+#brb#  tls_key_file = \\\"/mnt/certs/vaultkey.pem\\\"
 }
 template {
   source = \\\"/mnt/templates/cert.tpl\\\"
@@ -931,6 +880,76 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         # set permissions on /mnt/certs for vault
         chown -R vault:wheel /mnt/certs
 
+        # enable consul components
+        /usr/bin/sed -i .orig 's/#brb#//g' /usr/local/etc/vault.hcl
+
+        ## start consul config
+        # make consul configuration directory and set permissions
+        mkdir -p /usr/local/etc/consul.d
+        chmod 750 /usr/local/etc/consul.d
+
+        # Create the consul agent config file with imported variables
+        echo \"{
+\\\"advertise_addr\\\": \\\"\$IP\\\",
+\\\"datacenter\\\": \\\"\$DATACENTER\\\",
+\\\"node_name\\\": \\\"\$NODENAME\\\",
+\\\"data_dir\\\":  \\\"/var/db/consul\\\",
+\\\"dns_config\\\": {
+ \\\"a_record_limit\\\": 3,
+ \\\"enable_truncate\\\": true
+},
+\\\"verify_incoming\\\": true,
+\\\"verify_outgoing\\\": true,
+\\\"verify_server_hostname\\\": false,
+\\\"ca_file\\\": \\\"/mnt/certs/vaultca.pem\\\",
+\\\"cert_file\\\": \\\"/mnt/certs/vaultcert.pem\\\",
+\\\"key_file\\\": \\\"/mnt/certs/vaultkey.pem\\\",
+\\\"log_file\\\": \\\"/var/log/consul/\\\",
+\\\"log_level\\\": \\\"WARN\\\",
+\\\"encrypt\\\": \$GOSSIPKEY,
+\\\"start_join\\\": [ \$CONSULSERVERS ],
+\\\"service\\\": {
+ \\\"name\\\": \\\"node-exporter\\\",
+ \\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+ \\\"port\\\": 9100
+ }
+}\" > /usr/local/etc/consul.d/agent.json
+
+        # set owner and perms on agent.json
+        chown consul:wheel /usr/local/etc/consul.d/agent.json
+        chmod 640 /usr/local/etc/consul.d/agent.json
+
+        # enable consul
+        sysrc consul_enable=\"YES\"
+
+        # set load parameter for consul config
+        sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
+        #sysrc consul_datadir=\"/var/db/consul\"
+
+        # Workaround for bug in rc.d/consul script:
+        sysrc consul_group=\"wheel\"
+
+        # setup consul logs, might be redundant if not specified in agent.json above
+        mkdir -p /var/log/consul
+        touch /var/log/consul/consul.log
+        chown -R consul:wheel /var/log/consul
+
+        # add the consul user to the wheel group, this seems to be required for
+        # consul to start on this instance. May need to figure out why.
+        # not entirely sure this is the correct way to do it
+        /usr/sbin/pw usermod consul -G wheel
+
+        ## end consul
+
+        # enable node_exporter service
+        sysrc node_exporter_enable=\"YES\"
+
+        # start consul agent
+        /usr/local/etc/rc.d/consul start
+
+        # start node_exporter
+        /usr/local/etc/rc.d/node_exporter start
+
         # start vault
         echo \"Starting Vault Follower\"
         /usr/local/etc/rc.d/vault start
@@ -976,6 +995,7 @@ if [ -s /root/login.token ]; then
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
     /bin/pkill -HUP vault
+    /usr/local/bin/consul reload
 else
     echo "/root/login.token does not contain a token. Certificates cannot be renewed."
 fi

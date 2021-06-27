@@ -1,3 +1,9 @@
+2.0.17
+
+* Improvements for consul
+
+---
+
 2.0.16
 
 * Added missing role, fixing rotation scripts
