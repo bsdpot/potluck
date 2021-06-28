@@ -1,3 +1,9 @@
+0.0.4
+
+* Fixing cron job for cert rotation
+
+---
+
 0.0.3
 
 * Switching to pkg vault

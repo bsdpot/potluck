@@ -1,3 +1,9 @@
+0.9.5
+
+* Fixing cron job for cert rotation
+
+---
+
 0.9.4
 
 * Updating for pkg vault

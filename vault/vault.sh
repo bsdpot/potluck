@@ -712,7 +712,7 @@ fi
         # make executable
         chmod +x /root/rotate-certs.sh
         # add a crontab entry for every hour
-        echo \"0 * * * * root /root/rotate-certs >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
+        echo \"0 * * * * root /root/rotate-certs.sh >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
     fi
 
 ###### not working
@@ -1007,7 +1007,7 @@ fi
         # make executable
         chmod +x /root/rotate-certs.sh
         # add a crontab entry for every hour
-        echo \"0 * * * * root /root/rotate-certs >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
+        echo \"0 * * * * root /root/rotate-certs.sh >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
     fi
 
 ######## not working
