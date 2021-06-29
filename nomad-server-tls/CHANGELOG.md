@@ -1,3 +1,9 @@
+0.9.6
+
+* Reload consul on cert update
+
+---
+
 0.9.5
 
 * Fixing cron job for cert rotation

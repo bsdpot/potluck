@@ -365,7 +365,7 @@ if [ -s /root/login.token ]; then
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
     #/bin/pkill -HUP consul
-    /usr/local/bin/consul reload
+    /usr/local/etc/rc.d/consul reload
 else
     echo "/root/login.token does not contain a token. Certificates cannot be renewed."
 fi

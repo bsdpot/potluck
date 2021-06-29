@@ -1,3 +1,9 @@
+0.0.5
+
+* Adjusting consul reload to use RC script
+
+---
+
 0.0.4
 
 * Fixing cron job for cert rotation
