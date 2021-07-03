@@ -61,8 +61,8 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
 # we need latest for vault 1.7.3
-#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
   >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
@@ -348,7 +348,9 @@ listener \\\"tcp\\\" {
   address = \\\"\$IP:8200\\\"
   cluster_address = \\\"\$IP:8201\\\"
   telemetry {
+    disable_hostname = true
     unauthenticated_metrics_access = true
+    prometheus_retention_time = \\\"24h\\\"
   }
   # set to zero to enable TLS only
   tls_disable = 1
@@ -749,7 +751,9 @@ listener \\\"tcp\\\" {
   address = \\\"\$IP:8200\\\"
   cluster_address = \\\"\$IP:8201\\\"
   telemetry {
+    disable_hostname = true
     unauthenticated_metrics_access = true
+    prometheus_retention_time = \\\"24h\\\"
   }
   # set to zero to enable TLS only
   tls_disable = 0

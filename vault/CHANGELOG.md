@@ -1,3 +1,9 @@
+2.0.20
+
+* Telemetry improvements
+
+---
+
 2.0.19
 
 * Fixing cron job for cert rotation
