@@ -201,6 +201,16 @@ then
     echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
     GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
 fi
+if [ -z \${SCRAPECONSUL+x} ];
+then
+    echo 'SCRAPECONSUL is unset - see documentation how to configure this flavour, please include a list of special quoted IP:Port for consul servers to scrape'
+    exit 1
+fi
+if [ -z \${SCRAPENOMAD+x} ];
+then
+    echo 'SCRAPENOMAD is unset - see documentation how to configure this flavour, please include a list of special quoted IP:Port for nomad servers to scrape'
+    exit 1
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -428,7 +438,9 @@ fi
 
 # copy the file to /usr/local/etc/prometheus.yml
 if [ -f /root/prometheus.yml ]; then
-    sed -i .orig 's/your_vault_server_here/\$VAULTSERVER/g' /root/prometheus.yml
+    /usr/bin/sed -i .orig \"s/CONSULSERVERS/\$SCRAPECONSUL/g\" /root/prometheus.yml
+    /usr/bin/sed -i .orig \"s/NOMADSERVERS/\$SCRAPENOMAD/g\" /root/prometheus.yml
+    /usr/bin/sed -i .orig \"s/your_vault_server_here/\$VAULTSERVER/g\" /root/prometheus.yml
     cp -f /root/prometheus.yml /usr/local/etc/prometheus.yml
 else
     echo \"ERROR - NO PROMETHEUS FILE FOUND\"
@@ -448,8 +460,15 @@ sysrc prometheus_syslog_output_enable=\"YES\"
 ## end prometheus config
 
 ## start node_exporter config
+# node exporter needs tls setup
+echo \"tls_server_config:
+  cert_file: /mnt/certs/metricscert.pem
+  key_file: /mnt/certs/metricskey.pem
+\" > /usr/local/etc/node-exporter.yml
+
 # enable node_exporter service
 sysrc node_exporter_enable=\"YES\"
+sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
 ## end node_exporter config
 
 ## start grafana config
@@ -544,11 +563,11 @@ sysrc grafana_syslog_output_enable=\"YES\"
 # removed, already started in if statement higher up
 # /usr/local/etc/rc.d/consul start
 
-# start node_exporter
-/usr/local/etc/rc.d/node_exporter start
-
 # start prometheus
 /usr/local/etc/rc.d/prometheus start
+
+# start node_exporter
+/usr/local/etc/rc.d/node_exporter start
 
 # start grafana
 # not working

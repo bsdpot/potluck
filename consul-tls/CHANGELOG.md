@@ -1,3 +1,9 @@
+0.0.7
+
+* Node-exporter TLS fixes
+
+---
+
 0.0.6
 
 * Telemetry improvements

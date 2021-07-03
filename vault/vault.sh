@@ -348,9 +348,7 @@ listener \\\"tcp\\\" {
   address = \\\"\$IP:8200\\\"
   cluster_address = \\\"\$IP:8201\\\"
   telemetry {
-    disable_hostname = true
     unauthenticated_metrics_access = true
-    prometheus_retention_time = \\\"24h\\\"
   }
   # set to zero to enable TLS only
   tls_disable = 1
@@ -378,6 +376,10 @@ seal \\\"transit\\\" {
   key_name = \\\"autounseal\\\"
   mount_path = \\\"transit/\\\"
   token = \\\"UNWRAPPEDTOKEN\\\"
+}
+telemetry {
+  disable_hostname = true
+  prometheus_retention_time = \\\"24h\\\"
 }
 service_registration \\\"consul\\\" {
   address = \\\"\$IP:8500\\\"
@@ -662,11 +664,18 @@ template {
 
         ## end consul
 
-        # enable node_exporter service
-        sysrc node_exporter_enable=\"YES\"
-
         # start consul agent
         /usr/local/etc/rc.d/consul start
+
+        # node exporter needs tls setup
+        echo \"tls_server_config:
+  cert_file: /mnt/certs/vaultcert.pem
+  key_file: /mnt/certs/vaultkey.pem
+\" > /usr/local/etc/node-exporter.yml
+
+        # enable node_exporter service
+        sysrc node_exporter_enable=\"YES\"
+        sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
 
         # start node_exporter
         /usr/local/etc/rc.d/node_exporter start
@@ -751,9 +760,7 @@ listener \\\"tcp\\\" {
   address = \\\"\$IP:8200\\\"
   cluster_address = \\\"\$IP:8201\\\"
   telemetry {
-    disable_hostname = true
     unauthenticated_metrics_access = true
-    prometheus_retention_time = \\\"24h\\\"
   }
   # set to zero to enable TLS only
   tls_disable = 0
@@ -787,6 +794,10 @@ seal \\\"transit\\\" {
   key_name = \\\"autounseal\\\"
   mount_path = \\\"transit/\\\"
   token = \\\"UNWRAPPEDTOKEN\\\"
+}
+telemetry {
+  disable_hostname = true
+  prometheus_retention_time = \\\"24h\\\"
 }
 service_registration \\\"consul\\\" {
   address = \\\"\$IP:8500\\\"
@@ -947,8 +958,15 @@ cluster_addr = \\\"https://\$IP:8201\\\"
 
         ## end consul
 
+        # node exporter needs tls setup
+        echo \"tls_server_config:
+  cert_file: /mnt/certs/vaultcert.pem
+  key_file: /mnt/certs/vaultkey.pem
+\" > /usr/local/etc/node-exporter.yml
+
         # enable node_exporter service
         sysrc node_exporter_enable=\"YES\"
+        sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
 
         # start consul agent
         /usr/local/etc/rc.d/consul start

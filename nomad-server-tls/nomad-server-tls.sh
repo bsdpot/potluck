@@ -535,12 +535,18 @@ echo \"nomad_args=\\\"-config=/usr/local/etc/nomad/server.hcl -network-interface
 
 # end nomad config #
 
+# node exporter needs tls setup
+echo \"tls_server_config:
+  cert_file: /mnt/certs/nomadcert.pem
+  key_file: /mnt/certs/nomadkey.pem
+\" > /usr/local/etc/node-exporter.yml
+
 # enable node_exporter service
 sysrc node_exporter_enable=\"YES\"
+sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
 
 # start node_exporter
 /usr/local/etc/rc.d/node_exporter start
-
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned

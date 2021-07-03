@@ -500,8 +500,15 @@ esac
 
 ## end consul setup
 
+# node exporter needs tls setup
+echo \"tls_server_config:
+  cert_file: /mnt/certs/consulcert.pem
+  key_file: /mnt/certs/consulkey.pem
+\" > /usr/local/etc/node-exporter.yml
+
 # enable node_exporter service
 sysrc node_exporter_enable=\"YES\"
+sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
 
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION

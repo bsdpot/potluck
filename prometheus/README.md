@@ -27,6 +27,8 @@ The flavour includes a local ```consul``` agent instance to be available that it
   ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
       -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
       -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
+      -E SCRAPECONSUL="'10.0.0.1:8501', '10.0.0.2:8501', '10.0.0.3:8501', '10.0.0.4:8501', '10.0.0.5:8501'" \
+      -E SCRAPENOMAD="'10.0.0.6:4646', '10.0.0.7:4646', '10.0.0.8:4646', '10.0.0.9:4646', '10.0.0.10:4646'" \
       [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
@@ -37,23 +39,26 @@ The VAULTSERVER parameter is the IP address of the ```vault``` server to authent
 
 The VAULTTOKEN parameter is the issued token from the ```vault``` server.
 
+The SCRAPECONSUL parameter is a list of ```consul``` servers with port 8501 for TLS, to pass into prometheus.yml.
+
+The SCRAPENOMAD parameter is a list of ```nomad``` servers with port 4646 for TLS, to pass into prometheus.yml.
 
 # Usage
 
 To access prometheus open the following in a browser:
-* http(s)://<prometheus-host>:9090
-* http(s)://<prometheus-host>:9090/targets/
+* http://<prometheus-host>:9090
+* http://<prometheus-host>:9090/targets/
 
 To access this node's own metrics, visit:
-* http(s)://<prometheus-host>:9100/metrics
+* http://<prometheus-host>:9100/metrics
 
 or run ```fetch -o - 'https://127.0.0.1:9100/metrics'```
 
 To see the targets being captured via consul, visit
 * http://<prometheus-host>:9090/targets
 
-To access Grafana open the following in a browser:
-* http(s)://<prometheus-host>:3000
+To access Grafana open the following in a browser and accept the self-signed certificate:
+* https://<prometheus-host>:3000
 
 Note: Grafana should start automatically, and starts up with ```service grafana start``` instead of ```/usr/local/etc/rc.d/grafana start``` which wasn't working.
 

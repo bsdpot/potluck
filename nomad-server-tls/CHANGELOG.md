@@ -1,3 +1,9 @@
+0.9.8
+
+* Node-exporter TLS
+
+---
+
 0.9.7
 
 * Telemetry improvements

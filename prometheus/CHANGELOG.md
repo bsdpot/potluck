@@ -1,3 +1,9 @@
+0.9.7
+
+* Node-exporter TLS
+
+---
+
 0.9.6
 
 * Vault integration
