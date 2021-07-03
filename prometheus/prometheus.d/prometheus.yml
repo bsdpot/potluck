@@ -1,6 +1,6 @@
 global:
-  scrape_interval:     15s # Scrape job runs every 1 min.
-  evaluation_interval: 15s # Evaluate rules every 1 min.
+  scrape_interval: 15s
+  evaluation_interval: 15s
 
 alerting:
   alertmanagers:
@@ -18,7 +18,7 @@ scrape_configs:
     metrics_path: '/metrics'
     consul_sd_configs:
     - server: 'localhost:8500'
-      services: ["node-exporter"]
+      services: ["node-exporter", "nomad", "consul", "vault"]
     relabel_configs:
     - source_labels: ['__meta_consul_service']
       regex:         '(.*)'
@@ -44,3 +44,13 @@ scrape_configs:
       regex: .*,_datacenter=([^,]+),.*
       replacement: ${1}
       target_label: _datacenter
+  - job_name: 'vault'
+    metrics_path: "/v1/sys/metrics"
+    params:
+      format: ['prometheus']
+    scheme: https
+    tls_config:
+      ca_file: /mnt/certs/metricsca.pem
+    bearer_token_file: /root/login.token
+    static_configs:
+    - targets: ['your_vault_server_here:8200']

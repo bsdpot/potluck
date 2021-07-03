@@ -1,6 +1,6 @@
 0.9.6
 
-* Version bump for build process
+* Vault integration
 
 ---
 

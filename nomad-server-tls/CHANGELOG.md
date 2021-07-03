@@ -1,3 +1,9 @@
+0.9.7
+
+* Telemetry improvements
+
+---
+
 0.9.6
 
 * Reload consul on cert update

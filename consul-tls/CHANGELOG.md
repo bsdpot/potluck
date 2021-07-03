@@ -1,3 +1,9 @@
+0.0.6
+
+* Telemetry improvements
+
+---
+
 0.0.5
 
 * Adjusting consul reload to use RC script

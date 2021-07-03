@@ -15,22 +15,28 @@ The flavour includes a local ```consul``` agent instance to be available that it
 
 # Installation
 
-* Create a ZFS dataset on the parent system beforehand:    
+* Create a ZFS dataset on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/prometheusdata zroot/prometheusdata```
-* Create your local jail from the image or the flavour files or import prebuilt
-* Clone the created jail
-* Mount in the ZFS dataset you created:    
+* Create your local jail from the image or the flavour files. 
+* Clone the local jail
+* Mount in the ZFS dataset you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/prometheusdata```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 9090:9090 -e 9100:9100 -e 3000:3000```
 * Adjust to your environment:    
   ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
       -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
+      -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
       [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
+
+The VAULTSERVER parameter is the IP address of the ```vault``` server to authenticate to, and obtain certificates from.
+
+The VAULTTOKEN parameter is the issued token from the ```vault``` server.
+
 
 # Usage
 

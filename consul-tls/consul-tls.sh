@@ -60,7 +60,8 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
   >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
@@ -426,6 +427,10 @@ case \$BOOTSTRAP in
  \\\"server\\\": true,
  \\\"encrypt\\\": \$GOSSIPKEY,
  \\\"bootstrap_expect\\\": \$BOOTSTRAP,
+ \\\"telemetry\\\": {
+  \\\"disable_hostname\\\": true,
+  \\\"prometheus_retention_time\\\": \\\"24h\\\"
+ },
  \\\"service\\\": {
   \\\"name\\\": \\\"node-exporter\\\",
   \\\"tags\\\": [\\\"_app=consul\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
@@ -472,6 +477,10 @@ case \$BOOTSTRAP in
  \\\"bootstrap_expect\\\": \$BOOTSTRAP,
  \\\"rejoin_after_leave\\\": true,
  \\\"start_join\\\": [\\\"\$IP\\\", \$PEERS],
+ \\\"telemetry\\\": {
+  \\\"disable_hostname\\\": true,
+  \\\"prometheus_retention_time\\\": \\\"24h\\\"
+ },
  \\\"service\\\": {
   \\\"name\\\": \\\"node-exporter\\\",
   \\\"tags\\\": [\\\"_app=consul\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],

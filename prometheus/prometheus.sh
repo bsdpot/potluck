@@ -60,7 +60,8 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
   >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
@@ -93,6 +94,15 @@ pkg install -y grafana7
 
 step "Install package sudo"
 pkg install -y sudo
+
+step "Install package curl"
+pkg install -y curl
+
+step "Install package jq"
+pkg install -y jq
+
+step "Install package vault"
+pkg install -y vault
 
 step "Clean package installation"
 pkg clean -y
@@ -136,10 +146,10 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/consul stop || true
-/usr/local/etc/rc.d/prometheus stop || true
-/usr/local/etc/rc.d/grafana stop || true
-
+# not needed, not started automatically, needs configuring
+#/usr/local/etc/rc.d/consul stop || true
+#/usr/local/etc/rc.d/prometheus stop || true
+#/usr/local/etc/rc.d/grafana stop || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -172,6 +182,17 @@ if [ -z \${IP+x} ]; then
     echo 'IP is unset - see documentation how to configure this flavour'
     exit 1
 fi
+if [ -z \${VAULTSERVER+x} ];
+then
+    echo 'VAULTSERVER is unset - you must include the master vault server IP'
+    exit 1
+fi
+# we need a token from the vault server
+if [ -z \${VAULTTOKEN+x} ];
+then
+    echo 'VAULTTOKEN is unset - see documentation how to configure this flavour. You must pass in a valid token'
+    exit 1
+fi
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
 # Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
 # We'll re-use the one from the consul flavour
@@ -183,6 +204,10 @@ fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
+
+# setup directories for vault usage
+mkdir -p /mnt/templates
+mkdir -p /mnt/certs
 
 ## start consul
 
@@ -200,10 +225,21 @@ echo \"{
   \\\"a_record_limit\\\": 3,
   \\\"enable_truncate\\\": true
  },
+ \\\"verify_incoming\\\": false,
+ \\\"verify_outgoing\\\": true,
+ \\\"verify_server_hostname\\\":false,
+ \\\"verify_incoming_rpc\\\": true,
+ \\\"ca_file\\\": \\\"/mnt/certs/metricsca.pem\\\",
+ \\\"cert_file\\\": \\\"/mnt/certs/metricscert.pem\\\",
+ \\\"key_file\\\": \\\"/mnt/certs/metricskey.pem\\\",
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
  \\\"encrypt\\\": \$GOSSIPKEY,
  \\\"start_join\\\": [ \$CONSULSERVERS ],
+ \\\"telemetry\\\": {
+  \\\"prometheus_retention_time\\\": \\\"24h\\\",
+  \\\"disable_hostname\\\": true
+ },
  \\\"service\\\": {
   \\\"address\\\": \\\"\$IP\\\",
   \\\"name\\\": \\\"node-exporter\\\",
@@ -238,10 +274,161 @@ chown -R consul:wheel /var/log/consul
 
 ## end consul
 
+## start Vault
+
+# first remove any existing vault configuration
+if [ -f /usr/local/etc/vault/vault-server.hcl ]; then
+    rm /usr/local/etc/vault/vault-server.hcl
+fi
+# then setup a fresh vault.hcl specific to the type of image
+
+# default freebsd vault.hcl is /usr/local/etc/vault.hcl and
+# the init script /usr/local/etc/rc.d/vault refers to this
+# but many vault docs refer to /usr/local/etc/vault/vault-server.hcl
+# or similar
+
+# begin vault config
+# we're setting a config file but not actually running the vault service
+# certificate rotation is being done with a cron job
+# token rotation may require the vault service
+
+echo \"disable_mlock = true
+ui = false
+vault {
+  address = \\\"\$VAULTSERVER:8200\\\"
+  retry {
+    num_retries = 5
+  }
+}
+storage \\\"file\\\" {
+  path = \\\"/mnt/vault/data\\\"
+}
+template {
+  source = \\\"/mnt/templates/cert.tpl\\\"
+  destination = \\\"/mnt/certs/metricscert.pem\\\"
+}
+template {
+  source = \\\"/mnt/templates/ca.tpl\\\"
+  destination = \\\"/mnt/certs/metricsca.pem\\\"
+}
+template {
+  source = \\\"/mnt/templates/key.tpl\\\"
+  destination = \\\"/mnt/certs/metricskey.pem\\\"
+}\" > /usr/local/etc/vault.hcl
+
+# setup template files for certificates
+echo \"{{- /* /mnt/templates/cert.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
+{{ .Data.certificate }}{{ end }}
+\" > /mnt/templates/cert.tpl
+
+echo \"{{- /* /mnt/templates/ca.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" }}
+{{ .Data.issuing_ca }}{{ end }}
+\" > /mnt/templates/ca.tpl
+
+echo \"{{- /* /mnt/templates/key.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
+{{ .Data.private_key }}{{ end }}
+\" > /mnt/templates/key.tpl
+
+# set permissions on /mnt for vault data
+chown -R vault:wheel /mnt/certs
+chown -R vault:wheel /mnt/templates
+
+# setup rc.conf entries
+# we do not set vault_user=vault because vault will not start
+# we're not starting vault as a service
+sysrc vault_enable=no
+sysrc vault_login_class=root
+sysrc vault_syslog_output_enable=\"YES\"
+sysrc vault_syslog_output_priority=\"warn\"
+
+# retrieve CA certificates from vault leader
+echo \"Retrieving CA certificates from Vault leader\"
+/usr/local/bin/vault read -address=https://\$VAULTSERVER:8200 -tls-skip-verify -field=certificate pki/cert/ca > /mnt/certs/CA_cert.crt
+/usr/local/bin/vault read -address=https://\$VAULTSERVER:8200 -tls-skip-verify -field=certificate pki_int/cert/ca > /mnt/certs/intermediate.cert.pem
+
+# unwrap the pki token issued by vault leader
+echo \"Unwrapping passed in token...\"
+/usr/local/bin/vault unwrap -address=https://\$VAULTSERVER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -format=json \$VAULTTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unwrapped.token
+sleep 1
+if [ -s /root/unwrapped.token ]; then
+    echo \"Token unwrapped\"
+    THIS_TOKEN=\$(/bin/cat /root/unwrapped.token)
+    echo \"Logging in to vault leader to authenticate\"
+    echo \"\$THIS_TOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTSERVER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
+    sleep 5
+fi
+
+echo \"Setting certificate payload\"
+if [ -s /root/login.token ]; then
+    # generate certificates to use
+    # using this payload.json approach to avoid nested single and double quotes for expansion
+    echo \"{
+\\\"common_name\\\": \\\"\$NODENAME\\\",
+\\\"ttl\\\": \\\"24h\\\",
+\\\"ip_sans\\\": \\\"\$IP\\\"
+}\" > /mnt/templates/payload.json
+
+    # we use curl to get the certificates in json format as the issue command only has formats: pem, pem_bundle, der
+    # but no json format except via the API
+    echo \"Generating certificates to use from Vault\"
+    HEADER=\$(/bin/cat /root/login.token)
+    /usr/local/bin/curl --cacert /mnt/certs/intermediate.cert.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+
+    # cli requires [], but web api does not
+    #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/metricsca.pem
+    # if [] left in for this script, you will get error: Cannot iterate over string
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/metricsca.pem
+    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/metricscert.pem
+    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/metricskey.pem
+
+    # set permissions on /mnt/certs for vault
+    chown -R vault:wheel /mnt/certs
+
+    # removing as not sure vault service needs to be running here
+    # start vault
+    #echo \"Starting Vault Agent\"
+    #/usr/local/etc/rc.d/vault start
+
+    # start consul agent
+    /usr/local/etc/rc.d/consul start
+
+    # setup certificate rotation script
+    echo \"#!/bin/sh
+if [ -s /root/login.token ]; then
+    LOGINTOKEN=\\\$(/bin/cat /root/login.token)
+    HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
+    /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/metricsca.pem
+    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/metricscert.pem
+    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/metricskey.pem
+    # set permissions on /mnt/certs for vault
+    chown -R vault:wheel /mnt/certs
+    #/bin/pkill -HUP prometheus
+    /usr/local/etc/rc.d/consul reload
+    /usr/local/etc/rc.d/grafana restart
+else
+    echo "/root/login.token does not contain a token. Certificates cannot be renewed."
+fi
+\" > /root/rotate-certs.sh
+
+    if [ -f /root/rotate-certs.sh ]; then
+        # make executable
+        chmod +x /root/rotate-certs.sh
+        # add a crontab entry for every hour
+        echo \"0 * * * * root /root/rotate-certs.sh >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
+    fi
+else
+    echo \"ERROR: There was a problem logging into vault and no certificates were retrieved. Vault not started.\"
+fi
+
 ## start prometheus config
 
 # copy the file to /usr/local/etc/prometheus.yml
 if [ -f /root/prometheus.yml ]; then
+    sed -i .orig 's/your_vault_server_here/\$VAULTSERVER/g' /root/prometheus.yml
     cp -f /root/prometheus.yml /usr/local/etc/prometheus.yml
 else
     echo \"ERROR - NO PROMETHEUS FILE FOUND\"
@@ -250,8 +437,8 @@ fi
 # if /mnt/prometheus does not exist, create it and set permissions
 if [ ! -d /mnt/prometheus ]; then
     mkdir -p /mnt/prometheus
-    chown -R prometheus:prometheus /mnt/prometheus
 fi
+chown -R prometheus:prometheus /mnt/prometheus
 
 # enable prometheus service
 sysrc prometheus_enable=\"YES\"
@@ -261,14 +448,11 @@ sysrc prometheus_syslog_output_enable=\"YES\"
 ## end prometheus config
 
 ## start node_exporter config
-
 # enable node_exporter service
 sysrc node_exporter_enable=\"YES\"
-
 ## end node_exporter config
 
 ## start grafana config
-
 # we're mounting in a blank-or-filled ZFS dataset from root system at
 # zroot/prometheusdata to /mnt
 
@@ -296,10 +480,17 @@ if [ ! -d /mnt/grafana ]; then
     else
         echo \"ERROR - NO DASHBOARD DEFAULT CONFIG FILE FOUND\"
     fi
-    # include the relevant .json for actual dashboard when available
+    # include the relevant .json for actual dashboard as follows
+    # using https://raw.githubusercontent.com/rfrail3/grafana-dashboards/master/prometheus/node-exporter-freebsd.json
+    # as source dashboard json for demo purposes
+    if [ -f /root/home.json ]; then
+        cp -f /root/home.json /mnt/grafana/provisioning/dashboards/home.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/home.json
+    else
+        echo \"Error - could not find home.json to copy in as default dashboard\"
+    fi
 else
     # if /mnt/grafana exists then don't copy in /var/db/grafana
-    #
     # make sure permissions are good for /mnt/grafana
     chown -R grafana:grafana /mnt/grafana
 
@@ -318,9 +509,17 @@ else
     else
         echo \"ERROR - NO DASHBOARD DEFAULT CONFIG FILE FOUND\"
     fi
-    # include the relevant .json for actual dashboard when available below here
-    #
-    # insert here
+    # include the relevant .json for actual dashboard as follows
+    # home.json is generated from
+    # 1. https://raw.githubusercontent.com/rfrail3/grafana-dashboards/master/prometheus/node-exporter-freebsd.json
+    # 2. fixed with header bits from https://grafana.com/api/dashboards/13978/revisions/1/download
+    # as source dashboard
+    if [ -f /root/home.json ]; then
+        cp -f /root/home.json /mnt/grafana/provisioning/dashboards/home.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/home.json
+    else
+        echo \"Error - could not find home.json to copy in as default dashboard\"
+    fi
 fi
 
 # local edits for grafana.conf here
@@ -342,7 +541,8 @@ sysrc grafana_syslog_output_enable=\"YES\"
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 # start consul agent
-/usr/local/etc/rc.d/consul start
+# removed, already started in if statement higher up
+# /usr/local/etc/rc.d/consul start
 
 # start node_exporter
 /usr/local/etc/rc.d/node_exporter start
@@ -351,7 +551,13 @@ sysrc grafana_syslog_output_enable=\"YES\"
 /usr/local/etc/rc.d/prometheus start
 
 # start grafana
-service grafana start
+# not working
+#/usr/local/etc/rc.d/grafana start
+# this seems to work, adding in restart as being done manually
+/usr/sbin/service grafana start
+echo \"Please wait...\"
+sleep 5
+/usr/sbin/service grafana restart
 
 #
 # Do not touch this:

@@ -60,7 +60,8 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
   >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
@@ -308,8 +309,8 @@ chown -R consul:wheel /var/log/consul
 
 # end consul #
 
-
 ## start Vault
+# we're not running vault as a service, however we setup a config file
 
 # first remove any existing vault configuration
 if [ -f /usr/local/etc/vault/vault-server.hcl ]; then
@@ -515,8 +516,8 @@ vault {
 telemetry {
   publish_allocation_metrics = true
   publish_node_metrics = true
-  use_node_name = true
   prometheus_metrics = true
+  disable_hostname = true
 }
 enable_syslog=true
 log_level=\\\"INFO\\\"
