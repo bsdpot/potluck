@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# PROVIDE: promtail
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+# Add the following lines to /etc/rc.conf to enable promtail
+# promtail_enable="YES"
+#
+# promtail_enable (bool):
+#     Set it to YES to enable promtail
+#     Set to NO by default
+# promtail_user (string):
+#     Set user that promtail will run under
+#     Default is "promtail"
+# promtail_group (string):
+#     Set group that own promtail files
+#     Default is "promtail"
+# promtail_config (string)
+#     Set full path to config file
+#     Default is "promtail-local-config.yaml"
+# promtail_syslog_output_enable (bool)
+#     Set it to YES to enable stdout/stderr syslog output
+#     Set to NO by default
+# promtail_syslog_output_tag (str)
+#     Set syslog tag if syslog enabled
+#     Default is "promtail"
+# promtail_args (string)
+#     Set additional command line arguments
+#     Default is ""
+
+. /etc/rc.subr
+
+name=promtail
+rcvar=promtail_enable
+
+load_rc_config $name
+
+: ${promtail_enable:="NO"}
+: ${promtail_user:="root"}
+: ${promtail_group:="wheel"}
+: ${promtail_config:="/usr/local/etc/promtail-local-config.yaml"}
+: ${promtail_syslog_output_enable:="NO"}
+: ${promtail_args:=""}
+
+if [ -n "${promtail_conf}" ]; then
+        promtail_config="${promtail_conf}"
+fi
+
+if checkyesno promtail_syslog_output_enable; then
+        if [ -n "${promtail_syslog_output_tag}" ]; then
+                promtail_syslog_output_flags="-T ${promtail_syslog_output_tag}"
+        else
+                promtail_syslog_output_flags="-T ${name}"
+        fi
+fi
+
+pidfile="/var/run/${name}/${name}.pid"
+required_files="${promtail_config}"
+
+procname="/usr/local/bin/promtail"
+command="/usr/sbin/daemon"
+command_args="-f ${promtail_syslog_output_flags} -p ${pidfile} -t ${name} \
+        /usr/bin/env ${promtail_env} ${procname} \
+        -config.file=${promtail_config} \
+        ${promtail_args}"
+
+start_precmd="promtail_start_precmd"
+
+promtail_start_precmd()
+{
+        if [ ! -d "/var/run/${name}" ]; then
+                install -d -m 0750 -o ${promtail_user} -g ${promtail_group} "/var/run/${name}"
+        fi
+}
+
+run_rc_command "$1"

@@ -1,0 +1,9 @@
+copy-in -s /usr/local/etc/pot/flavours/loki.d/loki-local-config.yaml -d /root
+copy-in -s /usr/local/etc/pot/flavours/loki.d/promtail-local-config.yaml -d /root
+copy-in -s /usr/local/etc/pot/flavours/loki.d/loki.rc -d /root
+copy-in -s /usr/local/etc/pot/flavours/loki.d/promtail.rc -d /root
+copy-in -s /usr/local/etc/pot/flavours/loki.d/dashboard.yml -d /root
+copy-in -s /usr/local/etc/pot/flavours/loki.d/datasource.yml -d /root
+copy-in -s /usr/local/etc/pot/flavours/loki.d/grafana.conf -d /root
+copy-in -s /usr/local/etc/pot/flavours/loki.d/home.json -d /root
+set-attribute -A start-at-boot -V YES
