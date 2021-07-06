@@ -1,3 +1,9 @@
+0.9.9
+
+* Adding optional logging to remote syslog server
+
+---
+
 0.9.8
 
 * Node-exporter TLS

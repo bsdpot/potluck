@@ -233,6 +233,12 @@ then
     echo 'BOOTSTRAP is unset - see documentation how to configure this flavour, defaulting to 1'
     BOOTSTRAP=1
 fi
+# optional logging to remote syslog server
+if [ -z \${REMOTELOG+x} ];
+then
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour with IP address of remote syslog server. Defaulting to 0'
+    REMOTELOG=\"null\"
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -240,6 +246,19 @@ fi
 # setup directories for vault usage
 mkdir -p /mnt/templates
 mkdir -p /mnt/certs
+
+# optional remote logging
+# to-do: evaluate valid ip/domain name
+mkdir -p /usr/local/etc/syslog.d
+if [ ! -z \$REMOTELOG ] && [ \$REMOTELOG != \"null\" ]; then
+    echo \"# send logs to remote syslog loki instance
+*.*        @\$REMOTELOG:514
+\" > /usr/local/etc/syslog.d/remotelog.conf
+    /etc/rc.d/syslogd restart
+else
+    echo \"REMOTELOG parameter is not set to an IP address\"
+fi
+
 
 ## start Vault
 

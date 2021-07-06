@@ -22,7 +22,7 @@ Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-serve
   ```pot export-ports -p <jailname> -e 8500:8500```   
   Note: If you want to use the ```consul``` DNS service, you either need to expose the DNS UDP port like for the [Jitsi Meet Nomad potluck image](https://potluck.honeyguide.net/blog/jitsi-meet-nomad/) or you need to clone the jail and assign a host IP address (like for the [Nomad Server image](https://potluck.honeyguide.net/blog/nomad-server/)).
 * Adjust to your environment:    
-```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<consul-nodename> -E IP=<IP address of this consul node> [-E BOOTSTRAP=<1|3|5> -E VAULTSERVER=<IP address of a vault server> -E VAULTTOKEN=<pki token> -E GOSSIPKEY=<32 byte Base64 consul keygen key>```
+```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<consul-nodename> -E IP=<IP address of this consul node> [-E BOOTSTRAP=<1|3|5> -E VAULTSERVER=<IP address of a vault server> -E VAULTTOKEN=<pki token> -E GOSSIPKEY=<32 byte Base64 consul keygen key> -E REMOTELOG=<remote syslog IP>]```
 
 The BOOTSTRAP parameter defines the expected number of ```consul``` cluster nodes, it defaults to 1 (no cluster) if it is not set.
 
@@ -34,6 +34,8 @@ The VAULTSERVER parameter is for the IP address of the ```vault``` leader server
 The VAULTTOKEN parameter is for an issued token with permissions to obtain certificates from the ```vault``` cluster.
 
 The GOSSIPKEY parameter is to enable custom gossip encryption and defaults to a standard key. Do not use this key in production.
+
+The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
 
 # Usage
 

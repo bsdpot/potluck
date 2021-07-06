@@ -1,3 +1,9 @@
+0.0.8
+
+* Optional remote logging capability added
+
+---
+
 0.0.7
 
 * Node-exporter TLS fixes

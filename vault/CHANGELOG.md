@@ -1,3 +1,9 @@
+2.0.22
+
+* Optional remote syslog capability added
+
+---
+
 2.0.21
 
 * Node-exporter TLS

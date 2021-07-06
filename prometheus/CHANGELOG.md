@@ -1,3 +1,9 @@
+0.9.8
+
+* Optional remote logging capability added
+
+---
+
 0.9.7
 
 * Node-exporter TLS
