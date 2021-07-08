@@ -9,3 +9,11 @@ providers:
   editable: true
   options:
     path: /mnt/grafana/provisioning/dashboards
+- name: 'Loki'
+  orgId: 1
+  folder: ''
+  type: file
+  disableDeletion: false
+  editable: true
+  options:
+    path: /mnt/grafana/provisioning/dashboards

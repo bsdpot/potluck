@@ -39,7 +39,7 @@ The LOGCLIENTS parameter is a network subnet to accept remote syslog entries fro
 
 # Explanation
 
-There are several components to having a searchable log-ingestor. 
+There are several components to having a searchable log-ingestor:
 
 ## 1. Remote syslog server accepting incoming logs
 
@@ -55,17 +55,15 @@ This is a very broad and blunt approach, where ```syslog-ng``` may be a preferre
 
 ## 3. Loki datasource
 
-```loki``` is configred as a service and ingests data-with-labels, and makes available for query purposes.
+```loki``` is configured as a service and ingests data-with-labels, and makes available for query purposes.
 
 ## 4. Grafana with "search logs" dashboard
 
-```grafana``` is a viewer for the data in the ```loki``` datasource. A default dashboard with a simple search is included. 
-
-```grafana``` must be configured with a datasource and a dashboard to work correctly. 
+```grafana``` is a viewer for the data in the ```loki``` datasource. A separate ```grafana``` flavour must be configured with ```loki``` as a datasource to view captured logs. 
 
 # Usage
 
-To access ```grafana``` open the following in a browser:
+To access ```loki``` make sure your ```grafana``` flavour has a datasource with this host's IP:
 * https://<loki-host>:3000
 and open the ```search logs``` dashboard.
 

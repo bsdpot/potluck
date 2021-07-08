@@ -1,3 +1,9 @@
+0.9.9
+
+* Removing Grafana to own flavour
+
+---
+
 0.9.8
 
 * Optional remote logging capability added

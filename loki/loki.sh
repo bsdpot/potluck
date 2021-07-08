@@ -86,9 +86,6 @@ pkg install -y consul
 step "Install package node_exporter"
 pkg install -y node_exporter
 
-step "Install package grafana7"
-pkg install -y grafana7
-
 step "Install package sudo"
 pkg install -y sudo
 
@@ -144,9 +141,6 @@ fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
 # not needed, not started automatically, needs configuring
-#/usr/local/etc/rc.d/consul stop || true
-#/usr/local/etc/rc.d/prometheus stop || true
-#/usr/local/etc/rc.d/grafana stop || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -502,84 +496,6 @@ fi
     /usr/local/etc/rc.d/loki start
     /usr/local/etc/rc.d/promtail start
 
-    ## start grafana config
-    # we're mounting in a blank-or-filled ZFS dataset from root system at
-    # zroot/lokidata to /mnt
-
-    # if /mnt/grafana is empty, copy in /var/db/grafana
-
-    if [ ! -d /mnt/grafana ]; then
-        # if empty we need to copy in the directory structure from install
-        mkdir -p /mnt/grafana
-        cp -a /var/db/grafana /mnt
-
-        # make sure permissions are good for /mnt/grafana
-        chown -R grafana:grafana /mnt/grafana
-
-        # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
-        if [ -f /root/datasource.yml ]; then
-            cp -f /root/datasource.yml /mnt/grafana/provisioning/datasources/prometheus.yml
-            chown grafana:grafana /mnt/grafana/provisioning/datasources/prometheus.yml
-        else
-            echo \"ERROR - NO DATASOURCE CONFIG FILE FOUND\"
-        fi
-
-        # copy in the dashboard.yml file to /mnt/grafana/provisioning/dashboards
-        if [ -f /root/dashboard.yml ]; then
-            cp -f /root/dashboard.yml /mnt/grafana/provisioning/dashboards/default.yml
-            chown grafana:grafana /mnt/grafana/provisioning/dashboards/default.yml
-        else
-            echo \"ERROR - NO DASHBOARD DEFAULT CONFIG FILE FOUND\"
-        fi
-        if [ -f /root/home.json ]; then
-            cp -f /root/home.json /mnt/grafana/provisioning/dashboards/home.json
-            chown grafana:grafana /mnt/grafana/provisioning/dashboards/home.json
-        else
-            echo \"Error - could not find home.json to copy in as default dashboard\"
-        fi
-    else
-        # if /mnt/grafana exists then don't copy in /var/db/grafana
-        # make sure permissions are good for /mnt/grafana
-        chown -R grafana:grafana /mnt/grafana
-
-        # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
-        if [ -f /root/datasource.yml ]; then
-            cp -f /root/datasource.yml /mnt/grafana/provisioning/datasources/prometheus.yml
-            chown grafana:grafana /mnt/grafana/provisioning/datasources/prometheus.yml
-        else
-            echo \"ERROR - NO DATASOURCE CONFIG FILE FOUND\"
-        fi
-
-        # copy in the dashboard.yml file to /mnt/grafana/provisioning/dashboards
-        if [ -f /root/dashboard.yml ]; then
-            cp -f /root/dashboard.yml /mnt/grafana/provisioning/dashboards/default.yml
-            chown grafana:grafana /mnt/grafana/provisioning/dashboards/default.yml
-        else
-            echo \"ERROR - NO DASHBOARD DEFAULT CONFIG FILE FOUND\"
-        fi
-        # dashboards
-        if [ -f /root/home.json ]; then
-            cp -f /root/home.json /mnt/grafana/provisioning/dashboards/home.json
-            chown grafana:grafana /mnt/grafana/provisioning/dashboards/home.json
-        else
-            echo \"Error - could not find home.json to copy in as default dashboard\"
-        fi
-    fi
-
-    # local edits for grafana.conf here
-    # the mount path for some options is set to /mnt/grafana/...
-    if [ -f /root/grafana.conf ]; then
-        cp -f /root/grafana.conf /usr/local/etc/grafana.conf
-    fi
-
-    # enable grafana service
-    sysrc grafana_enable=\"YES\"
-    sysrc grafana_config=\"/usr/local/etc/grafana.conf\"
-    sysrc grafana_user=\"grafana\"
-    sysrc grafana_group=\"grafana\"
-    sysrc grafana_syslog_output_enable=\"YES\"
-    ## end grafana config
-
     ## start node_exporter config
     # node exporter needs tls setup
     echo \"tls_server_config:
@@ -594,15 +510,6 @@ fi
 
     # start node_exporter
     /usr/local/etc/rc.d/node_exporter start
-
-    # start grafana
-    # not working
-    #/usr/local/etc/rc.d/grafana start
-    # this seems to work, adding in restart as being done manually
-    /usr/sbin/service grafana start
-    echo \"Please wait...\"
-    sleep 5
-    /usr/sbin/service grafana restart
 else
     echo \"ERROR: There was a problem logging into vault and no certificates were retrieved. Vault not started.\"
 fi

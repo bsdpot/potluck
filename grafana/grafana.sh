@@ -83,9 +83,6 @@ mkdir -p /usr/local/etc/rc.d
 step "Install package consul"
 pkg install -y consul
 
-step "Install package prometheus"
-pkg install -y prometheus
-
 step "Install package node_exporter"
 pkg install -y node_exporter
 
@@ -147,9 +144,6 @@ fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
 # not needed, not started automatically, needs configuring
-#/usr/local/etc/rc.d/consul stop || true
-#/usr/local/etc/rc.d/prometheus stop || true
-#/usr/local/etc/rc.d/grafana stop || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -201,20 +195,33 @@ then
     echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
     GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
 fi
-if [ -z \${SCRAPECONSUL+x} ];
+# required prometheus server
+if [ -z \${PROMSOURCE+x} ];
 then
-    echo 'SCRAPECONSUL is unset - see documentation how to configure this flavour, please include a list of special quoted IP:Port for consul servers to scrape'
+    echo 'PROMSOURCE is unset - see documentation how to configure this flavour with IP address of Prometheus host. Exiting.'
     exit 1
 fi
-if [ -z \${SCRAPENOMAD+x} ];
+# required loki server
+if [ -z \${LOKISOURCE+x} ];
 then
-    echo 'SCRAPENOMAD is unset - see documentation how to configure this flavour, please include a list of special quoted IP:Port for nomad servers to scrape'
+    echo 'LOKISOURCE is unset - see documentation how to configure this flavour with IP address of Loki host. Exiting.'
     exit 1
+fi
+# grafana credentials
+if [ -z \${GRAFANAUSER+x} ];
+then
+    echo 'GRAFANAUSER is unset - see documentation how to configure this flavour with credentials. Defaulting to admin'
+    GRAFANAUSER=admin
+fi
+if [ -z \${GRAFANAPASSWORD+x} ];
+then
+    echo 'GRAFANAPASSWORD is unset - see documentation how to configure this flavour with credentials. Defaulting to admin'
+    GRAFANAPASSWORD=admin
 fi
 # optional logging to remote syslog server
 if [ -z \${REMOTELOG+x} ];
 then
-    echo 'REMOTELOG is unset - see documentation how to configure this flavour with IP address of remote syslog server. Defaulting to 0'
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour with IP address of remote syslog server. Defaulting to null'
     REMOTELOG=\"null\"
 fi
 
@@ -256,9 +263,9 @@ echo \"{
  \\\"verify_outgoing\\\": true,
  \\\"verify_server_hostname\\\":false,
  \\\"verify_incoming_rpc\\\": true,
- \\\"ca_file\\\": \\\"/mnt/certs/metricsca.pem\\\",
- \\\"cert_file\\\": \\\"/mnt/certs/metricscert.pem\\\",
- \\\"key_file\\\": \\\"/mnt/certs/metricskey.pem\\\",
+ \\\"ca_file\\\": \\\"/mnt/certs/grafanaca.pem\\\",
+ \\\"cert_file\\\": \\\"/mnt/certs/grafanacert.pem\\\",
+ \\\"key_file\\\": \\\"/mnt/certs/grafanakey.pem\\\",
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
  \\\"encrypt\\\": \$GOSSIPKEY,
@@ -332,15 +339,15 @@ storage \\\"file\\\" {
 }
 template {
   source = \\\"/mnt/templates/cert.tpl\\\"
-  destination = \\\"/mnt/certs/metricscert.pem\\\"
+  destination = \\\"/mnt/certs/grafanacert.pem\\\"
 }
 template {
   source = \\\"/mnt/templates/ca.tpl\\\"
-  destination = \\\"/mnt/certs/metricsca.pem\\\"
+  destination = \\\"/mnt/certs/grafanaca.pem\\\"
 }
 template {
   source = \\\"/mnt/templates/key.tpl\\\"
-  destination = \\\"/mnt/certs/metricskey.pem\\\"
+  destination = \\\"/mnt/certs/grafanakey.pem\\\"
 }\" > /usr/local/etc/vault.hcl
 
 # setup template files for certificates
@@ -405,11 +412,11 @@ if [ -s /root/login.token ]; then
     /usr/local/bin/curl --cacert /mnt/certs/intermediate.cert.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
 
     # cli requires [], but web api does not
-    #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/metricsca.pem
+    #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/grafanaca.pem
     # if [] left in for this script, you will get error: Cannot iterate over string
-    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/metricsca.pem
-    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/metricscert.pem
-    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/metricskey.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/grafanaca.pem
+    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/grafanacert.pem
+    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/grafanakey.pem
 
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
@@ -428,14 +435,14 @@ if [ -s /root/login.token ]; then
     LOGINTOKEN=\\\$(/bin/cat /root/login.token)
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
     /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
-    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/metricsca.pem
-    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/metricscert.pem
-    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/metricskey.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/grafanaca.pem
+    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/grafanacert.pem
+    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/grafanakey.pem
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
     #/bin/pkill -HUP prometheus
     /usr/local/etc/rc.d/consul reload
-    /usr/local/etc/rc.d/prometheus reload
+    /usr/local/etc/rc.d/grafana restart
 else
     echo "/root/login.token does not contain a token. Certificates cannot be renewed."
 fi
@@ -451,42 +458,120 @@ else
     echo \"ERROR: There was a problem logging into vault and no certificates were retrieved. Vault not started.\"
 fi
 
-## start prometheus config
-
-# copy the file to /usr/local/etc/prometheus.yml
-if [ -f /root/prometheus.yml ]; then
-    /usr/bin/sed -i .orig \"s/CONSULSERVERS/\$SCRAPECONSUL/g\" /root/prometheus.yml
-    /usr/bin/sed -i .orig \"s/NOMADSERVERS/\$SCRAPENOMAD/g\" /root/prometheus.yml
-    /usr/bin/sed -i .orig \"s/your_vault_server_here/\$VAULTSERVER/g\" /root/prometheus.yml
-    cp -f /root/prometheus.yml /usr/local/etc/prometheus.yml
-else
-    echo \"ERROR - NO PROMETHEUS FILE FOUND\"
-fi
-
-# if /mnt/prometheus does not exist, create it and set permissions
-if [ ! -d /mnt/prometheus ]; then
-    mkdir -p /mnt/prometheus
-fi
-chown -R prometheus:prometheus /mnt/prometheus
-
-# enable prometheus service
-sysrc prometheus_enable=\"YES\"
-sysrc prometheus_data_dir=\"/mnt/prometheus\"
-sysrc prometheus_syslog_output_enable=\"YES\"
-
-## end prometheus config
-
 ## start node_exporter config
 # node exporter needs tls setup
 echo \"tls_server_config:
-  cert_file: /mnt/certs/metricscert.pem
-  key_file: /mnt/certs/metricskey.pem
+  cert_file: /mnt/certs/grafanacert.pem
+  key_file: /mnt/certs/grafanakey.pem
 \" > /usr/local/etc/node-exporter.yml
 
 # enable node_exporter service
 sysrc node_exporter_enable=\"YES\"
 sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
 ## end node_exporter config
+
+## start grafana config
+# we're mounting in a blank-or-filled ZFS dataset from root system at
+# zroot/prometheusdata to /mnt
+
+# if /mnt/grafana is empty, copy in /var/db/grafana
+
+if [ ! -d /mnt/grafana ]; then
+    # if empty we need to copy in the directory structure from install
+    cp -a /var/db/grafana /mnt
+
+    # make sure permissions are good for /mnt/grafana
+    chown -R grafana:grafana /mnt/grafana
+
+    # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
+    if [ -f /root/datasources.yml ]; then
+        /usr/bin/sed -i .orig \"s/MYPROMHOST/\$PROMSOURCE/g\" /root/datasources.yml
+        /usr/bin/sed -i .orig \"s/MYLOKIHOST/\$LOKISOURCE/g\" /root/datasources.yml
+        cp -f /root/datasources.yml /mnt/grafana/provisioning/datasources/datasources.yml
+        chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
+    else
+        echo \"ERROR - NO DATASOURCE CONFIG FILE FOUND\"
+    fi
+
+    # copy in the dashboard.yml file to /mnt/grafana/provisioning/dashboards
+    if [ -f /root/dashboard.yml ]; then
+        cp -f /root/dashboard.yml /mnt/grafana/provisioning/dashboards/default.yml
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/default.yml
+    else
+        echo \"ERROR - NO DASHBOARD DEFAULT CONFIG FILE FOUND\"
+    fi
+    # include the relevant .json for actual dashboard as follows
+    # using https://raw.githubusercontent.com/rfrail3/grafana-dashboards/master/prometheus/node-exporter-freebsd.json
+    # as source dashboard json for demo purposes
+    if [ -f /root/home.json ]; then
+        cp -f /root/home.json /mnt/grafana/provisioning/dashboards/home.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/home.json
+    else
+        echo \"Error - could not find home.json to copy in as default dashboard\"
+    fi
+    if [ -f /root/homelogs.json ]; then
+        cp -f /root/homelogs.json /mnt/grafana/provisioning/dashboards/homelogs.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/homelogs.json
+    else
+        echo \"Error - could not find home.json to copy in as default dashboard\"
+    fi
+else
+    # if /mnt/grafana exists then don't copy in /var/db/grafana
+    # make sure permissions are good for /mnt/grafana
+    chown -R grafana:grafana /mnt/grafana
+
+    # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
+    if [ -f /root/datasources.yml ]; then
+        /usr/bin/sed -i .orig \"s/MYPROMHOST/\$PROMSOURCE/g\" /root/datasources.yml
+        /usr/bin/sed -i .orig \"s/MYLOKIHOST/\$LOKISOURCE/g\" /root/datasources.yml
+        cp -f /root/datasources.yml /mnt/grafana/provisioning/datasources/datasources.yml
+        chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
+    else
+        echo \"ERROR - NO DATASOURCE CONFIG FILE FOUND\"
+    fi
+
+    # copy in the dashboard.yml file to /mnt/grafana/provisioning/dashboards
+    if [ -f /root/dashboard.yml ]; then
+        cp -f /root/dashboard.yml /mnt/grafana/provisioning/dashboards/default.yml
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/default.yml
+    else
+        echo \"ERROR - NO DASHBOARD DEFAULT CONFIG FILE FOUND\"
+    fi
+    # include the relevant .json for actual dashboard as follows
+    # home.json is generated from
+    # 1. https://raw.githubusercontent.com/rfrail3/grafana-dashboards/master/prometheus/node-exporter-freebsd.json
+    # 2. fixed with header bits from https://grafana.com/api/dashboards/13978/revisions/1/download
+    # as source dashboard
+    if [ -f /root/home.json ]; then
+        cp -f /root/home.json /mnt/grafana/provisioning/dashboards/home.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/home.json
+    else
+        echo \"Error - could not find home.json to copy in as default dashboard\"
+    fi
+    if [ -f /root/homelogs.json ]; then
+        cp -f /root/homelogs.json /mnt/grafana/provisioning/dashboards/homelogs.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/homelogs.json
+    else
+        echo \"Error - could not find home.json to copy in as default dashboard\"
+    fi
+fi
+
+# local edits for grafana.conf here
+# the mount path for some options is set to /mnt/grafana/...
+if [ -f /root/grafana.conf ]; then
+    /usr/bin/sed -i .orig \"s/MYGRAFANAUSER/\$GRAFANAUSER/g\" /root/grafana.conf
+    /usr/bin/sed -i .orig \"s/MYGRAFANAPASSWORD/\$GRAFANAPASSWORD/g\" /root/grafana.conf
+    cp -f /root/grafana.conf /usr/local/etc/grafana.conf
+fi
+
+# enable grafana service
+sysrc grafana_enable=\"YES\"
+sysrc grafana_config=\"/usr/local/etc/grafana.conf\"
+sysrc grafana_user=\"grafana\"
+sysrc grafana_group=\"grafana\"
+sysrc grafana_syslog_output_enable=\"YES\"
+
+## end grafana config
 
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
@@ -495,11 +580,17 @@ sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
 # removed, already started in if statement higher up
 # /usr/local/etc/rc.d/consul start
 
-# start prometheus
-/usr/local/etc/rc.d/prometheus start
-
 # start node_exporter
 /usr/local/etc/rc.d/node_exporter start
+
+# start grafana
+# not working
+#/usr/local/etc/rc.d/grafana start
+# this seems to work, adding in restart as being done manually
+/usr/sbin/service grafana start
+echo \"Please wait...\"
+sleep 5
+/usr/sbin/service grafana restart
 
 #
 # Do not touch this:
