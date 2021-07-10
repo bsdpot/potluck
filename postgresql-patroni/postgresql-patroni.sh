@@ -96,28 +96,39 @@ pkg install -y consul
 step "Install package node_exporter"
 pkg install -y node_exporter
 
-step "Install package postgresql-client"
-pkg install -y postgresql13-client
-
 step "Install package postgresql-server"
 pkg install -y postgresql13-server
 
+step "Install package postgresql-client"
+pkg install -y postgresql13-client
+
 step "Install package python37"
-pkg install -y python37
+pkg install -y python38
 
 step "Install package python3-pip"
-pkg install -y py37-pip
+pkg install -y py38-pip
 
 step "Install package python-consul2"
-pkg install -y py37-python-consul2
+pkg install -y py38-python-consul2
 
-step "Install package psycopg2"
-pkg install -y py37-psycopg2
+# using pip to install as this remove postgres13 now, and installed postgres12 client as dependency
+#step "Install package psycopg2"
+#pkg install -y py38-psycopg2
+
+step "Install package curl"
+pkg install -y curl
+
+step "Install package jq"
+pkg install -y jq
+
 #
 # pip MUST ONLY be used:
 # * With the --user flag, OR
 # * To install or manage Python packages in virtual environments
 # using -prefix here to force install in /usr/local/bin
+
+step "Install pip package psycopg2-binary"
+pip install psycopg2-binary --prefix="/usr/local/"
 
 step "Install pip package patroni"
 pip install patroni --prefix="/usr/local"
@@ -221,6 +232,17 @@ then
     echo 'KEKPASS is unset - see documentation how to configure this flavour'
     KEKPASS=kekpass
 fi
+if [ -z \${VAULTSERVER+x} ];
+then
+    echo 'VAULTSERVER is unset - you must include the master vault server IP'
+    exit 1
+fi
+# we need a token from the vault server
+if [ -z \${VAULTTOKEN+x} ];
+then
+    echo 'VAULTTOKEN is unset - see documentation how to configure this flavour. You must pass in a valid token'
+    exit 1
+fi
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
 # Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
 # We'll re-use the one from the consul flavour
@@ -228,6 +250,27 @@ if [ -z \${GOSSIPKEY+x} ];
 then
     echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
     GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
+fi
+# optional logging to remote syslog server
+if [ -z \${REMOTELOG+x} ];
+then
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour with IP address of remote syslog server. Defaulting to null'
+    REMOTELOG=\"null\"
+fi
+
+# setup directories for vault usage
+mkdir -p /mnt/templates
+mkdir -p /mnt/certs
+
+# optional remote logging
+mkdir -p /usr/local/etc/syslog.d
+if [ ! -z \$REMOTELOG ] && [ \$REMOTELOG != \"null\" ]; then
+    echo \"# send logs to remote syslog loki instance
+*.*        @\$REMOTELOG:514
+\" > /usr/local/etc/syslog.d/remotelog.conf
+    /etc/rc.d/syslogd restart
+else
+    echo \"REMOTELOG parameter is not set to an IP address\"
 fi
 
 # make consul configuration directory and set permissions
@@ -244,14 +287,25 @@ echo \"{
   \\\"a_record_limit\\\": 3,
   \\\"enable_truncate\\\": true
  },
+ \\\"verify_incoming\\\": false,
+ \\\"verify_outgoing\\\": true,
+ \\\"verify_server_hostname\\\":false,
+ \\\"verify_incoming_rpc\\\": true,
+ \\\"ca_file\\\": \\\"/mnt/certs/postgresca.pem\\\",
+ \\\"cert_file\\\": \\\"/mnt/certs/postgrescert.pem\\\",
+ \\\"key_file\\\": \\\"/mnt/certs/postgreskey.pem\\\",
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
  \\\"encrypt\\\": \$GOSSIPKEY,
  \\\"start_join\\\": [ \$CONSULSERVERS ],
+ \\\"telemetry\\\": {
+  \\\"prometheus_retention_time\\\": \\\"24h\\\",
+  \\\"disable_hostname\\\": true
+ },
  \\\"service\\\": {
   \\\"address\\\": \\\"\$IP\\\",
   \\\"name\\\": \\\"node-exporter\\\",
-  \\\"tags\\\": [\\\"_app=postgresql-patroni\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
+  \\\"tags\\\": [\\\"_app=prometheus\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
   \\\"port\\\": 9100
  }
 }\" > /usr/local/etc/consul.d/agent.json
@@ -280,60 +334,222 @@ chown -R consul:wheel /var/log/consul
 # I'm not entirely sure this is the correct way to do it
 /usr/sbin/pw usermod consul -G wheel
 
-# enable node_exporter service
-sysrc node_exporter_enable=\"YES\"
+## start Vault
 
-# set patroni variables in /root/patroni.yml before copy
-if [ -f /root/patroni.yml ]; then
-    # replace MYNAME with imported variable NODENAME which must be unique
-    /usr/bin/sed -i .orig \"/MYNAME/s/MYNAME/\$NODENAME/g\" /root/patroni.yml
+# first remove any existing vault configuration
+if [ -f /usr/local/etc/vault/vault-server.hcl ]; then
+    rm /usr/local/etc/vault/vault-server.hcl
+fi
+# then setup a fresh vault.hcl specific to the type of image
 
-    # replace MYIP with imported variable IP
-    /usr/bin/sed -i .orig \"/MYIP/s/MYIP/\$IP/g\" /root/patroni.yml
+# default freebsd vault.hcl is /usr/local/etc/vault.hcl and
+# the init script /usr/local/etc/rc.d/vault refers to this
+# but many vault docs refer to /usr/local/etc/vault/vault-server.hcl
+# or similar
 
-    # replace SERVICETAG with imported variable SERVICETAG
-    /usr/bin/sed -i .orig \"/SERVICETAG/s/SERVICETAG/\$SERVICETAG/g\" /root/patroni.yml
+# begin vault config
+# we're setting a config file but not actually running the vault service
+# certificate rotation is being done with a cron job
+# token rotation may require the vault service
 
-    # replace CONSULIP with imported variable IP, as using local consul agent
-    /usr/bin/sed -i .orig \"/CONSULIP/s/CONSULIP/\$IP/g\" /root/patroni.yml
+echo \"disable_mlock = true
+ui = false
+vault {
+  address = \\\"\$VAULTSERVER:8200\\\"
+  retry {
+    num_retries = 5
+  }
+}
+storage \\\"file\\\" {
+  path = \\\"/mnt/vault/data\\\"
+}
+template {
+  source = \\\"/mnt/templates/cert.tpl\\\"
+  destination = \\\"/mnt/certs/postgrescert.pem\\\"
+}
+template {
+  source = \\\"/mnt/templates/ca.tpl\\\"
+  destination = \\\"/mnt/certs/postgresca.pem\\\"
+}
+template {
+  source = \\\"/mnt/templates/key.tpl\\\"
+  destination = \\\"/mnt/certs/postgreskey.pem\\\"
+}\" > /usr/local/etc/vault.hcl
 
-    # replace ADMPASS with imported variable ADMPASS
-    /usr/bin/sed -i .orig \"/ADMPASS/s/ADMPASS/\$ADMPASS/g\" /root/patroni.yml
+# setup template files for certificates
+echo \"{{- /* /mnt/templates/cert.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
+{{ .Data.certificate }}{{ end }}
+\" > /mnt/templates/cert.tpl
 
-    # replace KEKPASS with imported variable KEKPASS
-    /usr/bin/sed -i .orig \"/KEKPASS/s/KEKPASS/\$KEKPASS/g\" /root/patroni.yml
+echo \"{{- /* /mnt/templates/ca.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" }}
+{{ .Data.issuing_ca }}{{ end }}
+\" > /mnt/templates/ca.tpl
+
+echo \"{{- /* /mnt/templates/key.tpl */ -}}
+{{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
+{{ .Data.private_key }}{{ end }}
+\" > /mnt/templates/key.tpl
+
+# set permissions on /mnt for vault data
+chown -R vault:wheel /mnt/certs
+chown -R vault:wheel /mnt/templates
+
+# setup rc.conf entries
+# we do not set vault_user=vault because vault will not start
+# we're not starting vault as a service
+sysrc vault_enable=no
+sysrc vault_login_class=root
+sysrc vault_syslog_output_enable=\"YES\"
+sysrc vault_syslog_output_priority=\"warn\"
+
+# retrieve CA certificates from vault leader
+echo \"Retrieving CA certificates from Vault leader\"
+/usr/local/bin/vault read -address=https://\$VAULTSERVER:8200 -tls-skip-verify -field=certificate pki/cert/ca > /mnt/certs/CA_cert.crt
+/usr/local/bin/vault read -address=https://\$VAULTSERVER:8200 -tls-skip-verify -field=certificate pki_int/cert/ca > /mnt/certs/intermediate.cert.pem
+
+# unwrap the pki token issued by vault leader
+echo \"Unwrapping passed in token...\"
+/usr/local/bin/vault unwrap -address=https://\$VAULTSERVER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -format=json \$VAULTTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unwrapped.token
+sleep 1
+if [ -s /root/unwrapped.token ]; then
+    echo \"Token unwrapped\"
+    THIS_TOKEN=\$(/bin/cat /root/unwrapped.token)
+    echo \"Logging in to vault leader to authenticate\"
+    echo \"\$THIS_TOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTSERVER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
+    sleep 5
 fi
 
-# create /usr/local/etc/patroni/
-mkdir -p /usr/local/etc/patroni/
+echo \"Setting certificate payload\"
+if [ -s /root/login.token ]; then
+    # generate certificates to use
+    # using this payload.json approach to avoid nested single and double quotes for expansion
+    echo \"{
+\\\"common_name\\\": \\\"\$NODENAME\\\",
+\\\"ttl\\\": \\\"24h\\\",
+\\\"ip_sans\\\": \\\"\$IP\\\"
+}\" > /mnt/templates/payload.json
 
-# copy the file to startup location
-cp /root/patroni.yml /usr/local/etc/patroni/patroni.yml
+    # we use curl to get the certificates in json format as the issue command only has formats: pem, pem_bundle, der
+    # but no json format except via the API
+    echo \"Generating certificates to use from Vault\"
+    HEADER=\$(/bin/cat /root/login.token)
+    /usr/local/bin/curl --cacert /mnt/certs/intermediate.cert.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
 
-# copy patroni startup script to /usr/local/etc/rc.d/
-cp /root/patroni.rc /usr/local/etc/rc.d/patroni
+    # cli requires [], but web api does not
+    #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/postgresca.pem
+    # if [] left in for this script, you will get error: Cannot iterate over string
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/postgresca.pem
+    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/postgrescert.pem
+    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/postgreskey.pem
 
-# enable postgresql
-sysrc postgresql_enable=\"YES\"
+    # set permissions on /mnt/certs for vault
+    chown -R vault:wheel /mnt/certs
 
-# enable patroni
-sysrc patroni_enable=\"YES\"
+    # removing as not sure vault service needs to be running here
+    # start vault
+    #echo \"Starting Vault Agent\"
+    #/usr/local/etc/rc.d/vault start
 
-# ensure permissions are good for /var/db/postgres mount-in
-chown -R postgres:postgres /var/db/postgres
+    # start consul agent
+    /usr/local/etc/rc.d/consul start
 
-# end postgresql
+    # setup certificate rotation script
+    echo \"#!/bin/sh
+if [ -s /root/login.token ]; then
+    LOGINTOKEN=\\\$(/bin/cat /root/login.token)
+    HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
+    /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/postgresca.pem
+    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/postgrescert.pem
+    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/postgreskey.pem
+    # set permissions on /mnt/certs for vault
+    chown -R vault:wheel /mnt/certs
+    /usr/local/etc/rc.d/consul reload
+    /usr/local/etc/rc.d/node_exporter restart
+    #/usr/local/etc/rc.d/patroni restart
+else
+    echo \\\"/root/login.token does not contain a token. Certificates cannot be renewed.\\\"
+fi
+\" > /root/rotate-certs.sh
+
+    if [ -f /root/rotate-certs.sh ]; then
+        # make executable
+        chmod +x /root/rotate-certs.sh
+        # add a crontab entry for every hour
+        echo \"0 * * * * root /root/rotate-certs.sh >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
+    fi
+    ## start node_exporter config
+    # node exporter needs tls setup
+    echo \"tls_server_config:
+  cert_file: /mnt/certs/postgrescert.pem
+  key_file: /mnt/certs/postgreskey.pem
+\" > /usr/local/etc/node-exporter.yml
+
+    # enable node_exporter service
+    sysrc node_exporter_enable=\"YES\"
+    sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
+    ## end node_exporter config
+
+    # start node_exporter
+    /usr/local/etc/rc.d/node_exporter start
+
+    # set patroni variables in /root/patroni.yml before copy
+    if [ -f /root/patroni.yml ]; then
+        # replace MYNAME with imported variable NODENAME which must be unique
+        /usr/bin/sed -i .orig \"/MYNAME/s/MYNAME/\$NODENAME/g\" /root/patroni.yml
+
+        # replace MYIP with imported variable IP
+        /usr/bin/sed -i .orig \"/MYIP/s/MYIP/\$IP/g\" /root/patroni.yml
+
+        # replace SERVICETAG with imported variable SERVICETAG
+        /usr/bin/sed -i .orig \"/SERVICETAG/s/SERVICETAG/\$SERVICETAG/g\" /root/patroni.yml
+
+        # replace CONSULIP with imported variable IP, as using local consul agent
+        /usr/bin/sed -i .orig \"/CONSULIP/s/CONSULIP/\$IP/g\" /root/patroni.yml
+
+        # replace ADMPASS with imported variable ADMPASS
+        /usr/bin/sed -i .orig \"/ADMPASS/s/ADMPASS/\$ADMPASS/g\" /root/patroni.yml
+
+        # replace KEKPASS with imported variable KEKPASS
+        /usr/bin/sed -i .orig \"/KEKPASS/s/KEKPASS/\$KEKPASS/g\" /root/patroni.yml
+    fi
+
+    # create /usr/local/etc/patroni/
+    mkdir -p /usr/local/etc/patroni/
+
+    # copy the file to startup location
+    cp /root/patroni.yml /usr/local/etc/patroni/patroni.yml
+
+    # copy patroni startup script to /usr/local/etc/rc.d/
+    cp /root/patroni.rc /usr/local/etc/rc.d/patroni
+
+    # enable postgresql
+    sysrc postgresql_enable=\"YES\"
+
+    # enable patroni
+    sysrc patroni_enable=\"YES\"
+
+    # if persistent storage doesn't exist, create and copy in /var/db/postgres
+    if [ ! -d /mnt/postgres ]; then
+        mkdir -p /mnt/postgres
+        cp -a /var/db/postgres /mnt
+    fi
+
+    # ensure permissions are good for mount-in
+    #chown -R postgres:postgres /var/db/postgres
+    chown -R postgres:postgres /mnt/postgres
+
+    # end postgresql
+
+    # start patroni, which should start postgresql
+    /usr/local/etc/rc.d/patroni start
+else
+    echo \"ERROR: There was a problem logging into vault and no certificates were retrieved. Vault not started. Nor other services\"
+fi
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-
-# start consul agent
-/usr/local/etc/rc.d/consul start
-
-# start node_exporter
-/usr/local/etc/rc.d/node_exporter start
-
-# start patroni, which should start postgresql
-/usr/local/etc/rc.d/patroni start
 
 #
 # Do not touch this:

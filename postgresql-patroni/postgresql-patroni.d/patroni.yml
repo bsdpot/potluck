@@ -1,4 +1,4 @@
-scope: patronipsql
+scope: patronipostgresql
 #namespace: /service/
 name: MYNAME
 
@@ -37,17 +37,29 @@ bootstrap:
 postgresql:
   listen: MYIP:5432
   connect_address: MYIP:5432
-  data_dir: /var/db/postgres
+  data_dir: /mnt/postgres
   pgpass: /tmp/pgpass0
   authentication:
     replication:
       username: replicator
       password: rep-pass
+      sslmode: verify-ca
+      sslkey: /mnt/certs/postgreskey.pem
+      sslcert: /mnt/certs/postgrescert.pem
+      sslrootcert: /mnt/certs/postgresca.pem
     superuser:
       username: postgres
       password: KEKPASS
+      sslmode: verify-ca
+      sslkey: /mnt/certs/postgreskey.pem
+      sslcert: /mnt/certs/postgrescert.pem
+      sslrootcert: /mnt/certs/postgresca.pem
     rewind:  # Has no effect on postgres 10 and lower
       username: rewind_user
       password: rewind_password
+      sslmode: verify-ca
+      sslkey: /mnt/certs/postgreskey.pem
+      sslcert: /mnt/certs/postgrescert.pem
+      sslrootcert: /mnt/certs/postgresca.pem
   parameters:
     unix_socket_directories: '.'

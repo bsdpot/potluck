@@ -1,3 +1,9 @@
+2.0.6
+
+* Vault certificates intgration, pip install of psycopg2 due to conflicts with postgresql-client
+
+---
+
 2.0.5
 
 * Updating for persistent postgresql storage

@@ -22,16 +22,33 @@ The jail exposes these parameters that can either be set via the environment or 
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 5432:5432```    
 * Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E IP=<IP address of this node> -E SERVICETAG=<master/replica/standby-leader> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> [-E ADMPASS=<custom admin password> -E KEKPASS=<custom postgresql superuser password -E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
+  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E IP=<IP address of this node> \
+     -E SERVICETAG=<master/replica/standby-leader> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
+     -E VAULTSERVER=<Vault leader IP> -E VAULTTOKEN=<s.token> -E REMOTELOG=<IP of loki> \
+     [-E ADMPASS=<custom admin password> -E KEKPASS=<custom postgresql superuser password -E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
 
 The SERVICETAG parameter defines if this is a master, replica or standby-leader node in the cluster,
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
+The VAULTSERVER parameter is the IP address of the ```vault``` server to authenticate to, and obtain certificates from.
+
+The VAULTTOKEN parameter is the issued token from the ```vault``` server.
+
 The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
+
+The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
 
 # Usage
 
 You must su to the postgresql user and run psql to interact with Postgresql. 
 
 No default database exists. It will have to be setup or imported.
+
+Verify node or cluster details with
+
+```
+curl -s http://localhost:8008/patroni | jq .
+
+curl -s http://localhost:8008/cluster | jq .
+```
