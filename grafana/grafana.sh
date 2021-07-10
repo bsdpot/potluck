@@ -207,6 +207,18 @@ then
     echo 'LOKISOURCE is unset - see documentation how to configure this flavour with IP address of Loki host. Exiting.'
     exit 1
 fi
+# required influxdb server
+if [ -z \${INFLUXDBSOURCE+x} ];
+then
+    echo 'INFLUXDBSOURCE is unset - see documentation how to configure this flavour with IP address of InfluxDB host. Exiting.'
+    exit 1
+fi
+# required influxdb server
+if [ -z \${INFLUXDATABASE+x} ];
+then
+    echo 'INFLUXDATABASE is unset - see documentation how to configure this flavour with InfluxDB datanase name. Defaulting to default'
+    INFLUXDATABASE="default"
+fi
 # grafana credentials
 if [ -z \${GRAFANAUSER+x} ];
 then
@@ -487,6 +499,8 @@ if [ ! -d /mnt/grafana ]; then
     if [ -f /root/datasources.yml ]; then
         /usr/bin/sed -i .orig \"s/MYPROMHOST/\$PROMSOURCE/g\" /root/datasources.yml
         /usr/bin/sed -i .orig \"s/MYLOKIHOST/\$LOKISOURCE/g\" /root/datasources.yml
+        /usr/bin/sed -i .orig \"s/MYINFLUXHOST/\$INFLUXDBSOURCE/g\" /root/datasources.yml
+        /usr/bin/sed -i .orig \"s/INFLUXDATABASE/\$INFLUXDBSOURCE/g\" /root/datasources.yml
         cp -f /root/datasources.yml /mnt/grafana/provisioning/datasources/datasources.yml
         chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
     else
@@ -524,6 +538,8 @@ else
     if [ -f /root/datasources.yml ]; then
         /usr/bin/sed -i .orig \"s/MYPROMHOST/\$PROMSOURCE/g\" /root/datasources.yml
         /usr/bin/sed -i .orig \"s/MYLOKIHOST/\$LOKISOURCE/g\" /root/datasources.yml
+        /usr/bin/sed -i .orig \"s/MYINFLUXHOST/\$INFLUXDBSOURCE/g\" /root/datasources.yml
+        /usr/bin/sed -i .orig \"s/INFLUXDATABASE/\$INFLUXDBSOURCE/g\" /root/datasources.yml
         cp -f /root/datasources.yml /mnt/grafana/provisioning/datasources/datasources.yml
         chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
     else
@@ -587,6 +603,7 @@ sysrc grafana_syslog_output_enable=\"YES\"
 # not working
 #/usr/local/etc/rc.d/grafana start
 # this seems to work, adding in restart as being done manually
+cd /mnt/grafana
 /usr/sbin/service grafana start
 echo \"Please wait...\"
 sleep 5

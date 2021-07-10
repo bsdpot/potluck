@@ -25,7 +25,7 @@ It also contains ```node_exporter``` and a local ```consul``` agent instance to 
   ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
      -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
      -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
-     -E PROMSOURCE="10.0.0.1" -E LOKISOURCE="10.0.0.2" \
+     -E PROMSOURCE="10.0.0.1" -E LOKISOURCE="10.0.0.2" -E INFLUXDBSOURCE="10.0.0.3" -E INFLUXDATABASE=<database name> \
      [-E GRAFANAUSER=<username> -E GRAFANAPASSWORD=<password> \ 
      [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E REMOTELOG=<remote syslog IP>]```
 
@@ -40,6 +40,8 @@ The VAULTTOKEN parameter is the issued token from the ```vault``` server.
 The PROMSOURCE parameter is the IP address of the ```prometheus``` data source.
 
 The LOKISOURCE parameter is the IP address of the ```loki``` data source.
+
+The INFLUXDBSOURCE parameter is the IP address of the ```influxdb``` data source. The INFLUXDATABASE parameter must also be set with the name of the database to query.
 
 The default ```grafana``` user and password is ```admin```, however you can set your own credentials with the parameters GRAFANAUSER and GRAFANAPASSWORD.
 

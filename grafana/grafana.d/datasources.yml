@@ -5,6 +5,8 @@ deleteDatasources:
     orgId: 1
   - name: Loki
     orgId: 1
+  - name: InfluxDB
+    orgId: 1
 
 datasources:
   - name: Prometheus
@@ -15,7 +17,7 @@ datasources:
     url: http://MYPROMHOST:9090
     isDefault: 1
     version: 1
-    editable: false
+    editable: true
   - name: Loki
     type: loki
     access: proxy
@@ -24,4 +26,16 @@ datasources:
     url: http://MYLOKIHOST:3100
     isDefault: 0
     version: 1
-    editable: false
+    editable: true
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    database: INFLUXDATABASE
+    orgId: 1
+    httpMethod: POST
+    url: http://MYINFLUXHOST:8086
+    jsonData:
+      httpMode: GET
+    isDefault: 0
+    version: 1
+    editable: true
