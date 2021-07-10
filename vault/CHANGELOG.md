@@ -1,3 +1,9 @@
+2.0.23
+
+* Switched to quarterly package sources
+
+---
+
 2.0.22
 
 * Optional remote syslog capability added

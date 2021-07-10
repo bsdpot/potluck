@@ -1,3 +1,9 @@
+0.0.9
+
+* Switched to quarterly package sources
+
+---
+
 0.0.8
 
 * Optional remote logging capability added

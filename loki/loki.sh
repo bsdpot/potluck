@@ -60,8 +60,8 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
+#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
+echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
   >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 

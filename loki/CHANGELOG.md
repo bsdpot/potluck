@@ -1,3 +1,9 @@
+0.0.4
+
+* Switched to quarterly package sources
+
+---
+
 0.0.3
 
 * Removed Grafana to separate flavour
