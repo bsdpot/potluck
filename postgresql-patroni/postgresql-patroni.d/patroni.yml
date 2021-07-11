@@ -1,4 +1,4 @@
-scope: patronipostgresql
+scope: postgresql
 #namespace: /service/
 name: MYNAME
 
@@ -10,7 +10,7 @@ consul:
   host: CONSULIP:8500 # local IP
   service_tags: SERVICETAG #master/replica/standby-leader
   register_service: true
-  service_check_interval: 30
+  service_check_interval: 15
 
 bootstrap:
   dcs:
@@ -20,7 +20,14 @@ bootstrap:
     maximum_lag_on_failover: 1048576
     postgresql:
       use_pg_rewind: true
+      use_slots: true
       parameters:
+        wal_level: replica
+        hot_standby: "on"
+        wal_keep_segments: 8
+        max_wal_senders: 5
+        max_replication_slots: 5
+        checkpoint_timeout: 30
   initdb:  # Note: It needs to be a list (some options need values, others are switches)
   - encoding: UTF8
   - data-checksums
@@ -33,33 +40,36 @@ bootstrap:
       options:
         - createrole
         - createdb
+    replicator:
+      password: REPPASS
+      options:
+        - replication
 
 postgresql:
   listen: MYIP:5432
   connect_address: MYIP:5432
-  data_dir: /mnt/postgres
+  data_dir: /mnt/postgres/data/
+  conf_dir: /mnt/postgres/data/
   pgpass: /tmp/pgpass0
   authentication:
     replication:
       username: replicator
-      password: rep-pass
-      sslmode: verify-ca
-      sslkey: /mnt/certs/postgreskey.pem
-      sslcert: /mnt/certs/postgrescert.pem
-      sslrootcert: /mnt/certs/postgresca.pem
+      password: REPPASS
     superuser:
       username: postgres
       password: KEKPASS
-      sslmode: verify-ca
-      sslkey: /mnt/certs/postgreskey.pem
-      sslcert: /mnt/certs/postgrescert.pem
-      sslrootcert: /mnt/certs/postgresca.pem
     rewind:  # Has no effect on postgres 10 and lower
       username: rewind_user
       password: rewind_password
-      sslmode: verify-ca
-      sslkey: /mnt/certs/postgreskey.pem
-      sslcert: /mnt/certs/postgrescert.pem
-      sslrootcert: /mnt/certs/postgresca.pem
-  parameters:
-    unix_socket_directories: '.'
+    parameters:
+      unix_socket_directories: '/tmp/'
+      ssl: on
+      ssl_cert_file: /mnt/certs/postgrescert.pem
+      ssl_key_file: /mnt/certs/postgreskey.pem
+      ssl_ca_file: /mnt/certs/postgresca.pem
+
+tags:
+    nofailover: false
+    noloadbalance: false
+    clonefrom: false
+    nosync: false

@@ -109,6 +109,7 @@ step "Install package python3-pip"
 pkg install -y py38-pip
 
 step "Install package python-consul2"
+# this version gives error
 pkg install -y py38-python-consul2
 
 # using pip to install as this remove postgres13 now, and installed postgres12 client as dependency
@@ -199,48 +200,53 @@ fi
 #
 if [ -z \${DATACENTER+x} ];
 then
-    echo 'DATACENTER is unset - see documentation how to configure this flavour'
+    echo 'DATACENTER is unset - see documentation how to configure this flavour.'
     exit 1
 fi
 if [ -z \${CONSULSERVERS+x} ];
 then
-    echo 'CONSULSERVERS is unset - see documentation how to configure this flavour'
+    echo 'CONSULSERVERS is unset - see documentation how to configure this flavour.'
     exit 1
 fi
 if [ -z \${NODENAME+x} ];
 then
-    echo 'The unique option NODENAME is unset - see documentation how to configure this flavour'
+    echo 'The unique option NODENAME is unset - see documentation how to configure this flavour.'
     exit 1
 fi
 if [ -z \${IP+x} ];
 then
-    echo 'IP is unset - see documentation how to configure this flavour'
+    echo 'IP is unset - see documentation how to configure this flavour.'
     IP=\"127.0.0.1\"
 fi
 if [ -z \${SERVICETAG+x} ];
 then
-    echo 'SERVICETAG is unset - see documentation how to configure this flavour'
+    echo 'SERVICETAG is unset - see documentation how to configure this flavour.'
     SERVICETAG=master
 fi
 if [ -z \${ADMPASS+x} ];
 then
-    echo 'ADMPASS is unset - see documentation how to configure this flavour'
+    echo 'ADMPASS is unset - see documentation how to configure this flavour. Defaulting to admin.'
     ADMPASS=admin
 fi
 if [ -z \${KEKPASS+x} ];
 then
-    echo 'KEKPASS is unset - see documentation how to configure this flavour'
+    echo 'KEKPASS is unset - see documentation how to configure this flavour. Defaulting to kekpass.'
     KEKPASS=kekpass
+fi
+if [ -z \${REPPASS+x} ];
+then
+    echo 'REPPASS is unset - see documentation how to configure this flavour. Defaulting to reppass.'
+    REPPASS=reppass
 fi
 if [ -z \${VAULTSERVER+x} ];
 then
-    echo 'VAULTSERVER is unset - you must include the master vault server IP'
+    echo 'VAULTSERVER is unset - you must include the master vault server IP.'
     exit 1
 fi
 # we need a token from the vault server
 if [ -z \${VAULTTOKEN+x} ];
 then
-    echo 'VAULTTOKEN is unset - see documentation how to configure this flavour. You must pass in a valid token'
+    echo 'VAULTTOKEN is unset - see documentation how to configure this flavour. You must pass in a valid token.'
     exit 1
 fi
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
@@ -254,7 +260,7 @@ fi
 # optional logging to remote syslog server
 if [ -z \${REMOTELOG+x} ];
 then
-    echo 'REMOTELOG is unset - see documentation how to configure this flavour with IP address of remote syslog server. Defaulting to null'
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour with IP address of remote syslog server. Defaulting to null.'
     REMOTELOG=\"null\"
 fi
 
@@ -468,7 +474,9 @@ if [ -s /root/login.token ]; then
     chown -R vault:wheel /mnt/certs
     /usr/local/etc/rc.d/consul reload
     /usr/local/etc/rc.d/node_exporter restart
+    # restart gives error with port already in use
     #/usr/local/etc/rc.d/patroni restart
+    /usr/local/bin/patronictl -c /usr/local/etc/patroni/patroni.yml reload postgresql --force
 else
     echo \\\"/root/login.token does not contain a token. Certificates cannot be renewed.\\\"
 fi
@@ -495,25 +503,30 @@ fi
     # start node_exporter
     /usr/local/etc/rc.d/node_exporter start
 
+    # start patroni
+
     # set patroni variables in /root/patroni.yml before copy
     if [ -f /root/patroni.yml ]; then
         # replace MYNAME with imported variable NODENAME which must be unique
-        /usr/bin/sed -i .orig \"/MYNAME/s/MYNAME/\$NODENAME/g\" /root/patroni.yml
+        /usr/bin/sed -i .orig \"s/MYNAME/\$NODENAME/g\" /root/patroni.yml
 
         # replace MYIP with imported variable IP
-        /usr/bin/sed -i .orig \"/MYIP/s/MYIP/\$IP/g\" /root/patroni.yml
+        /usr/bin/sed -i .orig \"s/MYIP/\$IP/g\" /root/patroni.yml
 
         # replace SERVICETAG with imported variable SERVICETAG
-        /usr/bin/sed -i .orig \"/SERVICETAG/s/SERVICETAG/\$SERVICETAG/g\" /root/patroni.yml
+        /usr/bin/sed -i .orig \"s/SERVICETAG/\$SERVICETAG/g\" /root/patroni.yml
 
         # replace CONSULIP with imported variable IP, as using local consul agent
-        /usr/bin/sed -i .orig \"/CONSULIP/s/CONSULIP/\$IP/g\" /root/patroni.yml
+        /usr/bin/sed -i .orig \"s/CONSULIP/\$IP/g\" /root/patroni.yml
 
         # replace ADMPASS with imported variable ADMPASS
-        /usr/bin/sed -i .orig \"/ADMPASS/s/ADMPASS/\$ADMPASS/g\" /root/patroni.yml
+        /usr/bin/sed -i .orig \"s/ADMPASS/\$ADMPASS/g\" /root/patroni.yml
 
         # replace KEKPASS with imported variable KEKPASS
-        /usr/bin/sed -i .orig \"/KEKPASS/s/KEKPASS/\$KEKPASS/g\" /root/patroni.yml
+        /usr/bin/sed -i .orig \"s/KEKPASS/\$KEKPASS/g\" /root/patroni.yml
+
+        # replace REPPASS with imported variable REPPASS
+        /usr/bin/sed -i .orig \"s/REPPASS/\$REPPASS/g\" /root/patroni.yml
     fi
 
     # create /usr/local/etc/patroni/
@@ -527,19 +540,23 @@ fi
 
     # enable postgresql
     sysrc postgresql_enable=\"YES\"
+    sysrc postgresql_data=\"/mnt/postgres/data/\"
 
     # enable patroni
     sysrc patroni_enable=\"YES\"
 
     # if persistent storage doesn't exist, create and copy in /var/db/postgres
     if [ ! -d /mnt/postgres ]; then
-        mkdir -p /mnt/postgres
-        cp -a /var/db/postgres /mnt
+        mkdir -p /mnt/postgres/data
     fi
 
-    # ensure permissions are good for mount-in
-    #chown -R postgres:postgres /var/db/postgres
-    chown -R postgres:postgres /mnt/postgres
+    if [ -d /mnt/postgres ]; then
+        chown -R postgres:postgres /mnt/postgres/
+        chmod -R 0750 /mnt/postgres/
+    fi
+
+    # modify postgres user homedir to /mnt/postgres/data
+    /usr/sbin/pw usermod -n postgres -d /mnt/postgres/data -s /bin/sh
 
     # end postgresql
 

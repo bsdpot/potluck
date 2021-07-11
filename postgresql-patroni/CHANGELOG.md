@@ -1,3 +1,9 @@
+2.0.7
+
+* Replication password, other updates to improve initdb process such as 0750 perms on /mnt/postgres
+
+---
+
 2.0.6
 
 * Vault certificates intgration, pip install of psycopg2 due to conflicts with postgresql-client
