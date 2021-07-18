@@ -1,1 +1,1 @@
-
+copy-in -s /usr/local/etc/pot/flavours/consul-tls.d/syslog-ng.conf -d /root

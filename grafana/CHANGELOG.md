@@ -1,3 +1,9 @@
+0.0.5
+
+* Implementing syslog-ng with tls for remote logging
+
+---
+
 0.0.4
 
 * Adding influxdb data source and parameters

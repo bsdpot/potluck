@@ -11,7 +11,11 @@ This is a flavour containing the ```vault``` security storage platform.
 
 You can e.g. store certificates, passwords etc to be used with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-server/) ```pot``` flavour on this site.
 
-The flavour expects a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```.
+The flavour expects a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. If no ```consul``` instance is available at first, make sure it's up within an hour and the certificate renewal process will restart ```consul```. You can also connect to this host and ```service consul restart``` manually.
+
+## protip
+
+Start ```vault``` cluster with the IP addresses of ```consul``` servers, which aren't live. Then start ```loki``` instance. Then start a ```consul``` cluster. Restart consul on ```vault``` and ```loki``` instances or wait for first certificate renewal after an hour.
 
 # Disclaimer
 This image uses the ports tree from github to obtain the latest version of ```vault```. An optimised ```git-lite``` sparse clone of github packages, and build process, reduces the build time for 5-6mins.

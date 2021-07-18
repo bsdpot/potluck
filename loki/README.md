@@ -9,7 +9,7 @@ tags: ["logs", "syslog", "loki", "grafana"]
 
 This is a flavour containing the ```loki``` datasource, ```promtail``` log ingestor,  and ```grafana``` viewer.
 
-The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```.
+The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. If no ```consul``` instance is available at first, make sure it's up within an hour and the certificate renewal process will restart ```consul```. You can also connect to this host and ```service consul restart``` manually.
 
 # Installation
 

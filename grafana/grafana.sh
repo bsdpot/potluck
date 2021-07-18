@@ -98,6 +98,9 @@ pkg install -y curl
 step "Install package jq"
 pkg install -y jq
 
+step "Install package syslog-ng"
+pkg install -y syslog-ng
+
 step "Install package vault"
 pkg install -y vault
 
@@ -242,18 +245,7 @@ fi
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs
-
-# optional remote logging
-mkdir -p /usr/local/etc/syslog.d
-if [ ! -z \$REMOTELOG ] && [ \$REMOTELOG != \"null\" ]; then
-    echo \"# send logs to remote syslog loki instance
-*.*        @\$REMOTELOG:514
-\" > /usr/local/etc/syslog.d/remotelog.conf
-    /etc/rc.d/syslogd restart
-else
-    echo \"REMOTELOG parameter is not set to an IP address\"
-fi
+mkdir -p /mnt/certs/localca
 
 ## start consul
 
@@ -427,6 +419,8 @@ if [ -s /root/login.token ]; then
     #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/grafanaca.pem
     # if [] left in for this script, you will get error: Cannot iterate over string
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/grafanaca.pem
+    # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
+    cp -f /mnt/certs/grafanaca.pem /mnt/certs/localca/grafanaca.pem
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/grafanacert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/grafanakey.pem
 
@@ -448,12 +442,14 @@ if [ -s /root/login.token ]; then
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
     /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/grafanaca.pem
+    # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
+    cp -f /mnt/certs/grafanaca.pem /mnt/certs/localca/grafanaca.pem
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/grafanacert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/grafanakey.pem
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
     #/bin/pkill -HUP prometheus
-    /usr/local/etc/rc.d/consul reload
+    /usr/local/etc/rc.d/consul restart
     /usr/local/etc/rc.d/grafana restart
 else
     echo "/root/login.token does not contain a token. Certificates cannot be renewed."
@@ -469,6 +465,29 @@ fi
 else
     echo \"ERROR: There was a problem logging into vault and no certificates were retrieved. Vault not started.\"
 fi
+
+# setup syslog-ng
+# optional remote logging
+if [ ! -z \$REMOTELOG ] && [ \$REMOTELOG != \"null\" ]; then
+    if [ -f /root/syslog-ng.conf ]; then
+        /usr/bin/sed -i .orig \"s/REMOTELOGIP/\$REMOTELOG/g\" /root/syslog-ng.conf
+        cp -f /root/syslog-ng.conf /usr/local/etc/syslog-ng.conf
+        # stop syslogd
+        service syslogd onestop || true
+        # setup sysrc entries to start and set parameters to accept logs from remote subnet
+        sysrc syslogd_enable=\"NO\"
+        sysrc syslog_ng_enable=\"YES\"
+        #sysrc syslog_ng_flags=\"-u daemon\"
+        sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+        /usr/local/etc/rc.d/syslog-ng start
+        echo \"syslog-ng setup complete\"
+    else
+        echo \"/root/syslog-ng.conf is missing?\"
+    fi
+else
+    echo \"REMOTELOG parameter is not set to an IP address. syslog-ng won't operate.\"
+fi
+
 
 ## start node_exporter config
 # node exporter needs tls setup

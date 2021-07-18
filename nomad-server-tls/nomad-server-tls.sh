@@ -98,6 +98,9 @@ pkg install -y node_exporter
 step "Install package curl"
 pkg install -y curl
 
+step "Install package syslog-ng"
+pkg install -y syslog-ng
+
 step "Install package vault"
 # removed - using ports to get 1.7.3
 # we install vault to get the correct rc files
@@ -249,20 +252,9 @@ fi
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 
-# optional remote logging
-mkdir -p /usr/local/etc/syslog.d
-if [ ! -z \$REMOTELOG ] && [ \$REMOTELOG != \"null\" ]; then
-    echo \"# send logs to remote syslog loki instance
-*.*        @\$REMOTELOG:514
-\" > /usr/local/etc/syslog.d/remotelog.conf
-    /etc/rc.d/syslogd restart
-else
-    echo \"REMOTELOG parameter is not set to an IP address\"
-fi
-
 # setup directories for vault usage
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs
+mkdir -p /mnt/certs/localca
 
 # start consul agent #
 
@@ -429,6 +421,8 @@ if [ -s /root/login.token ]; then
     #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/nomadca.pem
     # if [] left in for this script, you will get error: Cannot iterate over string
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/nomadca.pem
+    # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
+    cp -f /mnt/certs/nomadca.pem /mnt/certs/localca/nomadca.pem
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/nomadcert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/nomadkey.pem
 
@@ -450,12 +444,14 @@ if [ -s /root/login.token ]; then
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
     /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/nomadca.pem
+    # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
+    cp -f /mnt/certs/nomadca.pem /mnt/certs/localca/nomadca.pem
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/nomadcert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/nomadkey.pem
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
     /bin/pkill -HUP nomad
-    /usr/local/etc/rc.d/consul reload
+    /usr/local/etc/rc.d/consul restart
 else
     echo "/root/login.token does not contain a token. Certificates cannot be renewed."
 fi
@@ -470,6 +466,28 @@ fi
 
 else
     echo \"ERROR: There was a problem logging into vault and no certificates were retrieved. Vault not started.\"
+fi
+
+# setup syslog-ng
+# optional remote logging
+if [ ! -z \$REMOTELOG ] && [ \$REMOTELOG != \"null\" ]; then
+    if [ -f /root/syslog-ng.conf ]; then
+        /usr/bin/sed -i .orig \"s/REMOTELOGIP/\$REMOTELOG/g\" /root/syslog-ng.conf
+        cp -f /root/syslog-ng.conf /usr/local/etc/syslog-ng.conf
+        # stop syslogd
+        service syslogd onestop || true
+        # setup sysrc entries to start and set parameters to accept logs from remote subnet
+        sysrc syslogd_enable=\"NO\"
+        sysrc syslog_ng_enable=\"YES\"
+        #sysrc syslog_ng_flags=\"-u daemon\"
+        sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+        /usr/local/etc/rc.d/syslog-ng start
+        echo \"syslog-ng setup complete\"
+    else
+        echo \"/root/syslog-ng.conf is missing?\"
+    fi
+else
+    echo \"REMOTELOG parameter is not set to an IP address. syslog-ng won't operate.\"
 fi
 
 # start nomad config #

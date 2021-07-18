@@ -1,3 +1,9 @@
+0.0.5
+
+* Switched to rsyslog with tls
+
+---
+
 0.0.4
 
 * Switched to quarterly package sources

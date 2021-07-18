@@ -1,3 +1,9 @@
+2.0.8
+
+* Implementing syslog-ng with tls for remote logging
+
+---
+
 2.0.7
 
 * Replication password, other updates to improve initdb process such as 0750 perms on /mnt/postgres

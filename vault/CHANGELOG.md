@@ -1,3 +1,9 @@
+2.0.24
+
+* Implementing syslog-ng with tls for remote logging
+
+---
+
 2.0.23
 
 * Switched to quarterly package sources

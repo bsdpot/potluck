@@ -98,6 +98,9 @@ pkg install -y jq
 step "Install package vault"
 pkg install -y vault
 
+step "Install package syslog-ng"
+pkg install -y syslog-ng
+
 step "Clean package installation"
 pkg clean -y
 
@@ -192,18 +195,21 @@ then
     echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
     GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
 fi
-if [ -z \${LOGCLIENTS+x} ];
-then
-    echo 'LOGCLIENTS is unset - see documentation how to configure this flavour, please include the subnet to accept logs from'
-    exit 1
-fi
+#if [ -z \${LOGCLIENTS+x} ];
+#then
+#    echo 'LOGCLIENTS is unset - see documentation how to configure this flavour, please include the subnet to accept logs from'
+#    exit 1
+#fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs
+mkdir -p /mnt/certs/localca
+
+# setup directories for loki
+mkdir -p /tmp/loki/rules-temp
 
 ## start consul
 
@@ -377,6 +383,8 @@ if [ -s /root/login.token ]; then
     #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/lokica.pem
     # if [] left in for this script, you will get error: Cannot iterate over string
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/lokica.pem
+    # syslog-ng wants ca file in a directory, so copy CA file to there too
+    cp -f /mnt/certs/lokica.pem /mnt/certs/localca/lokica.pem
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/lokicert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/lokikey.pem
 
@@ -398,13 +406,16 @@ if [ -s /root/login.token ]; then
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
     /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/lokica.pem
+    # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
+    cp -f /mnt/certs/lokica.pem /mnt/certs/localca/lokica.pem
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/lokicert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/lokikey.pem
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
-    /usr/local/etc/rc.d/consul reload
+    /usr/local/etc/rc.d/consul restart
     /usr/local/etc/rc.d/node_exporter restart
-    #/usr/local/etc/rc.d/loki restart
+    /usr/local/etc/rc.d/syslog-ng restart
+    #/usr/local/etc/rc.d/loki reload
 else
     echo \\\"/root/login.token does not contain a token. Certificates cannot be renewed.\\\"
 fi
@@ -417,23 +428,26 @@ fi
         echo \"0 * * * * root /root/rotate-certs.sh >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
     fi
 
-    # syslogd setup
-
+    echo \"starting syslog-ng setup\"
+    # rsyslog setup
     # setup log directory for stored logs
     mkdir -p /mnt/logs
 
-    # setup sysrc entries to start and set parameters to accept logs from remote subnet
-    sysrc syslogd_enable=\"YES\"
-    sysrc syslogd_flags=\"-b \$IP:514 -a \$LOGCLIENTS:* -n -C -vv\"
-
-    #TRIMLOGCLIENTS=\$(echo \$LOGCLIENTS | /usr/bin/grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
-
-    echo \"#-\$IP
-*.*                                             /mnt/logs/central.log
-#*
-\" >> /etc/syslog.conf
-
-    /etc/rc.d/syslogd restart
+    if [ -f /root/syslog-ng.conf ]; then
+        /usr/bin/sed -i .orig \"s/MYIP/\$IP/g\" /root/syslog-ng.conf
+        cp -f /root/syslog-ng.conf /usr/local/etc/syslog-ng.conf
+        # stop syslogd
+        service syslogd onestop || true
+        # setup sysrc entries to start and set parameters to accept logs from remote subnet
+        sysrc syslogd_enable=\"NO\"
+        sysrc syslog_ng_enable=\"YES\"
+        #sysrc syslog_ng_flags=\"-u daemon\"
+        sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+        /usr/local/etc/rc.d/syslog-ng start
+        echo \"syslog-ng setup complete\"
+    else
+        echo \"/root/syslog-ng.conf is missing?\"
+    fi
 
     # loki setup
     # download the source files

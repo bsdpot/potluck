@@ -1,1 +1,2 @@
 copy-in -s /usr/local/etc/pot/flavours/influxdb.d/influxdb.conf -d /root
+copy-in -s /usr/local/etc/pot/flavours/influxdb.d/syslog-ng.conf -d /root

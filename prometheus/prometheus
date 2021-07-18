@@ -1,1 +1,2 @@
 copy-in -s /usr/local/etc/pot/flavours/prometheus.d/prometheus.yml -d /root
+copy-in -s /usr/local/etc/pot/flavours/prometheus.d/syslog-ng.conf -d /root
