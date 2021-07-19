@@ -1,3 +1,3 @@
-copy-in -s /usr/local/etc/pot/flavours/postgresql-patroni.d/patroni.rc -d /root/patroni.rc
-copy-in -s /usr/local/etc/pot/flavours/postgresql-patroni.d/patroni.yml -d /root/patroni.yml
-copy-in -s /usr/local/etc/pot/flavours/postgresql-patroni.d/syslog-ng.conf -d /root/patroni.yml
+copy-in -s /usr/local/etc/pot/flavours/postgresql-patroni.d/patroni.rc -d /root/
+copy-in -s /usr/local/etc/pot/flavours/postgresql-patroni.d/patroni.yml -d /root/
+copy-in -s /usr/local/etc/pot/flavours/postgresql-patroni.d/syslog-ng.conf -d /root/
