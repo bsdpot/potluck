@@ -1,3 +1,9 @@
+0.0.6
+
+* Fixing error with grafana crashing. Standardising cert.pem key.pem ca.pem
+
+---
+
 0.0.5
 
 * Implementing syslog-ng with tls for remote logging

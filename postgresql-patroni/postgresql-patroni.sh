@@ -289,9 +289,9 @@ echo \"{
  \\\"verify_outgoing\\\": true,
  \\\"verify_server_hostname\\\":false,
  \\\"verify_incoming_rpc\\\": true,
- \\\"ca_file\\\": \\\"/mnt/certs/postgresca.pem\\\",
- \\\"cert_file\\\": \\\"/mnt/certs/postgrescert.pem\\\",
- \\\"key_file\\\": \\\"/mnt/certs/postgreskey.pem\\\",
+ \\\"ca_file\\\": \\\"/mnt/certs/ca.pem\\\",
+ \\\"cert_file\\\": \\\"/mnt/certs/cert.pem\\\",
+ \\\"key_file\\\": \\\"/mnt/certs/key.pem\\\",
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
  \\\"encrypt\\\": \$GOSSIPKEY,
@@ -363,15 +363,15 @@ storage \\\"file\\\" {
 }
 template {
   source = \\\"/mnt/templates/cert.tpl\\\"
-  destination = \\\"/mnt/certs/postgrescert.pem\\\"
+  destination = \\\"/mnt/certs/cert.pem\\\"
 }
 template {
   source = \\\"/mnt/templates/ca.tpl\\\"
-  destination = \\\"/mnt/certs/postgresca.pem\\\"
+  destination = \\\"/mnt/certs/ca.pem\\\"
 }
 template {
   source = \\\"/mnt/templates/key.tpl\\\"
-  destination = \\\"/mnt/certs/postgreskey.pem\\\"
+  destination = \\\"/mnt/certs/key.pem\\\"
 }\" > /usr/local/etc/vault.hcl
 
 # setup template files for certificates
@@ -436,13 +436,13 @@ if [ -s /root/login.token ]; then
     /usr/local/bin/curl --cacert /mnt/certs/intermediate.cert.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
 
     # cli requires [], but web api does not
-    #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/postgresca.pem
+    #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
     # if [] left in for this script, you will get error: Cannot iterate over string
-    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/postgresca.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
     # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
-    cp -f /mnt/certs/postgresca.pem /mnt/certs/localca/postgresca.pem
-    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/postgrescert.pem
-    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/postgreskey.pem
+    cp -f /mnt/certs/ca.pem /mnt/certs/localca/ca.pem
+    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
+    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
 
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
@@ -461,17 +461,20 @@ if [ -s /root/login.token ]; then
     LOGINTOKEN=\\\$(/bin/cat /root/login.token)
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
     /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
-    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/postgresca.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
     # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
-    cp -f /mnt/certs/postgresca.pem /mnt/certs/localca/postgresca.pem
-    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/postgrescert.pem
-    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/postgreskey.pem
+    cp -f /mnt/certs/ca.pem /mnt/certs/localca/ca.pem
+    /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
+    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
+    # restart services
     /usr/local/etc/rc.d/consul restart
     /usr/local/etc/rc.d/node_exporter restart
-    # restart gives error with port already in use
-    #/usr/local/etc/rc.d/patroni restart
+    /usr/local/etc/rc.d/syslog-ng restart
+    # restart gives error with port already in use when using this
+    #  /usr/local/etc/rc.d/patroni restart
+    # so we're using this instead
     /usr/local/bin/patronictl -c /usr/local/etc/patroni/patroni.yml reload postgresql --force
 else
     echo \\\"/root/login.token does not contain a token. Certificates cannot be renewed.\\\"
@@ -510,8 +513,8 @@ fi
     ## start node_exporter config
     # node exporter needs tls setup
     echo \"tls_server_config:
-  cert_file: /mnt/certs/postgrescert.pem
-  key_file: /mnt/certs/postgreskey.pem
+  cert_file: /mnt/certs/cert.pem
+  key_file: /mnt/certs/key.pem
 \" > /usr/local/etc/node-exporter.yml
 
     # enable node_exporter service

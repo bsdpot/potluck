@@ -17,9 +17,9 @@ scrape_configs:
   - job_name: 'consul_registered_services'
     tls_config:
       insecure_skip_verify: false
-      ca_file: /mnt/certs/metricsca.pem
-      cert_file: /mnt/certs/metricscert.pem
-      key_file: /mnt/certs/metricskey.pem
+      ca_file: /mnt/certs/ca.pem
+      cert_file: /mnt/certs/cert.pem
+      key_file: /mnt/certs/key.pem
     metrics_path: '/metrics'
     consul_sd_configs:
     - server: 'localhost:8500'
@@ -60,9 +60,9 @@ scrape_configs:
     scheme: https
     tls_config:
       insecure_skip_verify: false
-      ca_file: /mnt/certs/metricsca.pem
-      cert_file: /mnt/certs/metricscert.pem
-      key_file: /mnt/certs/metricskey.pem
+      ca_file: /mnt/certs/ca.pem
+      cert_file: /mnt/certs/cert.pem
+      key_file: /mnt/certs/key.pem
     static_configs:
     - targets: [CONSULSERVERS]
   - job_name: 'nomad'
@@ -72,9 +72,9 @@ scrape_configs:
     scheme: https
     tls_config:
       insecure_skip_verify: false
-      ca_file: /mnt/certs/metricsca.pem
-      cert_file: /mnt/certs/metricscert.pem
-      key_file: /mnt/certs/metricskey.pem
+      ca_file: /mnt/certs/ca.pem
+      cert_file: /mnt/certs/cert.pem
+      key_file: /mnt/certs/key.pem
     static_configs:
     - targets: [NOMADSERVERS]
   - job_name: 'vault'

@@ -1,3 +1,9 @@
+0.0.6
+
+* Added max connections option for syslog-ng, standardised cert.pem key.pem ca.pem for certificate filenames
+
+---
+
 0.0.5
 
 * Switched to rsyslog with tls

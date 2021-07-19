@@ -64,9 +64,9 @@ postgresql:
     parameters:
       unix_socket_directories: '/tmp/'
       ssl: on
-      ssl_cert_file: /mnt/certs/postgrescert.pem
-      ssl_key_file: /mnt/certs/postgreskey.pem
-      ssl_ca_file: /mnt/certs/postgresca.pem
+      ssl_cert_file: /mnt/certs/cert.pem
+      ssl_key_file: /mnt/certs/key.pem
+      ssl_ca_file: /mnt/certs/ca.pem
 
 tags:
     nofailover: false

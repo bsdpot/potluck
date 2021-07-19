@@ -1,3 +1,9 @@
+2.0.9
+
+* Updating syslog-ng and standardised cert.pem key.pem ca.pem
+
+---
+
 2.0.8
 
 * Implementing syslog-ng with tls for remote logging
