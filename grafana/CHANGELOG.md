@@ -1,3 +1,9 @@
+0.0.7
+
+* Second attempt at fixing grafana crashing a few minutes after startip
+
+---
+
 0.0.6
 
 * Fixing error with grafana crashing. Standardising cert.pem key.pem ca.pem
