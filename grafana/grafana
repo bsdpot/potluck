@@ -1,6 +1,7 @@
 copy-in -s /usr/local/etc/pot/flavours/grafana.d/datasources.yml -d /root
 copy-in -s /usr/local/etc/pot/flavours/grafana.d/dashboard.yml -d /root
 copy-in -s /usr/local/etc/pot/flavours/grafana.d/grafana.conf -d /root
+copy-in -s /usr/local/etc/pot/flavours/grafana.d/grafana.rc -d /root
 copy-in -s /usr/local/etc/pot/flavours/grafana.d/home.json -d /root
 copy-in -s /usr/local/etc/pot/flavours/grafana.d/homelogs.json -d /root
 copy-in -s /usr/local/etc/pot/flavours/grafana.d/syslog-ng.conf -d /root

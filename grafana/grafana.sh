@@ -515,6 +515,14 @@ if [ ! -d /mnt/grafana ]; then
     # make sure permissions are good for /mnt/grafana
     chown -R grafana:grafana /mnt/grafana
 
+    # overwrite the rc file with a fixed one as per
+    # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
+    if [ -f /root/grafana.rc ]; then
+        echo "replacing grafana rc file with freebsd-fixed one"
+        cp -f /root/grafana.rc /usr/local/etc/rc.d/grafana
+        chmod 755 /usr/local/etc/rc.d/grafana
+    fi
+
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     if [ -f /root/datasources.yml ]; then
         /usr/bin/sed -i .orig \"s/MYPROMHOST/\$PROMSOURCE/g\" /root/datasources.yml
@@ -553,6 +561,14 @@ else
     # if /mnt/grafana exists then don't copy in /var/db/grafana
     # make sure permissions are good for /mnt/grafana
     chown -R grafana:grafana /mnt/grafana
+
+    # overwrite the rc file with a fixed one as per
+    # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
+    if [ -f /root/grafana.rc ]; then
+        echo "replacing grafana rc file with freebsd-fixed one"
+        cp -f /root/grafana.rc /usr/local/etc/rc.d/grafana
+        chmod 755 /usr/local/etc/rc.d/grafana
+    fi
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     if [ -f /root/datasources.yml ]; then

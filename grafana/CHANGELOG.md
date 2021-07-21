@@ -1,3 +1,9 @@
+0.0.8
+
+* Third attempt at fixing grafana crashing a few minutes after startip. Bug report says to fix the rc file.
+
+---
+
 0.0.7
 
 * Second attempt at fixing grafana crashing a few minutes after startip
