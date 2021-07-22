@@ -1,3 +1,9 @@
+0.0.12
+
+* Clearing syslog-ng /dev/console entries to remove log spam
+
+---
+
 0.0.11
 
 * Updates to syslog-ng and standardising cert.pem key.pem ca.pem

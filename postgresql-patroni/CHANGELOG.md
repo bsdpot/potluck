@@ -1,3 +1,9 @@
+2.0.11
+
+* Clearing syslog-ng /dev/console entries to remove log spam
+
+---
+
 2.0.10
 
 * Fixing typo in copy-in, future-proofing

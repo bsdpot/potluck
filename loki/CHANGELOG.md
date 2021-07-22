@@ -1,3 +1,9 @@
+0.0.7
+
+* Clearing syslog-ng /dev/console entries to remove log spam
+
+---
+
 0.0.6
 
 * Added max connections option for syslog-ng, standardised cert.pem key.pem ca.pem for certificate filenames
