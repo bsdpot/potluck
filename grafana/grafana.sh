@@ -521,6 +521,10 @@ if [ ! -d /mnt/grafana ]; then
         echo "replacing grafana rc file with freebsd-fixed one"
         cp -f /root/grafana.rc /usr/local/etc/rc.d/grafana
         chmod 755 /usr/local/etc/rc.d/grafana
+        # this seems to be required, grafana still crashes without it
+        chmod 755 /root
+    else
+        echo \"ERROR - no /root/grafana.rc file\"
     fi
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
@@ -549,7 +553,7 @@ if [ ! -d /mnt/grafana ]; then
         cp -f /root/home.json /mnt/grafana/provisioning/dashboards/home.json
         chown grafana:grafana /mnt/grafana/provisioning/dashboards/home.json
     else
-        echo \"Error - could not find home.json to copy in as default dashboard\"
+        echo \"ERROR - could not find home.json to copy in as default dashboard\"
     fi
     if [ -f /root/homelogs.json ]; then
         cp -f /root/homelogs.json /mnt/grafana/provisioning/dashboards/homelogs.json
@@ -568,6 +572,10 @@ else
         echo "replacing grafana rc file with freebsd-fixed one"
         cp -f /root/grafana.rc /usr/local/etc/rc.d/grafana
         chmod 755 /usr/local/etc/rc.d/grafana
+        # this seems to be required, grafana still crashes without it
+        chmod 755 /root
+    else
+        echo \"ERROR - no /root/grafana.rc file\"
     fi
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
@@ -598,13 +606,13 @@ else
         cp -f /root/home.json /mnt/grafana/provisioning/dashboards/home.json
         chown grafana:grafana /mnt/grafana/provisioning/dashboards/home.json
     else
-        echo \"Error - could not find home.json to copy in as default dashboard\"
+        echo \"ERROR - could not find home.json to copy in as default dashboard\"
     fi
     if [ -f /root/homelogs.json ]; then
         cp -f /root/homelogs.json /mnt/grafana/provisioning/dashboards/homelogs.json
         chown grafana:grafana /mnt/grafana/provisioning/dashboards/homelogs.json
     else
-        echo \"Error - could not find home.json to copy in as default dashboard\"
+        echo \"ERROR - could not find home.json to copy in as default dashboard\"
     fi
 fi
 
@@ -614,36 +622,25 @@ if [ -f /root/grafana.conf ]; then
     /usr/bin/sed -i .orig \"s/MYGRAFANAUSER/\$GRAFANAUSER/g\" /root/grafana.conf
     /usr/bin/sed -i .orig \"s/MYGRAFANAPASSWORD/\$GRAFANAPASSWORD/g\" /root/grafana.conf
     cp -f /root/grafana.conf /usr/local/etc/grafana.conf
+    # enable grafana service
+    sysrc grafana_enable=\"YES\"
+    sysrc grafana_config=\"/usr/local/etc/grafana.conf\"
+    sysrc grafana_user=\"grafana\"
+    sysrc grafana_group=\"grafana\"
+    sysrc grafana_syslog_output_enable=\"YES\"
+    # start grafana
+    /usr/local/etc/rc.d/grafana start
+else
+    echo \"ERROR - there is no /root/grafana.conf file. Grafana not started\"
 fi
-
-# enable grafana service
-sysrc grafana_enable=\"YES\"
-sysrc grafana_config=\"/usr/local/etc/grafana.conf\"
-sysrc grafana_user=\"grafana\"
-sysrc grafana_group=\"grafana\"
-sysrc grafana_syslog_output_enable=\"YES\"
 
 ## end grafana config
 
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
-# start consul agent
-# removed, already started in if statement higher up
-# /usr/local/etc/rc.d/consul start
-
 # start node_exporter
 /usr/local/etc/rc.d/node_exporter start
-
-# start grafana
-# not working
-#/usr/local/etc/rc.d/grafana start
-# this seems to work, adding in restart as being done manually
-cd /mnt/grafana
-/usr/sbin/service grafana start
-echo \"Please wait...\"
-sleep 5
-/usr/sbin/service grafana restart
 
 #
 # Do not touch this:

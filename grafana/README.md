@@ -60,3 +60,21 @@ If you stop the image, the data will still exist, and a new image can be started
 If you need to change the directory parameters for the ZFS dataset, adjust the ```mount-in``` command accordingly for the source directory as mounted by the parent OS.
 
 Do not adjust the image destination mount point at /mnt because ```grafana``` is configured to use this directory for data.
+
+# Problems to pay attention to
+The default installation of ```grafana``` on freebsd has a known bug where grafana crashes, or crashes on a restart:
+```
+grafana[96320]: panic: error getting work directory: stat .: permission denied
+grafana[96320]: 
+grafana[96320]: goroutine 1 [running]:
+grafana[96320]: gopkg.in/macaron%2ev1.init.1()
+grafana[96320]:         gopkg.in/macaron.v1/macaron.go:317 +0x110
+```
+
+Workable solutions are presented at https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
+
+This image has implemented both options:
+* remove ```/usr/bin/env ${grafana_env}``` from command args
+* add ```chmod 755 /root``` to pot flavour script
+
+Important: These are non-standard permissions for /root and allow any user on the system to read files in /root.

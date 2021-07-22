@@ -1,3 +1,9 @@
+0.0.9
+
+* Fourth attempt at fixing grafana crashing a few minutes after startip. Bug report says to chmod 755 /root.
+
+---
+
 0.0.8
 
 * Third attempt at fixing grafana crashing a few minutes after startip. Bug report says to fix the rc file.
