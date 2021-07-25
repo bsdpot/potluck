@@ -1,3 +1,9 @@
+2.0.27
+
+* Automation scripts and pki improvements. tls-verify doesn't work, syslog-ng with verification slows things down, raft cluster may be slow or not work
+
+---
+
 2.0.26
 
 * Clearing syslog-ng /dev/console entries to remove log spam

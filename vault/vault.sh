@@ -100,40 +100,23 @@ pkg install -y jq
 step "Install package curl"
 pkg install -y curl
 
+step "Install package openssl"
+pkg install -y openssl
+
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
 step "Clean package installation"
 pkg clean -y
 
+#### Vault
+#
 step "Install package vault"
-# removed - using ports to get 1.7.3
-# we install vault to get the correct rc files
-# using pkg to install vault again
 pkg install -y vault
-
-# using git approach instead of portsnap cron which has long random delay
-# now using Michael's sparse git clone method for faster download
-#pkg install -y git-lite go
-#mkdir -p /usr/ports
-#cd /usr/ports
-#git init -b main
-#git remote add origin https://git.freebsd.org/ports.git
-#git sparse-checkout init
-#git sparse-checkout set GIDs Mk/ Templates/ UIDs security/vault/
-#git pull --depth=1 origin main
-#cd /usr/ports/security/vault/
-#make install clean
-#cd ~
 
 step "Add vault user to daemon class"
 pw usermod vault -G daemon
 
-#step "Trim ports tree"
-# doing this to free up some space, leaving security
-#echo \"Trimming ports tree to save some space\"
-#rm -rf /usr/ports
-#pkg delete -y go git-lite
 step "Package clean"
 pkg autoremove -y
 pkg clean -y
@@ -177,10 +160,6 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-
-# removing as not needed, services aren't running
-#/usr/local/etc/rc.d/consul onestop || true
-#/usr/local/etc/rc.d/vault onestop  || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -263,7 +242,8 @@ fi
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs/localca
+mkdir -p /mnt/certs/hash
+mkdir -p /mnt/vault
 
 ## start Vault
 
@@ -288,6 +268,7 @@ case \$VAULTTYPE in
 
   ### Vault type: Unseal Node - no consul or node_template setup
   unseal)
+    export VAULT_CLIENT_TIMEOUT=300s
     #begin vault config
     echo \"disable_mlock = true
 ui = true
@@ -307,9 +288,9 @@ listener \\\"tcp\\\" {
 # if you want persistent vault data
 # if using another directory update this path accordingly
 storage \\\"file\\\" {
-  path    = \\\"/mnt/\\\"
+  path    = \\\"/mnt/vault/\\\"
 }
-log_level = \\\"Warn\\\"
+log_level = \\\"Debug\\\"
 api_addr = \\\"http://\$IP:8200\\\"
 \" > /usr/local/etc/vault.hcl
 
@@ -323,7 +304,7 @@ path \\\"transit/decrypt/autounseal\\\" {
 \" > /root/autounseal.hcl
 
     # set permissions on /mnt for vault data
-    chown -R vault:wheel /mnt
+    chown -R vault:wheel /mnt/
 
     # remove the copied in rotate-certs.sh file, not needed on unseal node
     if [ -f /root/rotate-certs.sh ]; then
@@ -335,17 +316,73 @@ path \\\"transit/decrypt/autounseal\\\" {
     sysrc vault_enable=yes
     sysrc vault_login_class=root
     sysrc vault_syslog_output_enable=\"YES\"
-    sysrc vault_syslog_output_priority=\"debug\"
+    sysrc vault_syslog_output_priority=\"warn\"
+
+    # setup some automation scripts
+    echo \"#!/bin/sh
+/usr/local/bin/vault audit enable -address=http://\$IP:8200 file file_path=/mnt/audit.log
+/usr/local/bin/vault secrets enable -address=http://\$IP:8200 transit
+/usr/local/bin/vault write -address=http://\$IP:8200 -f transit/keys/autounseal
+/usr/local/bin/vault policy write -address=http://\$IP:8200 autounseal /root/autounseal.hcl
+\" > /root/setup-autounseal.sh
+
+    chmod +x /root/setup-autounseal.sh
+
+    # setup quick way to issue unseal tokens
+    echo \"#!/bin/sh
+/usr/local/bin/vault token create -address=http://\$IP:8200 -policy=\\\"autounseal\\\" -wrap-ttl=24h
+\" > /root/issue-unseal.sh
+
+    chmod +x /root/issue-unseal.sh
+
+    # setup a quick way to check vault status
+    echo \"#!/bin/sh
+/usr/local/bin/vault status -address=http://\$IP:8200
+\" > /root/vault-status.sh
+
+    chmod +x /root/vault-status.sh
 
     # start vault
     echo \"Starting Vault Unseal Node\"
     /usr/local/etc/rc.d/vault start
 
+    echo \"------------------------------------------------------------------------------------------\"
+    echo \"Unseal node is almost complete, you must now login and manually run the following\"
+    echo \"commands to complete the setup:\"
+    echo \" \"
+    echo \"  vault operator init -address=http://\$IP:8200\"
+    echo \"  vault operator unseal -address=http://\$IP:8200\"
+    echo \"     (paste key1)\"
+    echo \"  vault operator unseal -address=http://\$IP:8200\"
+    echo \"     (paste key2)\"
+    echo \"  vault operator unseal -address=http://\$IP:8200\"
+    echo \"     (paste key3)\"
+    echo \"  vault login -address=http://\$IP:8200\"
+    echo \"     (use token from operator init)\"
+    echo \" \"
+    echo \" Then run /root/setup-autounseal.sh to automatically run each of the following 4 steps \"
+    echo \"  vault audit enable -address=http://\$IP:8200 file file_path=/mnt/audit.log\"
+    echo \"  vault secrets enable -address=http://\$IP:8200 transit\"
+    echo \"  vault write -address=http://\$IP:8200 -f transit/keys/autounseal\"
+    echo \"  vault policy write -address=http://\$IP:8200 autounseal /root/autounseal.hcl\"
+    echo \" \"
+    echo \"Unseal node is setup\"
+    echo \" \"
+    echo \"To issue unseal tokens for each RAFT cluster node, run /root/issue-unseal.sh or manually run:\"
+    echo \" \"
+    echo \"  vault token create -address=http://\$IP:8200 -policy=\\\"autounseal\\\" -wrap-ttl=24h\"
+    echo \" \"
+    echo \"You must run this for each node in your cluster. Every node needs an unseal token.\"
+    echo \"------------------------------------------------------------------------------------------\"
     # end unseal config
     ;;
 
     ### Vault type: RAFT Leader
     leader)
+
+    export VAULT_CLIENT_TIMEOUT=300s
+    #export VAULT_TLS_SERVER_NAME=\$NODENAME
+    export VAULT_MAX_RETRIES=5
 
     # begin vault config
     echo \"disable_mlock = true
@@ -363,7 +400,11 @@ listener \\\"tcp\\\" {
   }
   # set to zero to enable TLS only
   tls_disable = 1
-  #xyz#tls_ca_file = \\\"/mnt/certs/ca.pem\\\"
+  # temp tls_skip_verify = true
+  tls_skip_verify = true
+  # tls verification isn't working yet
+  ##tls_require_and_verify_client_cert = false
+  #xyz#tls_client_ca_file = \\\"/mnt/certs/ca.pem\\\"
   #xyz#tls_cert_file = \\\"/mnt/certs/cert.pem\\\"
   #xyz#tls_key_file = \\\"/mnt/certs/key.pem\\\"
 }
@@ -371,15 +412,15 @@ listener \\\"tcp\\\" {
 # if you want persistent vault data
 # if using another directory update this path accordingly
 storage \\\"raft\\\" {
-  path    = \\\"/mnt/\\\"
+  path    = \\\"/mnt/vault/\\\"
   node_id = \\\"\$NODENAME\\\"
+  autopilot_reconcile_interval = \\\"5s\\\"
   retry_join {
-    #xyz#leader_api_addr = \\\"http://\$IP:8200\\\"
+    leader_api_addr = \\\"http://\$VAULTLEADER:8200\\\"
     #xyz#leader_ca_cert_file = \\\"/mnt/certs/ca.pem\\\"
     #xyz#leader_client_cert_file = \\\"/mnt/certs/cert.pem\\\"
     #xyz#leader_client_key_file = \\\"/mnt/certs/key.pem\\\"
   }
-  autopilot_reconcile_interval = \\\"5s\\\"
 }
 seal \\\"transit\\\" {
   address = \\\"http://\$UNSEALIP:8200\\\"
@@ -392,15 +433,17 @@ telemetry {
   disable_hostname = true
   prometheus_retention_time = \\\"24h\\\"
 }
-service_registration \\\"consul\\\" {
-  address = \\\"\$IP:8500\\\"
-  scheme = \\\"http\\\"
-  service = \\\"vault\\\"
-#brb#  tls_ca_file = \\\"/mnt/certs/ca.pem\\\"
+#brb#service_registration \\\"consul\\\" {
+#brb#  address = \\\"\$IP:8500\\\"
+#brb#  scheme = \\\"https\\\"
+#brb#  service = \\\"vault\\\"
+#brb#  tls_ca_file = \\\"/mnt/certs/combinedca.pem\\\"
 #brb#  tls_cert_file = \\\"/mnt/certs/cert.pem\\\"
 #brb#  tls_key_file = \\\"/mnt/certs/key.pem\\\"
-}
-log_level = \\\"Warn\\\"
+#brb#}
+pid_file = \\\"/var/run/vault.pid\\\"
+log_format = \\\"standard\\\"
+log_level = \\\"Debug\\\"
 api_addr = \\\"http://\$IP:8200\\\"
 cluster_addr = \\\"http://\$IP:8201\\\"
 \" > /usr/local/etc/vault.hcl
@@ -414,6 +457,9 @@ cluster_addr = \\\"http://\$IP:8201\\\"
     sysrc vault_login_class=root
     sysrc vault_syslog_output_enable=\"YES\"
     sysrc vault_syslog_output_priority=\"warn\"
+
+    # set vault timeout
+    export VAULT_CLIENT_TIMEOUT=300s
 
     # if we need to autounseal with passed in unwrap token
     # vault unwrap [options] [TOKEN]
@@ -437,7 +483,7 @@ cluster_addr = \\\"http://\$IP:8201\\\"
     /usr/local/bin/vault operator init -address=http://\$IP:8200 -format=json > /root/recovery.keys
 
     # set some variables from the saved file
-    # this saved file may be a security risk?
+    # the saved file may be a security risk?
     echo \"Setting variables from recovery.keys\"
     KEY1=\$(/bin/cat /root/recovery.keys | /usr/local/bin/jq -r '.recovery_keys_b64[0]')
     KEY2=\$(/bin/cat /root/recovery.keys | /usr/local/bin/jq -r '.recovery_keys_b64[1]')
@@ -450,17 +496,20 @@ cluster_addr = \\\"http://\$IP:8201\\\"
     /usr/local/bin/vault operator unseal -address=http://\$IP:8200 \$KEY1
     /usr/local/bin/vault operator unseal -address=http://\$IP:8200 \$KEY2
     /usr/local/bin/vault operator unseal -address=http://\$IP:8200 \$KEY3
+    # uncomment this if more than 3 keys required to unseal
+    #/usr/local/bin/vault operator unseal -address=http://\$IP:8200 \$KEY4
+    #/usr/local/bin/vault operator unseal -address=http://\$IP:8200 \$KEY5
 
     echo \"Please wait for cluster...\"
-    sleep 3
+    sleep 6
 
+    # The vault documentation says this is not done on first node, but raft only works if it is!
     echo \"Joining the raft cluster\"
     /usr/local/bin/vault operator raft join -address=http://\$IP:8200
-
     # we need to wait a period for the cluster to initialise correctly and elect leader
     # cluster requires 10 seconds to bootstrap, even if single server, we can only login after
     echo \"Please wait for raft cluster to contemplate self...\"
-    sleep 11
+    sleep 12
 
     echo \"Logging in to local raft instance\"
     echo \"\$ROOTKEY\" | /usr/local/bin/vault login -address=http://\$IP:8200 -method=token -field=token token=- > /root/login.token
@@ -479,47 +528,75 @@ cluster_addr = \\\"http://\$IP:8201\\\"
         echo \"\"
         # tweak raft autopilot settings
         # requires vault 1.7
-        /usr/local/bin/vault operator raft autopilot set-config -address=http://\$IP:8200 -dead-server-last-contact-threshold=5 -server-stabilization-time=30 -cleanup-dead-servers=true -min-quorum=3
+        /usr/local/bin/vault operator raft autopilot set-config -address=http://\$IP:8200 -dead-server-last-contact-threshold=10s -server-stabilization-time=30s -cleanup-dead-servers=true -min-quorum=3
 
         # vault secrets enable [options] TYPE
+        # enable the pki secrets engine at the pki path
         echo \"Enabling PKI\"
         /usr/local/bin/vault secrets enable -address=http://\$IP:8200 pki
 
         # vault secrets tune [options] PATH
+        # Tune the pki secrets engine to issue certificates with a maximum time-to-live (TTL) of 87600 hours (10 years)
         echo \"Tuning PKI\"
         /usr/local/bin/vault secrets tune -max-lease-ttl=87600h -address=http://\$IP:8200 pki/
 
+        # enable cert authentication, currently disabled
+        echo \"Enabling certificate authentication\"
+        /usr/local/bin/vault auth enable -address=http://\$IP:8200 cert
+
         # vault write [options] PATH [DATA K=V...]
+        # Generate the root CA, extracting the root CA certificate to CA_cert.pem in pem format
+        # note: the secret key is not exported
         echo \"Generating internal certificate\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 -field=certificate pki/root/generate/internal common_name=\"\$DATACENTER\" ttl=87600h > /mnt/certs/CA_cert.crt
+        /usr/local/bin/vault write -address=http://\$IP:8200 -field=certificate pki/root/generate/internal common_name=\"\$DATACENTER\" format=\"pem\" ttl=\"87600h\" > /mnt/certs/CA_cert.pem
+        # we need this newline for combining certs later
+        echo \"\" >> /mnt/certs/CA_cert.pem
+        # configure the CA and CRL endpoints
         echo \"Writing certificate URLs\"
         /usr/local/bin/vault write -address=http://\$IP:8200 pki/config/urls issuing_certificates=\"http://\$IP:8200/v1/pki/ca\" crl_distribution_points=\"http://\$IP:8200/v1/pki/crl\"
 
         # setup intermediate CA
         echo \"Setting up raft cluster intermediate CA\"
-
         # vault secrets enable [options] TYPE
+        # enable the pki secrets engine at the pki_int path
         echo \"Enabling PKI Intermediate\"
         /usr/local/bin/vault secrets enable -address=http://\$IP:8200 -path=pki_int pki
 
         # vault secrets tune [options] PATH
+        # tune the secrets engine to issue certificates with a maximum time-to-live (TTL) of 43800 hours (5 years)
         echo \"Tuning PKI Intermediate\"
         /usr/local/bin/vault secrets tune -max-lease-ttl=43800h -address=http://\$IP:8200 pki_int/
 
         # vault write [options] PATH [DATA K=V...]
+        # generate an intermediate certificate and save the CSR
         echo \"Writing intermediate certificate to file\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/internal common_name=\"\$DATACENTER Intermediate Authority\" | /usr/local/bin/jq -r '.data.csr' > /mnt/certs/pki_intermediate.csr
+        #/usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/internal common_name=\"\$DATACENTER Intermediate Authority\" alt_names=\"\$NODENAME\" ip_sans=\"\$IP\" | /usr/local/bin/jq -r '.data.csr' > /mnt/certs/pki_intermediate.csr
+        # the line above is now split into a few components with exported certifcate and key
+        #/usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/exported common_name=\"\$DATACENTER Intermediate Authority\" alt_names=\"\$NODENAME\" ip_sans=\"\$IP\" format=\"pem\" > /mnt/certs/pki_intermediate.pem
+        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/exported common_name=\"\$DATACENTER Intermediate Authority\" format=\"pem\" > /mnt/certs/pki_intermediate.pem
+        # Extract the private key & certificate signing request from the previous command
+        /usr/local/bin/jq -r '.data.private_key' < /mnt/certs/pki_intermediate.pem > /mnt/certs/intermediate.key.pem
+        /usr/local/bin/jq -r '.data.csr' < /mnt/certs/pki_intermediate.pem > /mnt/certs/pki_intermediate.csr
+
+        # Sign the intermediate certificate with the root certificate and save the generated certificate as intermediate.cert.pem
         echo \"Signing intermediate certificate\"
         /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki/root/sign-intermediate csr=@/mnt/certs/pki_intermediate.csr format=pem_bundle ttl=\"43800h\" | /usr/local/bin/jq -r '.data.certificate' > /mnt/certs/intermediate.cert.pem
+
+        # once CSR signed and root CA returns certificate, import back into vault
         echo \"Storing intermediate certificate\"
         /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/intermediate/set-signed certificate=@/mnt/certs/intermediate.cert.pem
+
+        # combine intermediate certs and root CA into chain
+        cat /mnt/certs/intermediate.cert.pem > /mnt/certs/intermediate.chain.pem
+        cat /mnt/certs/CA_cert.pem >> /mnt/certs/intermediate.chain.pem
 
         # setup roles
         echo \"Setting up roles\"
         # vault write [options] PATH [DATA K=V...]
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"720h\" require_cn=false generate_lease=true
+        # setup roles to enable certificate issue
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"720h\" require_cn=false generate_lease=true allow_ip_sans=true allow_localhost=true enforce_hostnames=false 
         /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/issue/\$DATACENTER common_name=\"\$DATACENTER\" ttl=\"24h\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"72h\" require_cn=false
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"72h\" require_cn=false allow_ip_sans=true allow_localhost=true enforce_hostnames=false 
 
         # set policy in a file, will import next
         # this needs a review, from multiple sources
@@ -530,16 +607,16 @@ path \\\"sys/mounts\\\" { capabilities = [ \\\"read\\\", \\\"list\\\"] }
 path \\\"auth/token/roles/\$DATACENTER\\\" { capabilities = [ \\\"read\\\", \\\"update\\\"] }
 path \\\"auth/token/revoke-accessor\\\" { capabilities = [ \\\"update\\\"] }
 path \\\"auth/token/create/*\\\" { capabilities = [ \\\"update\\\"] }
+path \\\"pki/cert/ca\\\" { capabilities = [\\\"read\\\"] }
 path \\\"pki*\\\" { capabilities = [\\\"read\\\", \\\"list\\\", \\\"update\\\", \\\"delete\\\", \\\"list\\\", \\\"sudo\\\"] }
 path \\\"pki/roles/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki/sign/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki_int/roles/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki_int/sign/\$DATACENTER\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki_int/issue/*\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
-path \\\"pki_int/certs\\\" { capabilities = [\\\"list\\\"] }
+path \\\"pki_int/certs/\\\" { capabilities = [\\\"list\\\"] }
 path \\\"pki_int/revoke\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
-path \\\"pki/cert/ca\\\" { capabilities = [\\\"read\\\"] }
 \" > /root/vault.policy
 
         echo \"Writing vault policy to Vault\"
@@ -551,6 +628,8 @@ path \\\"pki/cert/ca\\\" { capabilities = [\\\"read\\\"] }
     fi
 
     # setup template files for certificates
+    # this is not currently in use, using cron job to rotate certs
+    # it also doesn't hash the ca.pem file, which cron job does
     echo \"{{- /* /mnt/templates/cert.tpl */ -}}
 {{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
 {{ .Data.certificate }}{{ end }}
@@ -566,26 +645,28 @@ path \\\"pki/cert/ca\\\" { capabilities = [\\\"read\\\"] }
 {{ .Data.private_key }}{{ end }}
 \" > /mnt/templates/key.tpl
 
-    # update vault.hcl
-    echo \"template {
-  source = \\\"/mnt/templates/cert.tpl\\\"
-  destination = \\\"/mnt/certs/cert.pem\\\"
-}
-template {
-  source = \\\"/mnt/templates/ca.tpl\\\"
-  destination = \\\"/mnt/certs/ca.pem\\\"
-}
-template {
-  source = \\\"/mnt/templates/key.tpl\\\"
-  destination = \\\"/mnt/certs/key.pem\\\"
-}
-\" >> /usr/local/etc/vault.hcl
+#    # update vault.hcl
+#    echo \"template {
+#  source = \\\"/mnt/templates/cert.tpl\\\"
+#  destination = \\\"/mnt/certs/cert.pem\\\"
+#}
+#template {
+#  source = \\\"/mnt/templates/ca.tpl\\\"
+#  destination = \\\"/mnt/certs/ca.pem\\\"
+#}
+#template {
+#  source = \\\"/mnt/templates/key.tpl\\\"
+#  destination = \\\"/mnt/certs/key.pem\\\"
+#}
+#\" >> /usr/local/etc/vault.hcl
 
 	# using this payload.json approach to avoid nested single and double quotes for expansion
     echo \"{
   \\\"common_name\\\": \\\"\$NODENAME\\\",
+  \\\"alt_names\\\": \\\"\$NODENAME\\\",
   \\\"ttl\\\": \\\"24h\\\",
-  \\\"ip_sans\\\": \\\"\$IP\\\"
+  \\\"ip_sans\\\": \\\"\$IP,127.0.0.1\\\",
+  \\\"format\\\": \\\"pem\\\"
 }\" > /mnt/templates/payload.json
 
     # generate certificates to use
@@ -594,11 +675,19 @@ template {
     if [ -s /root/login.token ]; then
         HEADER=\$(/bin/cat /root/login.token)
         /usr/local/bin/curl --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json http://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
-        /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
-        # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
-        cp -f /mnt/certs/ca.pem /mnt/certs/localca/ca.pem
+        # extract the required certificates to individual files
         /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
+        /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem
         /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
+        /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
+        cd /mnt/certs
+        # concat the root CA and intermediary CA into combined file
+        cat CA_cert.pem ca.pem > combinedca.pem
+        # steps here to hash ca
+        # temp remove
+        ln -s ca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/ca.pem).0
+        ln -s combinedca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
+        cd /root
         # set permissions on /mnt/certs for vault
         chown -R vault:wheel /mnt/certs
     fi
@@ -658,7 +747,7 @@ template {
 \\\"verify_incoming\\\": true,
 \\\"verify_outgoing\\\": true,
 \\\"verify_server_hostname\\\": false,
-\\\"ca_file\\\": \\\"/mnt/certs/ca.pem\\\",
+\\\"ca_file\\\": \\\"/mnt/certs/combinedca.pem\\\",
 \\\"cert_file\\\": \\\"/mnt/certs/cert.pem\\\",
 \\\"key_file\\\": \\\"/mnt/certs/key.pem\\\",
 \\\"log_file\\\": \\\"/var/log/consul/\\\",
@@ -715,37 +804,57 @@ template {
         /usr/local/etc/rc.d/node_exporter start
 
         # restart vault, requires SIGHUP
+        echo \"We must restart vault to enable https\"
         /usr/local/etc/rc.d/vault restart
     fi
 
+    echo \"Creating auto-login script\"
     # setup auto-login script
     echo \"#!/bin/sh
+export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_TLS_SERVER_NAME=\$NODENAME
+export VAULT_MAX_RETRIES=5
 if [ -s /root/login.token ]; then
-    /bin/cat /root/login.token | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/mnt/certs/ca.pem token=-
+    /bin/cat /root/login.token | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/mnt/certs/combinedca.pem token=-
 fi\" > /root/cli-vault-auto-login.sh
 
     # make executable
     chmod +x /root/cli-vault-auto-login.sh
 
+    echo \"Creating script to issue pki tokens\"
     # setup script to issue pki tokens
     echo \"#!/bin/sh
-/usr/local/bin/vault token create -address=https://\$IP:8200 -ca-cert=/mnt/certs/ca.pem -policy=default -policy=pki -wrap-ttl=24h
+export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_TLS_SERVER_NAME=\$NODENAME
+export VAULT_MAX_RETRIES=5
+/usr/local/bin/vault token create -address=https://\$IP:8200 -ca-cert=/mnt/certs/combinedca.pem -policy=default -policy=pki -wrap-ttl=24h
 \" > /root/issue-pki-token.sh
 
     # make executable
     chmod +x /root/issue-pki-token.sh
 
+    echo \"Creating certificate rotation script\"
     # setup certificate rotation script
     echo \"#!/bin/sh
+export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_TLS_SERVER_NAME=\$NODENAME
+export VAULT_MAX_RETRIES=5
 if [ -s /root/login.token ]; then
     LOGINTOKEN=\\\$(/bin/cat /root/login.token)
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
     /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
-    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
-    # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
-    cp -f /mnt/certs/ca.pem /mnt/certs/localca/ca.pem
+        # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
+    cd /mnt/certs
+    # concat the root CA and intermediary CA into combined file
+    cat CA_cert.pem ca.pem > combinedca.pem
+    # steps here to hash ca files for ca-dir usage
+    ln -s ca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/ca.pem).0
+    ln -s combinedca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
+    cd /root
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
     # restart services
@@ -764,12 +873,35 @@ fi
         echo \"0 * * * * root /root/rotate-certs.sh >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
     fi
 
+    echo \"Adding vault-status.sh script\"
+    # setup a quick way to check vault status
+    echo \"#!/bin/sh
+export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_TLS_SERVER_NAME=\$NODENAME
+export VAULT_MAX_RETRIES=5
+/usr/local/bin/vault status -address=https://\$IP:8200 -ca-cert=/mnt/certs/combinedca.pem
+\" > /root/vault-status.sh
+
+    chmod +x /root/vault-status.sh
+
+    echo \"Adding raft-status.sh script\"
+    # setup a quick way to check raft status
+    echo \"#!/bin/sh
+export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_TLS_SERVER_NAME=\$NODENAME
+export VAULT_MAX_RETRIES=5
+/usr/local/bin/vault operator raft list-peers -address=https://\$IP:8200 -ca-cert=/mnt/certs/combinedca.pem
+\" > /root/raft-status.sh
+
+    # make executable
+    chmod +x /root/raft-status.sh
+
 ###### not working
 #    # setup token renewals
 #    echo \"
 #if [ -s /root/login.token ]; then
 #    LOGINTOKEN=\\\$(/bin/cat /root/login.token)
-#    echo \\\$LOGINTOKEN | /usr/local/bin/vault token renew -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/ca.pem token=-
+#    echo \\\$LOGINTOKEN | /usr/local/bin/vault token renew -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/combinedca.pem token=-
 #else
 #    echo "/root/login.token does not contain a token to be renewed."
 #fi
@@ -786,6 +918,11 @@ fi
     ### Vault type: RAFT cluster follower
     follower)
 
+    #set vault variables
+    export VAULT_CLIENT_TIMEOUT=300s
+    #export VAULT_TLS_SERVER_NAME=\$NODENAME
+    export VAULT_MAX_RETRIES=5
+
     #begin vault config
     echo \"disable_mlock = true
 ui = true
@@ -800,9 +937,12 @@ listener \\\"tcp\\\" {
   telemetry {
     unauthenticated_metrics_access = true
   }
-  # set to zero to enable TLS only
-  tls_disable = 0
-  tls_ca_file = \\\"/mnt/certs/ca.pem\\\"
+  # set to zero/false to enable TLS only
+  tls_disable = false
+  ##tls_require_and_verify_client_cert = false
+  # temp tls_skip_verify = true
+  tls_skip_verify = true
+  tls_client_ca_file = \\\"/mnt/certs/ca.pem\\\"
   tls_cert_file = \\\"/mnt/certs/cert.pem\\\"
   tls_key_file = \\\"/mnt/certs/key.pem\\\"
 }
@@ -810,16 +950,10 @@ listener \\\"tcp\\\" {
 # if you want persistent vault data
 # if using another directory update this path accordingly
 storage \\\"raft\\\" {
-  path    = \\\"/mnt/\\\"
+  path    = \\\"/mnt/vault/\\\"
   node_id = \\\"\$NODENAME\\\"
   retry_join {
     leader_api_addr = \\\"https://\$VAULTLEADER:8200\\\"
-    leader_ca_cert_file = \\\"/mnt/certs/ca.pem\\\"
-    leader_client_cert_file = \\\"/mnt/certs/cert.pem\\\"
-    leader_client_key_file = \\\"/mnt/certs/key.pem\\\"
-  }
-  retry_join {
-    leader_api_addr = \\\"https://\$IP:8200\\\"
     leader_ca_cert_file = \\\"/mnt/certs/ca.pem\\\"
     leader_client_cert_file = \\\"/mnt/certs/cert.pem\\\"
     leader_client_key_file = \\\"/mnt/certs/key.pem\\\"
@@ -837,32 +971,35 @@ telemetry {
   disable_hostname = true
   prometheus_retention_time = \\\"24h\\\"
 }
-service_registration \\\"consul\\\" {
-  address = \\\"\$IP:8500\\\"
-  scheme = \\\"http\\\"
-  service = \\\"vault\\\"
-#brb#  tls_ca_file = \\\"/mnt/certs/ca.pem\\\"
+#brb#service_registration \\\"consul\\\" {
+#brb#  address = \\\"\$IP:8500\\\"
+#brb#  scheme = \\\"http\\\"
+#brb#  service = \\\"vault\\\"
+#brb#  tls_ca_file = \\\"/mnt/certs/combinedca.pem\\\"
 #brb#  tls_cert_file = \\\"/mnt/certs/cert.pem\\\"
 #brb#  tls_key_file = \\\"/mnt/certs/key.pem\\\"
-}
-template {
-  source = \\\"/mnt/templates/cert.tpl\\\"
-  destination = \\\"/mnt/certs/cert.pem\\\"
-}
-template {
-  source = \\\"/mnt/templates/ca.tpl\\\"
-  destination = \\\"/mnt/certs/ca.pem\\\"
-}
-template {
-  source = \\\"/mnt/templates/key.tpl\\\"
-  destination = \\\"/mnt/certs/key.pem\\\"
-}
-log_level = \\\"Warn\\\"
+#brb#}
+pid_file = \\\"/var/run/vault.pid\\\"
+log_format = \\\"standard\\\"
+log_level = \\\"Debug\\\"
 api_addr = \\\"https://\$IP:8200\\\"
 cluster_addr = \\\"https://\$IP:8201\\\"
+#template {
+#  source = \\\"/mnt/templates/cert.tpl\\\"
+#  destination = \\\"/mnt/certs/cert.pem\\\"
+#}
+#template {
+#  source = \\\"/mnt/templates/ca.tpl\\\"
+#  destination = \\\"/mnt/certs/ca.pem\\\"
+#}
+#template {
+#  source = \\\"/mnt/templates/key.tpl\\\"
+#  destination = \\\"/mnt/certs/key.pem\\\"
+#}
 \" > /usr/local/etc/vault.hcl
 
     # setup template files for certificates
+    # not currently enabled via vault, using cron job to renew, combined, hashes combinedca.pem
     echo \"{{- /* /mnt/templates/cert.tpl */ -}}
 {{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
 {{ .Data.certificate }}{{ end }}
@@ -896,27 +1033,56 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         /usr/bin/sed -i .orig \"/UNWRAPPEDTOKEN/s/UNWRAPPEDTOKEN/\$THIS_TOKEN/g\" /usr/local/etc/vault.hcl
     fi
 
-    # retrieve CA certificates from vault leader
+##### removed because of certificate verification problems causing failures and infinite delays with no cert returned
+#    # retrieve CA certificates from vault leader
+#    # can also try with curl if this doesn't work
+#    echo \"Retrieving CA certificates from Vault leader\"
+#    /usr/local/bin/vault read -address=https://\$VAULTLEADER:8200 -tls-skip-verify -field=certificate pki/cert/ca > /mnt/certs/CA_cert.pem
+#    # we might also need this newline for combining certs later
+#    echo \"\" >> /mnt/certs/CA_cert.pem
+#    /usr/local/bin/vault read -address=https://\$VAULTLEADER:8200 -tls-skip-verify -field=certificate pki_int/cert/ca > /mnt/certs/intermediate.cert.pem
+#    # we might also need this newline for combining certs later
+#    echo \"\" >> /mnt/certs/intermediate.cert.pem
+#####
+
+    # new CA cert retrieval process with curl
     echo \"Retrieving CA certificates from Vault leader\"
-    /usr/local/bin/vault read -address=https://\$VAULTLEADER:8200 -tls-skip-verify -field=certificate pki/cert/ca > /mnt/certs/CA_cert.crt
-    /usr/local/bin/vault read -address=https://\$VAULTLEADER:8200 -tls-skip-verify -field=certificate pki_int/cert/ca > /mnt/certs/intermediate.cert.pem
+    # get the root CA
+    /usr/local/bin/curl -k -s -o /mnt/certs/CA_cert.pem https://\$VAULTLEADER:8200/v1/pki/ca/pem
+    # append a new line
+    echo \"\" >> /mnt/certs/CA_cert.pem
+    # get the intermediate CA
+    /usr/local/bin/curl -k -s -o /mnt/certs/intermediate.cert.pem https://\$VAULTLEADER:8200/v1/pki_int/ca/pem
+    # append a new line
+    echo \"\" >> /mnt/certs/intermediate.cert.pem
 
     # login to unseal vault to get a root token
     echo \"Logging in to unseal vault to unseal\"
     /usr/local/bin/vault login -address=http://\$UNSEALIP:8200 -format=json \$THIS_TOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/this.token
-    sleep 6
+    echo \"Unseal login success. Please wait\"
+    sleep 5
 
     echo \"Logging in to vault leader instance to authenticate\"
-    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
-    sleep 6
+    #echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/CA_cert.pem -method=token -field=token token=- > /root/login.token
+    #echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
+    # this is not working with verification enabled. the retrieved CA and intermediate certificates give error
+    #
+    #   Error authenticating error looking up token token/lookup-self x509 certificate is valid for vault1, not vault2
+    #
+    # works
+    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -tls-skip-verify -method=token -field=token token=- > /root/login.token
+    echo \"Login success. Please wait\"
+    sleep 5
 
     if [ -s /root/login.token ]; then
         # generate certificates to use
         # using this payload.json approach to avoid nested single and double quotes for expansion
         echo \"{
   \\\"common_name\\\": \\\"\$NODENAME\\\",
+  \\\"alt_names\\\": \\\"\$NODENAME\\\",
   \\\"ttl\\\": \\\"24h\\\",
-  \\\"ip_sans\\\": \\\"\$IP\\\"
+  \\\"ip_sans\\\": \\\"\$IP,127.0.0.1\\\",
+  \\\"format\\\": \\\"pem\\\"
 }\" > /mnt/templates/payload.json
 
         # we use curl to get the certificates in json format as the issue command only has formats: pem, pem_bundle, der
@@ -924,16 +1090,18 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         echo \"Generating certificates to use from Vault leader\"
         HEADER=\$(/bin/cat /root/login.token)
         /usr/local/bin/curl --cacert /mnt/certs/intermediate.cert.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
-
-        # cli requires [], but web api does not
-        #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
-        # if [] left in for this script, you will get error: Cannot iterate over string
-        /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
-        # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
-        cp -f /mnt/certs/ca.pem /mnt/certs/localca/ca.pem
+        # extract the required certificates to individual files
         /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
+        /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem
         /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
-
+        /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
+        cd /mnt/certs
+        # concat the root CA and intermediary CA into combined file
+        cat CA_cert.pem ca.pem > /mnt/certs/combinedca.pem
+        # steps here to hash ca
+        ln -s ca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/ca.pem).0
+        ln -s combinedca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
+        cd /root
         # set permissions on /mnt/certs for vault
         chown -R vault:wheel /mnt/certs
 
@@ -979,7 +1147,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
 \\\"verify_incoming\\\": true,
 \\\"verify_outgoing\\\": true,
 \\\"verify_server_hostname\\\": false,
-\\\"ca_file\\\": \\\"/mnt/certs/ca.pem\\\",
+\\\"ca_file\\\": \\\"/mnt/certs/combindca.pem\\\",
 \\\"cert_file\\\": \\\"/mnt/certs/cert.pem\\\",
 \\\"key_file\\\": \\\"/mnt/certs/key.pem\\\",
 \\\"log_file\\\": \\\"/var/log/consul/\\\",
@@ -1038,17 +1206,25 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         # start vault
         echo \"Starting Vault Follower\"
         /usr/local/etc/rc.d/vault start
+        sleep 6
 
+        # 2nd raft join instance, currently disabled, testing order of events
         echo \"Joining the raft cluster\"
-        /usr/local/bin/vault operator raft join -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/ca.pem
-
+        /usr/local/bin/vault operator raft join -address=https://\$VAULTLEADER:8200 -tls-skip-verify
+#        /usr/local/bin/vault operator raft join -address=https://\$VAULTLEADER:8200 -tls-skip-verify \\\"https://\$VAULTLEADER:8200\\\"
+#        /usr/local/bin/vault operator raft join -address=https://\$IP:8200 -ca-cert=/mnt/certs/combinedca.pem \\\"https://\$VAULTLEADER:8200\\\"
         # we need to wait a period for the cluster to initialise correctly and elect leader
         # cluster requires 10 seconds to bootstrap, even if single server, we can only login after
-        echo \"Please wait for raft cluster to contemplate self...\"
-        sleep 12
+        # with vault and syslog-ng encryption there seems to be greater overhead, so longer delay required. 20s with no tls verification,
+        # possibly 30s with it, once working
+        echo \"Please wait for raft cluster to contemplate self... (30s)\"
+        sleep 30
 
-        echo \"Logging in to local raft instance\"
-        echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/mnt/certs/ca.pem -method=token -field=token token=- > /root/login.token
+#        echo \"LOGIN MANUALLY\"
+        echo \"Logging in to local vault instance\"
+        # this works manually
+        echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/mnt/certs/combinedca.pem -method=token -field=token token=- > /root/login.token
+#        echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$IP:8200 -method=token -field=token token=- > /root/login.token
 
         if [ -s /root/login.token ]; then
             TOKENOUT=\$(/bin/cat /root/login.token)
@@ -1060,25 +1236,40 @@ cluster_addr = \\\"https://\$IP:8201\\\"
     fi
 
     # setup auto-login script
+    echo \"Setting up auto-login script\"
     echo \"#!/bin/sh
+export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_TLS_SERVER_NAME=\$NODENAME
+export VAULT_MAX_RETRIES=5
 if [ -s /root/login.token ]; then
-    /bin/cat /root/login.token | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/mnt/certs/ca.pem token=-
+    /bin/cat /root/login.token | /usr/local/bin/vault login -address=https://\$IP:8200 -ca-cert=/mnt/certs/combinedca.pem token=-
 fi\" > /root/cli-vault-auto-login.sh
 
     # set executable perms
     chmod +x /root/cli-vault-auto-login.sh
 
     # setup certificate rotation script
+    echo \"Setting up certificate rotation script\"
     echo \"#!/bin/sh
+export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_TLS_SERVER_NAME=\$NODENAME
+export VAULT_MAX_RETRIES=5
 if [ -s /root/login.token ]; then
     LOGINTOKEN=\\\$(/bin/cat /root/login.token)
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
     /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
-    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
-    # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
-    cp -f /mnt/certs/ca.pem /mnt/certs/localca/ca.pem
+    # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
+    cd /mnt/certs
+    # concat the root CA and intermediary CA into combined file
+    cat CA_cert.pem ca.pem > combinedca.pem
+    # steps here to hash ca
+    ln -s ca.pem hash\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/ca.pem).0
+    ln -s combinedca.pem hash\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
+    cd /root
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
     # restart services
@@ -1091,18 +1282,43 @@ fi
 \" > /root/rotate-certs.sh
 
     if [ -f /root/rotate-certs.sh ]; then
+        echo \"Adding cron job\"
         # make executable
         chmod +x /root/rotate-certs.sh
         # add a crontab entry for every hour
         echo \"0 * * * * root /root/rotate-certs.sh >> /mnt/rotate-cert.log 2>&1\" >> /etc/crontab
     fi
 
+    echo \"Adding vault-status.sh script\"
+    # setup a quick way to check vault status
+    echo \"#!/bin/sh
+export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_TLS_SERVER_NAME=\$NODENAME
+export VAULT_MAX_RETRIES=5
+/usr/local/bin/vault status -address=https://\$IP:8200 -ca-cert=/mnt/certs/combinedca.pem
+\" > /root/vault-status.sh
+
+    # make executable
+    chmod +x /root/vault-status.sh
+
+    echo \"Adding raft-status.sh script\"
+    # setup a quick way to check raft status
+    echo \"#!/bin/sh
+export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_TLS_SERVER_NAME=\$NODENAME
+export VAULT_MAX_RETRIES=5
+/usr/local/bin/vault operator raft list-peers -address=https://\$IP:8200 -ca-cert=/mnt/certs/combinedca.pem
+\" > /root/raft-status.sh
+
+    # make executable
+    chmod +x /root/raft-status.sh
+
 ######## not working
 #    # setup token renewals
 #    echo \"
 #if [ -s /root/login.token ]; then
 #    LOGINTOKEN=\\\$(/bin/cat /root/login.token)
-#    echo \\\$LOGINTOKEN | /usr/local/bin/vault token renew -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/ca.pem token=-
+#    echo \\\$LOGINTOKEN | /usr/local/bin/vault token renew -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/combinedca.pem token=-
 #else
 #    echo "/root/login.token does not contain a token to be renewed."
 #fi

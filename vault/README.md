@@ -86,19 +86,13 @@ $ vault login -address=http://<IP>:8200
 
 (using Initial Root Token)
 
-$ vault audit enable -address=http://<IP>:8200 file file_path=/mnt/audit.log 
+$ ./setup-autounseal.sh
 Success! Enabled the file audit device at: file/
-
-$ vault secrets enable -address=http://<IP>:8200 transit 
 Success! Enabled the transit secrets engine at: transit/
-
-$ vault write -address=http://<IP>:8200 -f transit/keys/autounseal 
 Success! Data written to: transit/keys/autounseal
-
-$ vault policy write -address=http://<IP>:8200 autounseal /root/autounseal.hcl 
 Success! Uploaded policy: autounseal
 
-$ vault token create -address=http://<IP>:8200 -policy="autounseal" -wrap-ttl=24h
+$ ./issue-unseal.sh
 Key                              Value
 ---                              -----
 wrapping_token:                  s.newtoken
