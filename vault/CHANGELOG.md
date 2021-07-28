@@ -1,3 +1,9 @@
+2.0.29
+
+* Turning off consul tls verification
+
+---
+
 2.0.28
 
 * Turning off flow-control in syslog-ng, setting 120s time_reopen, and reducing log-fifo parameter

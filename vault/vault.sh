@@ -435,7 +435,7 @@ telemetry {
 }
 #brb#service_registration \\\"consul\\\" {
 #brb#  address = \\\"\$IP:8500\\\"
-#brb#  scheme = \\\"https\\\"
+#brb#  scheme = \\\"http\\\"
 #brb#  service = \\\"vault\\\"
 #brb#  tls_ca_file = \\\"/mnt/certs/combinedca.pem\\\"
 #brb#  tls_cert_file = \\\"/mnt/certs/cert.pem\\\"
@@ -744,7 +744,7 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
  \\\"a_record_limit\\\": 3,
  \\\"enable_truncate\\\": true
 },
-\\\"verify_incoming\\\": true,
+\\\"verify_incoming\\\": false,
 \\\"verify_outgoing\\\": true,
 \\\"verify_server_hostname\\\": false,
 \\\"ca_file\\\": \\\"/mnt/certs/combinedca.pem\\\",
@@ -1144,7 +1144,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
  \\\"a_record_limit\\\": 3,
  \\\"enable_truncate\\\": true
 },
-\\\"verify_incoming\\\": true,
+\\\"verify_incoming\\\": false,
 \\\"verify_outgoing\\\": true,
 \\\"verify_server_hostname\\\": false,
 \\\"ca_file\\\": \\\"/mnt/certs/combindca.pem\\\",
