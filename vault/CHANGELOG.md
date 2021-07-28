@@ -1,3 +1,9 @@
+2.0.28
+
+* Turning off flow-control in syslog-ng, setting 120s time_reopen, and reducing log-fifo parameter
+
+---
+
 2.0.27
 
 * Automation scripts and pki improvements. tls-verify doesn't work, syslog-ng with verification slows things down, raft cluster may be slow or not work

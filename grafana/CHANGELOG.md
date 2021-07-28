@@ -1,3 +1,9 @@
+0.0.10
+
+* Turning off flow-control in syslog-ng, setting 120s time_reopen, and reducing log-fifo parameter
+
+---
+
 0.0.9
 
 * Fourth attempt at fixing grafana crashing a few minutes after startip. Bug report says to chmod 755 /root.

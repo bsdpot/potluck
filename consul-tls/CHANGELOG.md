@@ -1,3 +1,9 @@
+0.0.13
+
+* Turning off flow-control in syslog-ng, setting 120s time_reopen, and reducing log-fifo parameter
+
+---
+
 0.0.12
 
 * Clearing syslog-ng /dev/console entries to remove log spam

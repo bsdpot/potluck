@@ -7,11 +7,11 @@ tags: ["postgresql", "patroni", "sql", "database"]
 
 # Overview
 
-This is a ```patroni postgresql``` jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
+This is a ```patroni postgresql``` jail that can be started with ```pot```.
 
-For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
+The jail exposes these parameters that can either be set via the environment or by setting the ```cook```parameters (or by editing the downloaded jails ```pot.conf``` file):
 
-The jail exposes these parameters that can either be set via the environment or by setting the ```cook```parameters (the latter either via ```nomad```, see example below, or by editing the downloaded jails ```pot.conf``` file):
+It is dependent on a ```consul``` server/cluster for the DCS store.
 
 # Installation
 * Create a ZFS dataset on the parent system beforehand:    
