@@ -542,7 +542,7 @@ cluster_addr = \\\"http://\$IP:8201\\\"
         # Generate the root CA, extracting the root CA certificate to CA_cert.pem in pem format
         # note: the secret key is not exported
         echo \"Generating internal certificate\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 -field=certificate pki/root/generate/internal common_name=\"\$DATACENTER\" format=\"pem\" ttl=\"87600h\" exclude_cn_from_sans=\"true\" > /mnt/certs/CA_cert.pem
+        /usr/local/bin/vault write -address=http://\$IP:8200 -field=certificate pki/root/generate/internal common_name=\"\$DATACENTER\" ttl=\"87600h\" format=pem exclude_cn_from_sans=true > /mnt/certs/CA_cert.pem
         # we need this newline for combining certs later
         echo \"\" >> /mnt/certs/CA_cert.pem
         # configure the CA and CRL endpoints
@@ -564,7 +564,7 @@ cluster_addr = \\\"http://\$IP:8201\\\"
         # vault write [options] PATH [DATA K=V...]
         # generate an intermediate certificate and save the CSR
         echo \"Writing intermediate certificate to file\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/exported common_name=\"\$DATACENTER Intermediate Authority\" format=\"pem\" exclude_cn_from_sans=\"true\" > /mnt/certs/pki_intermediate.pem
+        /usr/local/bin/vault write -address=http://\$IP:8200 -format=json pki_int/intermediate/generate/exported common_name=\"\$DATACENTER Intermediate Authority\" format=pem exclude_cn_from_sans=true > /mnt/certs/pki_intermediate.pem
         # Extract the private key & certificate signing request from the previous command
         /usr/local/bin/jq -r '.data.private_key' < /mnt/certs/pki_intermediate.pem > /mnt/certs/intermediate.key.pem
         /usr/local/bin/jq -r '.data.csr' < /mnt/certs/pki_intermediate.pem > /mnt/certs/pki_intermediate.csr
@@ -681,6 +681,11 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
         cd /root
         # set permissions on /mnt/certs for vault
         chown -R vault:wheel /mnt/certs
+        # validate the certificates
+        echo \"Validating client certificate\"
+        if [ -s /mnt/certs/combinedca.pem ] && [ -s /mnt/certs/cert.pem ]; then
+            /usr/bin/openssl verify -CAfile /mnt/certs/combinedca.pem /mnt/certs/cert.pem
+        fi
     fi
 
     # if we get a successful private key, update vault.hcl and restart vault
@@ -1037,11 +1042,20 @@ cluster_addr = \\\"https://\$IP:8201\\\"
     # get the root CA, we're not able to do any tls verification at this stage
     /usr/local/bin/curl -k -s -o /mnt/certs/CA_cert.pem https://\$VAULTLEADER:8200/v1/pki/ca/pem
     # append a new line to the file, as will concat together later with another file
-    echo \"\" >> /mnt/certs/CA_cert.pem
+    if [ -s /mnt/certs/CA_cert.pem ]; then
+        echo \"\" >> /mnt/certs/CA_cert.pem
+    fi
     # get the intermediate CA, we're not able to do any tls verification at this stagen
     /usr/local/bin/curl -k -s -o /mnt/certs/intermediate.cert.pem https://\$VAULTLEADER:8200/v1/pki_int/ca/pem
     # append a new line to the file, as will concat together later with another file
-    echo \"\" >> /mnt/certs/intermediate.cert.pem
+    if [ -s /mnt/certs/intermediate.cert.pem ]; then
+        echo \"\" >> /mnt/certs/intermediate.cert.pem
+    fi
+    # validate the certificates
+    echo \"Validating CA certificates\"
+    if [ -s /mnt/certs/CA_cert.pem ] && [ -s /mnt/certs/intermediate.cert.pem ]; then
+        /usr/bin/openssl verify -CAfile /mnt/certs/CA_cert.pem /mnt/certs/intermediate.cert.pem
+    fi
 
     # login to unseal vault to get a root token to login to the leader node
     echo \"Logging in to unseal vault to unseal\"
@@ -1051,7 +1065,8 @@ cluster_addr = \\\"https://\$IP:8201\\\"
 
     # login to the vault leader, using -tls-skip-verify because we don't have certificates yet
     echo \"Logging in to vault leader instance to authenticate\"
-    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -tls-skip-verify -method=token -field=token token=- > /root/login.token
+    #echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -tls-skip-verify -method=token -field=token token=- > /root/login.token
+    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
     echo \"Login success. Please wait\"
     sleep 5
 
@@ -1087,6 +1102,12 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         cd /root
         # set permissions on /mnt/certs for vault
         chown -R vault:wheel /mnt/certs
+
+        # validate the certificates
+        echo \"Validating client certificate\"
+        if [ -s /mnt/certs/combinedca.pem ] && [ -s /mnt/certs/cert.pem ]; then
+            /usr/bin/openssl verify -CAfile /mnt/certs/combinedca.pem /mnt/certs/cert.pem
+        fi
 
         # enable consul components
         /usr/bin/sed -i .orig 's/#brb#//g' /usr/local/etc/vault.hcl

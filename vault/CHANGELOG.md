@@ -1,3 +1,9 @@
+2.0.31
+
+* Vault client TLS verification improvements and bug fixes, certificate validation as step
+
+---
+
 2.0.30
 
 * Vault TLS verification working, with initial leader login ignoring tls-validation and leader having it as optional
