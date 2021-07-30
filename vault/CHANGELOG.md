@@ -1,3 +1,9 @@
+2.0.30
+
+* Vault TLS verification working, with initial leader login ignoring tls-validation and leader having it as optional
+
+---
+
 2.0.29
 
 * Turning off consul tls verification

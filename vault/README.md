@@ -114,14 +114,14 @@ To generate a token for PKI, run ```pot term vault-clone``` and then ```/root/is
 
 To run other ```vault``` commands pass in the extra parameters ```-address=https://<IP-being-queried>:8200``` and one of:
 * ```-tls-skip-verify``` to skip verifying the certificate; or
-* ```-ca-cert=/mnt/certs/vaultca.pem``` to verify with the CA certificate obtained (if everything working)
+* ```-ca-cert=/mnt/certs/combinedca.pem``` to verify with the CA certificate obtained (if everything working)
 
 (This should fall away in the transition to vnet for pot networking and localhost can be queried in a jail)
 
 ### Example vault command with parameters
 ```
-vault status -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/vaultca.pem
-vault operator raft list-peers -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/vaultca.pem
+vault status -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/combinedca.pem
+vault operator raft list-peers -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/combinedca.pem
 vault operator raft autopilot state -address=https://10.0.0.3:8200 -tls-skip-verify
 ```
 
@@ -136,14 +136,14 @@ The cluster node will be automatically unsealed and join the cluster. Repeat for
 
 To run other ```vault``` commands pass in the extra parameters ```-address=https://<IP-being-queried>:8200``` and one of:
 * ```-tls-skip-verify``` to skip verifying the certificate; or
-* ```-ca-cert=/mnt/certs/vaultca.pem``` to verify with the CA certificate obtained (if everything working)
+* ```-ca-cert=/mnt/certs/combinedca.pem``` to verify with the CA certificate obtained (if everything working)
 
 (This should fall away in the transition to vnet for pot networking and localhost can be queried in a jail)
 
 ### Example vault command with parameters
 ```
-vault status -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/vaultca.pem
-vault operator raft list-peers -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/vaultca.pem
+vault status -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/combinedca.pem
+vault operator raft list-peers -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/combinedca.pem
 vault operator raft autopilot state -address=https://10.0.0.3:8200 -tls-skip-verify
 ```
 
@@ -154,7 +154,7 @@ This cluster will generate, issue, renew certificates.
 This cluster can then be used as a kv store.
 
 ```
-vault secrets enable -address=https://<IP>:8200 -ca-cert=/mnt/certs/vaultca.pem -path=kv kv-v2
-vault kv -address=https://<IP>:8200 -ca-cert=/mnt/certs/vaultca.pem put kv/testkey webapp=TESTKEY
-vault kv -address=https://<IP>:8200 -ca-cert=/mnt/certs/vaultca.pem get kv/testkey
+vault secrets enable -address=https://<IP>:8200 -ca-cert=/mnt/certs/combinedca.pem -path=kv kv-v2
+vault kv -address=https://<IP>:8200 -ca-cert=/mnt/certs/combinedca.pem put kv/testkey webapp=TESTKEY
+vault kv -address=https://<IP>:8200 -ca-cert=/mnt/certs/combinedca.pem get kv/testkey
 ```
