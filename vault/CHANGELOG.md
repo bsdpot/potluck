@@ -1,3 +1,9 @@
+2.0.32
+
+* Implementing solution to force always-on client tls validation temporary short-lived certificates and keys via sftp
+
+---
+
 2.0.31
 
 * Vault client TLS verification improvements and bug fixes, certificate validation as step

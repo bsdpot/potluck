@@ -77,6 +77,9 @@ sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 step "Disable sendmail"
 service sendmail onedisable
 
+step "Enable SSH"
+sysrc sshd_enable="YES"
+
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
@@ -232,6 +235,24 @@ then
     echo 'REMOTELOG is unset - see documentation how to configure this flavour with IP address of remote syslog server. Defaulting to 0'
     REMOTELOG=\"null\"
 fi
+# sftpuser credentials
+if [ -z \${SFTPUSER+x} ];
+then
+    echo 'SFTPUSER is unset - see documentation how to configure this flavour with sftp user and pass. Defaulting to username: certuser'
+    SFTPUSER=\"certuser\"
+fi
+# sftpuser password
+if [ -z \${SFTPPASS+x} ];
+then
+    echo 'SFTPPASS is unset - see documentation how to configure this flavour with sftp user and pass. Defaulting to password: c3rtp4ss'
+    SFTPPASS=\"c3rtp4ss\"
+fi
+# ip subnet to generate temporary short-lived certificates for
+if [ -z \${SFTPNETWORK+x} ];
+then
+    echo 'SFTPNETWORK is unset - see documentation how to configure this flavour with IP range to generate short-lived temporary certificates for. Defaulting to IP address'
+    SFTPNETWORK=\"\$IP\"
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -380,6 +401,74 @@ path \\\"transit/decrypt/autounseal\\\" {
     export VAULT_CLIENT_TIMEOUT=300s
     export VAULT_MAX_RETRIES=5
 
+    # setup chroot directory for use by sftp, gets wiped on reboot
+    mkdir -p /tmpcerts
+    chown root:wheel /tmpcerts
+    chmod 755 /tmpcerts
+
+    # begin sftpuser configuration
+    echo \"Setting up ssh and sftp\"
+    echo \"Port 8888
+PubkeyAuthentication yes
+AuthorizedKeysFile       .ssh/authorized_keys
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+StrictModes no
+UseDNS no
+Banner none
+AllowUsers sample
+#LogLevel DEBUG
+AllowAgentForwarding yes
+PermitTTY yes
+AllowUsers \$SFTPUSER
+
+Match User \$SFTPUSER
+  ChrootDirectory /tmpcerts
+  X11Forwarding no
+  AllowTcpForwarding no
+  ForceCommand internal-sftp
+\" >> /etc/ssh/sshd_config
+
+    # setup host keys
+    echo \"Manually setting up host keys\"
+    cd /etc/ssh
+    /usr/bin/ssh-keygen -A
+    cd /
+
+    # setup a user
+    /usr/sbin/pw useradd -n \$SFTPUSER -c 'certificate user' -m -s /bin/sh -h 0 <<EOP
+\$SFTPPASS
+EOP
+
+    # setup user ssh key to be exported for use elsewhere
+    echo \"Setting up \$SFTPUSER ssh keys\"
+    mkdir -p /home/\$SFTPUSER/.ssh
+    /usr/bin/ssh-keygen -q -N '' -f /home/\$SFTPUSER/.ssh/id_rsa -t rsa
+    chmod 700 /home/\$SFTPUSER/.ssh
+    cat /home/\$SFTPUSER/.ssh/id_rsa.pub > /home/\$SFTPUSER/.ssh/authorized_keys
+    chmod 700 /home/\$SFTPUSER/.ssh
+    chmod 600 /home/\$SFTPUSER/.ssh/id_rsa
+    chmod 644 /home/\$SFTPUSER/.ssh/authorized_keys
+    chown \$SFTPUSER:\$SFTPUSER /home/\$SFTPUSER/.ssh
+
+    echo \"\"
+    echo \"########################### IMPORTANT NOTICE ###########################\"
+    echo \"\"
+    echo \"You must copy /home/\$SFTPUSER/.ssh/id_rsa OUT of this vault image, and\"
+    echo \"then copy IN to all other images' (to /root/.ssh/id_rsa) which need to\"
+    echo \"login to vault and get certificates issued!\"
+    echo \"\"
+    echo \"This is required so that tls-client-validation is always enforced.\"
+    echo \"Round 1: temp certificates for vault leader login tls-client-validation\"
+    echo \"Round 2: get certificates from vault for vault agent and applications\"
+    echo \"\"
+    echo \"########################################################################\"
+    echo \"\"
+
+    # restart ssh
+    echo \"Restarting ssh\"
+    /etc/rc.d/sshd restart
+
     # begin vault config
     echo \"disable_mlock = true
 ui = true
@@ -397,7 +486,7 @@ listener \\\"tcp\\\" {
   # set to zero to enable TLS only
   tls_disable = 1
   #xyz#tls_skip_verify = false
-  #xyz#tls_require_and_verify_client_cert = false
+  #xyz#tls_require_and_verify_client_cert = true
   #xyz#tls_client_ca_file = \\\"/mnt/certs/ca.pem\\\"
   #xyz#tls_cert_file = \\\"/mnt/certs/cert.pem\\\"
   #xyz#tls_key_file = \\\"/mnt/certs/key.pem\\\"
@@ -443,7 +532,7 @@ cluster_addr = \\\"http://\$IP:8201\\\"
 \" > /usr/local/etc/vault.hcl
 
     # set permissions on /mnt for vault data
-    chown -R vault:wheel /mnt
+    chown -R vault:wheel /mnt/vault
 
     # setup rc.conf entries
     # we do not set vault_user=vault because vault will not start
@@ -804,6 +893,62 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
         /usr/local/etc/rc.d/vault restart
     fi
 
+    # there is a problem with generating client certs too early after vault restart
+    # we need a strategic delay, like with most vault issues, otherwise initial certificates will get error
+    #ERR#  unable to load certificate
+    #ERR#  34374492160:error:0909006C:PEM routines:get_name:no start line:/usr/src/crypto/openssl/crypto/pem/pem_lib.c:745:Expecting: TRUSTED CERTIFICATE
+    #
+    echo \"\"
+    echo \"Strategic delay. Please wait 20s\"
+    sleep 5
+    echo \"\"
+    echo \"In a moment certificates will be generated for 253 hosts in the network \$SFTPNETWORK. This will take a while to complete.\"
+    sleep 5
+    echo \"\"
+    echo \"Starting in 10s.   >>> Did you know a group of cats is called a clowder?\"
+    sleep 5
+    echo \"\"
+    echo \"Starting in 5s.    >>> Sysadmin Day is always on the last Friday of July!\"
+    sleep 5
+    # setup temp certs for client first login
+    # destination is /tmpcerts/$IP/cert.pem | /tmpcerts/$IP/key.pem | | /tmpcerts/$IP/cat.pem
+    echo \"\"
+    echo \"Building SFTPNETWORK list\"
+    echo \"\"
+    TRIMNETWORK=\$(echo \$SFTPNETWORK | sed 's/\.[0-9]*$//')
+    SEQNETWORK=\$(/usr/bin/seq -f \"\$TRIMNETWORK.%g\" 1 253)
+    # diagnostic
+    echo \$SEQNETWORK > /tmpcerts/iplist.txt
+    # generate certificates per host
+    for sftphost in \$SEQNETWORK; do
+        mkdir -p /tmpcerts/\$sftphost
+        echo \"{
+  \\\"common_name\\\": \\\"\$sftphost\\\",
+  \\\"ttl\\\": \\\"2h\\\",
+  \\\"ip_sans\\\": \\\"\$sftphost,127.0.0.1\\\",
+  \\\"format\\\": \\\"pem\\\"
+}\" > /tmpcerts/\$sftphost/payload.json
+
+        if [ -s /root/login.token ]; then
+            echo \"Generating 2 hour ttl client cert for ip \$sftphost in /tmpcerts/\$sftphost/...\"
+            HEADER=\$(/bin/cat /root/login.token)
+            /usr/local/bin/curl --silent --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/tmpcerts/\$sftphost/payload.json https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmpcerts/\$sftphost/vaultissue.json
+            # extract the required certificates to individual files
+            /usr/local/bin/jq -r '.data.certificate' /tmpcerts/\$sftphost/vaultissue.json > /tmpcerts/\$sftphost/cert.pem
+            /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\$sftphost/vaultissue.json >> /tmpcerts/\$sftphost/cert.pem
+            /usr/local/bin/jq -r '.data.private_key' /tmpcerts/\$sftphost/vaultissue.json > /tmpcerts/\$sftphost/key.pem
+            /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\$sftphost/vaultissue.json > /tmpcerts/\$sftphost/ca.pem
+            # concat the root CA and intermediary CA into combined file
+            cat /mnt/certs/CA_cert.pem /tmpcerts/\$sftphost/ca.pem > /tmpcerts/\$sftphost/combinedca.pem
+            chown -R \$SFTPUSER:wheel /tmpcerts/\$sftphost/
+            # validate the certificates
+            echo \"Validating client certificate\"
+            if [ -s /tmpcerts/\$sftphost/combinedca.pem ] && [ -s /tmpcerts/\$sftphost/cert.pem ]; then
+                /usr/bin/openssl verify -CAfile /tmpcerts/\$sftphost/combinedca.pem /tmpcerts/\$sftphost/cert.pem
+            fi
+        fi
+    done
+
     echo \"Creating auto-login script\"
     # setup auto-login script
     echo \"#!/bin/sh
@@ -844,8 +989,9 @@ if [ -s /root/login.token ]; then
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
     # currently ignoring tls validation for certificate renewal
     # todo: set validation up on this script
-    /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
-        # extract the required certificates to individual files
+    #/usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    /usr/local/bin/curl --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
@@ -923,6 +1069,45 @@ export VAULT_CLIENT_KEY=/mnt/certs/key.pem
 
     ### Vault type: RAFT cluster follower
     follower)
+
+    # some basic ssh setup
+    echo \"Initialising ssh settings\"
+    mkdir -p /root/.ssh
+    chmod 700 /root/.ssh
+    touch /root/.ssh/authorized_keys
+
+    if [ -f /root/sshkey ] && [ ! -f /root/.ssh/id_rsa ]; then
+        cp /root/sshkey /root/.ssh/id_rsa
+        chmod 600 /root/.ssh/id_rsa
+        ssh-keygen -f /root/.ssh/id_rsa -y > /root/.ssh/id_rsa.pub
+    fi
+
+    # setup temp directory for temp certs
+    mkdir -p /tmp/tmpcerts
+
+    # echo a message to user
+    echo \"\"
+    echo \"########################### IMPORTANT NOTICE ###########################\"
+    echo \"\"
+    echo \"Make sure to copy in id_rsa from vault leader certuser instance!\"
+    echo \"\"
+    echo \"########################################################################\"
+    echo \"\"
+    # end client
+
+    # retrive first round of certificates from vault leader via sftp
+    echo \"Get first round of certificates from vault leader via sftp\"
+    if [ -f /root/sshkey ]; then
+        cp -f /root/sshkey /root/.ssh/id_rsa
+        chmod 600 /root/.ssh/id_rsa
+        /usr/bin/ssh-keygen -f /root/.ssh/id_rsa -y > /root/.ssh/id_rsa.pub
+        cd /tmp/tmpcerts
+        # wildcard retrieval works manually but not in the script so repeat for each file
+        /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTLEADER:\$IP/cert.pem
+        /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTLEADER:\$IP/key.pem
+        /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTLEADER:\$IP/ca.pem
+        /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTLEADER:\$IP/combinedca.pem
+    fi
 
     #set vault variables
     export VAULT_CLIENT_TIMEOUT=300s
@@ -1040,13 +1225,13 @@ cluster_addr = \\\"https://\$IP:8201\\\"
     # new CA cert retrieval process with curl
     echo \"Retrieving CA certificates from Vault leader\"
     # get the root CA, we're not able to do any tls verification at this stage
-    /usr/local/bin/curl -k -s -o /mnt/certs/CA_cert.pem https://\$VAULTLEADER:8200/v1/pki/ca/pem
+    /usr/local/bin/curl --cacert /tmp/tmpcerts/ca.pem --cert /tmp/tmpcerts/cert.pem --key /tmp/tmpcerts/key.pem -o /mnt/certs/CA_cert.pem https://\$VAULTLEADER:8200/v1/pki/ca/pem
     # append a new line to the file, as will concat together later with another file
     if [ -s /mnt/certs/CA_cert.pem ]; then
         echo \"\" >> /mnt/certs/CA_cert.pem
     fi
     # get the intermediate CA, we're not able to do any tls verification at this stagen
-    /usr/local/bin/curl -k -s -o /mnt/certs/intermediate.cert.pem https://\$VAULTLEADER:8200/v1/pki_int/ca/pem
+    /usr/local/bin/curl --cacert /tmp/tmpcerts/ca.pem --cert /tmp/tmpcerts/cert.pem --key /tmp/tmpcerts/key.pem -o /mnt/certs/intermediate.cert.pem https://\$VAULTLEADER:8200/v1/pki_int/ca/pem
     # append a new line to the file, as will concat together later with another file
     if [ -s /mnt/certs/intermediate.cert.pem ]; then
         echo \"\" >> /mnt/certs/intermediate.cert.pem
@@ -1063,10 +1248,9 @@ cluster_addr = \\\"https://\$IP:8201\\\"
     echo \"Unseal login success. Please wait\"
     sleep 5
 
-    # login to the vault leader, using -tls-skip-verify because we don't have certificates yet
+    # login to the vault leader with full tls validation of client
     echo \"Logging in to vault leader instance to authenticate\"
-    #echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -tls-skip-verify -method=token -field=token token=- > /root/login.token
-    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
+    echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTLEADER:8200 -client-cert=/tmp/tmpcerts/cert.pem -client-key=/tmp/tmpcerts/key.pem -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
     echo \"Login success. Please wait\"
     sleep 5
 
@@ -1086,7 +1270,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         # but no json format with everything in one file
         echo \"Generating certificates to use from Vault leader\"
         HEADER=\$(/bin/cat /root/login.token)
-        /usr/local/bin/curl --cacert /mnt/certs/intermediate.cert.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+        /usr/local/bin/curl --cacert /tmp/tmpcerts/combinedca.pem --cert /tmp/tmpcerts/cert.pem --key /tmp/tmpcerts/key.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
         # extract the required certificates to individual files
         /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
         # append the ca cert to the cert
@@ -1095,7 +1279,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
         cd /mnt/certs
         # concat the root CA and intermediary CA into combined file
-        cat CA_cert.pem ca.pem > /mnt/certs/combinedca.pem
+        cat /mnt/certs/CA_cert.pem /mnt/certs/ca.pem > /mnt/certs/combinedca.pem
         # steps here to hash ca, required for syslog-ng
         ln -s ca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/ca.pem).0
         ln -s combinedca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
@@ -1260,7 +1444,7 @@ export VAULT_MAX_RETRIES=5
 if [ -s /root/login.token ]; then
     LOGINTOKEN=\\\$(/bin/cat /root/login.token)
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
-    /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    /usr/local/bin/curl --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
     # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem

@@ -17,22 +17,72 @@ The flavour expects a local ```consul``` agent instance to be available that it 
 
 Start ```vault``` cluster with the IP addresses of ```consul``` servers, which aren't live. Then start ```loki``` instance. Then start a ```consul``` cluster. Restart consul on ```vault``` and ```loki``` instances or wait for first certificate renewal after an hour.
 
-# Disclaimer
-This image uses the ports tree from github to obtain the latest version of ```vault```. An optimised ```git-lite``` sparse clone of github packages, and build process, reduces the build time for 5-6mins.
-
 # Installation
+
+## Unseal node
 
 * [unseal node] Create a ZFS dataset on the parent system beforehand:    
   ```zfs create -o mountpoint=/mnt/vaultunseal zroot/vaultunseal```
+* Create your local jail from the image or the flavour files. 
+* Mount in the ZFS dataset you created:    
+  ```pot mount-in -p <jailname> -m /mnt -d /mnt/vaultunseal```
+* Optionally export the ports after creating the jail:     
+  ```pot export-ports -p <jailname> -e 8200:8200```   
+* Adjust to your environment:    
+  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
+    -E IP=<IP address of this vault node> -E VAULTTYPE=unseal```
+
+## Vault leader
+
 * [cluster node] Create a ZFS dataset on the parent system beforehand:    
   ```zfs create -o mountpoint=/mnt/vaultdata zroot/vaultdata```
 * Create your local jail from the image or the flavour files. 
 * Mount in the ZFS dataset you created:    
-  ```pot mount-in -p <jailname> -m /mnt -d /mnt/vault[unseal|data]```
-* Export the ports after creating the jail:     
+  ```pot mount-in -p <jailname> -m /mnt -d /mnt/vaultdata```
+* Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 8200:8200```   
 * Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> -E IP=<IP address of this vault node> -E VAULTTYPE=<unseal|leader|follower> [-E GOSSIPKEY=<32 byte Base64 key from consul keygen> -E UNSEALIP=<unseal vault node> -E UNSEALTOKEN=<wrapped token generated on unseal node> -E VAULTLEADER=<IP> -E LEADERTOKEN=<token> -E REMOTELOG=<remote syslog IP>]```
+  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
+    -E IP=<IP address of this vault node> -E VAULTTYPE=leader \
+    -E UNSEALIP=<unseal vault IP> -E UNSEALTOKEN=<wrapped token generated on unseal node> \
+    -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
+    -E SFTPUSER=certuser -E SFTPPASS=<password> -E SFTPNETWORK=<local /24 in 10.0.0.0 notation> \
+    [-E GOSSIPKEY=<32 byte Base64 key from consul keygen> -E REMOTELOG=<remote syslog IP>]```
+
+The SFTPUSER and SFTPPASS parameters are to create a user with SSH private keys, where you will need to export the private key to the host systems for follower nodes.
+
+The SFTPNETWORK parameter is to select a /24 network range to pre-generate 2h SSL certificates for, for initial vault logins by follower nodes and other images making use of vault. Please enter 10.0.0.0 or 192.168.0.0 etc.
+
+The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+
+The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
+
+The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
+
+Once booted you will need to run ```./cli-vault-auto-login.sh``` for a login token to use on follower nodes, and export ```/home/certuser/.ssh/id_rsa``` to a file to import to follower nodes and other types of pot images.
+
+## Vault follower
+
+* [cluster node] Create a ZFS dataset on the parent system beforehand:    
+  ```zfs create -o mountpoint=/mnt/vaultdata zroot/vaultdata```
+* Create your local jail from the image or the flavour files. 
+* Mount in the ZFS dataset you created:    
+  ```pot mount-in -p <jailname> -m /mnt -d /mnt/vaultdata```
+* Copy in the SSH private key for the user on the Vault leader:    
+  ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
+* Optionally export the ports after creating the jail:     
+  ```pot export-ports -p <jailname> -e 8200:8200```   
+* Adjust to your environment:    
+  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
+    -E IP=<IP address of this vault node> -E VAULTTYPE=follower \
+    -E UNSEALIP=<unseal vault node> -E UNSEALTOKEN=<wrapped token generated on unseal node> -E VAULTLEADER=<IP> -E LEADERTOKEN=<token>
+    -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
+    -E SFTPUSER=certuser -E SFTPPASS=<password> -E SFTPNETWORK=<local /24 in 0.0.0.0 notation> \
+    [-E GOSSIPKEY=<32 byte Base64 key from consul keygen> -E REMOTELOG=<remote syslog IP>]```
+
+The SFTPUSER and SFTPPASS parameters are on the follower node are used to login to the vault leader to get temporary certificates for a further login.
+
+The SFTPNETWORK parameter is only used by the Vault leader node.
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
@@ -42,9 +92,9 @@ The REMOTELOG parameter is the IP address of a remote syslog server to send logs
 
 # Architecture
 * vault-unseal: is initialized and unsealed. The root token creates a transit key that enables the other Vaults auto-unseal. This Vault server is not a part of the cluster.
-* vault-clone-1: is initialized and unsealed automatically with the passed in wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
-* vault-clone-2: is initialized and unsealed automatically with the passed in NEW wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
-* vault-clone-n+: is initialized and unsealed automatically with the passed in NEW wrapped unseal key. Joins raft cluster after unsealing, sets up PKI.
+* vault-clone-1: is initialized and unsealed automatically with the passed in wrapped unseal key. Joins raft cluster after unsealing, sets up PKI and generates a bunch of temporary certificates.
+* vault-clone-2: is initialized and unsealed automatically with the passed in NEW wrapped unseal key. Joins raft cluster after unsealing, sets up PKI. Needs to have SSH key from vault leader.
+* vault-clone-n+: is initialized and unsealed automatically with the passed in NEW wrapped unseal key. Joins raft cluster after unsealing, sets up PKI. Needs to have SSH key from vault leader.
 
 # Usage
 
@@ -103,7 +153,7 @@ wrapping_token_creation_path:    auth/token/create
 wrapped_accessor:                REDACTED
 ```
 
-This new token ```s.newtoken``` can be used to unseal the cluster nodes. A new token must be generated for each node in the cluster.
+This new token ```s.newtoken``` can be used to unseal the cluster nodes. A new token must be generated for each node in the vault cluster.
 
 ## Cluster leader node using raft storage
 To unseal a cluster leader, make use of a wrapped key generated on the unseal node. Pass it in with ```-E UNSEALTOKEN=<wrapped token>```
@@ -116,13 +166,11 @@ To run other ```vault``` commands pass in the extra parameters ```-address=https
 * ```-tls-skip-verify``` to skip verifying the certificate; or
 * ```-ca-cert=/mnt/certs/combinedca.pem``` to verify with the CA certificate obtained (if everything working)
 
-(This should fall away in the transition to vnet for pot networking and localhost can be queried in a jail)
-
 ### Example vault command with parameters
 ```
-vault status -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/combinedca.pem
-vault operator raft list-peers -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/combinedca.pem
-vault operator raft autopilot state -address=https://10.0.0.3:8200 -tls-skip-verify
+vault status -address=https://10.0.0.3:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem
+vault operator raft list-peers -address=https://10.0.0.3:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem
+vault operator raft autopilot state -address=https://10.0.0.3:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem
 ```
 
 ## Cluster follower follower using raft storage
@@ -132,29 +180,29 @@ A leader node should already exist, and must be passed in with the parameter ```
 
 A leader token is also required and must be passed in with the parameter ```-E LEADERTOKEN=<login token from unsealed leader>```. You can get this token from ```/root/cli-vault-auto-login.sh``` on the leader.
 
-The cluster node will be automatically unsealed and join the cluster. Repeat for all additional nodes in the vault cluster.
+The SSH key created for the SFTPUSER on the Vault leader needs to be made available during pot setup of the follower node.
 
-To run other ```vault``` commands pass in the extra parameters ```-address=https://<IP-being-queried>:8200``` and one of:
-* ```-tls-skip-verify``` to skip verifying the certificate; or
-* ```-ca-cert=/mnt/certs/combinedca.pem``` to verify with the CA certificate obtained (if everything working)
+The cluster node will be automatically unsealed and join the cluster. It will automatically retrieve a temporary certificate with 2h TTL from the Vault leader via SFTP, and use this to perform a client-tls-validated login to vault, to retrieve proper certificates with a longer TTL of 24h.
 
-(This should fall away in the transition to vnet for pot networking and localhost can be queried in a jail)
+Repeat for all additional nodes in the vault cluster.
+
+To run other ```vault``` commands pass in the extra parameters ```-address=https://<IP-being-queried>:8200``` and ```-client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem``` to verify with the CA certificate obtained (if everything working)
 
 ### Example vault command with parameters
 ```
-vault status -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/combinedca.pem
-vault operator raft list-peers -address=https://10.0.0.3:8200 -ca-cert=/mnt/certs/combinedca.pem
-vault operator raft autopilot state -address=https://10.0.0.3:8200 -tls-skip-verify
+vault status -address=https://10.0.0.3:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem
+vault operator raft list-peers -address=https://10.0.0.3:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem
+vault operator raft autopilot state -address=https://10.0.0.3:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem
 ```
 
 ## Deafult cluster usage
 This cluster will generate, issue, renew certificates. 
 
 ## Other example cluster usage
-This cluster can then be used as a kv store.
+This cluster can be used as a kv store.
 
 ```
-vault secrets enable -address=https://<IP>:8200 -ca-cert=/mnt/certs/combinedca.pem -path=kv kv-v2
-vault kv -address=https://<IP>:8200 -ca-cert=/mnt/certs/combinedca.pem put kv/testkey webapp=TESTKEY
-vault kv -address=https://<IP>:8200 -ca-cert=/mnt/certs/combinedca.pem get kv/testkey
+vault secrets enable -address=https://<IP>:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem -path=kv kv-v2
+vault kv -address=https://<IP>:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem put kv/testkey webapp=TESTKEY
+vault kv -address=https://<IP>:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem get kv/testkey
 ```
