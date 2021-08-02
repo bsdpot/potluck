@@ -87,10 +87,6 @@ mkdir -p /usr/local/etc/rc.d
 step "Install package consul"
 pkg install -y consul
 
-# removing as not in use
-#step "Install package consul-template"
-#pkg install -y consul-template
-
 step "Install package sudo"
 pkg install -y sudo
 
@@ -99,6 +95,9 @@ pkg install -y node_exporter
 
 step "Install package jq"
 pkg install -y jq
+
+step "Install package jo"
+pkg install -y jo
 
 step "Install package curl"
 pkg install -y curl
@@ -109,7 +108,6 @@ pkg install -y openssl
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
-#### Vault
 step "Install package vault"
 pkg install -y vault
 
@@ -1048,6 +1046,46 @@ export VAULT_CLIENT_KEY=/mnt/certs/key.pem
     # make executable
     chmod +x /root/raft-status.sh
 
+    # add script to regenerate 2h temp certs
+    echo \"Adding gen-temp-certs.sh script to regenerate temporary certificates\"
+
+    echo \"#!/bin/sh
+MYNETWORK=\$SFTPNETWORK
+TRIMNETWORK=\\\$(echo \\\$MYNETWORK | sed 's/\.[0-9]*$//')
+SEQNETWORK=\\\$(/usr/bin/seq -f \\\"\\\$TRIMNETWORK.%g\\\" 1 253)
+# diagnostic
+echo \\\$SEQNETWORK > /tmpcerts/iplist.txt
+# generate certificates per host
+for sftphost in \\\$SEQNETWORK; do
+    mkdir -p /tmpcerts/\\\$sftphost
+    /usr/local/bin/jo -p common_name=\\\$sftphost ttl=2h ip_sans=\\\"\\\$sftphost,127.0.0.1\\\" format=pem > /tmpcerts/\\\$sftphost/payload.json
+    if [ -s /root/login.token ]; then
+        echo \\\"Re-generating 2 hour ttl client cert for ip \\\$sftphost in /tmpcerts/\\\$sftphost/...\\\"
+        HEADER=\\\$(/bin/cat /root/login.token)
+        /usr/local/bin/curl --silent --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem \
+         --header \\\"X-Vault-Token: \\\$HEADER\\\" \
+         --request POST --data --data @/tmpcerts/\\\$sftphost/payload.json \
+         https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmpcerts/\\\$sftphost/vaultissue.json
+        # extract the required certificates to individual files
+        /usr/local/bin/jq -r '.data.certificate' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/cert.pem
+        /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\\\$sftphost/vaultissue.json >> /tmpcerts/\\\$sftphost/cert.pem
+        /usr/local/bin/jq -r '.data.private_key' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/key.pem
+        /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/ca.pem
+        # concat the root CA and intermediary CA into combined file
+        cat /mnt/certs/CA_cert.pem /tmpcerts/\\\$sftphost/ca.pem > /tmpcerts/\\\$sftphost/combinedca.pem
+        chown -R \$SFTPUSER:wheel /tmpcerts/\\\$sftphost/
+        # validate the certificates
+        echo \\\"Validating client certificate\\\"
+        if [ -s /tmpcerts/\\\$sftphost/combinedca.pem ] && [ -s /tmpcerts/\\\$sftphost/cert.pem ]; then
+            /usr/bin/openssl verify -CAfile /tmpcerts/\\\$sftphost/combinedca.pem /tmpcerts/\\\$sftphost/cert.pem
+        fi
+    fi
+done
+\" > /root/gen-temp-certs.sh
+
+    # make executable
+    chmod +x /root/gen-temp-certs.sh
+
 ###### not working
 #    # setup token renewals
 #    echo \"
@@ -1097,10 +1135,7 @@ export VAULT_CLIENT_KEY=/mnt/certs/key.pem
 
     # retrive first round of certificates from vault leader via sftp
     echo \"Get first round of certificates from vault leader via sftp\"
-    if [ -f /root/sshkey ]; then
-        cp -f /root/sshkey /root/.ssh/id_rsa
-        chmod 600 /root/.ssh/id_rsa
-        /usr/bin/ssh-keygen -f /root/.ssh/id_rsa -y > /root/.ssh/id_rsa.pub
+    if [ -f /root/.ssh/id_rsa ]; then
         cd /tmp/tmpcerts
         # wildcard retrieval works manually but not in the script so repeat for each file
         /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTLEADER:\$IP/cert.pem

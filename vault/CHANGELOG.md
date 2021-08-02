@@ -1,3 +1,9 @@
+2.0.33
+
+* Minor fixes to script to remove duplication. Added admin script to re-generate temp certificates.
+
+---
+
 2.0.32
 
 * Implementing solution to force always-on client tls validation temporary short-lived certificates and keys via sftp
