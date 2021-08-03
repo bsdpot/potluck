@@ -1,3 +1,9 @@
+2.0.34
+
+* Switch to using jo to generate json files for vault certificate payload.json. Minor fixes.
+
+---
+
 2.0.33
 
 * Minor fixes to script to remove duplication. Added admin script to re-generate temp certificates.

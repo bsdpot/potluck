@@ -13,7 +13,7 @@ You can e.g. store certificates, passwords etc to be used with the [nomad-server
 
 The flavour expects a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. If no ```consul``` instance is available at first, make sure it's up within an hour and the certificate renewal process will restart ```consul```. You can also connect to this host and ```service consul restart``` manually.
 
-## protip
+## pro tip
 
 Start ```vault``` cluster with the IP addresses of ```consul``` servers, which aren't live. Then start ```loki``` instance. Then start a ```consul``` cluster. Restart consul on ```vault``` and ```loki``` instances or wait for first certificate renewal after an hour.
 
@@ -21,10 +21,10 @@ Start ```vault``` cluster with the IP addresses of ```consul``` servers, which a
 
 ## Unseal node
 
-* [unseal node] Create a ZFS dataset on the parent system beforehand:    
+* [unseal node] Create a ZFS data set on the parent system beforehand:    
   ```zfs create -o mountpoint=/mnt/vaultunseal zroot/vaultunseal```
 * Create your local jail from the image or the flavour files. 
-* Mount in the ZFS dataset you created:    
+* Mount in the ZFS data set you created:    
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/vaultunseal```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 8200:8200```   
@@ -33,10 +33,10 @@ Start ```vault``` cluster with the IP addresses of ```consul``` servers, which a
 
 ## Vault leader
 
-* [cluster node] Create a ZFS dataset on the parent system beforehand:    
+* [cluster node] Create a ZFS data set on the parent system beforehand:    
   ```zfs create -o mountpoint=/mnt/vaultdata zroot/vaultdata```
 * Create your local jail from the image or the flavour files. 
-* Mount in the ZFS dataset you created:    
+* Mount in the ZFS data set you created:    
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/vaultdata```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 8200:8200```   
@@ -60,16 +60,18 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
 
+Important: the leader boot can take a while with certificate generation. Let it complete before adding followers. 
+
 Once booted you will need to run ```./cli-vault-auto-login.sh``` for a login token to use on follower nodes, and export ```/home/certuser/.ssh/id_rsa``` to a file to import to follower nodes and other types of pot images.
 
 To re-generate the temporary certificates run ```./gen-temp-certs.sh```. You will need to do this if two hours have passed since setting up the ```vault``` leader.
 
 ## Vault follower
 
-* [cluster node] Create a ZFS dataset on the parent system beforehand:    
+* [cluster node] Create a ZFS data set on the parent system beforehand:    
   ```zfs create -o mountpoint=/mnt/vaultdata zroot/vaultdata```
 * Create your local jail from the image or the flavour files. 
-* Mount in the ZFS dataset you created:    
+* Mount in the ZFS data set you created:    
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/vaultdata```
 * Copy in the SSH private key for the user on the Vault leader:    
   ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
@@ -108,7 +110,7 @@ The REMOTELOG parameter is the IP address of a remote syslog server to send logs
 ## Unseal Node
 (This stage of development of the pot image doesn't yet include HTTPS on the unseal node. Please include the parameter ```-address=http://<IP>:8200``` to any ```vault``` commands```)
 
-This vault instance exists to generate unseal keys. It must first be initialised.
+This vault instance exists to generate unseal keys. It must first be initialised. Please save this information securely.
 
 ```
 $ pot term vault-unseal
@@ -160,6 +162,11 @@ wrapped_accessor:                REDACTED
 
 This new token ```s.newtoken``` can be used to unseal the cluster nodes. A new token must be generated for each node in the vault cluster.
 
+### Important note
+If the unseal node is restarted you will need to unseal and login again. Shut down your ```vault``` cluster first, starting with followers, then leader. Start unseal node, unseal and login, then start leader and followers.
+
+You did save the keys and login token right?
+
 ## Cluster leader node using raft storage
 To unseal a cluster leader, make use of a wrapped key generated on the unseal node. Pass it in with ```-E UNSEALTOKEN=<wrapped token>```
 
@@ -200,7 +207,7 @@ vault operator raft list-peers -address=https://10.0.0.3:8200 -client-cert=/mnt/
 vault operator raft autopilot state -address=https://10.0.0.3:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem
 ```
 
-## Deafult cluster usage
+## Default cluster usage
 This cluster will generate, issue, renew certificates. 
 
 ## Other example cluster usage

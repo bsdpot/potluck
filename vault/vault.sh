@@ -268,7 +268,7 @@ if [ -f /usr/local/etc/vault/vault-server.hcl ]; then
 fi
 # then setup a fresh vault.hcl specific to the type of image
 
-# default freebsd vault.hcl is /usr/local/etc/vault.hcl and
+# default FreeBSD vault.hcl is /usr/local/etc/vault.hcl and
 # the init script /usr/local/etc/rc.d/vault refers to this
 # but many vault docs refer to /usr/local/etc/vault/vault-server.hcl
 # or similar
@@ -739,14 +739,19 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 #}
 #\" >> /usr/local/etc/vault.hcl
 
-	# using this payload.json approach to avoid nested single and double quotes for expansion
-    echo \"{
-  \\\"common_name\\\": \\\"\$IP\\\",
-  \\\"alt_names\\\": \\\"\$NODENAME\\\",
-  \\\"ttl\\\": \\\"24h\\\",
-  \\\"ip_sans\\\": \\\"\$IP,127.0.0.1\\\",
-  \\\"format\\\": \\\"pem\\\"
-}\" > /mnt/templates/payload.json
+##### removed
+#	# using this payload.json approach to avoid nested single and double quotes for expansion
+#    echo \"{
+#  \\\"common_name\\\": \\\"\$IP\\\",
+#  \\\"alt_names\\\": \\\"\$NODENAME\\\",
+#  \\\"ttl\\\": \\\"24h\\\",
+#  \\\"ip_sans\\\": \\\"\$IP,127.0.0.1\\\",
+#  \\\"format\\\": \\\"pem\\\"
+#}\" > /mnt/templates/payload.json
+#####
+
+    # new payload approach, using jo to generate json
+    /usr/local/bin/jo -p common_name=\$IP alt_names=\$NODENAME ttl=24h ip_sans=\"\$IP,127.0.0.1\" format=pem > /mnt/templates/payload.json
 
     # generate certificates to use
     # we use curl to get the certificates in json format as the issue command only has formats: pem, pem_bundle, der
@@ -920,13 +925,8 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
     # generate certificates per host
     for sftphost in \$SEQNETWORK; do
         mkdir -p /tmpcerts/\$sftphost
-        echo \"{
-  \\\"common_name\\\": \\\"\$sftphost\\\",
-  \\\"ttl\\\": \\\"2h\\\",
-  \\\"ip_sans\\\": \\\"\$sftphost,127.0.0.1\\\",
-  \\\"format\\\": \\\"pem\\\"
-}\" > /tmpcerts/\$sftphost/payload.json
-
+        # use jo to generate payload.json file
+        /usr/local/bin/jo -p common_name=\$sftphost ttl=2h ip_sans=\"\$sftphost,127.0.0.1\" format=pem > /tmpcerts/\$sftphost/payload.json
         if [ -s /root/login.token ]; then
             echo \"Generating 2 hour ttl client cert for ip \$sftphost in /tmpcerts/\$sftphost/...\"
             HEADER=\$(/bin/cat /root/login.token)
@@ -985,9 +985,9 @@ export VAULT_MAX_RETRIES=5
 if [ -s /root/login.token ]; then
     LOGINTOKEN=\\\$(/bin/cat /root/login.token)
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
-    # currently ignoring tls validation for certificate renewal
-    # todo: set validation up on this script
-    #/usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    # we're using tls-client-validation so need cert, key, cacert, along with a login token, and payload.json file
+    # we'll pass all this to the vault leader api and get back a json file with certificate data embedded
+    # this payload.json was created in the setup of the server
     /usr/local/bin/curl --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
     # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
@@ -1064,7 +1064,7 @@ for sftphost in \\\$SEQNETWORK; do
         HEADER=\\\$(/bin/cat /root/login.token)
         /usr/local/bin/curl --silent --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem \
          --header \\\"X-Vault-Token: \\\$HEADER\\\" \
-         --request POST --data --data @/tmpcerts/\\\$sftphost/payload.json \
+         --request POST --data @/tmpcerts/\\\$sftphost/payload.json \
          https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmpcerts/\\\$sftphost/vaultissue.json
         # extract the required certificates to individual files
         /usr/local/bin/jq -r '.data.certificate' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/cert.pem
@@ -1133,11 +1133,11 @@ done
     echo \"\"
     # end client
 
-    # retrive first round of certificates from vault leader via sftp
+    # retrieve first round of certificates from vault leader via sftp
     echo \"Get first round of certificates from vault leader via sftp\"
     if [ -f /root/.ssh/id_rsa ]; then
         cd /tmp/tmpcerts
-        # wildcard retrieval works manually but not in the script so repeat for each file
+        # wildcard retrieval works manually but not in the script, so we specify each file to retrieve
         /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTLEADER:\$IP/cert.pem
         /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTLEADER:\$IP/key.pem
         /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTLEADER:\$IP/ca.pem
@@ -1265,7 +1265,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
     if [ -s /mnt/certs/CA_cert.pem ]; then
         echo \"\" >> /mnt/certs/CA_cert.pem
     fi
-    # get the intermediate CA, we're not able to do any tls verification at this stagen
+    # get the intermediate CA, we're not able to do any tls verification at this stage
     /usr/local/bin/curl --cacert /tmp/tmpcerts/ca.pem --cert /tmp/tmpcerts/cert.pem --key /tmp/tmpcerts/key.pem -o /mnt/certs/intermediate.cert.pem https://\$VAULTLEADER:8200/v1/pki_int/ca/pem
     # append a new line to the file, as will concat together later with another file
     if [ -s /mnt/certs/intermediate.cert.pem ]; then
@@ -1293,13 +1293,8 @@ cluster_addr = \\\"https://\$IP:8201\\\"
     if [ -s /root/login.token ]; then
         # generate certificates to use
         # using this payload.json approach to avoid nested single and double quotes for expansion
-        echo \"{
-  \\\"common_name\\\": \\\"\$IP\\\",
-  \\\"alt_names\\\": \\\"\$NODENAME\\\",
-  \\\"ttl\\\": \\\"24h\\\",
-  \\\"ip_sans\\\": \\\"\$IP,127.0.0.1\\\",
-  \\\"format\\\": \\\"pem\\\"
-}\" > /mnt/templates/payload.json
+        # new way of generating payload.json with jo
+        /usr/local/bin/jo -p common_name=\$IP alt_names=\$NODENAME ttl=24h ip_sans=\"\$IP,127.0.0.1\" format=pem > /mnt/templates/payload.json
 
         # we use curl to get the certificates in json format from vault leader api, as vaults cli's issue command only has the formats: pem, pem_bundle, der
         # but no json format with everything in one file
@@ -1431,10 +1426,9 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         /usr/local/etc/rc.d/vault start
         sleep 6
 
-        # 2nd raft join instance, currently disabled, testing order of events
+        # join the raft cluster
         echo \"Joining the raft cluster\"
-        # works
-        #/usr/local/bin/vault operator raft join -address=https://\$VAULTLEADER:8200 -tls-skip-verify
+        # we're using tls-client-validation so cert, key, cacert required
         /usr/local/bin/vault operator raft join -address=https://\$IP:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem
         # we need to wait a period for the cluster to initialise correctly and elect leader
         # cluster requires 10 seconds to bootstrap, even if single server, we can only login after 10 seconds
@@ -1442,10 +1436,10 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         echo \"Please wait for raft cluster to contemplate self... (30s)\"
         sleep 30
 
-        # login to the local vault instance to initilise the follower node
+        # login to the local vault instance to initialise the follower node
         echo \"Logging in to local vault instance\"
+        # we're using tls-client-validation so need cert, key, cacert and a login token
         echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$IP:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem -method=token -field=token token=- > /root/login.token
-        #echo \"\$LEADERTOKEN\" | /usr/local/bin/vault login -address=https://\$IP:8200 -method=token -field=token token=- > /root/login.token
 
         if [ -s /root/login.token ]; then
             TOKENOUT=\$(/bin/cat /root/login.token)
