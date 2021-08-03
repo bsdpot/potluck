@@ -1,3 +1,9 @@
+0.0.9
+
+* Updates for tls-client-validation to be working with temp certificates via sftp at first
+
+---
+
 0.0.8
 
 * Turning off flow-control in syslog-ng, setting 120s time_reopen, and reducing log-fifo parameter

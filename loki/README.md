@@ -7,25 +7,29 @@ tags: ["logs", "syslog", "loki", "grafana"]
 
 # Overview
 
-This is a flavour containing the ```loki``` datasource, ```promtail``` log ingestor,  and ```grafana``` viewer.
+This is a flavour containing the ```loki``` data source, ```promtail``` log ingestor,  and ```grafana``` viewer.
 
 The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. If no ```consul``` instance is available at first, make sure it's up within an hour and the certificate renewal process will restart ```consul```. You can also connect to this host and ```service consul restart``` manually.
 
 # Installation
 
-* Create a ZFS dataset on the parent system beforehand
+* Create a ZFS data set on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/lokidata zroot/lokidata```
 * Create your local jail from the image or the flavour files. 
 * Clone the local jail
-* Mount in the ZFS dataset you created
+* Mount in the ZFS data set you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/lokidata```
+* Copy in the SSH private key for the user on the Vault leader:    
+  ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 3100:3100 -e 3000:3000```
 * Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
-      -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
-      -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
-      -E LOGCLIENTS="10.0.0.0/24" [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
+  ```
+  sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
+  -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
+  -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
+  -E SFTPUSER=certuser -E SFTPPASS=<password> [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]
+  ```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
@@ -35,7 +39,7 @@ The VAULTSERVER parameter is the IP address of the ```vault``` server to authent
 
 The VAULTTOKEN parameter is the issued token from the ```vault``` server.
 
-The LOGCLIENTS parameter is a network subnet to accept remote syslog entries from. Any host in this range configured to send logs to this server will be accepted.
+The SFTPUSER and SFTPPASS parameters are to create a user with SSH private keys, where you will need to export the private key to the host systems for follower nodes.
 
 # Explanation
 
@@ -53,17 +57,17 @@ This is a very broad and blunt approach, where ```syslog-ng``` may be a preferre
 
 ```promtail``` is configured as a service and monitors ```/mnt/logs/central.log``` for data to ingest and label, before submitting to ```loki```.
 
-## 3. Loki datasource
+## 3. Loki data source
 
 ```loki``` is configured as a service and ingests data-with-labels, and makes available for query purposes.
 
 ## 4. Grafana with "search logs" dashboard
 
-```grafana``` is a viewer for the data in the ```loki``` datasource. A separate ```grafana``` flavour must be configured with ```loki``` as a datasource to view captured logs. 
+```grafana``` is a viewer for the data in the ```loki``` data source. A separate ```grafana``` flavour must be configured with ```loki``` as a data source to view captured logs. 
 
 # Usage
 
-To access ```loki``` make sure your ```grafana``` flavour has a datasource with this host's IP:
+To access ```loki``` make sure your ```grafana``` flavour has a data source with this host's IP:
 * https://<loki-host>:3000
 and open the ```search logs``` dashboard.
 
