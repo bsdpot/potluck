@@ -1,3 +1,9 @@
+0.0.14
+
+* Updating image for tls-client-validation and dual certificate process with copy in of ssh key
+
+---
+
 0.0.13
 
 * Turning off flow-control in syslog-ng, setting 120s time_reopen, and reducing log-fifo parameter
