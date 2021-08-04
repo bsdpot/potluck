@@ -1,3 +1,9 @@
+0.0.10
+
+* Documentation updates
+
+---
+
 0.0.9
 
 * Updates for tls-client-validation to be working with temp certificates via sftp at first

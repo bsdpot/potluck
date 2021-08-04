@@ -829,12 +829,13 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 \\\"node_name\\\": \\\"\$NODENAME\\\",
 \\\"data_dir\\\":  \\\"/var/db/consul\\\",
 \\\"dns_config\\\": {
- \\\"a_record_limit\\\": 3,
- \\\"enable_truncate\\\": true
+  \\\"a_record_limit\\\": 3,
+  \\\"enable_truncate\\\": true
 },
-\\\"verify_incoming\\\": false,
+\\\"verify_incoming\\\": true,
 \\\"verify_outgoing\\\": true,
 \\\"verify_server_hostname\\\": false,
+\\\"verify_incoming_rpc\\\":true,
 \\\"ca_file\\\": \\\"/mnt/certs/combinedca.pem\\\",
 \\\"cert_file\\\": \\\"/mnt/certs/cert.pem\\\",
 \\\"key_file\\\": \\\"/mnt/certs/key.pem\\\",
@@ -843,9 +844,9 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 \\\"encrypt\\\": \$GOSSIPKEY,
 \\\"start_join\\\": [ \$CONSULSERVERS ],
 \\\"service\\\": {
-\\\"name\\\": \\\"node-exporter\\\",
-\\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
-\\\"port\\\": 9100
+  \\\"name\\\": \\\"node-exporter\\\",
+  \\\"tags\\\": [\\\"_app=vault\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
+  \\\"port\\\": 9100
 }
 }\" > /usr/local/etc/consul.d/agent.json
 
@@ -1362,10 +1363,11 @@ cluster_addr = \\\"https://\$IP:8201\\\"
  \\\"a_record_limit\\\": 3,
  \\\"enable_truncate\\\": true
 },
-\\\"verify_incoming\\\": false,
+\\\"verify_incoming\\\": true,
 \\\"verify_outgoing\\\": true,
 \\\"verify_server_hostname\\\": false,
-\\\"ca_file\\\": \\\"/mnt/certs/combindca.pem\\\",
+\\\"verify_incoming_rpc\\\":true,
+\\\"ca_file\\\": \\\"/mnt/certs/combinedca.pem\\\",
 \\\"cert_file\\\": \\\"/mnt/certs/cert.pem\\\",
 \\\"key_file\\\": \\\"/mnt/certs/key.pem\\\",
 \\\"log_file\\\": \\\"/var/log/consul/\\\",

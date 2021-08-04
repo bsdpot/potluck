@@ -1,3 +1,9 @@
+2.0.35
+
+* Updating consul agent to tls-client-validation
+
+---
+
 2.0.34
 
 * Switch to using jo to generate json files for vault certificate payload.json. Minor fixes.

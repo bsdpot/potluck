@@ -39,7 +39,7 @@ The VAULTSERVER parameter is the IP address of the ```vault``` server to authent
 
 The VAULTTOKEN parameter is the issued token from the ```vault``` server.
 
-The SFTPUSER and SFTPPASS parameters are to create a user with SSH private keys, where you will need to export the private key to the host systems for follower nodes.
+The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 
 # Explanation
 
