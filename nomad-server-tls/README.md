@@ -23,14 +23,21 @@ Please note that a specific network configuration is suggested (see Installation
 * Create your local jail from the image or the flavour files. 
 * [Optional] Mount in the ZFS dataset you created:    
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/nomad```
+* Copy in the SSH private key for the user on the Vault leader:    
+  ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
 * Create your local jail from the image or the flavour files. 
 * This jail does not work with a public bridge, so clone it to use an IP address directly on your host:     
   ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```   
   e.g.
   ```sudo pot clone -P nomad-server-amd64-13_2_0_2 -p my-nomad-server -N alias -i "em0|10.10.10.11"```   
 * Adjust to your environment:    
-  ```sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E NOMADKEY=<16 byte or 32 byte key from nomad operator keygen>]
-  [-E VAULTSERVER=<IP of Vault>] [-E VAULTTOKEN=<token-issued-by-vault>] [-E REMOTELOG=<remote syslog IP>]```
+  ```
+  sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> \
+  -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> \
+  -E SFTPUSER=<user> -E SFTPPASS=<password> \
+  [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E NOMADKEY=<16 byte or 32 byte key from nomad operator keygen>] \
+  -E VAULTSERVER=<IP of Vault> -E VAULTTOKEN=<token-issued-by-vault> [-E REMOTELOG=<remote syslog IP>]
+  ```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
@@ -45,6 +52,8 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 The NOMADKEY parameter is the gossip encryption key for nomad. We're re-using the default key from consul as nomad supports 32 byte Base64 keys, but the common one is a 16 byte Bas64 key from ```nomad operator keygen```
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
+
+The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 
 # Usage
 
