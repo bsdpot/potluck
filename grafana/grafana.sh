@@ -98,6 +98,9 @@ pkg install -y curl
 step "Install package jq"
 pkg install -y jq
 
+step "Install package jo"
+pkg install -y jo
+
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
@@ -220,7 +223,7 @@ fi
 if [ -z \${INFLUXDATABASE+x} ];
 then
     echo 'INFLUXDATABASE is unset - see documentation how to configure this flavour with InfluxDB datanase name. Defaulting to default'
-    INFLUXDATABASE="default"
+    INFLUXDATABASE=\"default\"
 fi
 # grafana credentials
 if [ -z \${GRAFANAUSER+x} ];
@@ -239,13 +242,62 @@ then
     echo 'REMOTELOG is unset - see documentation how to configure this flavour with IP address of remote syslog server. Defaulting to null'
     REMOTELOG=\"null\"
 fi
+# sftpuser credentials
+if [ -z \${SFTPUSER+x} ];
+then
+    echo 'SFTPUSER is unset - see documentation how to configure this flavour with sftp user and pass. Defaulting to username: certuser'
+    SFTPUSER=\"certuser\"
+fi
+# sftpuser password
+if [ -z \${SFTPPASS+x} ];
+then
+    echo 'SFTPPASS is unset - see documentation how to configure this flavour with sftp user and pass. Defaulting to password: c3rtp4ss'
+    SFTPPASS=\"c3rtp4ss\"
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 
+# some basic ssh setup
+echo \"Initialising ssh settings\"
+mkdir -p /root/.ssh
+chmod 700 /root/.ssh
+touch /root/.ssh/authorized_keys
+
+if [ -f /root/sshkey ] && [ ! -f /root/.ssh/id_rsa ]; then
+    cp /root/sshkey /root/.ssh/id_rsa
+    chmod 600 /root/.ssh/id_rsa
+    ssh-keygen -f /root/.ssh/id_rsa -y > /root/.ssh/id_rsa.pub
+fi
+
+# setup temp directory for temp certs
+mkdir -p /tmp/tmpcerts
+
+# echo a message to user
+echo \"\"
+echo \"########################### IMPORTANT NOTICE ###########################\"
+echo \"\"
+echo \"Make sure to copy in id_rsa from vault leader certuser instance!\"
+echo \"\"
+echo \"########################################################################\"
+echo \"\"
+# end client
+
+# retrieve first round of certificates from vault leader via sftp
+echo \"Get first round of certificates from vault leader via sftp\"
+if [ -f /root/.ssh/id_rsa ]; then
+    cd /tmp/tmpcerts
+    # wildcard retrieval works manually but not in the script, so we specify each file to retrieve
+    /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/cert.pem
+    /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/key.pem
+    /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/ca.pem
+    /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/combinedca.pem
+    cd ~
+fi
+
 # setup directories for vault usage
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs/localca
+mkdir -p /mnt/certs/hash
 
 ## start consul
 
@@ -263,7 +315,7 @@ echo \"{
   \\\"a_record_limit\\\": 3,
   \\\"enable_truncate\\\": true
  },
- \\\"verify_incoming\\\": false,
+ \\\"verify_incoming\\\": true,
  \\\"verify_outgoing\\\": true,
  \\\"verify_server_hostname\\\":false,
  \\\"verify_incoming_rpc\\\": true,
@@ -341,20 +393,21 @@ vault {
 storage \\\"file\\\" {
   path = \\\"/mnt/vault/data\\\"
 }
-template {
-  source = \\\"/mnt/templates/cert.tpl\\\"
-  destination = \\\"/mnt/certs/cert.pem\\\"
-}
-template {
-  source = \\\"/mnt/templates/ca.tpl\\\"
-  destination = \\\"/mnt/certs/ca.pem\\\"
-}
-template {
-  source = \\\"/mnt/templates/key.tpl\\\"
-  destination = \\\"/mnt/certs/key.pem\\\"
+#template {
+#  source = \\\"/mnt/templates/cert.tpl\\\"
+#  destination = \\\"/mnt/certs/cert.pem\\\"
+#}
+#template {
+#  source = \\\"/mnt/templates/ca.tpl\\\"
+#  destination = \\\"/mnt/certs/ca.pem\\\"
+#}
+#template {
+#  source = \\\"/mnt/templates/key.tpl\\\"
+#  destination = \\\"/mnt/certs/key.pem\\\"
 }\" > /usr/local/etc/vault.hcl
 
 # setup template files for certificates
+# this is not currently in use because cron job does renewal and services restart
 echo \"{{- /* /mnt/templates/cert.tpl */ -}}
 {{ with secret \\\"pki_int/issue/\$DATACENTER\\\" \\\"common_name=\$NODENAME\\\" \\\"ttl=24h\\\" \\\"alt_names=\$NODENAME\\\" \\\"ip_sans=\$IP\\\" }}
 {{ .Data.certificate }}{{ end }}
@@ -382,73 +435,102 @@ sysrc vault_login_class=root
 sysrc vault_syslog_output_enable=\"YES\"
 sysrc vault_syslog_output_priority=\"warn\"
 
-# retrieve CA certificates from vault leader
+# new CA cert retrieval process with curl
 echo \"Retrieving CA certificates from Vault leader\"
-/usr/local/bin/vault read -address=https://\$VAULTSERVER:8200 -tls-skip-verify -field=certificate pki/cert/ca > /mnt/certs/CA_cert.crt
-/usr/local/bin/vault read -address=https://\$VAULTSERVER:8200 -tls-skip-verify -field=certificate pki_int/cert/ca > /mnt/certs/intermediate.cert.pem
+# get the root CA
+/usr/local/bin/curl --silent --cacert /tmp/tmpcerts/ca.pem --cert /tmp/tmpcerts/cert.pem --key /tmp/tmpcerts/key.pem -o /mnt/certs/CA_cert.pem https://\$VAULTSERVER:8200/v1/pki/ca/pem
+# append a new line to the file, as will concat together later with another file
+if [ -s /mnt/certs/CA_cert.pem ]; then
+    echo \"\" >> /mnt/certs/CA_cert.pem
+fi
+# get the intermediate CA
+/usr/local/bin/curl --silent --cacert /tmp/tmpcerts/ca.pem --cert /tmp/tmpcerts/cert.pem --key /tmp/tmpcerts/key.pem -o /mnt/certs/intermediate.cert.pem https://\$VAULTSERVER:8200/v1/pki_int/ca/pem
+# append a new line to the file, as will concat together later with another file
+if [ -s /mnt/certs/intermediate.cert.pem ]; then
+    echo \"\" >> /mnt/certs/intermediate.cert.pem
+fi
+# validate the certificates
+echo \"Validating CA certificates\"
+if [ -s /mnt/certs/CA_cert.pem ] && [ -s /mnt/certs/intermediate.cert.pem ]; then
+    /usr/bin/openssl verify -CAfile /mnt/certs/CA_cert.pem /mnt/certs/intermediate.cert.pem
+fi
 
 # unwrap the pki token issued by vault leader
 echo \"Unwrapping passed in token...\"
-/usr/local/bin/vault unwrap -address=https://\$VAULTSERVER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -format=json \$VAULTTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unwrapped.token
+/usr/local/bin/vault unwrap -address=https://\$VAULTSERVER:8200 -client-cert=/tmp/tmpcerts/cert.pem -client-key=/tmp/tmpcerts/key.pem -ca-cert=/mnt/certs/intermediate.cert.pem -format=json \$VAULTTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unwrapped.token
 sleep 1
 if [ -s /root/unwrapped.token ]; then
     echo \"Token unwrapped\"
     THIS_TOKEN=\$(/bin/cat /root/unwrapped.token)
     echo \"Logging in to vault leader to authenticate\"
-    echo \"\$THIS_TOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTSERVER:8200 -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
+    echo \"\$THIS_TOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTSERVER:8200 -client-cert=/tmp/tmpcerts/cert.pem -client-key=/tmp/tmpcerts/key.pem -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
     sleep 5
 fi
+
 
 echo \"Setting certificate payload\"
 if [ -s /root/login.token ]; then
     # generate certificates to use
     # using this payload.json approach to avoid nested single and double quotes for expansion
-    echo \"{
-\\\"common_name\\\": \\\"\$NODENAME\\\",
-\\\"ttl\\\": \\\"24h\\\",
-\\\"ip_sans\\\": \\\"\$IP\\\"
-}\" > /mnt/templates/payload.json
+    # new way of generating payload.json with jo
+    /usr/local/bin/jo -p common_name=\$IP alt_names=\$NODENAME ttl=24h ip_sans=\"\$IP,127.0.0.1\" format=pem > /mnt/templates/payload.json
 
     # we use curl to get the certificates in json format as the issue command only has formats: pem, pem_bundle, der
     # but no json format except via the API
     echo \"Generating certificates to use from Vault\"
     HEADER=\$(/bin/cat /root/login.token)
-    /usr/local/bin/curl --cacert /mnt/certs/intermediate.cert.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    /usr/local/bin/curl --silent --cacert /tmp/tmpcerts/combinedca.pem --cert /tmp/tmpcerts/cert.pem --key /tmp/tmpcerts/key.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
 
-    # cli requires [], but web api does not
-    #/usr/local/bin/jq -r '.data.issuing_ca[]' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
-    # if [] left in for this script, you will get error: Cannot iterate over string
-    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
-    # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
-    cp -f /mnt/certs/ca.pem /mnt/certs/localca/ca.pem
+    # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
+    # append the ca cert to the cert
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
-
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
+    cd /mnt/certs
+    # concat the root CA and intermediary CA into combined file
+    cat /mnt/certs/CA_cert.pem /mnt/certs/ca.pem > /mnt/certs/combinedca.pem
+    # steps here to hash ca, required for syslog-ng
+    ln -s ca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/ca.pem).0
+    ln -s combinedca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
+    cd /root
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
 
-    # removing as not sure vault service needs to be running here
-    # start vault
-    #echo \"Starting Vault Agent\"
-    #/usr/local/etc/rc.d/vault start
+    # validate the certificates
+    echo \"Validating client certificate\"
+    if [ -s /mnt/certs/combinedca.pem ] && [ -s /mnt/certs/cert.pem ]; then
+        /usr/bin/openssl verify -CAfile /mnt/certs/combinedca.pem /mnt/certs/cert.pem
+    fi
 
     # start consul agent
     /usr/local/etc/rc.d/consul start
 
     # setup certificate rotation script
+    echo \"Setting up certificate rotation script\"
     echo \"#!/bin/sh
+export VAULT_CLIENT_TIMEOUT=300s
+export VAULT_MAX_RETRIES=5
 if [ -s /root/login.token ]; then
     LOGINTOKEN=\\\$(/bin/cat /root/login.token)
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
-    /usr/local/bin/curl -k --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
-    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
-    # syslog-ng wants ca file in a directory, so copy CA file to there too - not currently in use
-    cp -f /mnt/certs/ca.pem /mnt/certs/localca/ca.pem
+    /usr/local/bin/curl --silent --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem
     /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
+    cd /mnt/certs
+    # concat the root CA and intermediary CA into combined file
+    cat CA_cert.pem ca.pem > combinedca.pem
+    # steps here to hash ca
+    ln -s ca.pem hash\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/ca.pem).0
+    ln -s combinedca.pem hash\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
+    cd /root
     # set permissions on /mnt/certs for vault
     chown -R vault:wheel /mnt/certs
     # restart services
+    /bin/pkill -HUP nomad
     /usr/local/etc/rc.d/consul restart
     /usr/local/etc/rc.d/syslog-ng restart
     /usr/local/etc/rc.d/grafana restart

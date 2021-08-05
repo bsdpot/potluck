@@ -17,7 +17,7 @@ scrape_configs:
   - job_name: 'consul_registered_services'
     tls_config:
       insecure_skip_verify: false
-      ca_file: /mnt/certs/ca.pem
+      ca_file: /mnt/certs/combinedca.pem
       cert_file: /mnt/certs/cert.pem
       key_file: /mnt/certs/key.pem
     metrics_path: '/metrics'
@@ -60,7 +60,7 @@ scrape_configs:
     scheme: https
     tls_config:
       insecure_skip_verify: false
-      ca_file: /mnt/certs/ca.pem
+      ca_file: /mnt/certs/combinedca.pem
       cert_file: /mnt/certs/cert.pem
       key_file: /mnt/certs/key.pem
     static_configs:
@@ -72,7 +72,7 @@ scrape_configs:
     scheme: https
     tls_config:
       insecure_skip_verify: false
-      ca_file: /mnt/certs/ca.pem
+      ca_file: /mnt/certs/combinedca.pem
       cert_file: /mnt/certs/cert.pem
       key_file: /mnt/certs/key.pem
     static_configs:
@@ -83,7 +83,9 @@ scrape_configs:
       format: ['prometheus']
     scheme: https
     tls_config:
-      insecure_skip_verify: true
+      insecure_skip_verify: false
+      ca_file: /mnt/certs/combinedca.pem
+      cert_file: /mnt/certs/cert.pem
+      key_file: /mnt/certs/key.pem
     static_configs:
     - targets: ['your_vault_server_here:8200']
-

@@ -1,3 +1,9 @@
+0.0.11
+
+* Setup for tls-client-validation
+
+---
+
 0.0.10
 
 * Turning off flow-control in syslog-ng, setting 120s time_reopen, and reducing log-fifo parameter

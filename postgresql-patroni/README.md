@@ -14,19 +14,24 @@ The jail exposes these parameters that can either be set via the environment or 
 It is dependent on a ```consul``` server/cluster for the DCS store.
 
 # Installation
-* Create a ZFS dataset on the parent system beforehand:    
+* Create a ZFS data set on the parent system beforehand:    
   ```zfs create -o mountpoint=/mnt/postgresqldata zroot/postgresqldata```
 * Create your local jail from the image or the flavour files. 
-* Mount in the ZFS dataset you created:    
+* Mount in the ZFS data set you created:    
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/postgresqldata```
+* Copy in the SSH private key for the user on the Vault leader:    
+  ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 5432:5432```    
 * Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E IP=<IP address of this node> \
-     -E SERVICETAG=<master/replica/standby-leader> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
-     -E VAULTSERVER=<Vault leader IP> -E VAULTTOKEN=<s.token> -E REMOTELOG=<IP of loki> \
-     [-E ADMPASS=<custom admin password> -E KEKPASS=<custom postgresql superuser password> -E REPPASS=<custom replication password>] \
-     [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]```
+  ```
+  sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E IP=<IP address of this node> \
+  -E SERVICETAG=<master/replica/standby-leader> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
+  -E VAULTSERVER=<Vault leader IP> -E VAULTTOKEN=<s.token> -E REMOTELOG=<IP of loki> \
+  -E SFTPUSER=<user> -E SFTPPASS=<password> \
+  [-E ADMPASS=<custom admin password> -E KEKPASS=<custom postgresql superuser password> -E REPPASS=<custom replication password>] \
+  [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]
+  ```
 
 The SERVICETAG parameter defines if this is a master, replica or standby-leader node in the cluster,
 
@@ -38,21 +43,22 @@ The VAULTTOKEN parameter is the issued token from the ```vault``` server.
 
 The ADMPASS parameter is the admin user password which defaults to `admin`.
 
-The KEKPASS parameter is the superuser password for postgres, which dfaults to `kekpass`.
+The KEKPASS parameter is the superuser password for postgres, which defaults to `kekpass`.
 
-The REPPASS parameter is the relicator user password, for replication purposes, and defaults to `reppass`.
+The REPPASS parameter is the replicator user password, for replication purposes, and defaults to `reppass`.
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
 
+The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
+
 # Usage
 
-The mount-in dataset goes to /mnt. This change from /var/db/postgres requires the ```postgres``` user's home directory be updated from the default to this. This is done automatically and will work as long as the mount-in directory is /mnt.
-
-You must su to the postgresql user and run psql to interact with Postgresql. 
-
-No default database exists. It will have to be setup or imported.
+Usage notes
+* The mount-in data set goes to /mnt. This change from /var/db/postgres requires the ```postgres``` user's home directory be updated from the default to this. This is done automatically and will work as long as the mount-in directory is /mnt.
+* You must su to the postgresql user and run psql to interact with Postgresql. 
+* No default database exists. It will have to be setup or imported.
 
 Verify node or cluster details with
 

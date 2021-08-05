@@ -15,21 +15,26 @@ The flavour includes a local ```consul``` agent instance to be available that it
 
 # Installation
 
-* Create a ZFS dataset on the parent system beforehand
+* Create a ZFS data set on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/prometheusdata zroot/prometheusdata```
 * Create your local jail from the image or the flavour files. 
 * Clone the local jail
-* Mount in the ZFS dataset you created
+* Mount in the ZFS data set you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/prometheusdata```
+* Copy in the SSH private key for the user on the Vault leader:    
+  ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 9090:9090 -e 9100:9100 -e 3000:3000```
 * Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
-      -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
-      -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
-      -E SCRAPECONSUL="'10.0.0.1:8501', '10.0.0.2:8501', '10.0.0.3:8501', '10.0.0.4:8501', '10.0.0.5:8501'" \
-      -E SCRAPENOMAD="'10.0.0.6:4646', '10.0.0.7:4646', '10.0.0.8:4646', '10.0.0.9:4646', '10.0.0.10:4646'" \
-      [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E REMOTELOG=<remote syslog IP>]```
+  ```
+  sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
+  -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
+  -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
+  -E SFTPUSER=<user> -E SFTPPASS=<password> \
+  -E SCRAPECONSUL="'10.0.0.1:8501', '10.0.0.2:8501', '10.0.0.3:8501', '10.0.0.4:8501', '10.0.0.5:8501'" \
+  -E SCRAPENOMAD="'10.0.0.6:4646', '10.0.0.7:4646', '10.0.0.8:4646', '10.0.0.9:4646', '10.0.0.10:4646'" \
+  [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E REMOTELOG=<remote syslog IP>]
+  ```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
@@ -44,6 +49,8 @@ The SCRAPECONSUL parameter is a list of ```consul``` servers with port 8501 for 
 The SCRAPENOMAD parameter is a list of ```nomad``` servers with port 4646 for TLS, to pass into prometheus.yml.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
+
+The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 
 # Usage
 
@@ -62,13 +69,11 @@ To see the targets being captured via consul, visit
 To access Grafana open the following in a browser and accept the self-signed certificate:
 * https://<prometheus-host>:3000
 
-Note: Grafana should start automatically, and starts up with ```service grafana start``` instead of ```/usr/local/etc/rc.d/grafana start``` which wasn't working.
-
 # Persistent Storage
-Persistent storage will be in the ZFS dataset zroot/prometheusdata, available inside the image at /mnt
+Persistent storage will be in the ZFS data set zroot/prometheusdata, available inside the image at /mnt
 
 If you stop the image, the data will still exist, and a new image can be started up and still use it.
 
-If you need to change the directory parameters for the ZFS dataset, adjust the ```mount-in``` command accordingly for the source directory as mounted by the parent OS.
+If you need to change the directory parameters for the ZFS data set, adjust the ```mount-in``` command accordingly for the source directory as mounted by the parent OS.
 
 Do not adjust the image destination mount point at /mnt because Prometheus & Grafana are configured to use this directory for data.
