@@ -1,3 +1,9 @@
+2.0.36
+
+* Improving temporary certificate generation to use list of IPs passed in, single-tem--cert script
+
+---
+
 2.0.35
 
 * Updating consul agent to tls-client-validation

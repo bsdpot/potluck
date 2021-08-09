@@ -46,13 +46,13 @@ Start ```vault``` cluster with the IP addresses of ```consul``` servers, which a
   -E IP=<IP address of this vault node> -E VAULTTYPE=leader \
   -E UNSEALIP=<unseal vault IP> -E UNSEALTOKEN=<wrapped token generated on unseal node> \
   -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
-  -E SFTPUSER=certuser -E SFTPPASS=<password> -E SFTPNETWORK=<local /24 in 10.0.0.0 notation> \
+  -E SFTPUSER=certuser -E SFTPPASS=<password> -E SFTPNETWORK=<list of comma-space separated IP addresses> \
   [-E GOSSIPKEY=<32 byte Base64 key from consul keygen> -E REMOTELOG=<remote syslog IP>]
   ```    
 
 The SFTPUSER and SFTPPASS parameters are to create a user with SSH private keys, where you will need to export the private key to the host systems for follower nodes.
 
-The SFTPNETWORK parameter is to select a /24 network range to pre-generate 2h SSL certificates for, for initial vault logins by follower nodes and other images making use of vault. Please enter 10.0.0.0 or 192.168.0.0 etc.
+The SFTPNETWORK parameter is a list of IP addresses in comma_space format ( "10.0.0.1, 10.0.0.2, 10.0.0.3") to pre-generate 2h SSL certificates for, for initial vault logins by follower nodes and other images making use of vault.
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
@@ -64,7 +64,11 @@ Important: the leader boot can take a while with certificate generation. Let it 
 
 Once booted you will need to run ```./cli-vault-auto-login.sh``` for a login token to use on follower nodes, and export ```/home/certuser/.ssh/id_rsa``` to a file to import to follower nodes and other types of pot images.
 
-To re-generate the temporary certificates run ```./gen-temp-certs.sh```. You will need to do this if two hours have passed since setting up the ```vault``` leader.
+To re-generate the temporary certificates for the array of initial IP addresses, run ```./gen-temp-certs.sh```.
+
+To generate a single certificate for an IP address, run ```./single-temp-cert.sh <IP address>```, for example: ```./single-temp-cert.sh 10.0.0.1```.
+
+You will need to generate new temporary certificates if two hours have passed since setting up the ```vault``` leader.
 
 ## Vault follower
 

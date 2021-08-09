@@ -906,7 +906,7 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
     echo \"Strategic delay. Please wait 20s\"
     sleep 5
     echo \"\"
-    echo \"In a moment certificates will be generated for 253 hosts in the network \$SFTPNETWORK. This will take a while to complete.\"
+    echo \"In a moment certificates will be generated for hosts in the SFTPNETWORK parameter. This will take a while to complete if lots of IP addresses.\"
     sleep 5
     echo \"\"
     echo \"Starting in 10s.   >>> Did you know a group of cats is called a clowder?\"
@@ -915,16 +915,19 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
     echo \"Starting in 5s.    >>> Sysadmin Day is always on the last Friday of July!\"
     sleep 5
     # setup temp certs for client first login
-    # destination is /tmpcerts/$IP/cert.pem | /tmpcerts/$IP/key.pem | | /tmpcerts/$IP/cat.pem
+    # destination is /tmpcerts/\$IP/cert.pem | /tmpcerts/\$IP/key.pem | | /tmpcerts/\$IP/cat.pem
     echo \"\"
     echo \"Building SFTPNETWORK list\"
     echo \"\"
-    TRIMNETWORK=\$(echo \$SFTPNETWORK | sed 's/\.[0-9]*$//')
-    SEQNETWORK=\$(/usr/bin/seq -f \"\$TRIMNETWORK.%g\" 1 253)
-    # diagnostic
-    echo \$SEQNETWORK > /tmpcerts/iplist.txt
+
+    # You would pass in the IP addresses to generate certificates for as a comma separated list of IPs
+    # turn comma_space into newline
+    COMMATONEWLINE=\$(echo \$SFTPNETWORK |sed 's/, /\n/g')
+    # diagnostics
+    echo \$COMMATONEWLINE > /tmpcerts/iplist.txt
+
     # generate certificates per host
-    for sftphost in \$SEQNETWORK; do
+    for sftphost in \$COMMATONEWLINE; do
         mkdir -p /tmpcerts/\$sftphost
         # use jo to generate payload.json file
         /usr/local/bin/jo -p common_name=\$sftphost ttl=2h ip_sans=\"\$sftphost,127.0.0.1\" format=pem > /tmpcerts/\$sftphost/payload.json
@@ -1009,7 +1012,7 @@ if [ -s /root/login.token ]; then
     /usr/local/etc/rc.d/consul restart
     /usr/local/etc/rc.d/syslog-ng restart
 else
-    echo "/root/login.token does not contain a token. Certificates cannot be renewed."
+    echo \\\"/root/login.token does not contain a token. Certificates cannot be renewed.\\\"
 fi
 \" > /root/rotate-certs.sh
 
@@ -1051,13 +1054,12 @@ export VAULT_CLIENT_KEY=/mnt/certs/key.pem
     echo \"Adding gen-temp-certs.sh script to regenerate temporary certificates\"
 
     echo \"#!/bin/sh
-MYNETWORK=\$SFTPNETWORK
-TRIMNETWORK=\\\$(echo \\\$MYNETWORK | sed 's/\.[0-9]*$//')
-SEQNETWORK=\\\$(/usr/bin/seq -f \\\"\\\$TRIMNETWORK.%g\\\" 1 253)
+MYNETWORK=\\\"\$SFTPNETWORK\\\"
+COMMATONEWLINE=\\\$(echo \\\$MYNETWORK |sed 's/, /\n/g')
 # diagnostic
-echo \\\$SEQNETWORK > /tmpcerts/iplist.txt
+echo \\\$COMMATONEWLINE > /tmpcerts/iplist.txt
 # generate certificates per host
-for sftphost in \\\$SEQNETWORK; do
+for sftphost in \\\$COMMATONEWLINE; do
     mkdir -p /tmpcerts/\\\$sftphost
     /usr/local/bin/jo -p common_name=\\\$sftphost ttl=2h ip_sans=\\\"\\\$sftphost,127.0.0.1\\\" format=pem > /tmpcerts/\\\$sftphost/payload.json
     if [ -s /root/login.token ]; then
@@ -1086,6 +1088,48 @@ done
 
     # make executable
     chmod +x /root/gen-temp-certs.sh
+
+    echo \"#!/bin/sh
+if [ -z \\\$1 ]; then
+    echo \\\"You need to pass in the IP address as first argument. This is the IP you want a certificate for.\\\"
+    echo \\\"No IP validation is done so make sure you input a valid IP address.\\\"
+    echo \\\"\\\"
+    echo \\\"#  ./single-temp-cert.sh 10.0.0.2\\\"
+    echo \\\"\\\"
+    exit 1
+fi
+# read in arg1 as sftphost
+sftphost=\\\$1
+# diagnostic
+echo \\\$sftphost >> /tmpcerts/singleiplist.txt
+# generate certificates per host
+mkdir -p /tmpcerts/\\\$sftphost
+/usr/local/bin/jo -p common_name=\\\$sftphost ttl=2h ip_sans=\\\"\\\$sftphost,127.0.0.1\\\" format=pem > /tmpcerts/\\\$sftphost/payload.json
+if [ -s /root/login.token ]; then
+    echo \\\"Re-generating 2 hour ttl client cert for ip \\\$sftphost in /tmpcerts/\\\$sftphost/...\\\"
+    HEADER=\\\$(/bin/cat /root/login.token)
+    /usr/local/bin/curl --silent --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem \
+     --header \\\"X-Vault-Token: \\\$HEADER\\\" \
+     --request POST --data @/tmpcerts/\\\$sftphost/payload.json \
+     https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmpcerts/\\\$sftphost/vaultissue.json
+    # extract the required certificates to individual files
+    /usr/local/bin/jq -r '.data.certificate' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/cert.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\\\$sftphost/vaultissue.json >> /tmpcerts/\\\$sftphost/cert.pem
+    /usr/local/bin/jq -r '.data.private_key' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/key.pem
+    /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/ca.pem
+    # concat the root CA and intermediary CA into combined file
+    cat /mnt/certs/CA_cert.pem /tmpcerts/\\\$sftphost/ca.pem > /tmpcerts/\\\$sftphost/combinedca.pem
+    chown -R \$SFTPUSER:wheel /tmpcerts/\\\$sftphost/
+    # validate the certificates
+    echo \\\"Validating client certificate\\\"
+    if [ -s /tmpcerts/\\\$sftphost/combinedca.pem ] && [ -s /tmpcerts/\\\$sftphost/cert.pem ]; then
+        /usr/bin/openssl verify -CAfile /tmpcerts/\\\$sftphost/combinedca.pem /tmpcerts/\\\$sftphost/cert.pem
+    fi
+fi
+\" > /root/single-temp-cert.sh
+
+    # make executable
+    chmod +x /root/single-temp-cert.sh
 
 ###### not working
 #    # setup token renewals
