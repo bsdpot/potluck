@@ -1,3 +1,9 @@
+0.9.16
+
+* Updates needed to support Nomad and Vault dashboards in Grafana image
+
+---
+
 0.9.15
 
 * Setup for tls-client-validation

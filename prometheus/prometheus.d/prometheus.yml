@@ -75,6 +75,35 @@ scrape_configs:
       ca_file: /mnt/certs/combinedca.pem
       cert_file: /mnt/certs/cert.pem
       key_file: /mnt/certs/key.pem
+    relabel_configs:
+    - source_labels: ['__meta_consul_service']
+      regex:         '(.*)'
+      target_label:  '__scheme__'
+      replacement:   'https'
+    - source_labels: ['__meta_consul_service']
+      regex:         '(.*)'
+      target_label:  'job'
+      replacement:   '$1'
+    - source_labels: ['__meta_consul_node']
+      regex:         '(.*)'
+      target_label:  'instance'
+      replacement:   '$1'
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_app=([^,]+),.*
+      replacement: ${1}
+      target_label: _app
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_service=([^,]+),.*
+      replacement: ${1}
+      target_label: _service
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_hostname=([^,]+),.*
+      replacement: ${1}
+      target_label: _hostname
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_datacenter=([^,]+),.*
+      replacement: ${1}
+      target_label: _datacenter
     static_configs:
     - targets: [NOMADSERVERS]
   - job_name: 'vault'
@@ -87,5 +116,34 @@ scrape_configs:
       ca_file: /mnt/certs/combinedca.pem
       cert_file: /mnt/certs/cert.pem
       key_file: /mnt/certs/key.pem
+    relabel_configs:
+    - source_labels: ['__meta_consul_service']
+      regex:         '(.*)'
+      target_label:  '__scheme__'
+      replacement:   'https'
+    - source_labels: ['__meta_consul_service']
+      regex:         '(.*)'
+      target_label:  'job'
+      replacement:   '$1'
+    - source_labels: ['__meta_consul_node']
+      regex:         '(.*)'
+      target_label:  'instance'
+      replacement:   '$1'
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_app=([^,]+),.*
+      replacement: ${1}
+      target_label: _app
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_service=([^,]+),.*
+      replacement: ${1}
+      target_label: _service
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_hostname=([^,]+),.*
+      replacement: ${1}
+      target_label: _hostname
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_datacenter=([^,]+),.*
+      replacement: ${1}
+      target_label: _datacenter
     static_configs:
     - targets: ['your_vault_server_here:8200']

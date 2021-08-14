@@ -1,3 +1,9 @@
+0.0.12
+
+* Adding new dashboards for consul, nomad and vault 
+
+---
+
 0.0.11
 
 * Setup for tls-client-validation

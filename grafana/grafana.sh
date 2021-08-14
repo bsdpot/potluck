@@ -643,6 +643,30 @@ if [ ! -d /mnt/grafana ]; then
     else
         echo \"Error - could not find home.json to copy in as default dashboard\"
     fi
+    if [ -f /root/vault.json ]; then
+        cp -f /root/vault.json /mnt/grafana/provisioning/dashboards/vault.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/vault.json
+    else
+        echo \"Error - could not find vault.json to copy in as additional dashboard\"
+    fi
+    if [ -f /root/nomadcluster.json ]; then
+        cp -f /root/nomadcluster.json /mnt/grafana/provisioning/dashboards/nomadcluster.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/nomadcluster.json
+    else
+        echo \"Error - could not find nomadcluster.json to copy in as additional dashboard\"
+    fi
+    if [ -f /root/nomadjobs.json ]; then
+        cp -f /root/nomadjobs.json /mnt/grafana/provisioning/dashboards/nomadjobs.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/nomadjobs.json
+    else
+        echo \"Error - could not find nomadjobs.json to copy in as additional dashboard\"
+    fi
+    if [ -f /root/consulcluster.json ]; then
+        cp -f /root/consulcluster.json /mnt/grafana/provisioning/dashboards/consulcluster.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/consulcluster.json
+    else
+        echo \"Error - could not find consulcluster.json to copy in as additional dashboard\"
+    fi
 else
     # if /mnt/grafana exists then don't copy in /var/db/grafana
     # make sure permissions are good for /mnt/grafana
@@ -695,6 +719,30 @@ else
         chown grafana:grafana /mnt/grafana/provisioning/dashboards/homelogs.json
     else
         echo \"ERROR - could not find home.json to copy in as default dashboard\"
+    fi
+    if [ -f /root/vault.json ]; then
+        cp -f /root/vault.json /mnt/grafana/provisioning/dashboards/vault.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/vault.json
+    else
+        echo \"Error - could not find vault.json to copy in as additional dashboard\"
+    fi
+    if [ -f /root/nomadcluster.json ]; then
+        cp -f /root/nomadcluster.json /mnt/grafana/provisioning/dashboards/nomadcluster.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/nomadcluster.json
+    else
+        echo \"Error - could not find nomadcluster.json to copy in as additional dashboard\"
+    fi
+    if [ -f /root/nomadjobs.json ]; then
+        cp -f /root/nomadjobs.json /mnt/grafana/provisioning/dashboards/nomadjobs.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/nomadjobs.json
+    else
+        echo \"Error - could not find nomadjobs.json to copy in as additional dashboard\"
+    fi
+    if [ -f /root/consulcluster.json ]; then
+        cp -f /root/consulcluster.json /mnt/grafana/provisioning/dashboards/consulcluster.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/consulcluster.json
+    else
+        echo \"Error - could not find consulcluster.json to copy in as additional dashboard\"
     fi
 fi
 
