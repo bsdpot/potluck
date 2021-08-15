@@ -667,6 +667,12 @@ if [ ! -d /mnt/grafana ]; then
     else
         echo \"Error - could not find consulcluster.json to copy in as additional dashboard\"
     fi
+    if [ -f /root/postgres.json ]; then
+        cp -f /root/postgres.json /mnt/grafana/provisioning/dashboards/postgres.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/postgres.json
+    else
+        echo \"Error - could not find postgres.json to copy in as additional dashboard\"
+    fi
 else
     # if /mnt/grafana exists then don't copy in /var/db/grafana
     # make sure permissions are good for /mnt/grafana
@@ -743,6 +749,12 @@ else
         chown grafana:grafana /mnt/grafana/provisioning/dashboards/consulcluster.json
     else
         echo \"Error - could not find consulcluster.json to copy in as additional dashboard\"
+    fi
+    if [ -f /root/postgres.json ]; then
+        cp -f /root/postgres.json /mnt/grafana/provisioning/dashboards/postgres.json
+        chown grafana:grafana /mnt/grafana/provisioning/dashboards/postgres.json
+    else
+        echo \"Error - could not find postgres.json to copy in as additional dashboard\"
     fi
 fi
 

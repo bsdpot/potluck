@@ -1,3 +1,9 @@
+0.0.13
+
+* Added new dashboard for postgres, from postgres_exporter sources
+
+---
+
 0.0.12
 
 * Adding new dashboards for consul, nomad and vault 

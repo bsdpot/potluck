@@ -1,3 +1,9 @@
+2.0.14
+
+* Adding postgres_exporter for prometheus
+
+---
+
 2.0.13
 
 * Setup for tls-client-validation

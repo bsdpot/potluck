@@ -128,6 +128,18 @@ pkg install -y jq
 step "Install package jo"
 pkg install -y jo
 
+step "Install package git-lite"
+pkg install -y git-lite
+
+step "Install package go"
+pkg install -y go
+
+step "Instal package gmake"
+pkg install -y gmake
+
+step "Instal package curl"
+pkg install -y curl
+
 #
 # pip MUST ONLY be used:
 # * With the --user flag, OR
@@ -326,6 +338,32 @@ fi
 mkdir -p /mnt/templates
 mkdir -p /mnt/certs/hash
 
+# start postgres_exporter
+export PATH="$PATH:/usr/local/bin/"
+cd /tmp
+/usr/local/bin/git clone https://github.com/prometheus-community/postgres_exporter.git
+cd /tmp/postgres_exporter
+/usr/local/bin/gmake build
+# fix stuff in rc file before copy
+#sed -i .orig 's/sslmode=disable/sslmode=require/g' /tmp/postgres_exporter/postgres_exporter.rc
+sed -i .orig 's/-web.listen-address/--web.listen-address/g' /tmp/postgres_exporter/postgres_exporter.rc
+# copy over rc file
+cp -f /tmp/postgres_exporter/postgres_exporter.rc /usr/local/etc/rc.d/postgres_exporter
+# make executable
+chmod +x /usr/local/etc/rc.d/postgres_exporter
+# copy over postgres_exporter
+cp -f /tmp/postgres_exporter/postgres_exporter /usr/local/bin/postgres_exporter
+# make executable
+chmod +x /usr/local/bin/postgres_exporter
+# set start options, one a manual way to get IP in
+sysrc postgres_exporter_enable=\"YES\"
+sysrc postgres_exporter_pg_host=\"\$IP\"
+sysrc postgres_exporter_pg_user=\"postgres\"
+# this probably shouldn't be in /etc/rc.conf? but only way 
+sysrc postgres_exporter_pg_pass=\"\$KEKPASS\"
+cd /root
+# end postgres_exporter
+
 # make consul configuration directory and set permissions
 mkdir -p /usr/local/etc/consul.d
 chmod 750 /usr/local/etc/consul.d
@@ -360,6 +398,12 @@ echo \"{
   \\\"name\\\": \\\"node-exporter\\\",
   \\\"tags\\\": [\\\"_app=prometheus\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
   \\\"port\\\": 9100
+ },
+ \\\"service\\\": {
+  \\\"address\\\": \\\"\$IP\\\",
+  \\\"name\\\": \\\"postgres-exporter\\\",
+  \\\"tags\\\": [\\\"_app=postgresql\\\", \\\"_service=postgres-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
+  \\\"port\\\": 9187
  }
 }\" > /usr/local/etc/consul.d/agent.json
 
@@ -489,7 +533,6 @@ if [ -s /root/unwrapped.token ]; then
     echo \"\$THIS_TOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTSERVER:8200 -client-cert=/tmp/tmpcerts/cert.pem -client-key=/tmp/tmpcerts/key.pem -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
     sleep 5
 fi
-
 
 echo \"Setting certificate payload\"
 if [ -s /root/login.token ]; then
@@ -669,6 +712,7 @@ fi
 
     # start patroni, which should start postgresql
     /usr/local/etc/rc.d/patroni start
+    /usr/local/etc/rc.d/postgres_exporter start
 else
     echo \"ERROR: There was a problem logging into vault and no certificates were retrieved. Vault not started. Nor other services\"
 fi

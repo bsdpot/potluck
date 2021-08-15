@@ -217,6 +217,12 @@ then
     echo 'SCRAPENOMAD is unset - see documentation how to configure this flavour, please include a list of special quoted IP:Port for nomad servers to scrape'
     exit 1
 fi
+if [ -z \${SCRAPEDATABASE+x} ];
+then
+    echo 'SCRAPEDATABASE is unset - see documentation how to configure this flavour, please include a list of special quoted IP:Port for postgresql servers to scrape'
+    exit 1
+fi
+
 # optional logging to remote syslog server
 if [ -z \${REMOTELOG+x} ];
 then
@@ -558,6 +564,7 @@ if [ -f /root/prometheus.yml ]; then
     /usr/bin/sed -i .orig \"s/CONSULSERVERS/\$SCRAPECONSUL/g\" /root/prometheus.yml
     /usr/bin/sed -i .orig \"s/NOMADSERVERS/\$SCRAPENOMAD/g\" /root/prometheus.yml
     /usr/bin/sed -i .orig \"s/your_vault_server_here/\$VAULTSERVER/g\" /root/prometheus.yml
+    /usr/bin/sed -i .orig \"s/DBSERVERS/\$SCRAPEDATABASE/g\" /root/prometheus.yml
     cp -f /root/prometheus.yml /usr/local/etc/prometheus.yml
 else
     echo \"ERROR - NO PROMETHEUS FILE FOUND\"

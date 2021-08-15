@@ -1,3 +1,8 @@
+0.9.17
+
+* Adding in postgres_exporter config to scrape
+---
+
 0.9.16
 
 * Updates needed to support Nomad and Vault dashboards in Grafana image
