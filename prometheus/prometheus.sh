@@ -86,6 +86,9 @@ pkg install -y consul
 step "Install package prometheus"
 pkg install -y prometheus
 
+step "Install package alertmanager"
+pkg install -y alertmanager
+
 step "Install package node_exporter"
 pkg install -y node_exporter
 
@@ -241,6 +244,33 @@ then
     echo 'SFTPPASS is unset - see documentation how to configure this flavour with sftp user and pass. Defaulting to password: c3rtp4ss'
     SFTPPASS=\"c3rtp4ss\"
 fi
+# smtp settings for prometheus alertmanager config
+if [ -z \${SMTPHOSTPORT+x} ];
+then
+    echo 'SMTPHOSTPORT is unset - see documentation how to configure this flavour with SMTP host:port. Defaulting to localhost:25'
+    SMTPHOSTPORT=\"localhost:25\"
+fi
+if [ -z \${SMTPFROM+x} ];
+then
+    echo 'SMTPFROM is unset - see documentation how to configure this flavour with from email address. Defaulting to alertmanager@localhost'
+    SMTPFROM=\"alertmanager@localhost\"
+fi
+if [ -z \${SMTPUSER+x} ];
+then
+    echo 'SMTPUSER is unset - see documentation how to configure this flavour with SMTP username for authentication. Defaulting to none'
+    SMTPUSER=\"\"
+fi
+if [ -z \${SMTPPASS+x} ];
+then
+    echo 'SMTPPASS is unset - see documentation how to configure this flavour with SMTP passwod for authentication. Defaulting to none'
+    SMTPPASS=\"localhost\"
+fi
+if [ -z \${ALERTADDRESS+x} ];
+then
+    echo 'ALERTADDRESS is unset - see documentation how to configure this flavour with an alert address to notify. Defaulting to notify@localhost'
+    ALERTADDRESS=\"notify@localhost\"
+fi
+
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -285,6 +315,7 @@ fi
 # setup directories for vault usage
 mkdir -p /mnt/templates
 mkdir -p /mnt/certs/hash
+mkdir -p /mnt/alertmanager
 
 ## start consul
 
@@ -583,6 +614,23 @@ sysrc prometheus_syslog_output_enable=\"YES\"
 
 ## end prometheus config
 
+## start alertmanager config
+
+# setup config file with mail variables from pot boot paramaters
+if [ -f /root/alertmanager.yml ]; then
+    cp -f /usr/local/etc/alertmanager/alertmanager.yml /usr/local/etc/alertmanager/alertmanager.old
+    /usr/bin/sed -i .orig \"s/SMTPHOSTPORT/\$SMTPHOSTPORT/g\" /root/alertmanager.yml
+    /usr/bin/sed -i .orig \"s/SMTPFROM/\$SMTPFROM/g\" /root/alertmanager.yml
+    /usr/bin/sed -i .orig \"s/SMTPUSER/\$SMTPUSER/g\" /root/alertmanager.yml
+    /usr/bin/sed -i .orig \"s/SMTPPASS/\$SMTPPASS/g\" /root/alertmanager.yml
+    /usr/bin/sed -i .orig \"s/ALERTADDRESS/\$ALERTADDRESS/g\" /root/alertmanager.yml
+    cp -f /root/alertmanager.yml /usr/local/etc/alertmanager/alertmanager.yml
+fi
+sysrc alertmanager_enable=\"YES\"
+sysrc alertmanager_data_dir=\"/mnt/alertmanager\"
+chown -R alertmanager:alertmanager /mnt/alertmanager
+## end alertmanager config
+
 ## start node_exporter config
 # node exporter needs tls setup
 echo \"tls_server_config:
@@ -604,6 +652,9 @@ sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
 
 # start prometheus
 /usr/local/etc/rc.d/prometheus start
+
+# start alertmanager
+/usr/local/etc/rc.d/alertmanager start
 
 # start node_exporter
 /usr/local/etc/rc.d/node_exporter start

@@ -1,3 +1,9 @@
+0.9.18
+
+* Prometheus alertmanager added
+
+---
+
 0.9.17
 
 * Adding in postgres_exporter config to scrape

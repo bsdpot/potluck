@@ -7,9 +7,7 @@ tags: ["metrics", "time-series", "prometheus", "grafana"]
 
 # Overview
 
-This is a flavour containing the ```prometheus``` time series database.
-
-It also contains ```node_exporter``` and ```grafana```.
+This is a flavour containing the ```prometheus``` time series database along with the ```alertmanager``` notification tool configured for email alerts.
 
 The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```.
 
@@ -34,6 +32,9 @@ The flavour includes a local ```consul``` agent instance to be available that it
   -E SCRAPECONSUL="'10.0.0.1:8501', '10.0.0.2:8501', '10.0.0.3:8501', '10.0.0.4:8501', '10.0.0.5:8501'" \
   -E SCRAPENOMAD="'10.0.0.6:4646', '10.0.0.7:4646', '10.0.0.8:4646', '10.0.0.9:4646', '10.0.0.10:4646'" \
   -E SCRAPEDATABASE="'10.0.0.11:9187', '10.0.0.12:9187'" \
+  -E SMTPHOSTPORT="smtp.host.com:25" -E SMTPFROM="alertmanager@example.com" \
+  -E SMTPUSER="<smtp username for auth>" -E SMTPPASS="<smtp password for auth>" \
+  -E ALERTADDRESS="<email address to notify>" \
   [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E REMOTELOG=<remote syslog IP>]
   ```
 
@@ -54,6 +55,14 @@ The SCRAPEDATABASE parameter is a list of ```postgres_exporter``` instances on `
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
 
 The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
+
+The SMTPHOSTPORT parameter is for ```alertmanager``` and must be entered in as ```smtphostname:port```.
+
+The SMTPFROM parameter is the ```alertmanager``` FROM email address.
+
+The SMTPUSER and SMTPPASS parameters are for SMTP authentication.
+
+The ALERTADDRESS parameter is the email address to send notifications to.
 
 # Usage
 
