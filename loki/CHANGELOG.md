@@ -1,3 +1,9 @@
+0.0.11
+
+* Implementing mandatory variables
+
+---
+
 0.0.10
 
 * Documentation updates

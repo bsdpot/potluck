@@ -1,3 +1,9 @@
+0.9.19
+
+* Implementing mandatory variables
+
+---
+
 0.9.18
 
 * Prometheus alertmanager added

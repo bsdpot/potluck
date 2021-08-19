@@ -166,31 +166,31 @@ fi
 # Check config variables are set
 #
 if [ -z \${DATACENTER+x} ]; then
-    echo 'DATACENTER is unset - see documentation how to configure this flavour'
+    echo 'DATACENTER is unset - see documentation to configure this flavour with the datacenter name. All parameters are mandatory.'
     exit 1
 fi
 if [ -z \${NODENAME+x} ];
 then
-    echo 'NODENAME is unset - see documentation how to configure this flavour'
+    echo 'NODENAME is unset - see documentation to configure this flavour with a name for this node. All parameters are mandatory.'
     exit 1
 fi
 if [ -z \${CONSULSERVERS+x} ]; then
-    echo 'CONSULSERVERS is unset - see documentation how to configure this flavour'
+    echo 'CONSULSERVERS is unset - please pass in one or more correctly-quoted, comma-separated addresses for consul peer IPs. Refer to documentation All parameters are mandatory.'
     exit 1
 fi
 if [ -z \${IP+x} ]; then
-    echo 'IP is unset - see documentation how to configure this flavour'
+    echo 'IP is unset - see documentation to configure this flavour for an IP address. All parameters are mandatory.'
     exit 1
 fi
 if [ -z \${VAULTSERVER+x} ];
 then
-    echo 'VAULTSERVER is unset - you must include the master vault server IP'
+    echo 'VAULTSERVER is unset - see documentation to set the vault server IP address. This is required to obtain certificates. All parameters are mandatory.'
     exit 1
 fi
 # we need a token from the vault server
 if [ -z \${VAULTTOKEN+x} ];
 then
-    echo 'VAULTTOKEN is unset - see documentation how to configure this flavour. You must pass in a valid token'
+    echo 'VAULTTOKEN is unset - a vault token is required to obtain certificates. Refer to documentation. All parameters are mandatory.'
     exit 1
 fi
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
@@ -198,61 +198,61 @@ fi
 # We'll re-use the one from the consul flavour
 if [ -z \${GOSSIPKEY+x} ];
 then
-    echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
-    GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
+    echo 'GOSSIPKEY is unset - please provide a 32 byte base64 key from the (consul keygen key) command. All parameters are mandatory.'
+    exit 1
 fi
 # required prometheus server
 if [ -z \${PROMSOURCE+x} ];
 then
-    echo 'PROMSOURCE is unset - see documentation how to configure this flavour with IP address of Prometheus host. Exiting.'
+    echo 'PROMSOURCE is unset - please provide the IP address for the Prometheus host. Grafana requires this as data source. All parameters are mandatory.'
     exit 1
 fi
 # required loki server
 if [ -z \${LOKISOURCE+x} ];
 then
-    echo 'LOKISOURCE is unset - see documentation how to configure this flavour with IP address of Loki host. Exiting.'
+    echo 'LOKISOURCE is unset - please provide the IP address of the Loki host. Grafana requires this as data source. All parameters are mandatory.'
     exit 1
 fi
 # required influxdb server
 if [ -z \${INFLUXDBSOURCE+x} ];
 then
-    echo 'INFLUXDBSOURCE is unset - see documentation how to configure this flavour with IP address of InfluxDB host. Exiting.'
+    echo 'INFLUXDBSOURCE is unset - please provide the IP address of the InfluxDB host. Grafana requires this as data source. All parameters are mandatory.'
     exit 1
 fi
 # required influxdb server
 if [ -z \${INFLUXDATABASE+x} ];
 then
-    echo 'INFLUXDATABASE is unset - see documentation how to configure this flavour with InfluxDB datanase name. Defaulting to default'
-    INFLUXDATABASE=\"default\"
+    echo 'INFLUXDATABASE is unset - please provide a custom InfluxDB datanase name or set this variable to \"default\". All parameters are mandatory.'
+    exit 1
 fi
 # grafana credentials
 if [ -z \${GRAFANAUSER+x} ];
 then
-    echo 'GRAFANAUSER is unset - see documentation how to configure this flavour with credentials. Defaulting to admin'
-    GRAFANAUSER=admin
+    echo 'GRAFANAUSER is unset - please provide the default admin username for logging into grafana frontend. A common value is \"admin\". All parameters are mandatory.'
+    exit 1
 fi
 if [ -z \${GRAFANAPASSWORD+x} ];
 then
-    echo 'GRAFANAPASSWORD is unset - see documentation how to configure this flavour with credentials. Defaulting to admin'
-    GRAFANAPASSWORD=admin
+    echo 'GRAFANAPASSWORD is unset - please provide a password for the default admin user set in GRAFANAUSER. All parameters are mandatory.'
+    exit 1
 fi
 # optional logging to remote syslog server
 if [ -z \${REMOTELOG+x} ];
 then
-    echo 'REMOTELOG is unset - see documentation how to configure this flavour with IP address of remote syslog server. Defaulting to null'
-    REMOTELOG=\"null\"
+    echo 'REMOTELOG is unset - please provide the IP address of a loki server, or set a null value. All parameters are mandatory.'
+    exit 1
 fi
 # sftpuser credentials
 if [ -z \${SFTPUSER+x} ];
 then
-    echo 'SFTPUSER is unset - see documentation how to configure this flavour with sftp user and pass. Defaulting to username: certuser'
-    SFTPUSER=\"certuser\"
+    echo 'SFTPUSER is unset - please provide a username to use for the SFTP user on the vault leader. All parameters are mandatory.'
+    exit 1
 fi
 # sftpuser password
 if [ -z \${SFTPPASS+x} ];
 then
-    echo 'SFTPPASS is unset - see documentation how to configure this flavour with sftp user and pass. Defaulting to password: c3rtp4ss'
-    SFTPPASS=\"c3rtp4ss\"
+    echo 'SFTPPASS is unset - please provide a password for the SFTP user on the vault leader. All parameters are mandatory.'
+    exit 1
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:

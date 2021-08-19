@@ -1,3 +1,9 @@
+0.9.16
+
+* Implementing mandatory variables
+
+---
+
 0.9.15
 
 * Updating for tls-client-validation

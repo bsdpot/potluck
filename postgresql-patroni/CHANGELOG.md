@@ -1,3 +1,9 @@
+2.0.15
+
+* Implementing mandatory variables
+
+---
+
 2.0.14
 
 * Adding postgres_exporter for prometheus

@@ -1,3 +1,9 @@
+0.0.7
+
+* Implementing mandatory variables
+
+---
+
 0.0.6
 
 * Setup for tls-client-validation

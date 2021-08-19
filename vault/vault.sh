@@ -173,20 +173,20 @@ fi
 # Check config variables are set
 #
 if [ -z \${DATACENTER+x} ]; then
-    echo 'DATACENTER is unset - see documentation how to configure this flavour'
+    echo 'DATACENTER is unset - see documentation to configure this flavour with the datacenter name. All parameters are mandatory for all vault image types.'
     exit 1
 fi
 if [ -z \${NODENAME+x} ];
 then
-    echo 'NODENAME is unset - see documentation how to configure this flavour'
+    echo 'NODENAME is unset - see documentation to configure this flavour with a name for this node. All parameters are mandatory for all vault image types.'
     exit 1
 fi
 if [ -z \${CONSULSERVERS+x} ]; then
-    echo 'CONSULSERVERS is unset - see documentation how to configure this flavour'
+    echo 'CONSULSERVERS is unset - please pass in one or more correctly-quoted, comma-separated addresses for consul peer IPs. Refer to documentation. All parameters are mandatory for all vault image types.'
     exit 1
 fi
 if [ -z \${IP+x} ]; then
-    echo 'IP is unset - see documentation how to configure this flavour'
+    echo 'IP is unset - see documentation to configure this flavour for an IP address. All parameters are mandatory for all vault image types.'
     exit 1
 fi
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
@@ -194,62 +194,62 @@ fi
 # We'll re-use the one from the consul flavour
 if [ -z \${GOSSIPKEY+x} ];
 then
-    echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
-    GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
+    echo 'GOSSIPKEY is unset - please provide a 32 byte base64 key from the (consul keygen key) command. All parameters are mandatory for all vault image types.'
+    exit 1
 fi
 # this defaults to unseal. Other options are leader for a raft cluster leader, and cluster, for a raft cluster peer.
 if [ -z \${VAULTTYPE+x} ];
 then
-    echo 'VAULTTYPE is unset - see documentation how to configure this flavour, defaulting to unseal instead of leader or follower.'
-    VAULTTYPE=\"unseal\"
+    echo 'VAULTTYPE is unset - please set the type of instance to launch from unseal, leader, follower. All parameters are mandatory for all vault image types.'
+    exit 1
 fi
 # IP address of the unseal server
 if [ -z \${UNSEALIP+x} ];
 then
-    echo 'UNSEALIP is unset - see documentation how to configure this flavour, defaulting to preset value. Do not use this in production!'
-    UNSEALIP=\"127.0.0.1\"
+    echo 'UNSEALIP is unset - please provide the IP address for the vault unseal node. All parameters are mandatory for all vault image types.'
+    exit 1
 fi
 # Unwrap token to pass into cluster
 if [ -z \${UNSEALTOKEN+x} ];
 then
-    echo 'UNSEALTOKEN is unset - see documentation how to configure this flavour, defaulting to unset value. Do not use this in production!'
-    UNSEALTOKEN=\"unset\"
+    echo 'UNSEALTOKEN is unset - please pass in an unseal token, or set to \"unset\" for an unseal node. All parameters are mandatory for all vault image types.'
+    exit 1
 fi
 # Vault leader IP
 if [ -z \${VAULTLEADER+x} ];
 then
-    echo 'VAULTLEADER is unset - see documentation how to configure this flavour, defaulting to own IP.'
-    VAULTLEADER=\"\$IP\"
+    echo 'VAULTLEADER is unset - please provide the IP address for the vault leader node. All parameters are mandatory for all vault image types.'
+    exit 1
 fi
 # Vault leader token
 if [ -z \${LEADERTOKEN+x} ];
 then
-    echo 'LEADERTOKEN is unset - see documentation how to configure this flavour, defaulting to unset.'
-    LEADERTOKEN=\"unset\"
+    echo 'LEADERTOKEN is unset - please provide a token from the vault leader for follower nodes to use. Alternatively set \"unset\" for unseal node. All parameters are mandatory for all vault image types.'
+    exit 1
 fi
 # optional logging to remote syslog server
 if [ -z \${REMOTELOG+x} ];
 then
-    echo 'REMOTELOG is unset - see documentation how to configure this flavour with IP address of remote syslog server. Defaulting to 0'
-    REMOTELOG=\"null\"
+    echo 'REMOTELOG is unset - please provide the IP address of a loki server, or set a null value. All parameters are mandatory.'
+    exit 1
 fi
 # sftpuser credentials
 if [ -z \${SFTPUSER+x} ];
 then
-    echo 'SFTPUSER is unset - see documentation how to configure this flavour with sftp user and pass. Defaulting to username: certuser'
-    SFTPUSER=\"certuser\"
+    echo 'SFTPUSER is unset - please provide a username to use for the SFTP user on the vault leader. All parameters are mandatory.'
+    exit 1
 fi
 # sftpuser password
 if [ -z \${SFTPPASS+x} ];
 then
-    echo 'SFTPPASS is unset - see documentation how to configure this flavour with sftp user and pass. Defaulting to password: c3rtp4ss'
-    SFTPPASS=\"c3rtp4ss\"
+    echo 'SFTPPASS is unset - please provide a password for the SFTP user on the vault leader. All parameters are mandatory.'
+    exit 1
 fi
 # ip subnet to generate temporary short-lived certificates for
 if [ -z \${SFTPNETWORK+x} ];
 then
-    echo 'SFTPNETWORK is unset - see documentation how to configure this flavour with IP range to generate short-lived temporary certificates for. Defaulting to IP address'
-    SFTPNETWORK=\"\$IP\"
+    echo 'SFTPNETWORK is unset - please provide a comma-separated list of IP addresses to pre-generate temporary TLS certificates.'
+    exit 1
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:

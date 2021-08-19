@@ -1,3 +1,9 @@
+0.0.14
+
+* Implementing mandatory variables
+
+---
+
 0.0.13
 
 * Added new dashboard for postgres, from postgres_exporter sources

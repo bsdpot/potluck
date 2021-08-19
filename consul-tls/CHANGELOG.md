@@ -1,3 +1,9 @@
+0.0.15
+
+* Implementing mandatory variables
+
+---
+
 0.0.14
 
 * Updating image for tls-client-validation and dual certificate process with copy in of ssh key
