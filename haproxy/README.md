@@ -2,7 +2,7 @@
 author: "Bretton Vine"
 title: HAProxy 
 summary: HAProxy is a load-balancing proxy for network traffic
-tags: ["load-balance", "proxy, "haproxy"]
+tags: ["load-balance", "proxy", "haproxy"]
 ---
 
 # Overview
