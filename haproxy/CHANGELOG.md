@@ -1,3 +1,9 @@
+0.0.2
+
+* Consul uses port 8600 for DNS
+
+---
+
 0.0.1
 
 * First bash at haproxy image

@@ -578,7 +578,7 @@ else
     crt-base /mnt/certs
 
 resolvers consul
-  nameserver consul \$IP:8500
+  nameserver consul \$IP:8600
   accepted_payload_size 8192
 
 defaults
