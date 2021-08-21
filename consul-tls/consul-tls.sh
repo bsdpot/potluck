@@ -171,65 +171,65 @@ fi
 #
 if [ -z \${DATACENTER+x} ];
 then
-    echo 'DATACENTER is unset - see documentation to configure this flavour with the datacenter name.'
+    echo 'DATACENTER is unset - see documentation to configure this flavour with the datacenter name. This parameter is mandatory.'
     exit 1
 fi
 if [ -z \${NODENAME+x} ];
 then
-    echo 'NODENAME is unset - see documentation to configure this flavour with a name for this node.'
+    echo 'NODENAME is unset - see documentation to configure this flavour with a name for this node. This parameter is mandatory.'
     exit 1
 fi
 if [ -z \${IP+x} ];
 then
-    echo 'IP is unset - see documentation to configure this flavour for an IP address.'
+    echo 'IP is unset - see documentation to configure this flavour for an IP address. This parameter is mandatory.'
     exit 1
 fi
 # vault server IP
 if [ -z \${VAULTSERVER+x} ];
 then
-    echo 'VAULTSERVER is unset - see documentation to set the vault server IP address. This is required to obtain certificates.'
+    echo 'VAULTSERVER is unset - see documentation to set the vault server IP address. This is required to obtain certificates. This parameter is mandatory.'
     exit 1
 fi
 if [ -z \${VAULTTOKEN+x} ];
 then
-    echo 'VAULTTOKEN is unset - a vault token is required to obtain certificates. Refer to documentation.'
+    echo 'VAULTTOKEN is unset - a vault token is required to obtain certificates. Refer to documentation. This parameter is mandatory.'
     exit 1
 fi
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen
 # you must generate this key on a live consul server
 if [ -z \${GOSSIPKEY+x} ];
 then
-    echo 'GOSSIPKEY is unset - please provide a 32 byte base64 key from the (consul keygen key) command. All parameters are mandatory.'
+    echo 'GOSSIPKEY is unset - please provide a 32 byte base64 key from the (consul keygen key) command. This parameter is mandatory.'
     exit 1
 fi
 # consul peer IPs
 if [ -z \${PEERS+x} ];
 then
-    echo 'PEERS is unset - please pass in one or more correctly-quoted, comma-separated addresses for consul peer IPs. Refer to documentation All parameters are mandatory.'
+    echo 'PEERS is unset - please pass in one or more correctly-quoted, comma-separated addresses for consul peer IPs. Refer to documentation. This parameter is mandatory.'
     exit 1
 fi
 # bootstrap parameter, how big is the cluster
 if [ -z \${BOOTSTRAP+x} ];
 then
-    echo 'BOOTSTRAP is unset - please pass in a value of 1, 3, or 5 to set consul cluster size. All parameters are mandatory.'
-    exit 1
+    echo 'BOOTSTRAP is unset - please pass in a value of 1, 3, or 5 to set consul cluster size. Defaulting to 1. This parameter is mandatory.'
+    BOOTSTRAP=1
 fi
 # optional logging to remote syslog server
 if [ -z \${REMOTELOG+x} ];
 then
-    echo 'REMOTELOG is unset - please pass in the IP address of a loki server, or set a null value. All parameters are mandatory.'
-    exit 1
+    echo 'REMOTELOG is unset - please pass in the IP address of a loki server, or set a null value.'
+    REMOTELOG=\"null\"
 fi
 # sftpuser credentials
 if [ -z \${SFTPUSER+x} ];
 then
-    echo 'SFTPUSER is unset - please provide a username to use for the SFTP user. All parameters are mandatory.'
+    echo 'SFTPUSER is unset - please provide a username to use for the SFTP user. This parameter is mandatory.'
     exit 1
 fi
 # sftpuser password
 if [ -z \${SFTPPASS+x} ];
 then
-    echo 'SFTPPASS is unset - please provide a password for the SFTP user above. All parameters are mandatory.'
+    echo 'SFTPPASS is unset - please provide a password for the SFTP user above. This parameter is mandatory.'
     exit 1
 fi
 

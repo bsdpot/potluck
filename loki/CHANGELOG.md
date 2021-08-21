@@ -1,3 +1,9 @@
+0.0.13
+
+* Tweaking mandatory variables for optional parameters
+
+---
+
 0.0.12
 
 * Bug-fix on gossip key

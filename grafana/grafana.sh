@@ -166,31 +166,31 @@ fi
 # Check config variables are set
 #
 if [ -z \${DATACENTER+x} ]; then
-    echo 'DATACENTER is unset - see documentation to configure this flavour with the datacenter name. All parameters are mandatory.'
+    echo 'DATACENTER is unset - see documentation to configure this flavour with the datacenter name. This parameter is mandatory.'
     exit 1
 fi
 if [ -z \${NODENAME+x} ];
 then
-    echo 'NODENAME is unset - see documentation to configure this flavour with a name for this node. All parameters are mandatory.'
+    echo 'NODENAME is unset - see documentation to configure this flavour with a name for this node. This parameter is mandatory.'
     exit 1
 fi
 if [ -z \${CONSULSERVERS+x} ]; then
-    echo 'CONSULSERVERS is unset - please pass in one or more correctly-quoted, comma-separated addresses for consul peer IPs. Refer to documentation All parameters are mandatory.'
+    echo 'CONSULSERVERS is unset - please pass in one or more correctly-quoted, comma-separated addresses for consul peer IPs. Refer to documentation. This parameter is mandatory.'
     exit 1
 fi
 if [ -z \${IP+x} ]; then
-    echo 'IP is unset - see documentation to configure this flavour for an IP address. All parameters are mandatory.'
+    echo 'IP is unset - see documentation to configure this flavour for an IP address. This parameter is mandatory.'
     exit 1
 fi
 if [ -z \${VAULTSERVER+x} ];
 then
-    echo 'VAULTSERVER is unset - see documentation to set the vault server IP address. This is required to obtain certificates. All parameters are mandatory.'
+    echo 'VAULTSERVER is unset - see documentation to set the vault server IP address. This is required to obtain certificates. This parameter is mandatory.'
     exit 1
 fi
 # we need a token from the vault server
 if [ -z \${VAULTTOKEN+x} ];
 then
-    echo 'VAULTTOKEN is unset - a vault token is required to obtain certificates. Refer to documentation. All parameters are mandatory.'
+    echo 'VAULTTOKEN is unset - a vault token is required to obtain certificates. Refer to documentation. This parameter is mandatory.'
     exit 1
 fi
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
@@ -198,60 +198,60 @@ fi
 # We'll re-use the one from the consul flavour
 if [ -z \${GOSSIPKEY+x} ];
 then
-    echo 'GOSSIPKEY is unset - please provide a 32 byte base64 key from the (consul keygen key) command. All parameters are mandatory.'
+    echo 'GOSSIPKEY is unset - please provide a 32 byte base64 key from the (consul keygen key) command. This parameter is mandatory.'
     exit 1
 fi
 # required prometheus server
 if [ -z \${PROMSOURCE+x} ];
 then
-    echo 'PROMSOURCE is unset - please provide the IP address for the Prometheus host. Grafana requires this as data source. All parameters are mandatory.'
+    echo 'PROMSOURCE is unset - please provide the IP address for the Prometheus host. Grafana requires this as data source. This parameter is mandatory.'
     exit 1
 fi
 # required loki server
 if [ -z \${LOKISOURCE+x} ];
 then
-    echo 'LOKISOURCE is unset - please provide the IP address of the Loki host. Grafana requires this as data source. All parameters are mandatory.'
+    echo 'LOKISOURCE is unset - please provide the IP address of the Loki host. Grafana requires this as data source. This parameter is mandatory.'
     exit 1
 fi
 # required influxdb server
 if [ -z \${INFLUXDBSOURCE+x} ];
 then
-    echo 'INFLUXDBSOURCE is unset - please provide the IP address of the InfluxDB host. Grafana requires this as data source. All parameters are mandatory.'
-    exit 1
+    echo 'INFLUXDBSOURCE is unset - please provide the IP address of the InfluxDB host. Grafana requires this as data source. Defaulting to localhost. This parameter is optional.'
+    INFLUXDBSOURCE=\"127.0.0.1\"
 fi
 # required influxdb server
 if [ -z \${INFLUXDATABASE+x} ];
 then
-    echo 'INFLUXDATABASE is unset - please provide a custom InfluxDB datanase name or set this variable to \"default\". All parameters are mandatory.'
-    exit 1
+    echo 'INFLUXDATABASE is unset - please provide a custom InfluxDB database name. This parameter is optional and defaults to \"default\" if not set.'
+    INFLUXDATABASE=\"default\"
 fi
 # grafana credentials
 if [ -z \${GRAFANAUSER+x} ];
 then
-    echo 'GRAFANAUSER is unset - please provide the default admin username for logging into grafana frontend. A common value is \"admin\". All parameters are mandatory.'
+    echo 'GRAFANAUSER is unset - please provide the default admin username for logging into grafana frontend. A common value is \"admin\". This parameter is mandatory.'
     exit 1
 fi
 if [ -z \${GRAFANAPASSWORD+x} ];
 then
-    echo 'GRAFANAPASSWORD is unset - please provide a password for the default admin user set in GRAFANAUSER. All parameters are mandatory.'
+    echo 'GRAFANAPASSWORD is unset - please provide a password for the default admin user set in GRAFANAUSER. This parameters is mandatory.'
     exit 1
 fi
 # optional logging to remote syslog server
 if [ -z \${REMOTELOG+x} ];
 then
-    echo 'REMOTELOG is unset - please provide the IP address of a loki server, or set a null value. All parameters are mandatory.'
-    exit 1
+    echo 'REMOTELOG is unset - please provide the IP address of a loki server, or set a null value. This parameter is optional.'
+    REMOTELOG=\"null\"
 fi
 # sftpuser credentials
 if [ -z \${SFTPUSER+x} ];
 then
-    echo 'SFTPUSER is unset - please provide a username to use for the SFTP user on the vault leader. All parameters are mandatory.'
+    echo 'SFTPUSER is unset - please provide a username to use for the SFTP user on the vault leader. This parameters is mandatory.'
     exit 1
 fi
 # sftpuser password
 if [ -z \${SFTPPASS+x} ];
 then
-    echo 'SFTPPASS is unset - please provide a password for the SFTP user on the vault leader. All parameters are mandatory.'
+    echo 'SFTPPASS is unset - please provide a password for the SFTP user on the vault leader. This parameters is mandatory.'
     exit 1
 fi
 

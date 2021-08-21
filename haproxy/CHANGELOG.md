@@ -1,3 +1,9 @@
+0.0.4
+
+* Tweaking mandatory variables for optional parameters
+
+---
+
 0.0.3
 
 * Fixing tag error in README
