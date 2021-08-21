@@ -1,3 +1,9 @@
+0.0.12
+
+* Bug-fix on gossip key
+
+---
+
 0.0.11
 
 * Implementing mandatory variables

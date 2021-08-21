@@ -518,7 +518,7 @@ case \$BOOTSTRAP in
   \\\"enabled\\\": true
  },
  \\\"server\\\": true,
- \\\"encrypt\\\": \$GOSSIPKEY,
+ \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
  \\\"bootstrap_expect\\\": \$BOOTSTRAP,
  \\\"telemetry\\\": {
   \\\"disable_hostname\\\": true,
@@ -566,7 +566,7 @@ case \$BOOTSTRAP in
   \\\"enabled\\\": true
  },
  \\\"server\\\": true,
- \\\"encrypt\\\": \$GOSSIPKEY,
+ \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
  \\\"bootstrap_expect\\\": \$BOOTSTRAP,
  \\\"rejoin_after_leave\\\": true,
  \\\"start_join\\\": [\\\"\$IP\\\", \$PEERS],

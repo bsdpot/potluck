@@ -841,7 +841,7 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 \\\"key_file\\\": \\\"/mnt/certs/key.pem\\\",
 \\\"log_file\\\": \\\"/var/log/consul/\\\",
 \\\"log_level\\\": \\\"WARN\\\",
-\\\"encrypt\\\": \$GOSSIPKEY,
+\\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
 \\\"start_join\\\": [ \$CONSULSERVERS ],
 \\\"service\\\": {
   \\\"name\\\": \\\"node-exporter\\\",
@@ -1416,7 +1416,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
 \\\"key_file\\\": \\\"/mnt/certs/key.pem\\\",
 \\\"log_file\\\": \\\"/var/log/consul/\\\",
 \\\"log_level\\\": \\\"WARN\\\",
-\\\"encrypt\\\": \$GOSSIPKEY,
+\\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
 \\\"start_join\\\": [ \$CONSULSERVERS ],
 \\\"service\\\": {
  \\\"name\\\": \\\"node-exporter\\\",

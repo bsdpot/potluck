@@ -289,7 +289,7 @@ echo \"{
  \\\"key_file\\\": \\\"/mnt/certs/key.pem\\\",
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
- \\\"encrypt\\\": \$GOSSIPKEY,
+ \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
  \\\"start_join\\\": [ \$CONSULSERVERS ],
  \\\"telemetry\\\": {
   \\\"prometheus_retention_time\\\": \\\"24h\\\",
