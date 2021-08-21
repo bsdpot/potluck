@@ -172,85 +172,101 @@ fi
 
 # Check config variables are set
 #
+# vault all
 if [ -z \${DATACENTER+x} ]; then
-    echo 'DATACENTER is unset - see documentation to configure this flavour with the datacenter name. All parameters are mandatory for all vault image types.'
+    echo 'DATACENTER is unset - see documentation to configure this flavour with the datacenter name. This parameter is mandatory for all vault image types.'
     exit 1
 fi
+# vault all
 if [ -z \${NODENAME+x} ];
 then
-    echo 'NODENAME is unset - see documentation to configure this flavour with a name for this node. All parameters are mandatory for all vault image types.'
+    echo 'NODENAME is unset - see documentation to configure this flavour with a name for this node. This parameter is mandatory for all vault image types.'
     exit 1
 fi
-if [ -z \${CONSULSERVERS+x} ]; then
-    echo 'CONSULSERVERS is unset - please pass in one or more correctly-quoted, comma-separated addresses for consul peer IPs. Refer to documentation. All parameters are mandatory for all vault image types.'
-    exit 1
-fi
+# vault all
 if [ -z \${IP+x} ]; then
-    echo 'IP is unset - see documentation to configure this flavour for an IP address. All parameters are mandatory for all vault image types.'
+    echo 'IP is unset - see documentation to configure this flavour for an IP address. This parameter is mandatory for all vault image types.'
     exit 1
 fi
-# GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
-# Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
-# We'll re-use the one from the consul flavour
-if [ -z \${GOSSIPKEY+x} ];
-then
-    echo 'GOSSIPKEY is unset - please provide a 32 byte base64 key from the (consul keygen key) command. All parameters are mandatory for all vault image types.'
-    exit 1
-fi
+# vault all
 # this defaults to unseal. Other options are leader for a raft cluster leader, and cluster, for a raft cluster peer.
 if [ -z \${VAULTTYPE+x} ];
 then
-    echo 'VAULTTYPE is unset - please set the type of instance to launch from unseal, leader, follower. All parameters are mandatory for all vault image types.'
+    echo 'VAULTTYPE is unset - please set the type of instance to launch from unseal, leader, follower. This parameter is mandatory for all vault image types.'
     exit 1
 fi
+export \$VAULTTYPE
+# vault-leader only
+# ip subnet to generate temporary short-lived certificates for
+if [ -z \${SFTPNETWORK+x} ] && [ \$VAULTTYPE != \"unseal\" ] && [ \$VAULTTYPE != \"follower\" ];
+then
+    echo 'SFTPNETWORK is unset - please provide a comma-separated list of IP addresses to pre-generate temporary TLS certificates. This parameter is mandatory for vault leader images.'
+    exit 1
+fi
+# vault-leader and vault-follower
+# GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
+# Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
+# We'll re-use the one from the consul flavour
+if [ -z \${GOSSIPKEY+x} ]  && [ \$VAULTTYPE != \"unseal\" ];
+then
+    echo 'GOSSIPKEY is unset - please provide a 32 byte base64 key from the (consul keygen key) command. This parameter is mandatory for vault leader and follower image types.'
+    exit 1
+fi
+# vault-leader and vault-follower
 # IP address of the unseal server
-if [ -z \${UNSEALIP+x} ];
+if [ -z \${UNSEALIP+x} ] && [ \$VAULTTYPE != \"unseal\" ];
 then
-    echo 'UNSEALIP is unset - please provide the IP address for the vault unseal node. All parameters are mandatory for all vault image types.'
+    echo 'UNSEALIP is unset - please provide the IP address for the vault unseal node. This parameter is mandatory for vault leader and follower image types.'
     exit 1
 fi
+# vault-leader and vault-follower
+if [ -z \${CONSULSERVERS+x} ] && [ \$VAULTTYPE != \"unseal\" ]; then
+    echo 'CONSULSERVERS is unset - please pass in one or more correctly-quoted, comma-separated addresses for consul peer IPs. Refer to documentation. This parameter is mandatory for vault leader and follower image types.'
+    exit 1
+fi
+# vault-leader and vault-follower
 # Unwrap token to pass into cluster
-if [ -z \${UNSEALTOKEN+x} ];
+if [ -z \${UNSEALTOKEN+x} ] && [ \$VAULTTYPE != \"unseal\" ];
 then
-    echo 'UNSEALTOKEN is unset - please pass in an unseal token, or set to \"unset\" for an unseal node. All parameters are mandatory for all vault image types.'
+    echo 'UNSEALTOKEN is unset - please pass in an unseal token, or set to \"unset\" for an unseal node. This parameter is mandatory for vault leader and follower image types.'
     exit 1
 fi
+# vault-leader and vault-follower
+# sftpuser credentials
+if [ -z \${SFTPUSER+x} ] && [ \$VAULTTYPE != \"unseal\" ];
+then
+    echo 'SFTPUSER is unset - please provide a username to use for the SFTP user on the vault leader. This parameter is mandatory for vault leader and follower image types.'
+    exit 1
+fi
+# vault-leader and vault-follower
+# sftpuser password
+if [ -z \${SFTPPASS+x} ] && [ \$VAULTTYPE != \"unseal\" ];
+then
+    echo 'SFTPPASS is unset - please provide a password for the SFTP user on the vault leader. This parameter is mandatory for vault leader and follower image types.'
+    exit 1
+fi
+# vault-follower only
 # Vault leader IP
-if [ -z \${VAULTLEADER+x} ];
+if [ -z \${VAULTLEADER+x} ] && [ \$VAULTTYPE != \"unseal\" ] && [ \$VAULTTYPE != \"leader\" ];
 then
-    echo 'VAULTLEADER is unset - please provide the IP address for the vault leader node. All parameters are mandatory for all vault image types.'
+    echo 'VAULTLEADER is unset - please provide the IP address for the vault leader node. This parameter is mandatory for vault follower images.'
     exit 1
 fi
+# vault-follower only
 # Vault leader token
-if [ -z \${LEADERTOKEN+x} ];
+if [ -z \${LEADERTOKEN+x} ] && [ \$VAULTTYPE != \"unseal\" ] && [ \$VAULTTYPE != \"leader\" ];
 then
-    echo 'LEADERTOKEN is unset - please provide a token from the vault leader for follower nodes to use. Alternatively set \"unset\" for unseal node. All parameters are mandatory for all vault image types.'
+    echo 'LEADERTOKEN is unset - please provide a token from the vault leader for follower nodes to use. This parameter is mandatory for vault follower images.'
     exit 1
 fi
-# optional logging to remote syslog server
+# optional
+# logging to remote syslog server
 if [ -z \${REMOTELOG+x} ];
 then
-    echo 'REMOTELOG is unset - please provide the IP address of a loki server, or set a null value. All parameters are mandatory.'
-    exit 1
+    echo 'REMOTELOG is unset - please provide the IP address of a loki server, or set a null value. This parameter is optional for vault leader and follower image types.'
+    REMOTELOG=\"null\"
 fi
-# sftpuser credentials
-if [ -z \${SFTPUSER+x} ];
-then
-    echo 'SFTPUSER is unset - please provide a username to use for the SFTP user on the vault leader. All parameters are mandatory.'
-    exit 1
-fi
-# sftpuser password
-if [ -z \${SFTPPASS+x} ];
-then
-    echo 'SFTPPASS is unset - please provide a password for the SFTP user on the vault leader. All parameters are mandatory.'
-    exit 1
-fi
-# ip subnet to generate temporary short-lived certificates for
-if [ -z \${SFTPNETWORK+x} ];
-then
-    echo 'SFTPNETWORK is unset - please provide a comma-separated list of IP addresses to pre-generate temporary TLS certificates.'
-    exit 1
-fi
+
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -497,7 +513,7 @@ storage \\\"raft\\\" {
   node_id = \\\"\$NODENAME\\\"
   autopilot_reconcile_interval = \\\"5s\\\"
   retry_join {
-    leader_api_addr = \\\"http://\$VAULTLEADER:8200\\\"
+    leader_api_addr = \\\"http://\$IP:8200\\\"
     #xyz#leader_ca_cert_file = \\\"/mnt/certs/ca.pem\\\"
     #xyz#leader_client_cert_file = \\\"/mnt/certs/cert.pem\\\"
     #xyz#leader_client_key_file = \\\"/mnt/certs/key.pem\\\"
@@ -602,7 +618,7 @@ cluster_addr = \\\"http://\$IP:8201\\\"
 
         # setup logging
         echo \"enabling /mnt/audit.log\"
-        /usr/local/bin/vault audit enable -address=http://\$IP:8200 file file_path=/mnt/audit.log
+        /usr/local/bin/vault audit enable -address=http://\$IP:8200 file file_path=/mnt/vault/audit.log
 
         # enable pki and become a CA
         echo \"Setting up raft cluster CA\"
@@ -992,7 +1008,7 @@ if [ -s /root/login.token ]; then
     # we're using tls-client-validation so need cert, key, cacert, along with a login token, and payload.json file
     # we'll pass all this to the vault leader api and get back a json file with certificate data embedded
     # this payload.json was created in the setup of the server
-    /usr/local/bin/curl --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTLEADER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    /usr/local/bin/curl --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
     # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem
@@ -1136,7 +1152,7 @@ fi
 #    echo \"
 #if [ -s /root/login.token ]; then
 #    LOGINTOKEN=\\\$(/bin/cat /root/login.token)
-#    echo \\\$LOGINTOKEN | /usr/local/bin/vault token renew -address=https://\$VAULTLEADER:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem token=-
+#    echo \\\$LOGINTOKEN | /usr/local/bin/vault token renew -address=https://\$IP:8200 -client-cert=/mnt/certs/cert.pem -client-key=/mnt/certs/key.pem -ca-cert=/mnt/certs/combinedca.pem token=-
 #else
 #    echo "/root/login.token does not contain a token to be renewed."
 #fi

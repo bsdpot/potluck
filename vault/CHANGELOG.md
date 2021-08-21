@@ -1,3 +1,9 @@
+2.0.39
+
+* Parameter adjustment to remove unnecessary variable checks from vault type
+
+---
+
 2.0.38
 
 * Bug-fix on gossip key
