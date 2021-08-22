@@ -1,3 +1,9 @@
+2.0.40
+
+* Security updates and improvements to strategic delay approach using Michael's new cook script
+
+---
+
 2.0.39
 
 * Parameter adjustment to remove unnecessary variable checks from vault type

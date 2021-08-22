@@ -47,7 +47,7 @@ Start ```vault``` cluster with the IP addresses of ```consul``` servers, which a
   -E UNSEALIP=<unseal vault IP> -E UNSEALTOKEN=<wrapped token generated on unseal node> \
   -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
   -E SFTPUSER=certuser -E SFTPPASS=<password> -E SFTPNETWORK=<list of comma-space separated IP addresses> \
-  [-E GOSSIPKEY=<32 byte Base64 key from consul keygen> -E REMOTELOG=<remote syslog IP>]
+  -E GOSSIPKEY=<32 byte Base64 key from consul keygen> [-E REMOTELOG=<remote syslog IP>]
   ```    
 
 The SFTPUSER and SFTPPASS parameters are to create a user with SSH private keys, where you will need to export the private key to the host systems for follower nodes.
@@ -87,8 +87,8 @@ You will need to generate new temporary certificates if two hours have passed si
   -E IP=<IP address of this vault node> -E VAULTTYPE=follower \
   -E UNSEALIP=<unseal vault node> -E UNSEALTOKEN=<wrapped token generated on unseal node> -E VAULTLEADER=<IP> -E LEADERTOKEN=<token>
   -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
-  -E SFTPUSER=certuser -E SFTPPASS=<password> -E SFTPNETWORK=<local /24 in 0.0.0.0 notation> \
-  [-E GOSSIPKEY=<32 byte Base64 key from consul keygen> -E REMOTELOG=<remote syslog IP>]
+  -E SFTPUSER=certuser -E SFTPPASS=<password> \
+  -E GOSSIPKEY=<32 byte Base64 key from consul keygen> [-E REMOTELOG=<remote syslog IP>]
   ```
 
 The SFTPUSER and SFTPPASS parameters are on the follower node are used to login to the vault leader to get temporary certificates for a further login.
