@@ -1099,26 +1099,31 @@ MYNETWORK=\\\"\$SFTPNETWORK\\\"
 COMMATONEWLINE=\\\$(echo \\\$MYNETWORK |sed 's/, /\n/g')
 # diagnostic
 echo \\\$COMMATONEWLINE > /tmpcerts/iplist.txt
+
 # generate certificates per host
 for sftphost in \\\$COMMATONEWLINE; do
     mkdir -p /tmpcerts/\\\$sftphost
+    # use jo to generate payload.json file
     /usr/local/bin/jo -p common_name=\\\$sftphost ttl=2h ip_sans=\\\"\\\$sftphost,127.0.0.1\\\" format=pem > /tmpcerts/\\\$sftphost/payload.json
     if [ -s /root/login.token ]; then
-        echo \\\"Re-generating 2 hour ttl client cert for ip \\\$sftphost in /tmpcerts/\\\$sftphost/...\\\"
+        echo \\\"Generating 2 hour ttl client cert for ip \\\$sftphost in /tmpcerts/\\\$sftphost/...\\\"
         HEADER=\\\$(/bin/cat /root/login.token)
-        (umask 177; /usr/local/bin/curl --silent --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem \
-          --header \\\"X-Vault-Token: \\\$HEADER\\\" \
-          --request POST --data @/tmpcerts/\\\$sftphost/payload.json \
-          https://\\\$IP:8200/v1/pki_int/issue/\\\$DATACENTER > /tmpcerts/\\\$sftphost/vaultissue.json)
-
+        for i in \\\$(jot 30); do
+          echo \\\"issue round: \\\$i\\\"
+          (umask 177; /usr/local/bin/curl -f --silent --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \\\"X-Vault-Token: \\\$HEADER\\\" --request POST --data @/tmpcerts/\\\$sftphost/payload.json https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmpcerts/\\\$sftphost/vaultissue.json)
+          if [ \\\$? -eq 0 ]; then
+            break
+          fi
+          sleep 2
+        done
         # extract the required certificates to individual files
         /usr/local/bin/jq -r '.data.certificate' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/cert.pem
         /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\\\$sftphost/vaultissue.json >> /tmpcerts/\\\$sftphost/cert.pem
-        (umask 177; /usr/local/bin/jq -r '.data.private_key' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/key.pem)
+        (umask 177; /usr/local/bin/jq -r '.data.private_key' /tmpcerts/\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/key.pem)
         /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/ca.pem
         # concat the root CA and intermediary CA into combined file
         cat /mnt/certs/CA_cert.pem /tmpcerts/\\\$sftphost/ca.pem > /tmpcerts/\\\$sftphost/combinedca.pem
-        chown -R \$SFTPUSER:wheel /tmpcerts/\\\$sftphost/
+        chown -R \\\$SFTPUSER:wheel /tmpcerts/\\\$sftphost/
         # validate the certificates
         echo \\\"Validating client certificate\\\"
         if [ -s /tmpcerts/\\\$sftphost/combinedca.pem ] && [ -s /tmpcerts/\\\$sftphost/cert.pem ]; then
@@ -1150,10 +1155,14 @@ mkdir -p /tmpcerts/\\\$sftphost
 if [ -s /root/login.token ]; then
     echo \\\"Re-generating 2 hour ttl client cert for ip \\\$sftphost in /tmpcerts/\\\$sftphost/...\\\"
     HEADER=\\\$(/bin/cat /root/login.token)
-    (umask 177; /usr/local/bin/curl --silent --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem \
-      --header \\\"X-Vault-Token: \\\$HEADER\\\"      --request POST --data @/tmpcerts/\\\$sftphost/payload.json \
-      https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmpcerts/\\\$sftphost/vaultissue.json)
-
+    for i in \\\$(jot 30); do
+      echo \\\"issue round: \\\$i\\\"
+      (umask 177; /usr/local/bin/curl -f --silent --cacert /mnt/certs/ca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \\\"X-Vault-Token: \\\$HEADER\\\" --request POST --data @/tmpcerts/\\\$sftphost/payload.json https://\$IP:8200/v1/pki_int/issue/\$DATACENTER > /tmpcerts/\\\$sftphost/vaultissue.json)
+      if [ \\\$? -eq 0 ]; then
+        break
+      fi
+      sleep 2
+    done
     # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/cert.pem
     /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\\\$sftphost/vaultissue.json >> /tmpcerts/\\\$sftphost/cert.pem

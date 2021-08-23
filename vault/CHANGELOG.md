@@ -1,3 +1,9 @@
+2.0.41
+
+* Fixup to generate temporary certificates script
+
+---
+
 2.0.40
 
 * Security updates and improvements to strategic delay approach using Michael's new cook script
