@@ -1,3 +1,9 @@
+2.0.42
+
+* Typo escaping variable in temporary certificates script
+
+---
+
 2.0.41
 
 * Fixup to generate temporary certificates script

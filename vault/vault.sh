@@ -1119,7 +1119,7 @@ for sftphost in \\\$COMMATONEWLINE; do
         # extract the required certificates to individual files
         /usr/local/bin/jq -r '.data.certificate' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/cert.pem
         /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\\\$sftphost/vaultissue.json >> /tmpcerts/\\\$sftphost/cert.pem
-        (umask 177; /usr/local/bin/jq -r '.data.private_key' /tmpcerts/\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/key.pem)
+        (umask 177; /usr/local/bin/jq -r '.data.private_key' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/key.pem)
         /usr/local/bin/jq -r '.data.issuing_ca' /tmpcerts/\\\$sftphost/vaultissue.json > /tmpcerts/\\\$sftphost/ca.pem
         # concat the root CA and intermediary CA into combined file
         cat /mnt/certs/CA_cert.pem /tmpcerts/\\\$sftphost/ca.pem > /tmpcerts/\\\$sftphost/combinedca.pem
