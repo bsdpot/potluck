@@ -1,3 +1,9 @@
+0.0.18
+
+* General security improvements
+
+---
+
 0.0.17
 
 * Updates for mandatory variables

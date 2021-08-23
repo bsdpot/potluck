@@ -1,3 +1,9 @@
+0.9.19
+
+* Updates for security improvements
+
+---
+
 0.9.18
 
 * Tweaking mandatory variables for optional parameters
