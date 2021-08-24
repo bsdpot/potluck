@@ -322,20 +322,22 @@ echo \"{
   \\\"tags\\\": [\\\"_app=nomad-server\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\"],
   \\\"port\\\": 9100
  }
-}\" > /usr/local/etc/consul.d/agent.json
+}\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
 # set owner and perms on agent.json
-chown consul:wheel /usr/local/etc/consul.d/agent.json
+chown -R consul:wheel /usr/local/etc/consul.d/
+chmod 640 /usr/local/etc/consul.d/agent.json
 
 # enable consul
 service consul enable
 
 # set load parameter for consul config
 sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
-#sysrc consul_datadir=\"/var/db/consul\"
-
+# enabling
+sysrc consul_datadir=\"/var/db/consul\"
 # Workaround for bug in rc.d/consul script:
-#sysrc consul_group=\"wheel\"
+# re-enabling
+sysrc consul_group=\"wheel\"
 
 # setup consul logs, might be redundant if not specified in agent.json above
 mkdir -p /var/log/consul
@@ -385,7 +387,7 @@ storage \\\"file\\\" {
 #template {
 #  source = \\\"/mnt/templates/key.tpl\\\"
 #  destination = \\\"/mnt/certs/key.pem\\\"
-}\" > /usr/local/etc/vault.hcl
+#}\" | (umask 177; cat > /usr/local/etc/vault.hcl)
 
 # Set permission for vault.hcl, so that vault can read it
 chown vault:wheel /usr/local/etc/vault.hcl

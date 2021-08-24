@@ -1,3 +1,9 @@
+0.0.10
+
+* General security updates
+
+---
+
 0.0.9
 
 * Tweaking mandatory variables for optional parameters

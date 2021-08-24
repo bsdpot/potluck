@@ -1,3 +1,9 @@
+0.9.20
+
+* Fixing missing security improvements
+
+---
+
 0.9.19
 
 * Updates for security improvements

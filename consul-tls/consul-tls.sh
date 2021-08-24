@@ -321,7 +321,7 @@ storage \\\"file\\\" {
 #template {
 #  source = \\\"/mnt/templates/key.tpl\\\"
 #  destination = \\\"/mnt/certs/key.pem\\\"
-}\" > /usr/local/etc/vault.hcl
+#}\" | (umask 177; cat > /usr/local/etc/vault.hcl)
 
 # Set permission for vault.hcl, so that vault can read it
 chown vault:wheel /usr/local/etc/vault.hcl
@@ -545,7 +545,11 @@ case \$BOOTSTRAP in
 }\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
      # set owner and perms on agent.json
-     chown consul:wheel /usr/local/etc/consul.d/agent.json
+     chown -R consul:wheel /usr/local/etc/consul.d/
+     chmod 640 /usr/local/etc/consul.d/agent.json
+     # Workaround for bug in rc.d/consul script:
+     sysrc consul_group=\"wheel\"
+     sysrc consul_datadir=\"/var/db/consul\"
      # enable consul
      service consul enable
      echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
@@ -599,7 +603,11 @@ case \$BOOTSTRAP in
 }\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
     # set owner and perms on agent.json
-    chown consul:wheel /usr/local/etc/consul.d/agent.json
+    chown -R consul:wheel /usr/local/etc/consul.d/
+    chmod 640 /usr/local/etc/consul.d/agent.json
+    # Workaround for bug in rc.d/consul script:
+    sysrc consul_group=\"wheel\"
+    sysrc consul_datadir=\"/var/db/consul\"
     # enable consul
     service consul enable
     echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf

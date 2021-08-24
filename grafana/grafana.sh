@@ -233,7 +233,7 @@ then
 fi
 if [ -z \${GRAFANAPASSWORD+x} ];
 then
-    echo 'GRAFANAPASSWORD is unset - please provide a password for the default admin user set in GRAFANAUSER. This parameters is mandatory.'
+    echo 'GRAFANAPASSWORD is unset - please provide a password for the default admin user set in GRAFANAUSER. This parameter is mandatory.'
     exit 1
 fi
 # optional logging to remote syslog server
@@ -245,18 +245,21 @@ fi
 # sftpuser credentials
 if [ -z \${SFTPUSER+x} ];
 then
-    echo 'SFTPUSER is unset - please provide a username to use for the SFTP user on the vault leader. This parameters is mandatory.'
+    echo 'SFTPUSER is unset - please provide a username to use for the SFTP user on the vault leader. This parameter is mandatory.'
     exit 1
 fi
 # sftpuser password
 if [ -z \${SFTPPASS+x} ];
 then
-    echo 'SFTPPASS is unset - please provide a password for the SFTP user on the vault leader. This parameters is mandatory.'
+    echo 'SFTPPASS is unset - please provide a password for the SFTP user on the vault leader. This parameter is mandatory.'
     exit 1
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
+
+# add group for accessing certs (shared between services)
+/usr/sbin/pw groupadd certaccess
 
 # some basic ssh setup
 echo \"Initialising ssh settings\"
@@ -289,7 +292,7 @@ if [ -f /root/.ssh/id_rsa ]; then
     cd /tmp/tmpcerts
     # wildcard retrieval works manually but not in the script, so we specify each file to retrieve
     /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/cert.pem
-    /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/key.pem
+    (umask 137; /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/key.pem)
     /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/ca.pem
     /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/combinedca.pem
     cd ~
@@ -298,6 +301,9 @@ fi
 # setup directories for vault usage
 mkdir -p /mnt/templates
 mkdir -p /mnt/certs/hash
+chgrp -R certaccess /mnt/certs
+mkdir -p /mnt/vault
+mkdir -p /mnt/grafana
 
 ## start consul
 
@@ -336,20 +342,18 @@ echo \"{
   \\\"tags\\\": [\\\"_app=prometheus\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
   \\\"port\\\": 9100
  }
-}\" > /usr/local/etc/consul.d/agent.json
+}\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
 # set owner and perms on agent.json
-chown consul:wheel /usr/local/etc/consul.d/agent.json
+chown -R consul:wheel /usr/local/etc/consul.d
 chmod 640 /usr/local/etc/consul.d/agent.json
 
 # enable consul
-sysrc consul_enable=\"YES\"
+service consul enable
 
 # set load parameter for consul config
 sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
-#sysrc consul_datadir=\"/var/db/consul\"
-
-# Workaround for bug in rc.d/consul script:
+sysrc consul_datadir=\"/var/db/consul\"
 sysrc consul_group=\"wheel\"
 
 # setup consul logs, might be redundant if not specified in agent.json above
@@ -357,10 +361,8 @@ mkdir -p /var/log/consul
 touch /var/log/consul/consul.log
 chown -R consul:wheel /var/log/consul
 
-# add the consul user to the wheel group, this seems to be required for
-# consul to start on this instance. May need to figure out why.
-# I'm not entirely sure this is the correct way to do it
-/usr/sbin/pw usermod consul -G wheel
+# add the consul user to the certaccess group
+/usr/sbin/pw usermod consul -G certaccess
 
 ## end consul
 
@@ -404,7 +406,10 @@ storage \\\"file\\\" {
 #template {
 #  source = \\\"/mnt/templates/key.tpl\\\"
 #  destination = \\\"/mnt/certs/key.pem\\\"
-}\" > /usr/local/etc/vault.hcl
+}\" | (umask 177; cat > /usr/local/etc/vault.hcl)
+
+# Set permission for vault.hcl, so that vault can read it
+chown vault:wheel /usr/local/etc/vault.hcl
 
 # setup template files for certificates
 # this is not currently in use because cron job does renewal and services restart
@@ -424,13 +429,14 @@ echo \"{{- /* /mnt/templates/key.tpl */ -}}
 \" > /mnt/templates/key.tpl
 
 # set permissions on /mnt for vault data
-chown -R vault:wheel /mnt/certs
-chown -R vault:wheel /mnt/templates
+chown -R vault:wheel /mnt/vault
+
+# invite to certaccess group
+/usr/sbin/pw usermod vault -G certaccess
 
 # setup rc.conf entries
-# we do not set vault_user=vault because vault will not start
 # we're not starting vault as a service
-sysrc vault_enable=no
+service vault enable
 sysrc vault_login_class=root
 sysrc vault_syslog_output_enable=\"YES\"
 sysrc vault_syslog_output_priority=\"warn\"
@@ -457,16 +463,17 @@ fi
 
 # unwrap the pki token issued by vault leader
 echo \"Unwrapping passed in token...\"
-/usr/local/bin/vault unwrap -address=https://\$VAULTSERVER:8200 -client-cert=/tmp/tmpcerts/cert.pem -client-key=/tmp/tmpcerts/key.pem -ca-cert=/mnt/certs/intermediate.cert.pem -format=json \$VAULTTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unwrapped.token
+(umask 177; /usr/local/bin/vault unwrap -address=https://\$VAULTSERVER:8200 -client-cert=/tmp/tmpcerts/cert.pem -client-key=/tmp/tmpcerts/key.pem -ca-cert=/mnt/certs/intermediate.cert.pem -format=json \$VAULTTOKEN | /usr/local/bin/jq -r '.auth.client_token' > /root/unwrapped.token)
 sleep 1
 if [ -s /root/unwrapped.token ]; then
     echo \"Token unwrapped\"
     THIS_TOKEN=\$(/bin/cat /root/unwrapped.token)
     echo \"Logging in to vault leader to authenticate\"
-    echo \"\$THIS_TOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTSERVER:8200 -client-cert=/tmp/tmpcerts/cert.pem -client-key=/tmp/tmpcerts/key.pem -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token
-    sleep 5
+    (umask 177; echo \"\$THIS_TOKEN\" | /usr/local/bin/vault login -address=https://\$VAULTSERVER:8200 -client-cert=/tmp/tmpcerts/cert.pem -client-key=/tmp/tmpcerts/key.pem -ca-cert=/mnt/certs/intermediate.cert.pem -method=token -field=token token=- > /root/login.token)
 fi
 
+# get list of secrets engines (helps cluster to align)
+/usr/local/bin/vault secrets list -address=https://\$VAULTSERVER:8200 -client-cert=/tmp/tmpcerts/cert.pem -client-key=/tmp/tmpcerts/key.pem -ca-cert=/mnt/certs/intermediate.cert.pem
 
 echo \"Setting certificate payload\"
 if [ -s /root/login.token ]; then
@@ -479,13 +486,12 @@ if [ -s /root/login.token ]; then
     # but no json format except via the API
     echo \"Generating certificates to use from Vault\"
     HEADER=\$(/bin/cat /root/login.token)
-    /usr/local/bin/curl --silent --cacert /tmp/tmpcerts/combinedca.pem --cert /tmp/tmpcerts/cert.pem --key /tmp/tmpcerts/key.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
-
+    (umask 177; /usr/local/bin/curl --cacert /tmp/tmpcerts/combinedca.pem --cert /tmp/tmpcerts/cert.pem --key /tmp/tmpcerts/key.pem --header \"X-Vault-Token: \$HEADER\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json)
     # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
     # append the ca cert to the cert
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem
-    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
+    (umask 137; /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem)
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
     cd /mnt/certs
     # concat the root CA and intermediary CA into combined file
@@ -495,7 +501,7 @@ if [ -s /root/login.token ]; then
     ln -s combinedca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
     cd /root
     # set permissions on /mnt/certs for vault
-    chown -R vault:wheel /mnt/certs
+    chown -R vault:certaccess /mnt/certs
 
     # validate the certificates
     echo \"Validating client certificate\"
@@ -504,7 +510,7 @@ if [ -s /root/login.token ]; then
     fi
 
     # start consul agent
-    /usr/local/etc/rc.d/consul start
+    service consul start
 
     # setup certificate rotation script
     echo \"Setting up certificate rotation script\"
@@ -514,11 +520,11 @@ export VAULT_MAX_RETRIES=5
 if [ -s /root/login.token ]; then
     LOGINTOKEN=\\\$(/bin/cat /root/login.token)
     HEADER=\\\$(echo \\\"X-Vault-Token: \\\"\\\$LOGINTOKEN)
-    /usr/local/bin/curl --silent --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json
+    (umask 177; /usr/local/bin/curl --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem --header \\\"\\\$HEADER\\\" --request POST --data @/mnt/templates/payload.json https://\$VAULTSERVER:8200/v1/pki_int/issue/\$DATACENTER > /mnt/certs/vaultissue.json)
     # extract the required certificates to individual files
     /usr/local/bin/jq -r '.data.certificate' /mnt/certs/vaultissue.json > /mnt/certs/cert.pem
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json >> /mnt/certs/cert.pem
-    /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem
+    (umask 137; /usr/local/bin/jq -r '.data.private_key' /mnt/certs/vaultissue.json > /mnt/certs/key.pem)
     /usr/local/bin/jq -r '.data.issuing_ca' /mnt/certs/vaultissue.json > /mnt/certs/ca.pem
     cd /mnt/certs
     # concat the root CA and intermediary CA into combined file
@@ -528,14 +534,14 @@ if [ -s /root/login.token ]; then
     ln -s combinedca.pem hash\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
     cd /root
     # set permissions on /mnt/certs for vault
-    chown -R vault:wheel /mnt/certs
+    chown -R vault:certaccess /mnt/certs
     # restart services
-    /bin/pkill -HUP nomad
-    /usr/local/etc/rc.d/consul restart
-    /usr/local/etc/rc.d/syslog-ng restart
+    service consul reload
+    service consul status || service consul start
+    service syslog-ng restart
     /usr/local/etc/rc.d/grafana restart
 else
-    echo "/root/login.token does not contain a token. Certificates cannot be renewed."
+    echo \"/root/login.token does not contain a token. Certificates cannot be renewed.\"
 fi
 \" > /root/rotate-certs.sh
 
@@ -571,26 +577,15 @@ else
     echo \"REMOTELOG parameter is not set to an IP address. syslog-ng won't operate.\"
 fi
 
-
-## start node_exporter config
-# node exporter needs tls setup
-echo \"tls_server_config:
-  cert_file: /mnt/certs/cert.pem
-  key_file: /mnt/certs/key.pem
-\" > /usr/local/etc/node-exporter.yml
-
-# enable node_exporter service
-sysrc node_exporter_enable=\"YES\"
-sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
-## end node_exporter config
-
 ## start grafana config
 # we're mounting in a blank-or-filled ZFS dataset from root system at
 # zroot/prometheusdata to /mnt
 
-# if /mnt/grafana is empty, copy in /var/db/grafana
+# add the grafana user to the certaccess group
+/usr/sbin/pw usermod grafana -G certaccess
 
-if [ ! -d /mnt/grafana ]; then
+# if /mnt/grafana is empty, copy in /var/db/grafana
+if [ ! -f /mnt/grafana/grafana.db ]; then
     # if empty we need to copy in the directory structure from install
     cp -a /var/db/grafana /mnt
 
@@ -600,7 +595,7 @@ if [ ! -d /mnt/grafana ]; then
     # overwrite the rc file with a fixed one as per
     # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
     if [ -f /root/grafana.rc ]; then
-        echo "replacing grafana rc file with freebsd-fixed one"
+        echo \"replacing grafana rc file with freebsd-fixed one\"
         cp -f /root/grafana.rc /usr/local/etc/rc.d/grafana
         chmod 755 /usr/local/etc/rc.d/grafana
         # this seems to be required, grafana still crashes without it
@@ -681,7 +676,7 @@ else
     # overwrite the rc file with a fixed one as per
     # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
     if [ -f /root/grafana.rc ]; then
-        echo "replacing grafana rc file with freebsd-fixed one"
+        echo \"replacing grafana rc file with freebsd-fixed one\"
         cp -f /root/grafana.rc /usr/local/etc/rc.d/grafana
         chmod 755 /usr/local/etc/rc.d/grafana
         # this seems to be required, grafana still crashes without it
@@ -771,18 +766,31 @@ if [ -f /root/grafana.conf ]; then
     sysrc grafana_group=\"grafana\"
     sysrc grafana_syslog_output_enable=\"YES\"
     # start grafana
-    /usr/local/etc/rc.d/grafana start
+    service grafana start
 else
     echo \"ERROR - there is no /root/grafana.conf file. Grafana not started\"
 fi
 
 ## end grafana config
 
-#
-# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
+# enable node_exporter service
+# add node_exporter user
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+
+# invite node_exporter to certaccess group
+/usr/sbin/pw usermod nodeexport -G certaccess
+
+# enable node_exporter service
+service node_exporter enable
+sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
+sysrc node_exporter_user=nodeexport
+sysrc node_exporter_group=nodeexport
 
 # start node_exporter
-/usr/local/etc/rc.d/node_exporter start
+service node_exporter start
+
+#
+# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 #
 # Do not touch this:

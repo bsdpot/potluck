@@ -1,3 +1,9 @@
+0.0.19
+
+* Fixing some misseed security improvements
+
+---
+
 0.0.18
 
 * General security improvements

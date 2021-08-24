@@ -1,3 +1,9 @@
+0.0.5
+
+* General security improvements
+
+---
+
 0.0.4
 
 * Tweaking mandatory variables for optional parameters

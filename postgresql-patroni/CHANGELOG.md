@@ -1,3 +1,9 @@
+2.0.18
+
+* General security fixups and removal bad copy-paste entries
+
+---
+
 2.0.17
 
 * Tweaking mandatory variables for optional parameters

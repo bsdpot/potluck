@@ -893,7 +893,7 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 }\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
         # set owner and perms on agent.json
-        chown consul:wheel /usr/local/etc/consul.d/agent.json
+        chown -R consul:wheel /usr/local/etc/consul.d/
         chmod 640 /usr/local/etc/consul.d/agent.json
 
         # enable consul
@@ -901,7 +901,8 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 
         # set load parameter for consul config
         sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
-        #sysrc consul_datadir=\"/var/db/consul\"
+        sysrc consul_datadir=\"/var/db/consul\"
+        sysrc consul_group=\"wheel\"
 
         # setup consul logs, might be redundant if not specified in agent.json above
         mkdir -p /var/log/consul
@@ -1504,16 +1505,17 @@ cluster_addr = \\\"https://\$IP:8201\\\"
 }\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
         # set owner and perms on agent.json
-        chown consul:wheel /usr/local/etc/consul.d/agent.json
+        chown -R consul:wheel /usr/local/etc/consul.d/
+        chmod 640 /usr/local/etc/consul.d/agent.json
 
         # enable consul
         service consul enable
 
         # set load parameter for consul config
         sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
-        #sysrc consul_datadir=\"/var/db/consul\"
-
-        # setup consul logs, might be redundant if not specified in agent.json above
+        sysrc consul_datadir=\"/var/db/consul\"
+        sysrc consul_group=\"wheel\"
+         # setup consul logs, might be redundant if not specified in agent.json above
         mkdir -p /var/log/consul
         touch /var/log/consul/consul.log
         chown -R consul:wheel /var/log/consul

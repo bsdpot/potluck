@@ -59,4 +59,4 @@ If you stop the image, the data will still exist, and a new image can be started
 
 If you need to change the directory parameters for the ZFS data set, adjust the ```mount-in``` command accordingly for the source directory as mounted by the parent OS.
 
-Do not adjust the image destination mount point at /mnt because ```haproxy``` is configured to use this directory for data.
+Do not adjust the image destination mount point at /mnt because Loki is configured to use this directory for data.
