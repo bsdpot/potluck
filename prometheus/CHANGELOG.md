@@ -1,3 +1,9 @@
+0.9.22
+
+* General security updates, and updating changelog this time
+
+---
+
 0.9.21
 
 * Tweaking mandatory variables for optional parameters
