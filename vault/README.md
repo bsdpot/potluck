@@ -46,11 +46,11 @@ Start ```vault``` cluster with the IP addresses of ```consul``` servers, which a
   -E IP=<IP address of this vault node> -E VAULTTYPE=leader \
   -E UNSEALIP=<unseal vault IP> -E UNSEALTOKEN=<wrapped token generated on unseal node> \
   -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
-  -E SFTPUSER=certuser -E SFTPPASS=<password> -E SFTPNETWORK=<list of comma-space separated IP addresses> \
+  -E SFTPUSER=<username> -E SFTPNETWORK="<list of comma-space separated IP addresses>" \
   -E GOSSIPKEY=<32 byte Base64 key from consul keygen> [-E REMOTELOG=<remote syslog IP>]
   ```    
 
-The SFTPUSER and SFTPPASS parameters are to create a user with SSH private keys, where you will need to export the private key to the host systems for follower nodes.
+The SFTPUSER parameter is used to create a user with SSH private keys, where you will need to export the private key to the host systems for follower nodes.
 
 The SFTPNETWORK parameter is a list of IP addresses in comma_space format ( "10.0.0.1, 10.0.0.2, 10.0.0.3") to pre-generate 2h SSL certificates for, for initial vault logins by follower nodes and other images making use of vault.
 
@@ -87,11 +87,10 @@ You will need to generate new temporary certificates if two hours have passed si
   -E IP=<IP address of this vault node> -E VAULTTYPE=follower \
   -E UNSEALIP=<unseal vault node> -E UNSEALTOKEN=<wrapped token generated on unseal node> -E VAULTLEADER=<IP> -E LEADERTOKEN=<token>
   -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
-  -E SFTPUSER=certuser -E SFTPPASS=<password> \
-  -E GOSSIPKEY=<32 byte Base64 key from consul keygen> [-E REMOTELOG=<remote syslog IP>]
+  -E SFTPUSER=certuser -E GOSSIPKEY=<32 byte Base64 key from consul keygen> [-E REMOTELOG=<remote syslog IP>]
   ```
 
-The SFTPUSER and SFTPPASS parameters are on the follower node are used to login to the vault leader to get temporary certificates for a further login.
+The SFTPUSER parameter is used on the follower node to login to the vault leader, to get temporary certificates for a further login.
 
 The SFTPNETWORK parameter is only used by the Vault leader node.
 

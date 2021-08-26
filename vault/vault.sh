@@ -238,13 +238,6 @@ then
     echo 'SFTPUSER is unset - please provide a username to use for the SFTP user on the vault leader. This parameter is mandatory for vault leader and follower image types.'
     exit 1
 fi
-# vault-leader and vault-follower
-# sftpuser password
-if [ -z \${SFTPPASS+x} ] && [ \$VAULTTYPE != \"unseal\" ];
-then
-    echo 'SFTPPASS is unset - please provide a password for the SFTP user on the vault leader. This parameter is mandatory for vault leader and follower image types.'
-    exit 1
-fi
 # vault-follower only
 # Vault leader IP
 if [ -z \${VAULTLEADER+x} ] && [ \$VAULTTYPE != \"unseal\" ] && [ \$VAULTTYPE != \"leader\" ];
@@ -360,7 +353,7 @@ path \\\"transit/decrypt/autounseal\\\" {
 
     # setup some automation scripts
     echo \"#!/bin/sh
-/usr/local/bin/vault audit enable -address=http://\$IP:8200 file file_path=/mnt/audit.log
+/usr/local/bin/vault audit enable -address=http://\$IP:8200 file file_path=/mnt/vault/audit.log
 /usr/local/bin/vault secrets enable -address=http://\$IP:8200 transit
 /usr/local/bin/vault write -address=http://\$IP:8200 -f transit/keys/autounseal
 /usr/local/bin/vault policy write -address=http://\$IP:8200 autounseal /root/autounseal.hcl
@@ -401,7 +394,7 @@ path \\\"transit/decrypt/autounseal\\\" {
     echo \"     (use token from operator init)\"
     echo \" \"
     echo \" Then run /root/setup-autounseal.sh to automatically run each of the following 4 steps \"
-    echo \"  vault audit enable -address=http://\$IP:8200 file file_path=/mnt/audit.log\"
+    echo \"  vault audit enable -address=http://\$IP:8200 file file_path=/mnt/vault/audit.log\"
     echo \"  vault secrets enable -address=http://\$IP:8200 transit\"
     echo \"  vault write -address=http://\$IP:8200 -f transit/keys/autounseal\"
     echo \"  vault policy write -address=http://\$IP:8200 autounseal /root/autounseal.hcl\"
@@ -457,9 +450,7 @@ Match User \$SFTPUSER
     cd /
 
     # setup a user
-    /usr/sbin/pw useradd -n \$SFTPUSER -c 'certificate user' -m -s /bin/sh -h 0 <<EOP
-\$SFTPPASS
-EOP
+    /usr/sbin/pw useradd -n \$SFTPUSER -c 'certificate user' -m -s /bin/sh -h -
 
     # setup user ssh key to be exported for use elsewhere
     echo \"Setting up \$SFTPUSER ssh keys\"
@@ -892,17 +883,17 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
 }
 }\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
-        # set owner and perms on agent.json
+        # set owner and perms on _directory_ /usr/local/etc/consul.d with agent.json
         chown -R consul:wheel /usr/local/etc/consul.d/
-        chmod 640 /usr/local/etc/consul.d/agent.json
+        #chmod 640 /usr/local/etc/consul.d/agent.json
 
         # enable consul
         service consul enable
 
         # set load parameter for consul config
         sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
-        sysrc consul_datadir=\"/var/db/consul\"
-        sysrc consul_group=\"wheel\"
+        #sysrc consul_datadir=\"/var/db/consul\"
+        #sysrc consul_group=\"wheel\"
 
         # setup consul logs, might be redundant if not specified in agent.json above
         mkdir -p /var/log/consul
@@ -1504,18 +1495,18 @@ cluster_addr = \\\"https://\$IP:8201\\\"
  }
 }\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
-        # set owner and perms on agent.json
+        # set owner and perms on _directory_ /usr/local/etc/consul.d with agent.json
         chown -R consul:wheel /usr/local/etc/consul.d/
-        chmod 640 /usr/local/etc/consul.d/agent.json
+        #chmod 640 /usr/local/etc/consul.d/agent.json
 
         # enable consul
         service consul enable
 
         # set load parameter for consul config
         sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
-        sysrc consul_datadir=\"/var/db/consul\"
-        sysrc consul_group=\"wheel\"
-         # setup consul logs, might be redundant if not specified in agent.json above
+        #sysrc consul_datadir=\"/var/db/consul\"
+        #sysrc consul_group=\"wheel\"
+        # setup consul logs, might be redundant if not specified in agent.json above
         mkdir -p /var/log/consul
         touch /var/log/consul/consul.log
         chown -R consul:wheel /var/log/consul

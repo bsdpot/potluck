@@ -1,3 +1,9 @@
+2.0.44
+
+* Fix audit.log location in unseal image. Adjust consul sysrc parameters.
+
+---
+
 2.0.43
 
 * Consul fixes
