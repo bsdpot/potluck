@@ -1,3 +1,9 @@
+0.0.6
+
+* Fixing an overwrite of earlier correction
+
+---
+
 0.0.5
 
 * General security improvements
