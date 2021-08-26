@@ -1,3 +1,9 @@
+2.0.19
+
+* Removing sftppass, unsetting consul sysrc parameters where needed
+
+---
+
 2.0.18
 
 * General security fixups and removal bad copy-paste entries

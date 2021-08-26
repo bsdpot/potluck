@@ -1,3 +1,9 @@
+0.0.15
+
+* Removing sftppass, unsetting consul sysrc parameters where needed
+
+---
+
 0.0.14
 
 * General security updates

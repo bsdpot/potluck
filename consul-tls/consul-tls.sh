@@ -226,12 +226,6 @@ then
     echo 'SFTPUSER is unset - please provide a username to use for the SFTP user. This parameter is mandatory.'
     exit 1
 fi
-# sftpuser password
-if [ -z \${SFTPPASS+x} ];
-then
-    echo 'SFTPPASS is unset - please provide a password for the SFTP user above. This parameter is mandatory.'
-    exit 1
-fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -273,6 +267,7 @@ if [ -f /root/.ssh/id_rsa ]; then
     # wildcard retrieval works manually but not in the script, so we specify each file to retrieve
     /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/cert.pem
     (umask 137; /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/key.pem)
+    chgrp certaccess key.pem
     /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/ca.pem
     /usr/bin/sftp -P 8888 -o StrictHostKeyChecking=no -q \$SFTPUSER@\$VAULTSERVER:\$IP/combinedca.pem
     cd ~
@@ -544,12 +539,11 @@ case \$BOOTSTRAP in
   }
 }\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
-     # set owner and perms on agent.json
+     # set owner on /usr/local/etc/consul.d
      chown -R consul:wheel /usr/local/etc/consul.d/
-     chmod 640 /usr/local/etc/consul.d/agent.json
      # Workaround for bug in rc.d/consul script:
-     sysrc consul_group=\"wheel\"
-     sysrc consul_datadir=\"/var/db/consul\"
+     #sysrc consul_group=\"wheel\"
+     #sysrc consul_datadir=\"/var/db/consul\"
      # enable consul
      service consul enable
      echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
@@ -602,12 +596,12 @@ case \$BOOTSTRAP in
  }
 }\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
-    # set owner and perms on agent.json
+    # set owner on /usr/local/etc/consul.d
     chown -R consul:wheel /usr/local/etc/consul.d/
-    chmod 640 /usr/local/etc/consul.d/agent.json
+    #chmod 640 /usr/local/etc/consul.d/agent.json
     # Workaround for bug in rc.d/consul script:
-    sysrc consul_group=\"wheel\"
-    sysrc consul_datadir=\"/var/db/consul\"
+    #sysrc consul_group=\"wheel\"
+    #sysrc consul_datadir=\"/var/db/consul\"
     # enable consul
     service consul enable
     echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
