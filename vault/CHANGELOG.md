@@ -1,3 +1,9 @@
+2.0.45
+
+* Further adjustments from diff output of improved cook script
+
+---
+
 2.0.44
 
 * Fix audit.log location in unseal image. Adjust consul sysrc parameters.

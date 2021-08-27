@@ -377,7 +377,7 @@ path \\\"transit/decrypt/autounseal\\\" {
 
     # start vault
     echo \"Starting Vault Unseal Node\"
-    /usr/local/etc/rc.d/vault start
+    service vault start
 
     echo \"------------------------------------------------------------------------------------------\"
     echo \"Unseal node is almost complete, you must now login and manually run the following\"
@@ -707,9 +707,9 @@ cluster_addr = \\\"http://\$IP:8201\\\"
         echo \"Setting up roles\"
         # vault write [options] PATH [DATA K=V...]
         # setup roles to enable certificate issue
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"720h\" require_cn=false generate_lease=true allow_ip_sans=true allow_localhost=true enforce_hostnames=false 
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"720h\" require_cn=false generate_lease=true allow_ip_sans=true allow_localhost=true enforce_hostnames=false
         /usr/local/bin/vault write -address=http://\$IP:8200 pki_int/issue/\$DATACENTER common_name=\"\$DATACENTER\" ttl=\"24h\"
-        /usr/local/bin/vault write -address=http://\$IP:8200 pki/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"72h\" require_cn=false allow_ip_sans=true allow_localhost=true enforce_hostnames=false 
+        /usr/local/bin/vault write -address=http://\$IP:8200 pki/roles/\$DATACENTER allow_any_name=true allow_bare_domains=true allow_subdomains=true max_ttl=\"72h\" require_cn=false allow_ip_sans=true allow_localhost=true enforce_hostnames=false
 
         # set policy in a file, will import next
         # this needs a review, from multiple sources
@@ -840,7 +840,7 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
                 sysrc syslog_ng_enable=\"YES\"
                 #sysrc syslog_ng_flags=\"-u daemon\"
                 sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
-                /usr/local/etc/rc.d/syslog-ng start
+                service syslog-ng start
                 echo \"syslog-ng setup complete\"
             else
                 echo \"/root/syslog-ng.conf is missing?\"
@@ -1397,7 +1397,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
       sleep 2
     done
 
-    echo "Login success. Please wait"
+    echo \"Login success. Please wait\"
 
     # get list of secrets engines (helps cluster to align)
     /usr/local/bin/vault secrets list -address=https://\$VAULTLEADER:8200 -client-cert=/tmp/tmpcerts/cert.pem -client-key=/tmp/tmpcerts/key.pem -ca-cert=/mnt/certs/intermediate.cert.pem
@@ -1452,7 +1452,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
                 sysrc syslog_ng_enable=\"YES\"
                 #sysrc syslog_ng_flags=\"-u daemon\"
                 sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
-                /usr/local/etc/rc.d/syslog-ng start
+                service syslog-ng start
                 echo \"syslog-ng setup complete\"
             else
                 echo \"/root/syslog-ng.conf is missing?\"
@@ -1523,8 +1523,7 @@ cluster_addr = \\\"https://\$IP:8201\\\"
 \" > /usr/local/etc/node-exporter.yml
 
         # add node_exporter user
-        /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' \
-         -m -s /usr/bin/nologin -h -
+        /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
 
         # invite node_exporter to certaccess group
         /usr/sbin/pw usermod nodeexport -G certaccess
@@ -1617,8 +1616,8 @@ if [ -s /root/login.token ]; then
     # concat the root CA and intermediary CA into combined file
     cat CA_cert.pem ca.pem > combinedca.pem
     # steps here to hash ca
-    ln -s ca.pem hash\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/ca.pem).0
-    ln -s combinedca.pem hash\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
+    ln -s ca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/ca.pem).0
+    ln -s combinedca.pem hash/\$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/certs/combinedca.pem).0
     cd /root
     # set permissions on /mnt/certs for vault
     chown -R vault:certaccess /mnt/certs
