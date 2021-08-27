@@ -68,13 +68,6 @@ postgresql:
   conf_dir: /mnt/postgres/data/
   pgpass: /tmp/pgpass0
   authentication:
-    replication:
-      username: replicator
-      password: REPPASS
-      sslmode: verify-full
-      sslkey: /mnt/certs/key.pem
-      sslcert: /mnt/certs/cert.pem
-      sslrootcert: /mnt/certs/combinedca.pem
     superuser:
       username: postgres
       password: KEKPASS
@@ -82,19 +75,26 @@ postgresql:
       sslkey: /mnt/certs/key.pem
       sslcert: /mnt/certs/cert.pem
       sslrootcert: /mnt/certs/combinedca.pem
-     rewind:  # Has no effect on postgres 10 and lower
+    replication:
+      username: replicator
+      password: REPPASS
+      sslmode: verify-full
+      sslkey: /mnt/certs/key.pem
+      sslcert: /mnt/certs/cert.pem
+      sslrootcert: /mnt/certs/combinedca.pem
+    rewind:
       username: rewind_user
       password: rewind_password
       sslmode: verify-full
       sslkey: /mnt/certs/key.pem
       sslcert: /mnt/certs/cert.pem
       sslrootcert: /mnt/certs/combinedca.pem
-    parameters:
-      unix_socket_directories: '/tmp/'
-      ssl: on
-      ssl_cert_file: /mnt/certs/cert.pem
-      ssl_key_file: /mnt/certs/key.pem
-      ssl_ca_file: /mnt/certs/combinedca.pem
+  parameters:
+    unix_socket_directories: '/tmp/'
+    ssl: on
+    ssl_cert_file: /mnt/certs/cert.pem
+    ssl_key_file: /mnt/certs/key.pem
+    ssl_ca_file: /mnt/certs/combinedca.pem
 
 tags:
     nofailover: false

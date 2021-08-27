@@ -1,3 +1,9 @@
+2.0.22
+
+* Fixed the patroni.yml spacing
+
+---
+
 2.0.21
 
 * Fixed the README file
