@@ -607,7 +607,7 @@ if [ -s /root/login.token ]; then
     # so we're using this instead
     /usr/local/bin/patronictl -c /usr/local/etc/patroni/patroni.yml reload postgresql --force
 else
-    echo "/root/login.token does not contain a token. Certificates cannot be renewed."
+    echo \"/root/login.token does not contain a token. Certificates cannot be renewed.\"
 fi
 \" > /root/rotate-certs.sh
 
@@ -631,7 +631,7 @@ fi
             sysrc syslog_ng_enable=\"YES\"
             #sysrc syslog_ng_flags=\"-u daemon\"
             sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
-            /usr/local/etc/rc.d/syslog-ng start
+            service syslog-ng start
             echo \"syslog-ng setup complete\"
         else
             echo \"/root/syslog-ng.conf is missing?\"
@@ -696,6 +696,22 @@ fi
     /usr/sbin/pw usermod -n postgres -d /mnt/postgres/data -s /bin/sh
 
     # end postgresql
+
+    # setup script to query patroni status
+    echo \"#!/bin/sh
+/usr/local/bin/curl -s --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem https://localhost:8008/patroni | /usr/local/bin/jq .
+\" > /root/verifynode.sh
+
+    # make executable
+    chmod +x /root/verifynode.sh
+
+    # setup script to query cluster status
+    echo \"#!/bin/sh
+/usr/local/bin/curl -s --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem https://localhost:8008/cluster | /usr/local/bin/jq .
+\" > /root/verifycluster.sh
+
+    # make executable
+    chmod +x /root/verifycluster.sh
 
     # start patroni, which should start postgresql
     service patroni start

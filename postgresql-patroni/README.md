@@ -63,9 +63,9 @@ Usage notes
 Verify node or cluster details with
 
 ```
-curl -s http://localhost:8008/patroni | jq .
+curl -s https://localhost:8008/patroni | jq .
 
-curl -s http://localhost:8008/cluster | jq .
+curl -s https://localhost:8008/cluster | jq .
 
 /usr/local/etc/rc.d/patroni list
 ```

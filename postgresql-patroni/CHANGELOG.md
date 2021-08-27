@@ -1,3 +1,9 @@
+2.0.20
+
+* Encryption all round. Added scripts to check status.
+
+---
+
 2.0.19
 
 * Removing sftppass, unsetting consul sysrc parameters where needed

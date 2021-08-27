@@ -36,6 +36,7 @@ patroni_start()
   # -P daemon pidfile
   # -T syslog Tag
   ${daemon_cmd} -c -S -R 10 -u ${postgresql_user} -P ${patroni_pid} -T ${name} ${patroni_cmd} ${patroni_config}
+  # this doesn't work, while the above line does
   #/usr/bin/su - postgres -c '/usr/sbin/daemon -c -S -R 10 -P /var/run/patroni.pid -T patroni /usr/local/bin/patroni /usr/local/etc/patroni/patroni.yml'
 }
 
