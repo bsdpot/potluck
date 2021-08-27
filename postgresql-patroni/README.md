@@ -27,8 +27,7 @@ It is dependent on a ```consul``` server/cluster for the DCS store.
   ```
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E IP=<IP address of this node> \
   -E SERVICETAG=<master/replica/standby-leader> -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
-  -E VAULTSERVER=<Vault leader IP> -E VAULTTOKEN=<s.token> -E REMOTELOG=<IP of loki> \
-  -E SFTPUSER=<user> -E SFTPPASS=<password> \
+  -E VAULTSERVER=<Vault leader IP> -E VAULTTOKEN=<s.token> -E REMOTELOG=<IP of loki> -E SFTPUSER=<user> \
   [-E ADMPASS=<custom admin password> -E KEKPASS=<custom postgresql superuser password> -E REPPASS=<custom replication password>] \
   [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]
   ```
@@ -51,7 +50,7 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
 
-The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
+The SFTPUSER parameter is for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 
 # Usage
 
@@ -63,9 +62,13 @@ Usage notes
 Verify node or cluster details with
 
 ```
-curl -s https://localhost:8008/patroni | jq .
+/root/verifynode.sh
 
-curl -s https://localhost:8008/cluster | jq .
+    (runs /usr/local/bin/curl -s --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem https://localhost:8008/patroni | /usr/local/bin/jq . )
+
+/root/verifycluster.sh
+
+    (runs /usr/local/bin/curl -s --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem https://localhost:8008/cluster | /usr/local/bin/jq . )
 
 /usr/local/etc/rc.d/patroni list
 ```

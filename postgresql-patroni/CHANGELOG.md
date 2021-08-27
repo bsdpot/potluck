@@ -1,3 +1,9 @@
+2.0.21
+
+* Fixed the README file
+
+---
+
 2.0.20
 
 * Encryption all round. Added scripts to check status.
