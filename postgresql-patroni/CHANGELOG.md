@@ -1,3 +1,9 @@
+2.0.23
+
+* TLS everywhere for postgresql requires specific permissions on key.pem
+
+---
+
 2.0.22
 
 * Fixed the patroni.yml spacing
