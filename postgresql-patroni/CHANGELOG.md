@@ -1,3 +1,9 @@
+2.0.24
+
+* Need to use 127.0.0.1 instead of localhost in the scripts to check patroni status, else TLS fails
+
+---
+
 2.0.23
 
 * TLS everywhere for postgresql requires specific permissions on key.pem

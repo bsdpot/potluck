@@ -705,7 +705,7 @@ fi
 
     # setup script to query patroni status
     echo \"#!/bin/sh
-/usr/local/bin/curl -s --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem https://localhost:8008/patroni | /usr/local/bin/jq .
+/usr/local/bin/curl -s --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem https://127.0.0.1:8008/patroni | /usr/local/bin/jq .
 \" > /root/verifynode.sh
 
     # make executable
@@ -713,7 +713,7 @@ fi
 
     # setup script to query cluster status
     echo \"#!/bin/sh
-/usr/local/bin/curl -s --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem https://localhost:8008/cluster | /usr/local/bin/jq .
+/usr/local/bin/curl -s --cacert /mnt/certs/combinedca.pem --cert /mnt/certs/cert.pem --key /mnt/certs/key.pem https://127.0.0.1:8008/cluster | /usr/local/bin/jq .
 \" > /root/verifycluster.sh
 
     # make executable
