@@ -1,3 +1,9 @@
+0.9.24
+
+* Setting stricter permissions on key.pem
+
+---
+
 0.9.23
 
 * Removing sftppass, unsetting consul sysrc parameters where needed

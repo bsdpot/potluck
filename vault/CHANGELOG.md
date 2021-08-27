@@ -1,3 +1,9 @@
+2.0.46
+
+* Setting stricter permissions on key.pem
+
+---
+
 2.0.45
 
 * Further adjustments from diff output of improved cook script

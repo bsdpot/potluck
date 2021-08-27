@@ -494,7 +494,9 @@ if [ -s /root/login.token ]; then
     cd /root
     # set permissions on /mnt/certs for vault
     chown -R vault:certaccess /mnt/certs
-
+    # Setting root:certaccess and 0640 on key across images
+    chown root:certaccess /mnt/certs/key.pem
+    chmod 640 /mnt/certs/key.pem
     # validate the certificates
     echo \"Validating client certificate\"
     if [ -s /mnt/certs/combinedca.pem ] && [ -s /mnt/certs/cert.pem ]; then
@@ -527,6 +529,9 @@ if [ -s /root/login.token ]; then
     cd /root
     # set permissions on /mnt/certs for vault
     chown -R vault:certaccess /mnt/certs
+    # Setting root:certaccess and 0640 on key across images
+    chown root:certaccess /mnt/certs/key.pem
+    chmod 640 /mnt/certs/key.pem
     # restart services
     service consul reload
     service consul status || service consul start

@@ -806,6 +806,9 @@ path \\\"pki_int/tidy\\\" { capabilities = [\\\"create\\\", \\\"update\\\"] }
         cd /root
         # set permissions on /mnt/certs for vault
         chown -R vault:certaccess /mnt/certs
+        # Setting root:certaccess and 0640 on key across images
+        chown root:certaccess /mnt/certs/key.pem
+        chmod 640 /mnt/certs/key.pem
         # validate the certificates
         echo \"Validating client certificate\"
         if [ -s /mnt/certs/combinedca.pem ] && [ -s /mnt/certs/cert.pem ]; then
@@ -1039,6 +1042,9 @@ if [ -s /root/login.token ]; then
     cd /root
     # set permissions on /mnt/certs for vault
     chown -R vault:certaccess /mnt/certs
+    # Setting root:certaccess and 0640 on key across images
+    chown root:certaccess /mnt/certs/key.pem
+    chmod 640 /mnt/certs/key.pem
     # restart services
     service vault reload
     service consul reload
@@ -1429,7 +1435,9 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         cd /root
         # set permissions on /mnt/certs for vault
         chown -R vault:certaccess /mnt/certs
-
+        # Setting root:certaccess and 0640 on key across images
+        chown root:certaccess /mnt/certs/key.pem
+        chmod 640 /mnt/certs/key.pem
         # validate the certificates
         echo \"Validating client certificate\"
         if [ -s /mnt/certs/combinedca.pem ] && [ -s /mnt/certs/cert.pem ]; then
@@ -1437,7 +1445,6 @@ cluster_addr = \\\"https://\$IP:8201\\\"
         fi
 
         # enable consul components
-        #rm# /usr/bin/sed -i .orig 's/#brb#//g' /usr/local/etc/vault.hcl
         (umask 177; /usr/bin/sed -i .orig 's/#brb#//g' /usr/local/etc/vault.hcl)
 
         # optional remote logging
@@ -1621,6 +1628,9 @@ if [ -s /root/login.token ]; then
     cd /root
     # set permissions on /mnt/certs for vault
     chown -R vault:certaccess /mnt/certs
+    # Setting root:certaccess and 0640 on key across images
+    chown root:certaccess /mnt/certs/key.pem
+    chmod 640 /mnt/certs/key.pem
     # restart services
     service vault reload
     service consul reload
