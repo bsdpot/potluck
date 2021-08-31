@@ -18,15 +18,27 @@ The flavour expects a local ```consul``` agent instance to be available that it 
 * Create your local jail from the image or the flavour files. 
 * Mount in the ZFS data set you created:    
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/saltdata```
+* [optional] Copy in the primary keys from an existing master:     
+  ```
+  pot copy-in -p <jailname> -s /path/to/master.pem -d /root/master.pem
+  pot copy-in -p <jailname> -s /path/to/master.pub -d /root/master.pub
+  ```
 * Adjust to your environment:    
   ```
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
-  -E IP=<IP address of this node> -E STATEPATH=/mnt/salt/state -E PILLARPATH=/mnt/salt/pillar \
-  -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
-  -E SSHUSER=<username> [-E REMOTELOG=<remote syslog IP>]
+  -E IP=<IP address of this node> -E PKIPATH="/mnt/salt/pki/master" -E STATEPATH="/mnt/salt/state" \
+  -E PILLARPATH="/mnt/salt/pillar" -E SSHUSER=<username> \
+  [ -E ENABLECONSUL=1 -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> ] \
+  [ -E REMOTELOG=<remote syslog IP> ]
   ```    
 
-The STATEPATH and PILLARPATH variables are locations of mounted-in persistent storage, ideally /mnt/salt/state and /mnt/salt/pillar.
+The PKIPATH parameter is the location of the mounted-in persistent storage, ideally ```/mnt/salt/pki/master/```. Please quote the path.
+
+If existing keys are copied in, they will overwrite the data in ```/mnt/salt/pki/master/```.
+
+The STATEPATH parameter is the location of the mounted-in persistent storage for state files, ideally ```/mnt/salt/state```. Please quote the path.
+
+The PILLARPATH parameter is the location of mounted-in persistent storage for private data, ideally ```/mnt/salt/pillar```. Please quote the path.
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 

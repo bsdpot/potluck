@@ -202,8 +202,14 @@ if [ -z \${IP+x} ]; then
     echo 'IP is unset - see documentation to configure this flavour for an IP address.'
     exit 1
 fi
+# enable consul check
+if [ -z \${ENABLECONSUL+x} ];
+then
+    echo 'ENABLECONSUL is unset - please pass in 1 to enable consul or 0 to disable consul setup. Defaulting to 0. If enabled you must pass in a list of consul servers.'
+    ENABLECONSUL=0
+fi
 # consul check
-if [ -z \${CONSULSERVERS+x} ];
+if [ -z \${CONSULSERVERS+x} ] && [ \$ENABLECONSUL != 0 ];
 then
     echo 'CONSULSERVERS is unset - please pass in one or more correctly-quoted, comma-separated addresses for consul peer IPs. Refer to documentation.'
     exit 1
@@ -220,16 +226,22 @@ then
     echo 'SSHPORT is unset - please provide a port number for SSH. Default for this pot image is 7777.'
     SSHPORT=7777
 fi
-# STATEPATH credentials check
-if [ -z \${STATEPATH+x} ];
+# PKIPATH check
+if [ -z \${PKIPATH+x} ];
 then
-    echo 'STATEPATH is unset - please provide a path in mounted in persistent storage to use for salt state files.'
+    echo 'PKIPATH is unset - please provide a path for mounted in persistent storage to use for salt PKI files.'
     exit 1
 fi
-# PILLARPATH credentials check
+# STATEPATH check
+if [ -z \${STATEPATH+x} ];
+then
+    echo 'STATEPATH is unset - please provide a path for mounted in persistent storage to use for salt state files.'
+    exit 1
+fi
+# PILLARPATH check
 if [ -z \${PILLARPATH+x} ];
 then
-    echo 'PILLARPATH is unset - please provide a path in mounted in persistent storage to use for salt pillar files.'
+    echo 'PILLARPATH is unset - please provide a path for mounted in persistent storage to use for salt pillar files.'
     exit 1
 fi
 # optional logging to remote syslog server check
@@ -243,8 +255,10 @@ fi
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 
 # setup directories for salt usage
+mkdir -p /mnt/salt/pki/master
 mkdir -p /mnt/salt/state
 mkdir -p /mnt/salt/pillar
+mkdir -p /mnt/home
 
 ## start ssh setup
 
@@ -264,7 +278,7 @@ AllowAgentForwarding yes
 PermitTTY yes
 #AllowUsers \$SSHUSER
 #Match User \$SSHUSER
-#  ChrootDirectory /tmpcerts
+#  ChrootDirectory /dir-name
 #  X11Forwarding no
 #  AllowTcpForwarding no
 #  ForceCommand internal-sftp
@@ -277,18 +291,18 @@ cd /etc/ssh
 cd /
 
 # setup a user
-/usr/sbin/pw useradd -n \$SSHUSER -c 'ssh user' -m -s /bin/sh -h -
+/usr/sbin/pw useradd -n \$SSHUSER -c 'ssh user' -d /mnt/home/\$SSHUSER -G wheel -m -s /bin/sh -h -
 
 # setup user ssh key to be exported for use elsewhere
 echo \"Setting up \$SSHUSER ssh keys\"
-mkdir -p /home/\$SSHUSER/.ssh
-/usr/bin/ssh-keygen -q -N '' -f /home/\$SSHUSER/.ssh/id_rsa -t rsa
-chmod 700 /home/\$SSHUSER/.ssh
-cat /home/\$SSHUSER/.ssh/id_rsa.pub > /home/\$SSHUSER/.ssh/authorized_keys
-chmod 700 /home/\$SSHUSER/.ssh
-chmod 600 /home/\$SSHUSER/.ssh/id_rsa
-chmod 644 /home/\$SSHUSER/.ssh/authorized_keys
-chown \$SSHUSER:\$SSHUSER /home/\$SSHUSER/.ssh
+mkdir -p /mnt/home/\$SSHUSER/.ssh
+/usr/bin/ssh-keygen -q -N '' -f /mnt/home/\$SSHUSER/.ssh/id_rsa -t rsa
+chmod 700 /mnt/home/\$SSHUSER/.ssh
+cat /mnt/home/\$SSHUSER/.ssh/id_rsa.pub > /mnt/home/\$SSHUSER/.ssh/authorized_keys
+chmod 700 /mnt/home/\$SSHUSER/.ssh
+chmod 600 /mnt/home/\$SSHUSER/.ssh/id_rsa
+chmod 644 /mnt/home/\$SSHUSER/.ssh/authorized_keys
+chown \$SSHUSER:wheel /mnt/home/\$SSHUSER/.ssh
 
 # restart ssh
 echo \"Restarting ssh\"
@@ -323,13 +337,14 @@ fi
 
 ## start consul setup
 
-# make consul configuration directory and set permissions
-mkdir -p /usr/local/etc/consul.d
-chown consul /usr/local/etc/consul.d
-chmod 750 /usr/local/etc/consul.d
+if [ \$ENABLECONSUL = 1 ]; then
+    # make consul configuration directory and set permissions
+    mkdir -p /usr/local/etc/consul.d
+    chown consul /usr/local/etc/consul.d
+    chmod 750 /usr/local/etc/consul.d
 
-# Create the consul agent config file with imported variables
-echo \"{
+    # Create the consul agent config file with imported variables
+    echo \"{
 \\\"advertise_addr\\\": \\\"\$IP\\\",
 \\\"datacenter\\\": \\\"\$DATACENTER\\\",
 \\\"node_name\\\": \\\"\$NODENAME\\\",
@@ -352,68 +367,104 @@ echo \"{
 }
 }\" | (umask 177; cat > /usr/local/etc/consul.d/agent.json)
 
-# set owner and perms on _directory_ /usr/local/etc/consul.d with agent.json
-chown -R consul:wheel /usr/local/etc/consul.d/
-#chmod 640 /usr/local/etc/consul.d/agent.json
+    # set owner and perms on _directory_ /usr/local/etc/consul.d with agent.json
+    chown -R consul:wheel /usr/local/etc/consul.d/
+    #chmod 640 /usr/local/etc/consul.d/agent.json
 
-# enable consul
-service consul enable
+    # enable consul
+    service consul enable
 
-# set load parameter for consul config
-sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
-# not needed
-#sysrc consul_datadir=\"/var/db/consul\"
-#sysrc consul_group=\"wheel\"
+    # set load parameter for consul config
+    sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
+    # not needed
+    #sysrc consul_datadir=\"/var/db/consul\"
+    #sysrc consul_group=\"wheel\"
 
-# setup consul logs, might be redundant if not specified in agent.json above
-mkdir -p /var/log/consul
-touch /var/log/consul/consul.log
-chown -R consul:wheel /var/log/consul
+    # setup consul logs, might be redundant if not specified in agent.json above
+    mkdir -p /var/log/consul
+    touch /var/log/consul/consul.log
+    chown -R consul:wheel /var/log/consul
 
-# add the consul user to the wheel group, this is old behaviour and may be fixed
-/usr/sbin/pw usermod consul -G wheel
+    # add the consul user to the wheel group, this is old behaviour and may be fixed
+    /usr/sbin/pw usermod consul -G wheel
 
-# start consul agent
-service consul start
+    # start consul agent
+    service consul start
 
-## end consul setup
+    ## end consul setup
 
-## start node exporter setup
+    ## start node exporter setup
 
-## DISABLED as not using TLS
-## node exporter needs tls setup
-##echo \"tls_server_config:
-##  cert_file: /mnt/certs/cert.pem
-##  key_file: /mnt/certs/key.pem
-##\" > /usr/local/etc/node-exporter.yml
-## replacement with empty file
-touch /usr/local/etc/node-exporter.yml
+    ## DISABLED as not using TLS
+    ## node exporter needs tls setup
+    ##echo \"tls_server_config:
+    ##  cert_file: /mnt/certs/cert.pem
+    ##  key_file: /mnt/certs/key.pem
+    ##\" > /usr/local/etc/node-exporter.yml
 
-# add node_exporter user
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+    ## replacement to above disabled bit with empty file
+    touch /usr/local/etc/node-exporter.yml
 
-# enable node_exporter service
-service node_exporter enable
-sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
-sysrc node_exporter_user=nodeexport
-sysrc node_exporter_group=nodeexport
+    # add node_exporter user
+    /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
 
-# start node_exporter
-service node_exporter start
+    # enable node_exporter service
+    service node_exporter enable
+    sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
+    sysrc node_exporter_user=nodeexport
+    sysrc node_exporter_group=nodeexport
 
-## end node exporter setup
+    # start node_exporter
+    service node_exporter start
+
+    ## end node exporter setup
+else
+    echo \"Consul is not being enabled.\"
+fi
+## end consul optional
 
 ## start saltstack setup
 
 # check if copied in file exists, and make path changes from variables
 if [ -f /root/master.cfg ]; then
+    # set the PKIPATH placeholder to the passed in mounted path for persistent storage
+    /usr/bin/sed -i .orig 's|PKIPATH|'\$PKIPATH'|g' /root/master.cfg
     # set the STATEPATH placeholder to the passed in mounted path for persistent storage
-    /usr/bin/sed -i .orig 's/STATEPATH/\$STATEPATH/g' /root/master.cfg
+    /usr/bin/sed -i .orig 's|STATEPATH|'\$STATEPATH'|g' /root/master.cfg
     # set the PILLARPATH placeholder to the passed in mounted path for persistent storage
-    /usr/bin/sed -i .orig 's/PILLARPATH/\$PILLARPATH/g' /root/master.cfg
+    /usr/bin/sed -i .orig 's|PILLARPATH|'\$PILLARPATH'|g' /root/master.cfg
     # copy to /usr/local/etc/salt
     cp -f /root/master.cfg /usr/local/etc/salt/master
 fi
+
+# check for copied in master.pem and master.pub and copy to PKIPATH location, overwriting any keys there
+if [ -f /root/master.pem ]; then
+    # backup existing key and set destination to readwrite
+    if [ -f \$PKIPATH/master.pem ]; then
+        cp -f \$PKIPATH/master.pem \$PKIPATH/master.pem.old
+        chmod 400 \$PKIPATH/master.pem.old
+        chmod 600 \$PKIPATH/master.pem
+    fi
+    # copy key over
+    cp -f /root/master.pem \$PKIPATH/master.pem
+    # set destination to read only
+    chmod 400 \$PKIPATH/master.pem
+else
+    echo \"There is no master.pem file to copy into salt\"
+fi
+
+# copy over pubkey
+if [ -f /root/master.pub ]; then
+    if [ -f \$PKIPATH/master.pub ]; then
+        cp -f \$PKIPATH/master.pub \$PKIPATH/master.pub.old
+    fi
+    cp -f /root/master.pub \$PKIPATH/master.pub
+    chmod 644 \$PKIPATH/master.pub
+else
+    echo \"There is no master.pub file to copy into salt\"
+fi
+# make sure ownership is correct
+chown root:wheel \$PKIPATH
 
 # enable salt master
 service salt_master enable
@@ -422,6 +473,12 @@ service salt_master enable
 service salt_master start
 
 ## end saltstack setup
+
+## notice
+echo \"================================================================\"
+echo \" Copy out /mnt/home/\$SSHUSER/.ssh/id_rsa to use as SSH private \"
+echo \"            key for remote access without password.             \"
+echo \"================================================================\"
 
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
