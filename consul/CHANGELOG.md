@@ -1,3 +1,9 @@
+2.0.9
+
+* Removing vault components and encryption as covered in consul-tls image
+
+---
+
 2.0.8
 
 * Adjusting consul service "node-exporter" 
