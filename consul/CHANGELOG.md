@@ -1,3 +1,9 @@
+2.0.10
+
+* Quoting gossip key encrypt section
+
+---
+
 2.0.9
 
 * Removing vault components and encryption as covered in consul-tls image

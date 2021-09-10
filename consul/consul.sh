@@ -176,7 +176,7 @@ fi
 if [ -z \${GOSSIPKEY+x} ];
 then
     echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
-    GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
+    GOSSIPKEY='BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw='
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
@@ -209,7 +209,7 @@ case \$BOOTSTRAP in
      \\\"translate_wan_addrs\\\": true,
      \\\"ui\\\": true,
      \\\"server\\\": true,
-     \\\"encrypt\\\": \$GOSSIPKEY,
+     \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
      \\\"bootstrap_expect\\\": \$BOOTSTRAP,
      \\\"service\\\": {
       \\\"address\\\": \\\"\$IP\\\",
@@ -239,7 +239,7 @@ case \$BOOTSTRAP in
      \\\"translate_wan_addrs\\\": true,
      \\\"ui\\\": true,
      \\\"server\\\": true,
-     \\\"encrypt\\\": \$GOSSIPKEY,
+     \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
      \\\"bootstrap_expect\\\": \$BOOTSTRAP,
      \\\"rejoin_after_leave\\\": true,
      \\\"start_join\\\": [\\\"\$IP\\\", \$PEERS],
