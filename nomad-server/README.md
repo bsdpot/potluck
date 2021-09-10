@@ -25,7 +25,7 @@ Please note that a specific network configuration is suggested (see Installation
   e.g.
   ```sudo pot clone -P nomad-server-amd64-13_2_0_2 -p my-nomad-server -N alias -i "em0|10.10.10.11"```   
 * Adjust to your environment:    
-  ```sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E NOMADKEY=<16 byte or 32 byte key from nomad operator keygen>]```
+  ```sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY="<32 byte Base64 key from consul keygen>"] [-E NOMADKEY="<16 byte or 32 byte key from nomad operator keygen>"]```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 

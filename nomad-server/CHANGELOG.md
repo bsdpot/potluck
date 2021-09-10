@@ -1,3 +1,9 @@
+2.0.6
+
+* Quoting gossip key encrypt parameter
+
+---
+
 2.0.5
 
 * Adjusting parameters for service "node-exporter"

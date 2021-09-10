@@ -117,7 +117,7 @@ rm -f /usr/local/bin/cook
 
 # this runs when image boots
 
-# ----------------- BEGIN COOK ------------------ 
+# ----------------- BEGIN COOK ------------------
 step "Create cook script"
 echo "#!/bin/sh
 RUNS_IN_NOMAD=$RUNS_IN_NOMAD
@@ -184,7 +184,7 @@ fi
 if [ -z \${GOSSIPKEY+x} ];
 then
     echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
-    GOSSIPKEY='\"BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw=\"'
+    GOSSIPKEY='BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw='
 fi
 # NOMADKEY is a 32 byte, Base64 encoded key generated with 'openssl rand -base64 32'.
 # 'nomad operator keygen' usually produces a 16 byte key but supports 32 byte, Base64 encoded keys
@@ -221,7 +221,7 @@ echo \"{
  },
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
- \\\"encrypt\\\": \$GOSSIPKEY,
+ \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
  \\\"start_join\\\": [ \$CONSULSERVERS ],
  \\\"service\\\": {
   \\\"address\\\": \\\"\$IP\\\",
@@ -232,7 +232,7 @@ echo \"{
 }\" > /usr/local/etc/consul.d/agent.json
 
 # set owner and perms on agent.json
-chown consul:wheel /usr/local/etc/consul.d/agent.json
+chown -R consul:wheel /usr/local/etc/consul.d
 chmod 640 /usr/local/etc/consul.d/agent.json
 
 # enable consul
@@ -243,7 +243,7 @@ sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
 #sysrc consul_datadir=\"/var/db/consul\"
 
 # Workaround for bug in rc.d/consul script:
-sysrc consul_group=\"wheel\"
+#sysrc consul_group=\"wheel\"
 
 # setup consul logs, might be redundant if not specified in agent.json above
 mkdir -p /var/log/consul
@@ -251,7 +251,7 @@ touch /var/log/consul/consul.log
 chown -R consul:wheel /var/log/consul
 
 # add the consul user to the wheel group, this seems to be required for
-# consul to start on this instance. May need to figure out why. 
+# consul to start on this instance. May need to figure out why.
 # I'm not entirely sure this is the correct way to do it
 /usr/sbin/pw usermod consul -G wheel
 
@@ -262,7 +262,7 @@ sysrc node_exporter_enable=\"YES\"
 
 # start nomad #
 
-# Create nomad server config file 
+# Create nomad server config file
 echo \"
 bind_addr = \\\"\$IP\\\"
 plugin_dir = \\\"/usr/local/libexec/nomad/plugins\\\"
@@ -279,7 +279,7 @@ server {
   # set this to 3 or 5 for cluster setup
   bootstrap_expect = \\\"\$BOOTSTRAP\\\"
   # Encrypt gossip communication
-  encrypt = \$NOMADKEY
+  encrypt = \\\"\$NOMADKEY\\\"
 }
 
 consul {
