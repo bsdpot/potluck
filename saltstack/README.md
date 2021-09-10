@@ -29,6 +29,7 @@ The flavour expects a local ```consul``` agent instance to be available that it 
   -E IP=<IP address of this node> -E PKIPATH="/mnt/salt/pki/master" -E STATEPATH="/mnt/salt/state" \
   -E PILLARPATH="/mnt/salt/pillar" -E SSHUSER=<username> \
   [ -E ENABLECONSUL=1 -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> ] \
+  [ -E GOSSIPKEY="<32 byte Base64 key from consul keygen>" ] \
   [ -E REMOTELOG=<remote syslog IP> ]
   ```    
 
@@ -41,6 +42,8 @@ The STATEPATH parameter is the location of the mounted-in persistent storage for
 The PILLARPATH parameter is the location of mounted-in persistent storage for private data, ideally ```/mnt/salt/pillar```. Please quote the path.
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+
+The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if the parameter is not set, do not use the default key for production encryption, instead provide your own.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
 

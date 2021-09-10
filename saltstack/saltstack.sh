@@ -214,6 +214,14 @@ then
     echo 'CONSULSERVERS is unset - please pass in one or more correctly-quoted, comma-separated addresses for consul peer IPs. Refer to documentation.'
     exit 1
 fi
+# GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
+# Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
+# We'll re-use the one from the consul flavour
+if [ -z \${GOSSIPKEY+x} ];
+then
+    echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
+    GOSSIPKEY='BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw='
+fi
 # SSHUSER credentials check
 if [ -z \${SSHUSER+x} ];
 then
@@ -359,6 +367,7 @@ if [ \$ENABLECONSUL = 1 ]; then
 \\\"verify_incoming_rpc\\\": false,
 \\\"log_file\\\": \\\"/var/log/consul/\\\",
 \\\"log_level\\\": \\\"WARN\\\",
+\\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
 \\\"start_join\\\": [ \$CONSULSERVERS ],
 \\\"service\\\": {
   \\\"name\\\": \\\"node-exporter\\\",

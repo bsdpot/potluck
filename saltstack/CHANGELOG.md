@@ -1,3 +1,9 @@
+0.0.3
+
+* Adding gossip key to consul config
+
+---
+
 0.0.2
 
 * Updates for primary key management and simple multi-master implementation
