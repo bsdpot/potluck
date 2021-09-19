@@ -1,0 +1,4 @@
+set-attribute -A persistent -V OFF
+set-attribute -A no-rc-script -V ON
+copy-in -s /usr/local/etc/pot/flavours/nextcloud-apache-nomad.d/nginx.conf -d /root/nginx.conf
+copy-in -s /usr/local/etc/pot/flavours/nextcloud-apache-nomad.d/99-custom.ini -d /root/99-custom.ini
