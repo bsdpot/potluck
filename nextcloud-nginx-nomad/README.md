@@ -63,7 +63,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-13_0"
-        tag = "0.1"
+        tag = "0.2"
         command = "/usr/local/bin/cook"
         args = [""]
 
