@@ -1,3 +1,9 @@
+0.3
+
+* Correcting nginx.conf as documented parts don't work
+
+---
+
 0.2
 
 * Fixing path for copy in of config files
