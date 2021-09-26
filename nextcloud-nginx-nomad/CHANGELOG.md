@@ -1,3 +1,9 @@
+0.9
+
+* Adding -9 to killall command as nginx not restarting correctly. Including setting of www perms, removing tweak for S3 mounts.
+
+---
+
 0.8
 
 * Fixing bad path for php-fpm again

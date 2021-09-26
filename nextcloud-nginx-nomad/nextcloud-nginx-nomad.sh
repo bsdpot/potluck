@@ -63,8 +63,8 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/nginx stop
-/usr/local/etc/rc.d/php-fpm stop
+/usr/local/etc/rc.d/nginx onestop
+/usr/local/etc/rc.d/php-fpm onestop
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -117,15 +117,24 @@ echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf
 cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 cp -f /root/99-custom.ini /usr/local/etc/php/99-custom.ini
 
+# disabling as confusing perms change
 # Fix www group memberships so it works with fuse mounted directories
-pw addgroup -n newwww -g 1001
-pw moduser www -u 1001 -G 80,0,1001
+#pw addgroup -n newwww -g 1001
+#pw moduser www -u 1001 -G 80,0,1001
+
+# set perms on /usr/local/www/nextcloud/*
+chown -R www:www /usr/local/www/nextcloud
 
 # Configure NGINX
 cp -f /root/nginx.conf /usr/local/etc/nginx/nginx.conf
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-killall nginx
+
+# we need to kill nginx then start it
+killall -9 nginx
+kill -9 `pgrep nginx`
+
+# restart services
 /usr/local/etc/rc.d/php-fpm restart
 /usr/local/etc/rc.d/nginx restart
 
