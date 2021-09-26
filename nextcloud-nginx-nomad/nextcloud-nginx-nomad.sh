@@ -108,7 +108,7 @@ then
 fi
 
 # Configure PHP FPM
-sed -i '' \"s&\\listen = 127.0.0.1:9000&listen = /var/run/php74-fpm.sock&\" /usr/local/etc/php-fpm.d/www.conf
+sed -i .orig 's|listen = 127.0.0.1:9000|listen = /var/run/php74-fpm.sock|g' /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.owner = www\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.group = www\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf

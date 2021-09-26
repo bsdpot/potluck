@@ -1,3 +1,9 @@
+0.5
+
+* Fixing php-fpm config to use socket, old sed didn't work
+
+---
+
 0.4
 
 * Enabling php errors in browser, improvements and fixes to nginx.conf. Adding memcached.
