@@ -1,3 +1,9 @@
+0.6
+
+* Re-organising nginx.conf as per nextcloud docs
+
+---
+
 0.5
 
 * Fixing php-fpm config to use socket, old sed didn't work
