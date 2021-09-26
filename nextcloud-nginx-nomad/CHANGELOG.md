@@ -1,3 +1,9 @@
+0.4
+
+* Enabling php errors in browser, improvements and fixes to nginx.conf. Adding memcached.
+
+---
+
 0.3
 
 * Correcting nginx.conf as documented parts don't work

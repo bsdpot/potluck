@@ -62,8 +62,8 @@ job "nextcloud" {
 
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
-        pot = "nextcloud-nginx-nomad-amd64-13_0"
-        tag = "0.2"
+        pot = "nextcloud-nginx-nomad-amd64-12_2"
+        tag = "0.4"
         command = "/usr/local/bin/cook"
         args = [""]
 
@@ -78,11 +78,10 @@ job "nextcloud" {
       resources {
         cpu = 1000
         memory = 1024
-
         network {
-          mbits = 75
           port "http" {
             static = 20888
+            to = 80
           }
         }
       }

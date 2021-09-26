@@ -22,7 +22,7 @@ service sendmail onedisable
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
-pkg install -y nginx mariadb105-client postgresql13-client
+pkg install -y nginx mariadb105-client postgresql13-client memcached
 pkg install -y fontconfig freetype2 giflib gmp icu jbigkit jpeg-turbo
 pkg install -y libargon2 libgcrypt libgd libgpg-error libxslt libzip
 pkg install -y oniguruma openldap-client png tiff webp pkgconf
@@ -114,15 +114,15 @@ echo \"listen.group = www\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Configure PHP
-cp /usr/local/etc/php.ini-production /usr/local/etc/php.ini
-cp /root/99-custom.ini /usr/local/etc/php/99-custom.ini
+cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
+cp -f /root/99-custom.ini /usr/local/etc/php/99-custom.ini
 
 # Fix www group memberships so it works with fuse mounted directories
 pw addgroup -n newwww -g 1001
 pw moduser www -u 1001 -G 80,0,1001
 
 # Configure NGINX
-cp /root/nginx.conf /usr/local/etc/nginx/nginx.conf
+cp -f /root/nginx.conf /usr/local/etc/nginx/nginx.conf
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 killall nginx
