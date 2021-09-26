@@ -1,3 +1,9 @@
+0.8
+
+* Fixing bad path for php-fpm again
+
+---
+
 0.7
 
 * Fixing bad path for php-fpm from nextcloud docs in reorg
