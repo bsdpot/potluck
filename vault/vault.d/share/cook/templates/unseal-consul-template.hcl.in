@@ -1,0 +1,37 @@
+vault {
+  address      = "https://127.0.0.1:8200"
+  token        = "%%token%%"
+  unwrap_token = true
+  renew_token  = true
+
+  ssl {
+    enabled = true
+    verify = true
+    ca_cert = "/mnt/unsealcerts/ca_chain.crt"
+    server_name = "server.global.vaultunseal"
+  }
+}
+
+syslog {
+  enabled  = true
+  facility = "LOCAL5"
+}
+
+template {
+  source      = "/mnt/templates/unseal-agent.crt.tpl"
+  destination = "/mnt/unsealcerts/agent.crt"
+  command     = "/usr/local/share/cook/bin/unseal-reload-vault.sh"
+}
+
+template {
+  source      = "/mnt/templates/unseal-agent.key.tpl"
+  destination = "/mnt/unsealcerts/agent.key"
+  perms       = 0640
+  command     = "/usr/local/share/cook/bin/unseal-reload-vault.sh"
+}
+
+template {
+  source      = "/mnt/templates/unseal-ca.crt.tpl"
+  destination = "/mnt/unsealcerts/ca.crt"
+  command     = "/usr/local/share/cook/bin/unseal-reload-vault.sh"
+}

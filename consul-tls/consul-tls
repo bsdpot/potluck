@@ -1,1 +1,3 @@
 copy-in -s /usr/local/etc/pot/flavours/consul-tls.d/syslog-ng.conf -d /root
+copy-in -s /usr/local/etc/pot/flavours/consul-tls.d/bin/cook -d /usr/local/bin/cook
+copy-in -s /usr/local/etc/pot/flavours/consul-tls.d/share/cook -d /usr/local/share/cook

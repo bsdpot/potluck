@@ -1,0 +1,3 @@
+path "pki_int/issue/vault-cluster" {
+  capabilities = ["update"]
+}

@@ -1,0 +1,273 @@
+#!/bin/sh
+RUNS_IN_NOMAD=false
+COOKLOG=/var/log/cook.log
+
+pot_seasoned_exit() {
+    [ ! -e /usr/local/etc/pot-is-seasoned ] && \
+      touch /usr/local/etc/pot-is-seasoned
+    # If this pot flavour is blocking (i.e. it should not return), there is
+    # no /tmp/environment.sh created by pot and we now after configuration
+    # block indefinitely
+    if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        /bin/sh /etc/rc
+        tail -f /dev/null
+    fi
+    exit 0
+}
+
+# always disable sshd, we don't need direct access
+# XXX: Do this when baking the image
+service sshd stop || true
+service sshd disable || true
+
+# No need to change this, just ensures configuration is done only once
+[ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
+
+########################################################################
+## Functions and settings
+########################################################################
+
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
+set -e
+export HOME=/root
+
+if [ -e /tmp/environment.sh ]
+then
+    # shellcheck disable=SC1091
+    . /tmp/environment.sh
+
+    # XXX: Remove some things from here later
+    cp -a /tmp/environment.sh /root/.env.cook
+fi
+
+########################################################################
+## Check config
+########################################################################
+
+# Check config variables
+case "$VAULTTYPE" in
+unseal|cluster) ;; # ok
+*) log "VAULTTYPE is not configured correctlyunset - please set the \
+type of instance to launch from unseal, cluster. This parameter is \
+mandatory for all vault image types."
+    exit 1
+    ;;
+esac
+
+required_args="DATACENTER IP NODENAME"
+optional_args=""
+
+if [ "$VAULTTYPE" = "cluster" ]; then
+    required_args="$required_args UNSEALIP CONSULSERVERS"
+    optional_args="REMOTELOG"
+fi
+
+for var in $required_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "$var is unset - see documentation to configure this flavour."
+    exit 1
+  fi
+done
+
+for var in $optional_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "Optional $var is unset - see documentation to configure this flavour."
+    eval $var=null
+  fi
+done
+
+########################################################################
+## Provision images
+########################################################################
+
+service vault onestop || true
+killall -9 vault || true
+
+log "Installing consul-template"
+pkg install -y consul-template
+
+log "Patching consul-template rc scripts"
+sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
+'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
+
+log "Create directories for vault usage"
+mkdir -p /mnt/templates
+mkdir -p /mnt/certs/hash
+mkdir -p /mnt/consulcerts
+chown -R consul /mnt/consulcerts
+mkdir -p /mnt/vault
+
+export PATH=/usr/local/share/cook/bin:$PATH
+
+##########################################################################
+### Vault type: Unseal Node - no consul or node_template setup
+##########################################################################
+if [ "$VAULTTYPE" = "unseal" ]; then
+    export VAULT_CLIENT_TIMEOUT=300s
+
+    log "Configure unseal vault"
+    unseal-configure-vault.sh
+
+    log "Symlink helper scripts"
+    ln -s /usr/local/share/cook/bin/unseal-vault-status.sh \
+      /root/vault-status.sh
+    ln -s /usr/local/share/cook/bin/unseal-vault.sh \
+      /root/vault.sh
+
+    # start vault
+    log "Start Vault Unseal Node"
+    timeout --foreground 120 \
+      sh -c 'while ! service vault status; do
+        sleep 5; service vault start || true; sleep 5;
+      done'
+
+    log "\
+------------------------------------------------------------------
+Unseal node is almost complete, you must now login and manually
+run the following
+commands to complete the setup:
+
+  1. Init
+  vault operator init -address=http://127.0.0.1:8200
+
+  2. Unseal
+  vault operator unseal -address=http://127.0.0.1:8200
+     (paste key1)
+  vault operator unseal -address=http://127.0.0.1:8200
+     (paste key2)
+  vault operator unseal -address=http://127.0.0.1:8200
+     (paste key3)
+  vault login -address=http://127.0.0.1:8200
+     (use token from operator init)
+
+  3. Create PKI and restart vault with TLS
+  $(which unseal-setup-unseal-pki.sh)
+
+  4. Unseal again (see 2.)
+
+  5. Start Consul Template
+  $(which unseal-start-consul-template.sh)
+
+Step 5 has to happen within a couple of minutes from step 3.
+
+To issue unseal tokens for each RAFT cluster node, run
+$(which unseal-issue-unseal-credentials.sh)
+
+You must run this for each node in your cluster. Every node needs
+an unseal token.
+------------------------------------------------------------------\
+"
+    # end unseal config
+    pot_seasoned_exit
+fi
+
+##########################################################################
+### Vault type: Cluster (both leader and follower)
+##########################################################################
+export VAULT_CLIENT_TIMEOUT=300s
+export VAULT_MAX_RETRIES=5
+
+log "Unwrap unseal credentials"
+cluster-unwrap-unseal-credentials.sh
+
+log "Configure vault"
+cluster-configure-vault.sh
+
+log "Configure consul"
+cluster-configure-consul.sh
+
+log "Start consul (won't keep running)"
+service consul start
+
+# node exporter needs tls setup
+echo "tls_server_config:
+  cert_file: /mnt/certs/cert.pem
+  key_file: /mnt/certs/key.pem
+" > /usr/local/etc/node-exporter.yml
+
+# add node_exporter user
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+
+# enable node_exporter service
+service node_exporter enable
+sysrc node_exporter_args="--web.config=/usr/local/etc/node-exporter.yml"
+sysrc node_exporter_user=nodeexport
+sysrc node_exporter_group=nodeexport
+
+# start node_exporter
+service node_exporter start
+
+# start vault
+log "Start consul-template-unseal"
+service consul-template-unseal start
+
+log "Start Vault"
+timeout --foreground 120 \
+  sh -c 'while ! service vault status; do
+    sleep 5; service vault start || true; sleep 5;
+  done'
+
+log "Symlink helper scripts"
+ln -s /usr/local/share/cook/bin/cluster-vault-status.sh \
+  /root/vault-status.sh
+ln -s /usr/local/share/cook/bin/cluster-raft-status.sh \
+  /root/raft-status.sh
+ln -s /usr/local/share/cook/bin/cluster-vault.sh \
+  /root/vault.sh
+
+log "Provision local_unbound"
+cluster-setup-local-unbound.sh
+
+pot_seasoned_exit
+
+
+# setup role
+#/usr/local/bin/vault write -address="$LOCAL_VAULT" \
+#  auth/token/roles/$DATACENTER allowed_policies="pki" \
+#  orphan=true period="24h"
+# we're using the same token as for vault, becauee vault sucks hard
+
+#log "Unwrapping unseal pki token"
+#UNSEAL_PKI_TOKEN_JSON=$(
+#  HOME=/var/empty \
+#  /usr/local/bin/vault unwrap \
+#    -address="https://$UNSEALIP:8200" \
+#    -tls-server-name=server.global.vaultunseal \
+#    -ca-cert=/mnt/unsealcerts/ca_chain.crt \
+#    -client-key=/mnt/unsealcerts/client.key \
+#    -client-cert=/mnt/unsealcerts/client.crt \
+#    -format=json "$(cat /mnt/unsealcerts/wrapped.token)")
+#UNSEAL_PKI_TOKEN=$(echo "$UNSEAL_PKI_TOKEN_JSON" |\
+#  /usr/local/bin/jq -r '.auth.client_token')
+
+#log "Creating auto-login script"
+## setup auto-login script (XXX: currently pointless)
+#echo "#!/bin/sh
+#export VAULT_ADDR=https://active.vault.service.consul:8200
+#export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_MAX_RETRIES=5
+#export VAULT_CLIENT_CERT=/mnt/certs/agent.crt
+#export VAULT_CLIENT_KEY=/mnt/certs/agent.key
+#export VAULT_CACERT=/mnt/certs/ca_chain.crt
+#if [ ! -s /root/login.token ]; then
+#  exit 1
+#fi
+#/bin/cat /root/login.token | /usr/local/bin/vault login token=-
+#" > /root/cli-vault-auto-login.sh
+#chmod +x /root/cli-vault-auto-login.sh
+
+#log "Creating script to issue pki tokens"
+## setup script to issue pki tokens (XXX: currently pointless)
+#echo "#!/bin/sh
+#export VAULT_ADDR=https://active.vault.service.consul:8200
+#export VAULT_CLIENT_TIMEOUT=300s
+#export VAULT_MAX_RETRIES=5
+#export VAULT_CLIENT_CERT=/mnt/certs/agent.crt
+#export VAULT_CLIENT_KEY=/mnt/certs/agent.key
+#export VAULT_CACERT=/mnt/certs/ca_chain.crt
+#/usr/local/bin/vault token create -policy=tls-policy -wrap-ttl=300s -ttl=15m
+#" > /root/issue-pki-token.sh
+#chmod +x /root/issue-pki-token.sh

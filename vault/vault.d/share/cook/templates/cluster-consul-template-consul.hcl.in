@@ -1,0 +1,40 @@
+vault {
+  address      = "https://active.vault.service.consul:8200"
+  token        = "%%token%%"
+  unwrap_token = false
+  renew_token  = true
+
+  ssl {
+    enabled = true
+    verify = true
+    ca_cert = "/mnt/certs/ca_chain.crt"
+    cert = "/mnt/certs/agent.crt"
+    key = "/mnt/certs/agent.key"
+    server_name = "active.vault.service.consul"
+  }
+}
+
+syslog {
+  enabled  = true
+  facility = "LOCAL5"
+}
+
+template {
+  source      = "/mnt/templates/consul-agent.crt.tpl"
+  destination = "/mnt/consulcerts/agent.crt"
+  backup      = true
+  command     = "/usr/local/share/cook/bin/cluster-reload-consul.sh"
+}
+
+template {
+  source      = "/mnt/templates/consul-agent.key.tpl"
+  destination = "/mnt/consulcerts/agent.key"
+  perms       = 0640
+  command     = "/usr/local/share/cook/bin/cluster-reload-consul.sh"
+}
+
+template {
+  source      = "/mnt/templates/consul-ca.crt.tpl"
+  destination = "/mnt/consulcerts/ca.crt"
+  command     = "/usr/local/share/cook/bin/cluster-reload-consul.sh"
+}

@@ -1,0 +1,14 @@
+disable_mlock = true
+ui = true
+listener "tcp" {
+  address = "127.0.0.1:8200"
+  tls_disable = 1
+}
+# make sure you create a zfs partition and mount it into /mnt
+# if you want persistent vault data
+# if using another directory update this path accordingly
+storage "file" {
+  path    = "/mnt/vault/"
+}
+log_level = "Trace"
+api_addr = "http://127.0.0.1:8200"

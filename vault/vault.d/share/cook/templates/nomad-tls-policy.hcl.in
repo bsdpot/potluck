@@ -1,0 +1,3 @@
+path "nomadpki_int/issue/nomad-cluster" {
+  capabilities = ["update"]
+}
