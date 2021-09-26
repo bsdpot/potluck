@@ -1,3 +1,9 @@
+0.7
+
+* Fixing bad path for php-fpm from nextcloud docs in reorg
+
+---
+
 0.6
 
 * Re-organising nginx.conf as per nextcloud docs
