@@ -139,7 +139,13 @@ pkg clean -y
 
 # ----------------- BEGIN COOK ------------------
 
-# cook script is copied in, so just a few adjustments here
+step "Clean cook artifacts"
+rm -rf /usr/local/bin/cook /usr/local/share/cook
+
+step "Install pot local"
+tar -C /root/.pot_local -cf - . | tar -C /usr/local -xf -
+rm -rf /root/.pot_local
+
 step "Set file ownership on cook scripts"
 chown -R root:wheel /usr/local/bin/cook /usr/local/share/cook
 chmod 755 /usr/local/share/cook/bin/*
