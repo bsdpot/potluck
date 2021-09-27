@@ -1,3 +1,9 @@
+2.1
+
+* Setting version numbers to sync with ini for potman
+
+---
+
 2.0.47
 
 * Complete image revamp

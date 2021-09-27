@@ -1,3 +1,9 @@
+0.9.30
+
+* Setting version numbers to sync with ini for potman
+
+---
+
 0.9.23
 
 * Complete image revamp
