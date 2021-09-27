@@ -1,3 +1,9 @@
+2.0.47
+
+* Complete image revamp
+
+---
+
 2.0.46
 
 * Setting stricter permissions on key.pem
