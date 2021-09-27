@@ -1,0 +1,28 @@
+disable_mlock = true
+ui = true
+listener "tcp" {
+  address = "127.0.0.1:8200"
+  tls_disable = 1
+}
+# make sure you create a zfs partition and mount it into /mnt
+# if you want persistent vault data
+# if using another directory update this path accordingly
+storage "raft" {
+  path    = "/mnt/vault/"
+  node_id = "%%nodename%%"
+  autopilot_reconcile_interval = "5s"
+}
+seal "transit" {
+  address = "https://%%unsealip%%:8200"
+  disable_renewal = "false"
+  key_name = "autounseal"
+  mount_path = "transit/"
+  token = "%%vaultunsealtoken%%"
+  tls_client_cert = "/mnt/unsealcerts/client.crt"
+  tls_client_key = "/mnt/unsealcerts/client.key"
+  tls_ca_cert = "/mnt/unsealcerts/ca_chain.crt"
+  tls_server_name = "server.global.vaultunseal"
+}
+log_level = "Trace"
+api_addr = "http://127.0.0.1:8200"
+cluster_addr = "https://%%ip%%:8201"

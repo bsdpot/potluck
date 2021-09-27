@@ -1,0 +1,59 @@
+disable_mlock = true
+ui = true
+listener "tcp" {
+  address = "127.0.0.1:8200"
+  tls_cert_file = "/mnt/certs/agent.crt"
+  tls_key_file = "/mnt/certs/agent.key"
+  tls_ca_file = "/mnt/certs/ca_chain.crt"
+  tls_disable = 0
+}
+listener "tcp" {
+  address = "%%ip%%:8200"
+  cluster_address = "%%ip%%:8201"
+  tls_cert_file = "/mnt/certs/agent.crt"
+  tls_key_file = "/mnt/certs/agent.key"
+  tls_ca_file = "/mnt/certs/ca_chain.crt"
+  tls_disable = 0
+  tls_require_and_verify_client_cert = 1
+  tls_client_ca_file = "/mnt/certs/ca.crt"
+  telemetry {
+    unauthenticated_metrics_access = true
+  }
+}
+# make sure you create a zfs partition and mount it into /mnt
+# if you want persistent vault data
+# if using another directory update this path accordingly
+storage "raft" {
+  path    = "/mnt/vault/"
+  node_id = "%%nodename%%"
+  autopilot_reconcile_interval = "5s"
+  #retry_join {
+  #  leader_api_addr = "http://%%ip%%:8200"
+  #  #xyz#leader_ca_cert_file = "/mnt/certs/ca.pem"
+  #  #xyz#leader_client_cert_file = "/mnt/certs/cert.pem"
+  #  #xyz#leader_client_key_file = "/mnt/certs/key.pem"
+  #}
+}
+seal "transit" {
+  address = "https://%%unsealip%%:8200"
+  disable_renewal = "true"
+  key_name = "autounseal"
+  mount_path = "transit/"
+  token = "%%vaultunsealtoken%%"
+  tls_skip_verify = false
+  tls_client_cert = "/mnt/unsealcerts/client.crt"
+  tls_client_key = "/mnt/unsealcerts/client.key"
+  tls_ca_cert = "/mnt/unsealcerts/ca_chain.crt"
+  tls_server_name = "server.global.vaultunseal"
+}
+telemetry {
+  disable_hostname = true
+  prometheus_retention_time = "24h"
+}
+service_registration "consul" {
+  token = "%%consultoken%%"
+}
+log_format = "standard"
+log_level = "Trace"
+api_addr = "https://%%ip%%:8200"
+cluster_addr = "https://%%ip%%:8201"

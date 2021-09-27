@@ -1,0 +1,40 @@
+vault {
+  address      = "https://%%unsealip%%:8200"
+  token        = "%%token%%"
+  unwrap_token = false
+  renew_token  = true
+
+  ssl {
+    enabled = true
+    verify = true
+    ca_cert = "/mnt/unsealcerts/ca_chain.crt"
+    cert = "/mnt/unsealcerts/client.crt"
+    key = "/mnt/unsealcerts/client.key"
+    server_name = "server.global.vaultunseal"
+  }
+}
+
+syslog {
+  enabled  = true
+  facility = "LOCAL5"
+}
+
+template {
+  source      = "/mnt/templates/unseal-client.crt.tpl"
+  destination = "/mnt/unsealcerts/client.crt"
+  backup      = true
+  command     = "/usr/local/share/cook/bin/cluster-reload-vault-unseal.sh"
+}
+
+template {
+  source      = "/mnt/templates/unseal-client.key.tpl"
+  destination = "/mnt/unsealcerts/client.key"
+  perms       = 0640
+  command     = "/usr/local/share/cook/bin/cluster-reload-vault-unseal.sh"
+}
+
+template {
+  source      = "/mnt/templates/unseal-ca.crt.tpl"
+  destination = "/mnt/unsealcerts/ca.crt"
+  command     = "/usr/local/share/cook/bin/cluster-reload-vault-unseal.sh"
+}
