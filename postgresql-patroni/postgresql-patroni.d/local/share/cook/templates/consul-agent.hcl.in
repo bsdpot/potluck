@@ -1,0 +1,36 @@
+datacenter = "%%datacenter%%"
+node_name = "%%nodename%%"
+data_dir =  "/var/db/consul"
+dns_config = {
+  a_record_limit = 3
+  enable_truncate = true
+}
+verify_incoming = true
+verify_outgoing = true
+verify_server_hostname = true
+verify_incoming_rpc = true
+ca_file = "/mnt/consulcerts/ca_chain.crt"
+cert_file = "/mnt/consulcerts/agent.crt"
+key_file = "/mnt/consulcerts/agent.key"
+log_file = "/var/log/consul/consul.log"
+log_level = "WARN"
+encrypt = "%%gossipkey%%"
+start_join = [ %%consulservers%% ]
+service = {
+  name = "node-exporter"
+  tags = ["_app=vault", "_service=node-exporter", "_hostname=%%nodename%%"]
+  port = 9100
+}
+service = {
+  name = "postgres-exporter"
+  tags = ["_app=postgresql", "_service=postgres-exporter", "_hostname=%%nodename%%", "_datacenter=%%datacenter%%"]
+  port = 9187
+}
+telemetry = {
+  prometheus_retention_time = "24h"
+}
+acl = {
+  enabled = true
+  default_policy = "deny"
+  enable_token_persistence = true
+}

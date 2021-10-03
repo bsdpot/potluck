@@ -1,3 +1,9 @@
+2.1.0
+
+* Big hashcluster update for new setup
+
+---
+
 2.0.24
 
 * Need to use 127.0.0.1 instead of localhost in the scripts to check patroni status, else TLS fails

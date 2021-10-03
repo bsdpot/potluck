@@ -1,3 +1,9 @@
+2.1.1
+
+* Updating for postgres-patroni certificates
+
+---
+
 2.1
 
 * Setting version numbers to sync with ini for potman

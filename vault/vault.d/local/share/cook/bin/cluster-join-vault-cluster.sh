@@ -83,11 +83,11 @@ if ! service consul-template onestatus; then
     sep=$'\001'
 
     cp "$TEMPLATEPATH/cluster-consul-template.hcl.in" \
-      /usr/local/etc/consul-template.d/consul-template.hcl    
+      /usr/local/etc/consul-template.d/consul-template.hcl
     chmod 600 \
-      /usr/local/etc/consul-template.d/consul-template.hcl    
+      /usr/local/etc/consul-template.d/consul-template.hcl
     echo "s${sep}%%token%%${sep}$CLUSTER_PKI_TOKEN${sep}" | sed -i '' -f - \
-      /usr/local/etc/consul-template.d/consul-template.hcl    
+      /usr/local/etc/consul-template.d/consul-template.hcl
 
     for name in cluster-agent.crt cluster-agent.key cluster-ca.crt; do
         < "$TEMPLATEPATH/$name.tpl.in" \

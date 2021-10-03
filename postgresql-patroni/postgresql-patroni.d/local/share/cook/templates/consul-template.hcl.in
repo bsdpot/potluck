@@ -1,0 +1,80 @@
+vault {
+  address      = "https://active.vault.service.consul:8200"
+  token        = "%%token%%"
+  unwrap_token = false
+  renew_token  = true
+
+  ssl {
+    enabled = true
+    verify = true
+    ca_cert = "/mnt/certs/ca_chain.crt"
+    cert = "/mnt/certs/client.crt"
+    key = "/mnt/certs/client.key"
+    server_name = "active.vault.service.consul"
+  }
+}
+
+syslog {
+  enabled  = true
+  facility = "LOCAL5"
+}
+
+template {
+  source      = "/mnt/templates/client.crt.tpl"
+  destination = "/mnt/certs/client.crt"
+  backup      = true
+  command     = "/usr/local/share/cook/bin/reload-consul-template.sh"
+}
+
+template {
+  source      = "/mnt/templates/client.key.tpl"
+  destination = "/mnt/certs/client.key"
+  perms       = 0640
+  command     = "/usr/local/share/cook/bin/reload-consul-template.sh"
+}
+
+template {
+  source      = "/mnt/templates/ca.crt.tpl"
+  destination = "/mnt/certs/ca.crt"
+  command     = "/usr/local/share/cook/bin/reload-consul-template.sh"
+}
+
+template {
+  source      = "/mnt/templates/consulagent.crt.tpl"
+  destination = "/mnt/consulcerts/agent.crt"
+  backup      = true
+  command     = "/usr/local/share/cook/bin/reload-consul.sh"
+}
+
+template {
+  source      = "/mnt/templates/consulagent.key.tpl"
+  destination = "/mnt/consulcerts/agent.key"
+  perms       = 0640
+  command     = "/usr/local/share/cook/bin/reload-consul.sh"
+}
+
+template {
+  source      = "/mnt/templates/consulca.crt.tpl"
+  destination = "/mnt/consulcerts/ca.crt"
+  command     = "/usr/local/share/cook/bin/reload-consul.sh"
+}
+
+template {
+  source      = "/mnt/templates/postgres.crt.tpl"
+  destination = "/mnt/postgrescerts/agent.crt"
+  backup      = true
+  command     = "/usr/local/share/cook/bin/reload-patroni.sh"
+}
+
+template {
+  source      = "/mnt/templates/postgres.key.tpl"
+  destination = "/mnt/postgrescerts/agent.key"
+  perms       = 0640
+  command     = "/usr/local/share/cook/bin/reload-patroni.sh"
+}
+
+template {
+  source      = "/mnt/templates/postgresca.crt.tpl"
+  destination = "/mnt/postgrescerts/ca.crt"
+  command     = "/usr/local/share/cook/bin/reload-patroni.sh"
+}

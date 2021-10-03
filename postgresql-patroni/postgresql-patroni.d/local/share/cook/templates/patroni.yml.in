@@ -1,13 +1,13 @@
 scope: postgresql
 #namespace: /service/
-name: MYNAME
+name: %%nodename%%
 
 restapi:
-  listen: MYIP:8008
-  connect_address: MYIP:8008
-  certfile: /mnt/certs/cert.pem
-  keyfile: /mnt/certs/key.pem
-  cafile: /mnt/certs/combinedca.pem
+  listen: %%ip%%:8008
+  connect_address: %%ip%%:8008
+  certfile: /mnt/postgrescerts/agent.crt
+  keyfile: /mnt/postgrescerts/agent.key
+  cafile: /mnt/postgrescerts/ca_chain.crt
   verify_client: required
   http_extra_headers:
     'X-Frame-Options': 'SAMEORIGIN'
@@ -18,13 +18,13 @@ restapi:
 
 ctl:
   insecure: false
-  certfile: /mnt/certs/cert.pem
-  keyfile: /mnt/certs/key.pem
-  cafile: /mnt/certs/combinedca.pem
+  certfile: /mnt/postgrescerts/agent.crt
+  keyfile: /mnt/postgrescerts/agent.key
+  cafile: /mnt/postgrescerts/ca_chain.crt
 
 consul:
-  host: CONSULIP:8500 # local IP
-  service_tags: SERVICETAG #master/replica/standby-leader
+  host: %%ip%%:8500 # use local consul
+  service_tags: %%servicetag%% #master/replica/standby-leader
   register_service: true
   service_check_interval: 15
 
@@ -44,7 +44,7 @@ bootstrap:
         max_wal_senders: 5
         max_replication_slots: 5
         checkpoint_timeout: 30
-  initdb:  # Note: It needs to be a list (some options need values, others are switches)
+  initdb:  # Note: this needs to be a yml list (some options need values, others are switches)
   - encoding: UTF8
   - data-checksums
   pg_hba:  # Add following lines to pg_hba.conf after running 'initdb'
@@ -52,49 +52,49 @@ bootstrap:
   - host all all 0.0.0.0/0 md5
   users:
     admin:
-      password: ADMPASS
+      password: %%admpass%%
       options:
         - createrole
         - createdb
     replicator:
-      password: REPPASS
+      password: %%reppass%%
       options:
         - replication
 
 postgresql:
-  listen: MYIP:5432
-  connect_address: MYIP:5432
+  listen: %%ip%%:5432
+  connect_address: %%ip%%:5432
   data_dir: /mnt/postgres/data/
   conf_dir: /mnt/postgres/data/
   pgpass: /tmp/pgpass0
   authentication:
     superuser:
       username: postgres
-      password: KEKPASS
+      password: %%kekpass%%
       sslmode: verify-full
-      sslkey: /mnt/certs/key.pem
-      sslcert: /mnt/certs/cert.pem
-      sslrootcert: /mnt/certs/combinedca.pem
+      sslcert: /mnt/postgrescerts/agent.crt
+      sslkey: /mnt/postgrescerts/agent.key
+      sslrootcert: /mnt/postgrescerts/ca_chain.crt
     replication:
       username: replicator
-      password: REPPASS
+      password: %%reppass%%
       sslmode: verify-full
-      sslkey: /mnt/certs/key.pem
-      sslcert: /mnt/certs/cert.pem
-      sslrootcert: /mnt/certs/combinedca.pem
+      sslcert: /mnt/postgrescerts/agent.crt
+      sslkey: /mnt/postgrescerts/agent.key
+      sslrootcert: /mnt/postgrescerts/ca_chain.crt
     rewind:
       username: rewind_user
       password: rewind_password
       sslmode: verify-full
-      sslkey: /mnt/certs/key.pem
-      sslcert: /mnt/certs/cert.pem
-      sslrootcert: /mnt/certs/combinedca.pem
+      sslcert: /mnt/postgrescerts/agent.crt
+      sslkey: /mnt/postgrescerts/agent.key
+      sslrootcert: /mnt/postgrescerts/ca_chain.crt
   parameters:
     unix_socket_directories: '/tmp/'
     ssl: on
-    ssl_cert_file: /mnt/certs/cert.pem
-    ssl_key_file: /mnt/certs/key.pem
-    ssl_ca_file: /mnt/certs/combinedca.pem
+    ssl_cert_file: /mnt/postgrescerts/agent.crt
+    ssl_key_file: /mnt/postgrescerts/agent.key
+    ssl_ca_file: /mnt/postgrescerts/ca_chain.crt
 
 tags:
     nofailover: false
