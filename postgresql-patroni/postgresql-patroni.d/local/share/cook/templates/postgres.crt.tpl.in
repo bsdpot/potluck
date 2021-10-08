@@ -1,5 +1,5 @@
 {{ with secret "postgrespki_int/issue/postgres-cluster"
-"common_name=%%nodename%%.%%datacenter%%.consul" "ttl=12m"
+"common_name=%%nodename%%.%%datacenter%%.consul" "ttl=%%bttl%%"
 "alt_names=localhost,server.%%datacenter%%.consul" "ip_sans=127.0.0.1"}}
 {{ .Data.certificate }}
 {{ end }}

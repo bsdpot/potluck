@@ -1,3 +1,9 @@
+2.1.1
+
+* Adding TTL parameter for consul template
+
+---
+
 2.1.0
 
 * Big hashcluster update for new setup

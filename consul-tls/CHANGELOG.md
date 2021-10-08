@@ -1,3 +1,9 @@
+0.1.1
+
+* Adding TTL parameter for certificates
+
+---
+
 0.1
 
 * Setting version numbers to sync with ini for potman

@@ -78,7 +78,7 @@ if ! service consul-template-consul onestatus; then
           sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
           sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
           sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
-          sed "s${sep}%%ttl%%${sep}$TTL${sep}g" \
+          sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
           > "/mnt/templates/$name.tpl"
     done
 

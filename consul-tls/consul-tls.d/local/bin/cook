@@ -54,7 +54,7 @@ killall -9 consul || true
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME VAULTSERVER"
+required_args="DATACENTER IP NODENAME VAULTSERVER ATTL BTTL"
 required_args="$required_args PEERS BOOTSTRAP "
 optional_args="REMOTELOG"
 

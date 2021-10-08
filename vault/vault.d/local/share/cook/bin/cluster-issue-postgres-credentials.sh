@@ -28,7 +28,7 @@ for policy in $(echo "$TOKEN_POLICIES" | tr ',' ' '); do
 done
 
 if [ -z "$CERT_TIMETOLIVE" ]; then
-    CERT_TIMETOLIVE="10m"
+    CERT_TIMETOLIVE="12m"
 fi
 
 set -e

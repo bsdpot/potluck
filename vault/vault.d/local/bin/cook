@@ -57,7 +57,7 @@ mandatory for all vault image types."
     ;;
 esac
 
-required_args="DATACENTER IP NODENAME TTL"
+required_args="DATACENTER IP NODENAME ATTL BTTL"
 optional_args=""
 
 if [ "$VAULTTYPE" = "cluster" ]; then

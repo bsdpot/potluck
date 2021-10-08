@@ -1,3 +1,9 @@
+2.1.3
+
+* Setting ATTL and BTTL variables for consul templates to pass in as TTL value where BTTL must be longer
+
+---
+
 2.1.2
 
 * Setting a variable for consul templates to pass in a TTL

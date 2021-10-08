@@ -54,7 +54,7 @@ killall -9 consul || true
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS BOOTSTRAP"
+required_args="DATACENTER IP NODENAME CONSULSERVERS BOOTSTRAP ATTL BTTL"
 optional_args="REMOTELOG"
 
 for var in $required_args; do
