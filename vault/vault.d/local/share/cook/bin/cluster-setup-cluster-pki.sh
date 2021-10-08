@@ -40,13 +40,13 @@ vault policy list | grep -c "^tls-policy\$" ||
   vault policy write tls-policy \
     "$TEMPLATEPATH/cluster-tls-policy.hcl.in"
 
-TOKEN=$(vault token create -policy="tls-policy" -period=10m \
+TOKEN=$(vault token create -policy="tls-policy" -period="$TTL" \
   -orphan -format json | jq -r ".auth.client_token")
 
 JSON=$(VAULT_TOKEN="$TOKEN" \
        vault write -format=json pki_int/issue/vault-cluster \
          common_name="$NODENAME.global.vaultcluster" \
-         ttl=10m \
+         ttl="$TTL" \
          alt_names=localhost,\
 active.vault.service.consul,standby.vault.service.consul \
          ip_sans="127.0.0.1,$IP" \

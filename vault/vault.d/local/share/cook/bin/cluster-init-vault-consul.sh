@@ -67,7 +67,7 @@ if ! service consul-template-consul onestatus; then
     echo "Writing consul-template-consul config"
     mkdir -p /usr/local/etc/consul-template-consul.d
     cp "$TEMPLATEPATH/cluster-consul-template-consul.hcl.in" \
-      /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl    
+      /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
     chmod 600 \
       /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
     echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
@@ -78,6 +78,7 @@ if ! service consul-template-consul onestatus; then
           sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
           sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
           sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
+          sed "s${sep}%%ttl%%${sep}$TTL${sep}g" \
           > "/mnt/templates/$name.tpl"
     done
 

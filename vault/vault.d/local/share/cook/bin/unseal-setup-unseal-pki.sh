@@ -46,7 +46,7 @@ TOKEN=$(vault token create -policy="tls-policy" -period=10m \
 JSON=$(VAULT_TOKEN="$TOKEN" \
        vault write -format=json pki_int/issue/vault-unseal \
          common_name=server.global.vaultunseal \
-         ttl=10m \
+         ttl="$TTL" \
           alt_names=localhost \
           ip_sans=127.0.0.1 \
       )

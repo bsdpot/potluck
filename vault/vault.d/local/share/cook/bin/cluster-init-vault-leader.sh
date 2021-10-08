@@ -93,7 +93,7 @@ if ! service consul-template onestatus; then
       vault token create \
         -address="$LOCAL_VAULT" \
         -ca-cert=/mnt/certs/ca_chain.crt \
-        -policy="tls-policy" -period=10m \
+        -policy="tls-policy" -period="$TTL" \
         -orphan -format json)
     CLUSTER_PKI_TOKEN=$(echo "$CLUSTER_PKI_TOKEN_JSON" |\
       jq -r ".auth.client_token")
@@ -116,6 +116,7 @@ if ! service consul-template onestatus; then
         < "$TEMPLATEPATH/$name.tpl.in" \
           sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
           sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+          sed "s${sep}%%ttl%%${sep}$TTL${sep}g" \
           > "/mnt/templates/$name.tpl"
     done
 

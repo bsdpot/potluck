@@ -1,3 +1,9 @@
+2.1.2
+
+* Setting a variable for consul templates to pass in a TTL
+
+---
+
 2.1.1
 
 * Updating for postgres-patroni certificates

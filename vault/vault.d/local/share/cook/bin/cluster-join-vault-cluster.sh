@@ -93,6 +93,7 @@ if ! service consul-template onestatus; then
         < "$TEMPLATEPATH/$name.tpl.in" \
           sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
           sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+          sed "s${sep}%%ttl%%${sep}$TTL${sep}g" \
           > "/mnt/templates/$name.tpl"
     done
 

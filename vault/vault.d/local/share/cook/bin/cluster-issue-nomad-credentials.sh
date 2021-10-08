@@ -1,11 +1,12 @@
 #!/bin/sh
 
 CERT_NODENAME="$1"
+CERT_TIMETOLIVE="$2"
 
 trap "echo \$STEP failed" EXIT
 
 if [ -z "$CERT_NODENAME" ]; then
-    2>&1 echo "Usage: $0 cert_nodename [cert_ips] [alt_names] [policies]"
+    2>&1 echo "Usage: $0 cert_nodename [cert_ips] [alt_names] [policies] [ttl]"
     exit 1
 fi
 
@@ -25,6 +26,10 @@ TOKEN_POLICIES_PARAMS=""
 for policy in $(echo "$TOKEN_POLICIES" | tr ',' ' '); do
     TOKEN_POLICIES_PARAMS="$TOKEN_POLICIES_PARAMS -policy=$policy"
 done
+
+if [ -z "$CERT_TIMETOLIVE" ]; THEN
+    CERT_TIMETOLIVE="10m"
+fi
 
 set -e
 # shellcheck disable=SC3040
@@ -46,7 +51,7 @@ CA_ROOT=$(vault read nomadpki/cert/ca | jq -e ".data.certificate")
 STEP="Issue Client Certificate"
 CERT_JSON=$(vault write nomadpki_int/issue/nomad-cluster \
   common_name="$CERT_NODENAME.global.nomad" \
-  ttl=10m \
+  ttl="$CERT_TIMETOLIVE" \
   alt_names="$CERT_ALT_NAMES" \
   ip_sans="$CERT_IPS")
 

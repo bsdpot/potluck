@@ -4,11 +4,12 @@ CERT_NODENAME="$1"
 CERT_IPS="$2"
 CERT_ALT_NAMES="$3"
 TOKEN_POLICIES="$4"
+CERT_TIMETOLIVE="$5"
 
 trap "echo \$STEP failed" EXIT
 
 if [ -z "$CERT_NODENAME" ]; then
-    2>&1 echo "Usage: $0 cert_nodename [cert_ips] [alt_names] [policies]"
+    2>&1 echo "Usage: $0 cert_nodename [cert_ips] [alt_names] [policies] [ttl]"
     exit 1
 fi
 
@@ -30,6 +31,10 @@ for policy in $(echo "$TOKEN_POLICIES" | tr ',' ' '); do
     TOKEN_POLICIES_PARAMS="$TOKEN_POLICIES_PARAMS -policy=$policy"
 done
 
+if [ -z "$CERT_TIMETOLIVE" ]; then
+    CERT_TIMETOLIVE="10m"
+fi
+
 set -e
 # shellcheck disable=SC3040
 set -o pipefail
@@ -50,7 +55,7 @@ CA_ROOT=$(vault read pki/cert/ca | jq -e ".data.certificate")
 STEP="Issue Client Certificate"
 CERT_JSON=$(vault write pki_int/issue/vault-cluster \
   common_name="$CERT_NODENAME.global.vaultcluster" \
-  ttl=10m \
+  ttl="$CERT_TIMETOLIVE" \
   alt_names="$CERT_ALT_NAMES" \
   ip_sans="$CERT_IPS")
 
