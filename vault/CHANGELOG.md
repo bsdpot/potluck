@@ -1,3 +1,9 @@
+2.1.4
+
+* Fixing missing pipes in cook scripts from TTL changes
+
+---
+
 2.1.3
 
 * Setting ATTL and BTTL variables for consul templates to pass in as TTL value where BTTL must be longer

@@ -1,3 +1,9 @@
+0.1.2
+
+* Fixing errors with missing pipes from TTL changes
+
+---
+
 0.1.1
 
 * Adding TTL parameter for certificates

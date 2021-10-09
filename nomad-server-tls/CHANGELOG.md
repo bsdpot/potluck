@@ -1,3 +1,9 @@
+0.9.32
+
+* Fixing missing pipes in cook scripts from TTL changes
+
+---
+
 0.9.31
 
 * Adding TTL parameter for consul templates

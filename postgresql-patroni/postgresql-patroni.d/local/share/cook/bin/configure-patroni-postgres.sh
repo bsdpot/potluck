@@ -23,9 +23,9 @@ sep=$'\001'
 < "$TEMPLATEPATH/patroni.yml.in" \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%servicetag%%${sep}$SERVICETAG${sep}g" \
-  sed "s${sep}%%admpass%%${sep}$ADMPASS${sep}g" \
-  sed "s${sep}%%reppass%%${sep}$REPPASS${sep}g" \
+  sed "s${sep}%%servicetag%%${sep}$SERVICETAG${sep}g" | \
+  sed "s${sep}%%admpass%%${sep}$ADMPASS${sep}g" | \
+  sed "s${sep}%%reppass%%${sep}$REPPASS${sep}g" | \
   sed "s${sep}%%kekpass%%${sep}$KEKPASS${sep}g" \
   > /usr/local/etc/patroni/patroni.yml
 
@@ -48,4 +48,3 @@ fi
 
 # modify postgres user homedir to /mnt/postgres/data
 /usr/sbin/pw usermod -n postgres -d /mnt/postgres/data -s /bin/sh
-

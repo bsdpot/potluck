@@ -92,7 +92,7 @@ if ! service consul-template onestatus; then
     for name in cluster-agent.crt cluster-agent.key cluster-ca.crt; do
         < "$TEMPLATEPATH/$name.tpl.in" \
           sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-          sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+          sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
           sed "s${sep}%%attl%%${sep}$ATTL${sep}g" \
           > "/mnt/templates/$name.tpl"
     done

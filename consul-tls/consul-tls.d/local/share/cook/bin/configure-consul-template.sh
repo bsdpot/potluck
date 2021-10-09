@@ -29,7 +29,7 @@ for name in client.crt client.key ca.crt; do
   < "$TEMPLATEPATH/$name.tpl.in" \
     sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
     sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-    sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
+    sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
     sed "s${sep}%%attl%%${sep}$ATTL${sep}g" \
     > "/mnt/templates/$name.tpl"
 done
@@ -39,7 +39,7 @@ for othername in consulagent.crt consulagent.key consulca.crt; do
   < "$TEMPLATEPATH/$othername.tpl.in" \
     sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
     sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-    sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
+    sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
     sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
     > "/mnt/templates/$othername.tpl"
 done

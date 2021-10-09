@@ -1,6 +1,12 @@
 2.1.2
 
-* Fixing errors fixes in cook scripts from nomad files
+* Fixing missing pipes in cook scripts from TTL changes
+
+---
+
+2.1.2
+
+* Fixing errors in cook scripts from nomad files
 
 ---
 

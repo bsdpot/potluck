@@ -77,19 +77,19 @@ echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
 
 < "$TEMPLATEPATH/cluster-unseal-client.crt.tpl.in" \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%attl%%${sep}$ATTL${sep}g" \
   > /mnt/templates/unseal-client.crt.tpl
 
 < "$TEMPLATEPATH/cluster-unseal-client.key.tpl.in" \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%attl%%${sep}$ATTL${sep}g" \
   > /mnt/templates/unseal-client.key.tpl
 
 < "$TEMPLATEPATH/cluster-unseal-ca.crt.tpl.in" \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%attl%%${sep}$ATTL${sep}g" \
   > /mnt/templates/unseal-ca.crt.tpl
 
