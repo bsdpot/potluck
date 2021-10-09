@@ -1,3 +1,9 @@
+2.1.2
+
+* Fixing errors fixes in cook scripts from nomad files
+
+---
+
 2.1.1
 
 * Adding TTL parameter for consul template
