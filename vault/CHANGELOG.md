@@ -1,3 +1,9 @@
+2.1.5
+
+* Adding metrics pki to be used by loki, grafana, prometheus, node_exporter
+
+---
+
 2.1.4
 
 * Fixing missing pipes in cook scripts from TTL changes

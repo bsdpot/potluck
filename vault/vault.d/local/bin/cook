@@ -98,6 +98,7 @@ mkdir -p /mnt/templates
 mkdir -p /mnt/certs/hash
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
+mkdir -p /mnt/metricscerts
 mkdir -p /mnt/vault
 
 export PATH=/usr/local/share/cook/bin:$PATH
@@ -170,6 +171,9 @@ fi
 export VAULT_CLIENT_TIMEOUT=300s
 export VAULT_MAX_RETRIES=5
 
+# create nodeexport user, needed for chown, removed from config node_exporter script
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+
 log "Unwrap unseal credentials"
 cluster-unwrap-unseal-credentials.sh
 
@@ -182,27 +186,20 @@ cluster-configure-consul.sh
 log "Start consul (won't keep running)"
 service consul start
 
-# node exporter needs tls setup
-echo "tls_server_config:
-  cert_file: /mnt/certs/cert.pem
-  key_file: /mnt/certs/key.pem
-" > /usr/local/etc/node-exporter.yml
+log "Unwrap metrics credentials"
+unwrap-metrics-credentials.sh
 
-# add node_exporter user
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+log "Configure metrics certificates"
+configure-metrics.sh
 
-# enable node_exporter service
-service node_exporter enable
-sysrc node_exporter_args="--web.config=/usr/local/etc/node-exporter.yml"
-sysrc node_exporter_user=nodeexport
-sysrc node_exporter_group=nodeexport
+log "Setup node_exporter"
+configure-node-exporter.sh
 
-# start node_exporter
-service node_exporter start
-
-# start vault
 log "Start consul-template-unseal"
 service consul-template-unseal start
+
+log "Start consul-template-metrics"
+service consul-template-metrics start
 
 log "Start Vault"
 timeout --foreground 120 \
@@ -220,6 +217,9 @@ ln -s /usr/local/share/cook/bin/cluster-vault.sh \
 
 log "Provision local_unbound"
 cluster-setup-local-unbound.sh
+
+log "Start node_exporter"
+service node_exporter start
 
 pot_seasoned_exit
 

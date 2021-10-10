@@ -1,0 +1,40 @@
+vault {
+  address      = "https://active.vault.service.consul:8200"
+  token        = "%%token%%"
+  unwrap_token = false
+  renew_token  = true
+
+  ssl {
+    enabled = true
+    verify = true
+    ca_cert = "/mnt/certs/ca_chain.crt"
+    cert = "/mnt/certs/agent.crt"
+    key = "/mnt/certs/agent.key"
+    server_name = "active.vault.service.consul"
+  }
+}
+
+syslog {
+  enabled  = true
+  facility = "LOCAL5"
+}
+
+template {
+  source      = "/mnt/templates/metrics.crt.tpl"
+  destination = "/mnt/metricscerts/client.crt"
+  backup      = true
+  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
+}
+
+template {
+  source      = "/mnt/templates/metrics.key.tpl"
+  destination = "/mnt/metricscerts/client.key"
+  perms       = 0640
+  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
+}
+
+template {
+  source      = "/mnt/templates/metrics-ca.crt.tpl"
+  destination = "/mnt/metricscerts/ca.crt"
+  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
+}

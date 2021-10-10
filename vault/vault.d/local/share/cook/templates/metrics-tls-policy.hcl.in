@@ -1,0 +1,3 @@
+path "metricspki_int/issue/metrics" {
+  capabilities = ["update"]
+}

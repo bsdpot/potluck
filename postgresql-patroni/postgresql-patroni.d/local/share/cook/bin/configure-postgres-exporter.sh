@@ -12,18 +12,6 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-GOSSIPKEY="$(cat /mnt/postgrescerts/gossip.key)"
-
-# Might be incorrect(!)
-VAULTTOKEN="$(cat /mnt/certs/unwrapped.token)"
-
-# Get postgres consul service token
-POSTGRES_SERVICE_TOKEN="$(cat /mnt/postgrescerts/postgres_service.token)"
-
-# shellcheck disable=SC3003
-# safe(r) separator for sed
-sep=$'\001'
-
 # change to a temporary directory and clone the github repo for postgres_exporter
 cd /tmp
 
@@ -56,12 +44,11 @@ chmod +x /usr/local/bin/postgres_exporter
 
 # set startup options for postgres_export, one of them a manual way to get the IP address in
 sysrc postgres_exporter_enable="YES"
-sysrc postgres_exporter_pg_host="%%ip%%"
+sysrc postgres_exporter_pg_host="$IP"
 sysrc postgres_exporter_pg_user="postgres"
 
 # this probably shouldn't be in /etc/rc.conf file but only way atm
-sysrc postgres_exporter_pg_pass="%%kekpass%%"
+sysrc postgres_exporter_pg_pass="$KEKPASS"
 
 # return to base directory as done with postgres_exporter setup
 cd /root
-

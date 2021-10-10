@@ -1,4 +1,10 @@
-2.1.2
+2.1.4
+
+* Adding metrics pki stuff for node_exporter
+
+---
+
+2.1.3
 
 * Fixing missing pipes in cook scripts from TTL changes
 

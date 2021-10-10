@@ -1,3 +1,9 @@
+0.1.3
+
+* Adding metrics PKI stuff for node_exporter 
+
+---
+
 0.1.2
 
 * Fixing errors with missing pipes from TTL changes

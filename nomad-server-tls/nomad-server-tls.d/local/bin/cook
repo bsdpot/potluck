@@ -89,7 +89,11 @@ mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
 mkdir -p /mnt/nomadcerts
 chown -R nomad /mnt/nomadcerts
+mkdir -p /mnt/metricscerts
 mkdir -p /mnt/vault
+
+# create nodeexport user, needed for chown, removed from config node_exporter script
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
 
 log "Set up local_unbound using cluster resolvers"
 setup-local-unbound-provision.sh
@@ -147,23 +151,24 @@ ln -s /usr/local/share/cook/bin/nomad-status.sh /root/nomad-status.sh
 ln -s /usr/local/share/cook/bin/raft-status.sh /root/raft-status.sh
 ln -s /usr/local/share/cook/bin/nomad.sh /root/nomad.sh
 
-# node exporter needs tls setup
-echo "tls_server_config:
-  cert_file: /mnt/certs/cert.pem
-  key_file: /mnt/certs/key.pem
-" > /usr/local/etc/node-exporter.yml
+# setup node_exporter
+log "Unwrap metrics credentials"
+unwrap-metrics-credentials.sh
 
-# enable node_exporter service
-# add node_exporter user
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+# setup metrics pki stuff
+log "Configure metrics certificates"
+configure-metrics.sh
 
-# enable node_exporter service
-service node_exporter enable
-sysrc node_exporter_args="--web.config=/usr/local/etc/node-exporter.yml"
-sysrc node_exporter_user=nodeexport
-sysrc node_exporter_group=nodeexport
+# setup node exporter
+log "Setup node_exporter"
+configure-node-exporter.sh
 
-# start node_exporter
+# setup consul-template for metrics
+log "Start consul-template-metrics"
+service consul-template-metrics start
+
+# make sure we start node_exporter
+log "Start node_exporter"
 service node_exporter start
 
 pot_seasoned_exit

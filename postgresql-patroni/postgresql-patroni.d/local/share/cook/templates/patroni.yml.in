@@ -5,8 +5,8 @@ name: %%nodename%%
 restapi:
   listen: %%ip%%:8008
   connect_address: %%ip%%:8008
-  certfile: /mnt/postgrescerts/agent.crt
-  keyfile: /mnt/postgrescerts/agent.key
+  certfile: /mnt/postgrescerts/client.crt
+  keyfile: /mnt/postgrescerts/client.key
   cafile: /mnt/postgrescerts/ca_chain.crt
   verify_client: required
   http_extra_headers:
@@ -18,8 +18,8 @@ restapi:
 
 ctl:
   insecure: false
-  certfile: /mnt/postgrescerts/agent.crt
-  keyfile: /mnt/postgrescerts/agent.key
+  certfile: /mnt/postgrescerts/client.crt
+  keyfile: /mnt/postgrescerts/client.key
   cafile: /mnt/postgrescerts/ca_chain.crt
 
 consul:
@@ -72,28 +72,28 @@ postgresql:
       username: postgres
       password: %%kekpass%%
       sslmode: verify-full
-      sslcert: /mnt/postgrescerts/agent.crt
-      sslkey: /mnt/postgrescerts/agent.key
+      sslcert: /mnt/postgrescerts/client.crt
+      sslkey: /mnt/postgrescerts/client.key
       sslrootcert: /mnt/postgrescerts/ca_chain.crt
     replication:
       username: replicator
       password: %%reppass%%
       sslmode: verify-full
-      sslcert: /mnt/postgrescerts/agent.crt
-      sslkey: /mnt/postgrescerts/agent.key
+      sslcert: /mnt/postgrescerts/client.crt
+      sslkey: /mnt/postgrescerts/client.key
       sslrootcert: /mnt/postgrescerts/ca_chain.crt
     rewind:
       username: rewind_user
       password: rewind_password
       sslmode: verify-full
-      sslcert: /mnt/postgrescerts/agent.crt
-      sslkey: /mnt/postgrescerts/agent.key
+      sslcert: /mnt/postgrescerts/client.crt
+      sslkey: /mnt/postgrescerts/client.key
       sslrootcert: /mnt/postgrescerts/ca_chain.crt
   parameters:
     unix_socket_directories: '/tmp/'
     ssl: on
-    ssl_cert_file: /mnt/postgrescerts/agent.crt
-    ssl_key_file: /mnt/postgrescerts/agent.key
+    ssl_cert_file: /mnt/postgrescerts/client.crt
+    ssl_key_file: /mnt/postgrescerts/client.key
     ssl_ca_file: /mnt/postgrescerts/ca_chain.crt
 
 tags:

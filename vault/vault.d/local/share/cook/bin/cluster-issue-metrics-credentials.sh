@@ -15,11 +15,11 @@ if [ -z "$CERT_IPS" ]; then
 fi
 
 if [ -z "$CERT_ALT_NAMES" ]; then
-    CERT_ALT_NAMES="localhost,server.global.postgres"
+    CERT_ALT_NAMES="localhost,server.global.metrics"
 fi
 
 if [ -z "$TOKEN_POLICIES" ]; then
-    TOKEN_POLICIES="postgres-tls-policy"
+    TOKEN_POLICIES="metrics-tls-policy"
 fi
 
 TOKEN_POLICIES_PARAMS=""
@@ -47,10 +47,10 @@ TOKEN=$(vault token create \
   $TOKEN_POLICIES_PARAMS -wrap-ttl=300s -ttl=15m \
   | jq -e ".wrap_info.token")
 STEP="Get root CA"
-CA_ROOT=$(vault read postgrespki/cert/ca | jq -e ".data.certificate")
+CA_ROOT=$(vault read metricspki/cert/ca | jq -e ".data.certificate")
 STEP="Issue Client Certificate"
-CERT_JSON=$(vault write postgrespki_int/issue/postgres-cluster \
-  common_name="$CERT_NODENAME.global.postgres" \
+CERT_JSON=$(vault write metricspki_int/issue/metrics \
+  common_name="$CERT_NODENAME.global.metrics" \
   ttl="$CERT_TIMETOLIVE" \
   alt_names="$CERT_ALT_NAMES" \
   ip_sans="$CERT_IPS")

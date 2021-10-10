@@ -91,10 +91,14 @@ mkdir -p /mnt/templates
 mkdir -p /mnt/certs/hash
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
+mkdir -p /mnt/metricscerts
 mkdir -p /mnt/vault/
 
 # add temporary /etc/hosts entry
 echo "$VAULTSERVER active.vault.service.consul" >>/etc/hosts
+
+# create nodeexport user, needed for chown, removed from config node_exporter script
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
 
 log "Unwrap cluster credentials"
 unwrap-cluster-credentials.sh
@@ -127,6 +131,26 @@ setup-local-unbound.sh
 log "Symlink helper scripts"
 ln -s /usr/local/share/cook/bin/consul.sh /root/consul.sh
 
+# setup node_exporter
+log "Unwrap metrics credentials"
+unwrap-metrics-credentials.sh
+
+# setup metrics pki stuff
+log "Configure metrics certificates"
+configure-metrics.sh
+
+# setup node exporter
+log "Setup node_exporter"
+configure-node-exporter.sh
+
+# setup consul-template for metrics
+log "Start consul-template-metrics"
+service consul-template-metrics start
+
+# make sure we start node_exporter
+log "Start node_exporter"
+service node_exporter start
+
 pot_seasoned_exit
 
 #### XXX: Add syslog things back in
@@ -153,35 +177,12 @@ else
     echo "REMOTELOG parameter is not set to an IP address. syslog-ng won't operate."
 fi
 
-
 ## end consul setup
 
-# node exporter needs tls setup
-echo "tls_server_config:
-  cert_file: /mnt/certs/cert.pem
-  key_file: /mnt/certs/key.pem
-" > /usr/local/etc/node-exporter.yml
-
-# enable node_exporter service
-# add node_exporter user
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
-
-# invite node_exporter to certaccess group
-/usr/sbin/pw usermod nodeexport -G certaccess
-
-# enable node_exporter service
-#rm# sysrc node_exporter_enable="YES"
-service node_exporter enable
-sysrc node_exporter_args="--web.config=/usr/local/etc/node-exporter.yml"
-sysrc node_exporter_user=nodeexport
-sysrc node_exporter_group=nodeexport
-#
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
-# start consul agent
+# this seems to be a duplicate as started above?
+log "Start consul agent"
 service consul start
-
-# start node_exporter
-service node_exporter start
 
 pot_seasoned_exit

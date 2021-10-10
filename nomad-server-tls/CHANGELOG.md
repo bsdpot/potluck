@@ -1,3 +1,9 @@
+0.9.33
+
+* Adding metrics pki stuff for node_exporter
+
+---
+
 0.9.32
 
 * Fixing missing pipes in cook scripts from TTL changes
