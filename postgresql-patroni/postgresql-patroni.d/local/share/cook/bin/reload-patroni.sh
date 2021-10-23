@@ -1,5 +1,5 @@
 #!/bin/sh
-cat /mnt/postgrescerts/ca.crt /mnt/postgrescerts/ca_root.crt \
+cat /mnt/postgrescerts/postgresca.crt /mnt/postgrescerts/ca_root.crt \
   >/mnt/postgrescerts/ca_chain.crt.tmp
 chown postgres /mnt/postgrescerts/*
 mv /mnt/postgrescerts/ca_chain.crt.tmp /mnt/postgrescerts/ca_chain.crt

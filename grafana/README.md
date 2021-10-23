@@ -19,8 +19,6 @@ It also contains ```node_exporter``` and a local ```consul``` agent instance to 
 * Clone the local jail
 * Mount in the ZFS data set you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/grafanadata```
-* Copy in the SSH private key for the user on the Vault leader:    
-  ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 3000:3000```
 * Adjust to your environment:    
@@ -28,7 +26,6 @@ It also contains ```node_exporter``` and a local ```consul``` agent instance to 
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
   -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
   -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
-  -E SFTPUSER=<user> -E SFTPPASS=<password> \
   -E PROMSOURCE="10.0.0.1" -E LOKISOURCE="10.0.0.2" -E INFLUXDBSOURCE="10.0.0.3" -E INFLUXDATABASE=<database name> \
   [-E GRAFANAUSER=<username> -E GRAFANAPASSWORD=<password> \ 
   [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E REMOTELOG=<remote syslog IP>]
@@ -51,8 +48,6 @@ The INFLUXDBSOURCE parameter is the IP address of the ```influxdb``` data source
 The default ```grafana``` user and password is ```admin```, however you can set your own credentials with the parameters GRAFANAUSER and GRAFANAPASSWORD.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
-
-The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 
 # Usage
 

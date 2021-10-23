@@ -1,13 +1,2 @@
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/datasources.yml -d /root
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/dashboard.yml -d /root
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/grafana.conf -d /root
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/grafana.rc -d /root
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/home.json -d /root
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/homelogs.json -d /root
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/vault.json -d /root
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/nomadcluster.json -d /root
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/nomadjobs.json -d /root
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/consulcluster.json -d /root
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/postgres.json -d /root
 copy-in -s /usr/local/etc/pot/flavours/grafana.d/syslog-ng.conf -d /root
-set-attribute -A start-at-boot -V YES
+copy-in -s /usr/local/etc/pot/flavours/grafana.d/local -d /root/.pot_local

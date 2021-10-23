@@ -1,0 +1,216 @@
+#!/bin/sh
+RUNS_IN_NOMAD=false
+COOKLOG=/var/log/cook.log
+
+pot_seasoned_exit() {
+    [ ! -e /usr/local/etc/pot-is-seasoned ] && \
+      touch /usr/local/etc/pot-is-seasoned
+    # If this pot flavour is blocking (i.e. it should not return), there is
+    # no /tmp/environment.sh created by pot and we now after configuration
+    # block indefinitely
+    if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        /bin/sh /etc/rc
+        tail -f /dev/null
+    fi
+    exit 0
+}
+
+# always disable sshd, we don't need direct access
+# XXX: Do this when baking the image
+service sshd stop || true
+service sshd disable || true
+
+# No need to change this, just ensures configuration is done only once
+[ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
+
+########################################################################
+## Functions and settings
+########################################################################
+
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
+set -e
+export HOME=/root
+
+if [ -e /tmp/environment.sh ]
+then
+    # shellcheck disable=SC1091
+    . /tmp/environment.sh
+
+    # XXX: Remove some things from here later
+    cp -a /tmp/environment.sh /root/.env.cook
+fi
+
+########################################################################
+## Check config
+########################################################################
+
+required_args="DATACENTER IP NODENAME CONSULSERVERS ATTL BTTL SCRAPECONSUL SCRAPENOMAD VAULTSERVER SCRAPEDATABASE SMTPHOSTPORT SMTPFROM ALERTADDRESS"
+optional_args="REMOTELOG SMTPUSER SMTPPASS"
+
+for var in $required_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "$var is unset - see documentation to configure this flavour."
+    exit 1
+  fi
+done
+
+for var in $optional_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "Optional $var is unset - see documentation to configure this flavour."
+    eval $var=null
+  fi
+done
+
+########################################################################
+## Provision image
+########################################################################
+
+# stop services
+service vault onestop || true
+timeout --foreground 10 \
+  service consul onestop || service consul onestop || true
+killall -9 consul || true
+/usr/local/etc/rc.d/prometheus onestop || true
+
+# install consul-template
+log "Installing consul-template"
+pkg install -y consul-template
+
+log "Patching consul-template rc scripts"
+sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
+'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
+
+# create nodeexport user, needed for chown, removed from config node_exporter script
+log "Create nodeexport user"
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+
+# add group for accessing certs (shared between services)
+log "Create certaccess group"
+/usr/sbin/pw groupadd certaccess
+
+# add the prometheus user to the certaccess group
+log "Add prometheus user to certaccess group"
+/usr/sbin/pw usermod prometheus -G certaccess
+
+# add the alertmanager user to the certaccess group
+log "Add alertmanager user to certaccess group"
+/usr/sbin/pw usermod alertmanager -G certaccess
+
+# add the nodeexport user to the certaccess group
+log "Add nodeexport user to certaccess group"
+/usr/sbin/pw usermod nodeexport -G certaccess
+
+# setup directories for persistent storage and certificate usage
+log "Creating directories for persistent storage and certificate usage"
+mkdir -p /mnt/templates
+mkdir -p /mnt/certs/hash
+chown -R prometheus /mnt/certs
+mkdir -p /mnt/consulcerts
+chown -R consul /mnt/consulcerts
+mkdir -p /mnt/vault
+mkdir -p /mnt/metricscerts
+chown -R prometheus:certaccess /mnt/metricscerts
+
+export PATH=/usr/local/share/cook/bin:$PATH
+
+log "Set up local_unbound using cluster resolvers"
+setup-local-unbound-provision.sh
+
+log "Wait until we are able to resolve active vault instance"
+timeout --foreground 120 \
+  sh -c 'while ! host active.vault.service.consul; do sleep 5; done'
+
+log "Unwrap cluster credentials"
+unwrap-cluster-credentials.sh
+
+log "Unwrap consul credentials"
+unwrap-consul-credentials.sh
+
+log "Configure consul-template"
+configure-consul-template.sh
+
+log "Starting consul-template"
+service consul-template start
+
+log "Waiting up to 20 seconds for consul-template to start"
+timeout --foreground 20 \
+  sh -c 'while ! service consul-template status; do sleep 1; done'
+
+log "Configure consul"
+configure-consul.sh
+
+log "Start consul and wait for it to become stable"
+timeout --foreground 120 \
+  sh -c 'while ! service consul status; do
+    sleep 5; service consul start || true; sleep 5;
+  done'
+
+log "Set up local_unbound using local consul"
+setup-local-unbound.sh
+
+log "Wait until we are able to resolve consul"
+timeout --foreground 120 \
+  sh -c 'while ! host consul.service.consul; do sleep 5; done'
+
+# setup node_exporter
+log "Unwrap metrics credentials"
+unwrap-metrics-credentials.sh
+
+# setup metrics pki stuff
+log "Configure metrics certificates"
+configure-metrics.sh
+
+# setup prometheus goes here
+log "Setup prometheus"
+configure-prometheus.sh
+
+# setup node exporter
+log "Setup node_exporter"
+configure-node-exporter.sh
+
+# setup consul-template for metrics
+log "Start consul-template-metrics"
+service consul-template-metrics start
+
+# start prometheus
+log "Start prometheus"
+service prometheus start
+
+# start alertmanager
+log "Start alertmanager"
+service alertmanager start
+
+# make sure we start node_exporter
+log "Start node_exporter"
+service node_exporter start
+
+# exit seasoned
+pot_seasoned_exit
+
+
+# below here still to be integrated
+#######
+## setup syslog-ng
+## optional remote logging
+#if [ ! -z $REMOTELOG ] && [ $REMOTELOG != "null" ]; then
+#    if [ -f /root/syslog-ng.conf ]; then
+#        /usr/bin/sed -i .orig "s/REMOTELOGIP/$REMOTELOG/g" /root/syslog-ng.conf
+#        cp -f /root/syslog-ng.conf /usr/local/etc/syslog-ng.conf
+#        # stop syslogd
+#        service syslogd onestop || true
+#        # setup sysrc entries to start and set parameters to accept logs from remote subnet
+#        sysrc syslogd_enable="NO"
+#        sysrc syslog_ng_enable="YES"
+#        #sysrc syslog_ng_flags="-u daemon"
+#        sysrc syslog_ng_flags="-R /tmp/syslog-ng.persist"
+#        /usr/local/etc/rc.d/syslog-ng start
+#        echo "syslog-ng setup complete"
+#    else
+#        echo "/root/syslog-ng.conf is missing?"
+#    fi
+#else
+#    echo "REMOTELOG parameter is not set to an IP address. syslog-ng won't operate."
+#fi

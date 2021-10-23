@@ -21,20 +21,20 @@ syslog {
 
 template {
   source      = "/mnt/templates/postgres.crt.tpl"
-  destination = "/mnt/postgrescerts/client.crt"
+  destination = "/mnt/postgrescerts/postgres.crt"
   backup      = true
   command     = "/usr/local/share/cook/bin/reload-patroni.sh"
 }
 
 template {
   source      = "/mnt/templates/postgres.key.tpl"
-  destination = "/mnt/postgrescerts/client.key"
+  destination = "/mnt/postgrescerts/postgres.key"
   perms       = 0640
   command     = "/usr/local/share/cook/bin/reload-patroni.sh"
 }
 
 template {
   source      = "/mnt/templates/postgres-ca.crt.tpl"
-  destination = "/mnt/postgrescerts/ca.crt"
+  destination = "/mnt/postgrescerts/postgresca.crt"
   command     = "/usr/local/share/cook/bin/reload-patroni.sh"
 }

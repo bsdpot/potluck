@@ -1,5 +1,5 @@
 #!/bin/sh
-cat /mnt/metricscerts/ca.crt /mnt/metricscerts/ca_root.crt \
+cat /mnt/metricscerts/metricsca.crt /mnt/metricscerts/ca_root.crt \
   >/mnt/metricscerts/ca_chain.crt.tmp
 # might be different for loki and prometheus, or need all
 chown nodeexport /mnt/metricscerts/*

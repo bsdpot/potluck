@@ -16,9 +16,9 @@ if [ ! -s /mnt/postgrescerts/unwrapped.token ]; then
     WRAPPED_TOKEN=$(< /mnt/postgrescerts/credentials.json \
       jq -re .wrapped_token)
     < /mnt/postgrescerts/credentials.json \
-      jq -re .cert >/mnt/postgrescerts/client.crt
+      jq -re .cert >/mnt/postgrescerts/postgres.crt
     < /mnt/postgrescerts/credentials.json \
-      jq -re .ca >/mnt/postgrescerts/ca.crt
+      jq -re .ca >/mnt/postgrescerts/postgresca.crt
     < /mnt/postgrescerts/credentials.json \
       jq -re .ca_chain >/mnt/postgrescerts/ca_chain.crt
     < /mnt/postgrescerts/credentials.json \
@@ -27,7 +27,7 @@ if [ ! -s /mnt/postgrescerts/unwrapped.token ]; then
       jq -re .ca_root >/mnt/postgrescerts/ca_root.crt
     umask 177
     < /mnt/postgrescerts/credentials.json \
-      jq -re .key >/mnt/postgrescerts/client.key
+      jq -re .key >/mnt/postgrescerts/postgres.key
     < /mnt/postgrescerts/credentials.json \
       jq -re .gossip_key >/mnt/postgrescerts/gossip.key
     < /mnt/postgrescerts/credentials.json \

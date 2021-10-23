@@ -1,3 +1,9 @@
+0.0.20
+
+* Updating for metrics pki and new cook setup
+
+---
+
 0.0.19
 
 * Setting stricter permissions on key.pem

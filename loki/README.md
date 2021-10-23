@@ -19,8 +19,6 @@ The flavour includes a local ```consul``` agent instance to be available that it
 * Clone the local jail
 * Mount in the ZFS data set you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/lokidata```
-* Copy in the SSH private key for the user on the Vault leader:    
-  ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 3100:3100 -e 3000:3000```
 * Adjust to your environment:    
@@ -28,7 +26,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
   -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
   -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
-  -E SFTPUSER=certuser -E SFTPPASS=<password> [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]
+  [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]
   ```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
@@ -38,8 +36,6 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 The VAULTSERVER parameter is the IP address of the ```vault``` server to authenticate to, and obtain certificates from.
 
 The VAULTTOKEN parameter is the issued token from the ```vault``` server.
-
-The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 
 # Explanation
 

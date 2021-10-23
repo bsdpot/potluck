@@ -1,3 +1,9 @@
+0.9.25
+
+* Implementing metric pki and new cook setup
+
+---
+
 0.9.24
 
 * Setting stricter permissions on key.pem

@@ -1,3 +1,9 @@
+0.1.0
+
+* Big update for hashcluster changes
+
+---
+
 0.0.15
 
 * Removing sftppass, unsetting consul sysrc parameters where needed

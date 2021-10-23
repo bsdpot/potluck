@@ -4,8 +4,8 @@ set -e
 
 # node exporter needs tls setup
 echo "tls_server_config:
-  cert_file: /mnt/metricscerts/client.crt
-  key_file: /mnt/metricscerts/client.key
+  cert_file: /mnt/metricscerts/metrics.crt
+  key_file: /mnt/metricscerts/metrics.key
 " > /usr/local/etc/node-exporter.yml
 
 # removed added in cook script because need to set perms on metricscerts dir

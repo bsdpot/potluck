@@ -1,3 +1,9 @@
+2.1.5
+
+* Tweaking certificate filenames
+
+---
+
 2.1.4
 
 * Adding metrics pki stuff for node_exporter

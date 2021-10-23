@@ -19,8 +19,6 @@ The flavour includes a local ```consul``` agent instance to be available that it
 * Clone the local jail
 * Mount in the ZFS data set you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/prometheusdata```
-* Copy in the SSH private key for the user on the Vault leader:    
-  ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 9090:9090 -e 9100:9100 -e 3000:3000```
 * Adjust to your environment:    
@@ -33,7 +31,6 @@ The flavour includes a local ```consul``` agent instance to be available that it
   -E SCRAPENOMAD="'10.0.0.6:4646', '10.0.0.7:4646', '10.0.0.8:4646', '10.0.0.9:4646', '10.0.0.10:4646'" \
   -E SCRAPEDATABASE="'10.0.0.11:9187', '10.0.0.12:9187'" \
   -E SMTPHOSTPORT="smtp.host.com:25" -E SMTPFROM="alertmanager@example.com" \
-  -E SMTPUSER="<smtp username for auth>" -E SMTPPASS="<smtp password for auth>" \
   -E ALERTADDRESS="<email address to notify>" \
   [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E REMOTELOG=<remote syslog IP>]
   ```
@@ -53,8 +50,6 @@ The SCRAPENOMAD parameter is a list of ```nomad``` servers with port 4646 for TL
 The SCRAPEDATABASE parameter is a list of ```postgres_exporter``` instances on ```postgresql-patroni``` images, with port 9187 to pass into prometheus.yml.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
-
-The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 
 The SMTPHOSTPORT parameter is for ```alertmanager``` and must be entered in as ```smtphostname:port```.
 
@@ -88,4 +83,4 @@ If you stop the image, the data will still exist, and a new image can be started
 
 If you need to change the directory parameters for the ZFS data set, adjust the ```mount-in``` command accordingly for the source directory as mounted by the parent OS.
 
-Do not adjust the image destination mount point at /mnt because Prometheus & Grafana are configured to use this directory for data.
+Do not adjust the image destination mount point at /mnt because Prometheus is configured to use this directory for data.

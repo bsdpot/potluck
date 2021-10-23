@@ -1,3 +1,9 @@
+2.1.6
+
+* Updating metric certificate names
+
+---
+
 2.1.5
 
 * Adding metrics pki to be used by loki, grafana, prometheus, node_exporter

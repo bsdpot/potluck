@@ -1,6 +1,2 @@
-copy-in -s /usr/local/etc/pot/flavours/loki.d/loki-local-config.yaml -d /root
-copy-in -s /usr/local/etc/pot/flavours/loki.d/promtail-local-config.yaml -d /root
-copy-in -s /usr/local/etc/pot/flavours/loki.d/loki.rc -d /root
-copy-in -s /usr/local/etc/pot/flavours/loki.d/promtail.rc -d /root
 copy-in -s /usr/local/etc/pot/flavours/loki.d/syslog-ng.conf -d /root
-set-attribute -A start-at-boot -V YES
+copy-in -s /usr/local/etc/pot/flavours/loki.d/local -d /root/.pot_local

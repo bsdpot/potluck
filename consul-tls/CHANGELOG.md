@@ -1,3 +1,9 @@
+0.1.4
+
+* Updating metrics pki certificate names
+
+---
+
 0.1.3
 
 * Adding metrics PKI stuff for node_exporter 
