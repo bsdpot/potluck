@@ -1,3 +1,9 @@
+2.1.6
+
+* Adding syslog-ng back
+
+---
+
 2.1.5
 
 * Tweaking certificate filenames

@@ -1,3 +1,9 @@
+0.9.26
+
+* Adding syslog-ng back
+
+---
+
 0.9.25
 
 * Implementing metric pki and new cook setup

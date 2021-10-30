@@ -1,2 +1,1 @@
-copy-in -s /usr/local/etc/pot/flavours/grafana.d/syslog-ng.conf -d /root
 copy-in -s /usr/local/etc/pot/flavours/grafana.d/local -d /root/.pot_local

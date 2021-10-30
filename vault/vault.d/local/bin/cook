@@ -95,10 +95,9 @@ sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
 
 log "Create directories for vault usage"
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs/hash
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
-mkdir -p /mnt/metricscerts
+mkdir -p /mnt/metricscerts/hash
 mkdir -p /mnt/vault
 
 export PATH=/usr/local/share/cook/bin:$PATH
@@ -217,6 +216,10 @@ ln -s /usr/local/share/cook/bin/cluster-vault.sh \
 
 log "Provision local_unbound"
 cluster-setup-local-unbound.sh
+
+# syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
+log "Setup and start syslog-ng"
+configure-syslog-ng.sh
 
 log "Start node_exporter"
 service node_exporter start

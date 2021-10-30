@@ -1,3 +1,9 @@
+2.1.7
+
+* Enabling syslog-ng
+
+---
+
 2.1.6
 
 * Updating metric certificate names

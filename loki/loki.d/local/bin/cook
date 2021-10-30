@@ -49,7 +49,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS VAULTSERVER ATTL BTTL"
-optional_args=""
+optional_args="REMOTEIP"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -101,13 +101,13 @@ log "Add nodeexport user to certaccess group"
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs/hash
 chown -R loki /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
-mkdir -p /mnt/metricscerts
+mkdir -p /mnt/metricscerts/hash
 chown -R loki:certaccess /mnt/metricscerts
 mkdir -p /mnt/vault
+mkdir -p /mnt/logs
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
@@ -182,33 +182,13 @@ timeout --foreground 120 \
     sleep 5; service promtail start || true; sleep 5;
   done'
 
+# syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
+log "Setup and start syslog-ng"
+configure-syslog-ng.sh
+
 # start node_exporter
 log "Start node_exporter"
 service node_exporter start
 
 # exit seasoned
 pot_seasoned_exit
-
-# below here still to be integrated
-#######
-## setup syslog-ng
-## optional remote logging
-#if [ ! -z $REMOTELOG ] && [ $REMOTELOG != "null" ]; then
-#    if [ -f /root/syslog-ng.conf ]; then
-#        /usr/bin/sed -i .orig "s/REMOTELOGIP/$REMOTELOG/g" /root/syslog-ng.conf
-#        cp -f /root/syslog-ng.conf /usr/local/etc/syslog-ng.conf
-#        # stop syslogd
-#        service syslogd onestop || true
-#        # setup sysrc entries to start and set parameters to accept logs from remote subnet
-#        sysrc syslogd_enable="NO"
-#        sysrc syslog_ng_enable="YES"
-#        #sysrc syslog_ng_flags="-u daemon"
-#        sysrc syslog_ng_flags="-R /tmp/syslog-ng.persist"
-#        /usr/local/etc/rc.d/syslog-ng start
-#        echo "syslog-ng setup complete"
-#    else
-#        echo "/root/syslog-ng.conf is missing?"
-#    fi
-#else
-#    echo "REMOTELOG parameter is not set to an IP address. syslog-ng won't operate."
-#fi

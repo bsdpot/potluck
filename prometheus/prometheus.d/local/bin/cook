@@ -106,12 +106,11 @@ log "Add nodeexport user to certaccess group"
 # setup directories for persistent storage and certificate usage
 log "Creating directories for persistent storage and certificate usage"
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs/hash
 chown -R prometheus /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
 mkdir -p /mnt/vault
-mkdir -p /mnt/metricscerts
+mkdir -p /mnt/metricscerts/hash
 chown -R prometheus:certaccess /mnt/metricscerts
 
 export PATH=/usr/local/share/cook/bin:$PATH
@@ -182,6 +181,10 @@ service prometheus start
 # start alertmanager
 log "Start alertmanager"
 service alertmanager start
+
+# syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
+log "Setup and start syslog-ng"
+configure-syslog-ng.sh
 
 # make sure we start node_exporter
 log "Start node_exporter"

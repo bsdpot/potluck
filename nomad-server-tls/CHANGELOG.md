@@ -1,3 +1,9 @@
+0.9.35
+
+* Adding syslog-ng back
+
+---
+
 0.9.34
 
 * Updating metrics certificate names

@@ -90,13 +90,12 @@ log "Create nodeexport user"
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs/hash
 chown -R postgres /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
 mkdir -p /mnt/postgrescerts
 chown -R postgres /mnt/postgrescerts
-mkdir -p /mnt/metricscerts
+mkdir -p /mnt/metricscerts/hash
 chown -R nodeexport /mnt/metricscerts
 mkdir -p /mnt/vault
 
@@ -175,6 +174,10 @@ configure-node-exporter.sh
 # setup consul-template for metrics
 log "Start consul-template-metrics"
 service consul-template-metrics start
+
+# syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
+log "Setup and start syslog-ng"
+configure-syslog-ng.sh
 
 # make sure we start node_exporter
 log "Start node_exporter"

@@ -1,2 +1,1 @@
-copy-in -s /usr/local/etc/pot/flavours/loki.d/syslog-ng.conf -d /root
 copy-in -s /usr/local/etc/pot/flavours/loki.d/local -d /root/.pot_local

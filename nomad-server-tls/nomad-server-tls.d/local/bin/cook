@@ -83,13 +83,12 @@ pkg install -y consul-template
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs/hash
 chown -R nomad /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
 mkdir -p /mnt/nomadcerts
 chown -R nomad /mnt/nomadcerts
-mkdir -p /mnt/metricscerts
+mkdir -p /mnt/metricscerts/hash
 mkdir -p /mnt/vault
 
 # create nodeexport user, needed for chown, removed from config node_exporter script
@@ -167,30 +166,12 @@ configure-node-exporter.sh
 log "Start consul-template-metrics"
 service consul-template-metrics start
 
+# syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
+log "Setup and start syslog-ng"
+configure-syslog-ng.sh
+
 # make sure we start node_exporter
 log "Start node_exporter"
 service node_exporter start
 
 pot_seasoned_exit
-
-## setup syslog-ng
-## optional remote logging
-#if [ ! -z $REMOTELOG ] && [ $REMOTELOG != "null" ]; then
-#    if [ -f /root/syslog-ng.conf ]; then
-#        /usr/bin/sed -i .orig "s/REMOTELOGIP/$REMOTELOG/g" /root/syslog-ng.conf
-#        cp -f /root/syslog-ng.conf /usr/local/etc/syslog-ng.conf
-#        # stop syslogd
-#        service syslogd onestop || true
-#        # setup sysrc entries to start and set parameters to accept logs from remote subnet
-#        sysrc syslogd_enable="NO"
-#        sysrc syslog_ng_enable="YES"
-#        #sysrc syslog_ng_flags="-u daemon"
-#        sysrc syslog_ng_flags="-R /tmp/syslog-ng.persist"
-#        /usr/local/etc/rc.d/syslog-ng start
-#        echo "syslog-ng setup complete"
-#    else
-#        echo "/root/syslog-ng.conf is missing?"
-#    fi
-#else
-#    echo "REMOTELOG parameter is not set to an IP address. syslog-ng won't operate."
-#fi
