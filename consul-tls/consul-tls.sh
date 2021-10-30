@@ -108,6 +108,9 @@ pkg install -y jo
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
+step "Install package rsync"
+pkg install -y rsync
+
 step "Install package vault"
 pkg install -y vault
 

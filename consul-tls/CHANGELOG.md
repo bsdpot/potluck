@@ -1,3 +1,9 @@
+0.1.5
+
+* Adding syslog-ng back
+
+---
+
 0.1.4
 
 * Updating metrics pki certificate names
