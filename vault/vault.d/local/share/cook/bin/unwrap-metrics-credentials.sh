@@ -33,8 +33,10 @@ if [ ! -s /mnt/metricscerts/unwrapped.token ]; then
       -format=json "$TOKEN" | \
       jq -r '.auth.client_token' > /mnt/metricscerts/unwrapped.token
     # we need to add hashed certificates for syslog-ng
-    ln -s /mnt/metricscerts/ca_root.crt hash/$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/metricscerts/ca_root.crt).0
-    ln -s /mnt/metricscerts/ca_chain.crt hash/$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/metricscerts/ca_chain.crt).0
+    ln -sf /mnt/metricscerts/ca_root.crt "hash/$(/usr/bin/openssl x509 \
+      -subject_hash -noout -in /mnt/metricscerts/ca_root.crt).0"
+    ln -sf /mnt/metricscerts/ca_chain.crt "hash/$(/usr/bin/openssl x509 \
+      -subject_hash -noout -in /mnt/metricscerts/ca_chain.crt).0"
     # set permissions
     chown nodeexport /mnt/metricscerts/*
 fi

@@ -1,5 +1,5 @@
 datacenter = "%%datacenter%%"
-node_name = "%%nodename%%"
+node_name = "%%nodename%%.%%datacenter%%.consul"
 data_dir =  "/var/db/consul"
 dns_config = {
   a_record_limit = 3
@@ -18,7 +18,7 @@ encrypt = "%%gossipkey%%"
 start_join = [ %%consulservers%% ]
 service = {
   name = "node-exporter"
-  tags = ["_app=vault", "_service=node-exporter", "_hostname=%%nodename%%"]
+  tags = ["_app=vault", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
 acl = {

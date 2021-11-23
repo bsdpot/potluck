@@ -134,27 +134,26 @@ ln -s /usr/local/share/cook/bin/consul.sh /root/consul.sh
 
 # setup node_exporter
 log "Unwrap metrics credentials"
-unwrap-metrics-credentials.sh
+#unwrap-metrics-credentials.sh
 
 # setup metrics pki stuff
 log "Configure metrics certificates"
-configure-metrics.sh
+#configure-metrics.sh
 
 # setup node exporter
 log "Setup node_exporter"
-configure-node-exporter.sh
+#configure-node-exporter.sh
 
 # setup consul-template for metrics
 log "Start consul-template-metrics"
-service consul-template-metrics start
+#service consul-template-metrics start
 
 # syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
 log "Setup and start syslog-ng"
-configure-syslog-ng.sh
+#configure-syslog-ng.sh
 
 # make sure we start node_exporter
 log "Start node_exporter"
 service node_exporter start
 
 pot_seasoned_exit
-

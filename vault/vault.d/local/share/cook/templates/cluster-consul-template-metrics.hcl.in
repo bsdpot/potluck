@@ -23,18 +23,18 @@ template {
   source      = "/mnt/templates/metrics.crt.tpl"
   destination = "/mnt/metricscerts/metrics.crt"
   backup      = true
-  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
+  command     = "/usr/local/share/cook/bin/cluster-reload-metrics.sh"
 }
 
 template {
   source      = "/mnt/templates/metrics.key.tpl"
   destination = "/mnt/metricscerts/metrics.key"
   perms       = 0640
-  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
+  command     = "/usr/local/share/cook/bin/cluster-reload-metrics.sh"
 }
 
 template {
   source      = "/mnt/templates/metrics-ca.crt.tpl"
   destination = "/mnt/metricscerts/metricsca.crt"
-  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
+  command     = "/usr/local/share/cook/bin/cluster-reload-metrics.sh"
 }

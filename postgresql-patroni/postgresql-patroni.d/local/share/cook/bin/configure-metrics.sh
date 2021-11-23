@@ -29,8 +29,8 @@ mkdir -p /usr/local/etc/consul-template-metrics.d
 
 TOKEN=$(/bin/cat /mnt/metricscerts/unwrapped.token)
 
-< "$TEMPLATEPATH/consul-template-metrics.hcl.in" \
-  > /usr/local/etc/consul-template-metrics.d/consul-template-metrics.hcl
+cp "$TEMPLATEPATH/consul-template-metrics.hcl.in" \
+  /usr/local/etc/consul-template-metrics.d/consul-template-metrics.hcl
 chmod 600 \
   /usr/local/etc/consul-template-metrics.d/consul-template-metrics.hcl
 echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \

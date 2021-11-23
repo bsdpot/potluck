@@ -92,8 +92,10 @@ chown -R nomad /mnt/nomadcerts
 mkdir -p /mnt/metricscerts/hash
 mkdir -p /mnt/vault
 
-# create nodeexport user, needed for chown, removed from config node_exporter script
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+# create nodeexport user, needed for chown, removed from config
+# node_exporter script
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' \
+  -m -s /usr/bin/nologin -h -
 
 log "Set up local_unbound using cluster resolvers"
 setup-local-unbound-provision.sh
@@ -153,21 +155,22 @@ ln -s /usr/local/share/cook/bin/nomad.sh /root/nomad.sh
 
 # setup node_exporter
 log "Unwrap metrics credentials"
-unwrap-metrics-credentials.sh
+#unwrap-metrics-credentials.sh
 
 # setup metrics pki stuff
 log "Configure metrics certificates"
-configure-metrics.sh
+#configure-metrics.sh
 
 # setup node exporter
 log "Setup node_exporter"
-configure-node-exporter.sh
+#configure-node-exporter.sh
 
 # setup consul-template for metrics
 log "Start consul-template-metrics"
-service consul-template-metrics start
+#service consul-template-metrics start
 
-# syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
+# syslog-ng start is set in the script because it won't run if REMOTELOG
+# is empty or null
 log "Setup and start syslog-ng"
 configure-syslog-ng.sh
 

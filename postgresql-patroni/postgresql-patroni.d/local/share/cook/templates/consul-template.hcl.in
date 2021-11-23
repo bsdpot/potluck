@@ -58,3 +58,23 @@ template {
   destination = "/mnt/consulcerts/ca.crt"
   command     = "/usr/local/share/cook/bin/reload-consul.sh"
 }
+
+template {
+  source      = "/mnt/templates/postgresserver.crt.tpl"
+  destination = "/mnt/postgrescerts/postgresserver.crt"
+  backup      = true
+  command     = "/usr/local/share/cook/bin/reload-patroni.sh"
+}
+
+template {
+  source      = "/mnt/templates/postgresserver.key.tpl"
+  destination = "/mnt/postgrescerts/postgresserver.key"
+  perms       = 0600
+  command     = "/usr/local/share/cook/bin/reload-patroni.sh"
+}
+
+template {
+  source      = "/mnt/templates/postgresca.crt.tpl"
+  destination = "/mnt/postgrescerts/postgresca.crt"
+  command     = "/usr/local/share/cook/bin/reload-patroni.sh"
+}

@@ -1,17 +1,17 @@
 #!/bin/sh
 
 CERT_NODENAME="$1"
-CERT_TIMETOLIVE="$2"
+CERT_TTL="$2"
 
 trap "echo \$STEP failed" EXIT
 
 if [ -z "$CERT_NODENAME" ]; then
-  2>&1 echo "Usage: $0 cert_nodename ttl"
+  2>&1 echo "Usage: $0 cert_nodename [ttl]"
   exit 1
 fi
 
-if [ -z "$CERT_TIMETOLIVE" ]; then
-  CERT_TIMETOLIVE="10m"
+if [ -z "$CERT_TTL" ]; then
+  CERT_TTL="10m"
 fi
 
 set -e
@@ -31,7 +31,7 @@ CA_ROOT=$(vault read pki/cert/ca | jq -e ".data.certificate")
 STEP="Issue Client Certificate"
 CERT_JSON=$(vault write pki_int/issue/vault-unseal \
   common_name="$CERT_NODENAME.global.vaultunseal" \
-  ttl="$CERT_TIMETOLIVE" alt_names=localhost ip_sans=127.0.0.1)
+  ttl="$CERT_TTL" alt_names=localhost ip_sans=127.0.0.1)
 
 STEP="Parse Client Certificate"
 CERT=$(echo "$CERT_JSON" | jq -e ".data.certificate")

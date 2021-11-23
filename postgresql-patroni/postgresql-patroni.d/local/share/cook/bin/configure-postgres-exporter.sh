@@ -9,8 +9,8 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
-SCRIPT=$(readlink -f "$0")
-TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+#SCRIPT=$(readlink -f "$0")
+#TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # change to a temporary directory and clone the github repo for postgres_exporter
 cd /tmp

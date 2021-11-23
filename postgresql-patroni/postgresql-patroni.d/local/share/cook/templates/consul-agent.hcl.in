@@ -1,5 +1,5 @@
 datacenter = "%%datacenter%%"
-node_name = "%%nodename%%"
+node_name = "%%nodename%%.%%datacenter%%.consul"
 data_dir =  "/var/db/consul"
 dns_config = {
   a_record_limit = 3
@@ -13,17 +13,18 @@ ca_file = "/mnt/consulcerts/ca_chain.crt"
 cert_file = "/mnt/consulcerts/agent.crt"
 key_file = "/mnt/consulcerts/agent.key"
 log_file = "/var/log/consul/consul.log"
-log_level = "WARN"
+log_level = "TRACE"
 encrypt = "%%gossipkey%%"
+enable_agent_tls_for_checks = true
 start_join = [ %%consulservers%% ]
-service = {
+services = {
   name = "node-exporter"
-  tags = ["_app=vault", "_service=node-exporter", "_hostname=%%nodename%%"]
+  tags = ["_app=vault", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
-service = {
+services = {
   name = "postgres-exporter"
-  tags = ["_app=postgresql", "_service=postgres-exporter", "_hostname=%%nodename%%", "_datacenter=%%datacenter%%"]
+  tags = ["_app=postgresql", "_service=postgres-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"]
   port = 9187
 }
 telemetry = {

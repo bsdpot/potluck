@@ -1,12 +1,12 @@
 #!/bin/sh
 
 CERT_NODENAME="$1"
-CERT_TIMETOLIVE="$2"
+CERT_TTL="$2"
 
 trap "echo \$STEP failed" EXIT
 
 if [ -z "$CERT_NODENAME" ]; then
-    2>&1 echo "Usage: $0 cert_nodename [cert_ips] [alt_names] [policies] [ttl]"
+    2>&1 echo "Usage: $0 cert_nodename [ttl]"
     exit 1
 fi
 
@@ -27,8 +27,8 @@ for policy in $(echo "$TOKEN_POLICIES" | tr ',' ' '); do
     TOKEN_POLICIES_PARAMS="$TOKEN_POLICIES_PARAMS -policy=$policy"
 done
 
-if [ -z "$CERT_TIMETOLIVE" ]; then
-    CERT_TIMETOLIVE="12m"
+if [ -z "$CERT_TTL" ]; then
+    CERT_TTL="10m"
 fi
 
 set -e
@@ -51,7 +51,7 @@ CA_ROOT=$(vault read metricspki/cert/ca | jq -e ".data.certificate")
 STEP="Issue Client Certificate"
 CERT_JSON=$(vault write metricspki_int/issue/metrics \
   common_name="$CERT_NODENAME.global.metrics" \
-  ttl="$CERT_TIMETOLIVE" \
+  ttl="$CERT_TTL" \
   alt_names="$CERT_ALT_NAMES" \
   ip_sans="$CERT_IPS")
 

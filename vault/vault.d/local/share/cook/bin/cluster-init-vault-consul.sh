@@ -74,10 +74,11 @@ if ! service consul-template-consul onestatus; then
       /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
 
     for name in consul-agent.crt consul-agent.key consul-ca.crt; do
-        < "$TEMPLATEPATH/$name.tpl.in" \
+        < "$TEMPLATEPATH/cluster-$name.tpl.in" \
           sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
           sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
           sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
+          sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
           sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
           > "/mnt/templates/$name.tpl"
     done

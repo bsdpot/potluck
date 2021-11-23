@@ -25,7 +25,7 @@ if [ ! -s /mnt/consulcerts/unwrapped.token ]; then
       jq -re .ca_root >>/mnt/consulcerts/ca_chain.crt
     < /mnt/consulcerts/credentials.json \
       jq -re .ca_root >/mnt/consulcerts/ca_root.crt
-    umask 177
+    umask 026
     < /mnt/consulcerts/credentials.json \
       jq -re .key >/mnt/consulcerts/agent.key
     < /mnt/consulcerts/credentials.json \
