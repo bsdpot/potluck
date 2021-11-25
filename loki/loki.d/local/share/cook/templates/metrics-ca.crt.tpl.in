@@ -1,5 +1,5 @@
 {{ with secret "metricspki_int/issue/metrics"
-"common_name=%%nodename%%.%%datacenter%%.metrics" "ttl=%%ttl%%"
+"common_name=%%nodename%%.%%datacenter%%.metrics" "ttl=%%bttl%%"
 "alt_names=localhost,server.%%datacenter%%.metrics"
 "ip_sans=127.0.0.1"}}
 {{ .Data.issuing_ca }}

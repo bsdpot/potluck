@@ -17,7 +17,7 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 sep=$'\001'
 
 # copy in syslog-ng.conf
-if [ ! -z "$REMOTELOG" ] && [ "$REMOTELOG" != "null" ]; then
+if [ -n "$REMOTELOG" ] && [ "$REMOTELOG" != "null" ]; then
     # read in template conf file, update remote log IP address, and write to correct
     # destination
     < "$TEMPLATEPATH/syslog-ng.conf.in" \

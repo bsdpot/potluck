@@ -48,8 +48,8 @@ fi
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS VAULTSERVER ATTL BTTL"
-optional_args="REMOTEIP"
+required_args="DATACENTER IP NODENAME CONSULSERVERS ATTL BTTL"
+#optional_args="REMOTEIP"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -58,12 +58,12 @@ for var in $required_args; do
   fi
 done
 
-for var in $optional_args; do
-  if [ -z "$(eval echo "\${$var}")" ]; then
-    log "Optional $var is unset - see documentation to configure this flavour."
-    eval $var=null
-  fi
-done
+#for var in $optional_args; do
+#  if [ -z "$(eval echo "\${$var}")" ]; then
+#    log "Optional $var is unset - see documentation to configure this flavour."
+#    eval $var=null
+#  fi
+#done
 
 ########################################################################
 ## Provision image
@@ -91,22 +91,21 @@ log "Create nodeexport user"
 log "Create certaccess group"
 /usr/sbin/pw groupadd certaccess
 
-# add the loki user to the certaccess group
-log "Add loki user to certaccess group"
-/usr/sbin/pw usermod loki -G certaccess
-
 # add the nodeexport user to the certaccess group
 log "Add nodeexport user to certaccess group"
 /usr/sbin/pw usermod nodeexport -G certaccess
 
+# add the loki user to the certaccess group
+#log "Add loki user to certaccess group"
+#/usr/sbin/pw usermod loki -G certaccess
+
 # setup directories for vault usage
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs
-chown -R loki /mnt/certs
+#chown -R loki /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
 mkdir -p /mnt/metricscerts/hash
-chown -R loki:certaccess /mnt/metricscerts
+#chown -R loki:certaccess /mnt/metricscerts
 mkdir -p /mnt/vault
 mkdir -p /mnt/logs
 
@@ -126,7 +125,7 @@ log "Unwrap consul credentials"
 unwrap-consul-credentials.sh
 
 log "Unwrap metrics credentials"
-unwrap-metrics-credentials.sh
+#unwrap-metrics-credentials.sh
 
 log "Configure consul-template"
 configure-consul-template.sh
@@ -156,7 +155,7 @@ timeout --foreground 120 \
 
 # setup metrics pki stuff
 log "Configure metrics certificates"
-configure-metrics.sh
+#configure-metrics.sh
 
 # setup loki
 log "Configure loki and promtail"
@@ -164,11 +163,11 @@ configure-loki.sh
 
 # setup node exporter
 log "Setup node_exporter"
-configure-node-exporter.sh
+#configure-node-exporter.sh
 
 # setup consul-template for metrics
 log "Start consul-template-metrics"
-service consul-template-metrics start
+#service consul-template-metrics start
 
 # start loki and promtail
 log "Start loki and wait for it to become stable"
@@ -185,7 +184,7 @@ timeout --foreground 120 \
 
 # syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
 log "Setup and start syslog-ng"
-configure-syslog-ng.sh
+#configure-syslog-ng.sh
 
 # start node_exporter
 log "Start node_exporter"

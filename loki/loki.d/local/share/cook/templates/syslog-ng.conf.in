@@ -68,8 +68,8 @@ destination loghost {
   tls(
    key-file("/mnt/metricscerts/metrics.key")
    cert-file("/mnt/metricscerts/metrics.crt")
-   ca_dir("/mnt/metricscerts/hash") 
-   ca-file("/mnt/mericscerts/ca_chain.crt")
+   ca-dir("/mnt/metricscerts/hash")
+   ca-file("/mnt/metricscerts/ca_chain.crt")
    peer-verify(required-trusted)
   )
  );
@@ -113,12 +113,12 @@ filter f_is_debug { level(debug); };
 # program filters
 filter f_ppp { program("ppp"); };
 
-# all filter
-filter f_all { level(debug..emerg) and not (program("devd") and level(debug..info)); };
+# filter all
+filter f_all { level(debug..emerg) and not (program("devd") and level(debug..info) ); };
 
 ## *.err;kern.warning;auth.notice;mail.crit      /dev/console
 # removing to remove
-# "syslog-ng[000]: Error opening file for writing; filename='/dev/console', error='No such file or directory (2)'" 
+# "syslog-ng[000]: Error opening file for writing; filename='/dev/console', error='No such file or directory (2)'"
 # from spamming logs in jails
 #log { source(src); filter(f_err); destination(console); };
 #log { source(src); filter(f_kern); filter(f_warning); destination(console); };
