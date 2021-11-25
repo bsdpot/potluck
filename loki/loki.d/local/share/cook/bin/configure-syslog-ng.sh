@@ -17,22 +17,16 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 sep=$'\001'
 
 # copy in syslog-ng.conf
-if [ -n "$REMOTELOG" ] && [ "$REMOTELOG" != "null" ]; then
-    # read in template conf file, update remote log IP address, and write to correct
-    # destination
-    < "$TEMPLATEPATH/syslog-ng.conf.in" \
-      sed "s${sep}%%myip%%${sep}$IP${sep}g" \
-    > /usr/local/etc/syslog-ng.conf
+< "$TEMPLATEPATH/syslog-ng.conf.in" \
+  sed "s${sep}%%myip%%${sep}$IP${sep}g" \
+  > /usr/local/etc/syslog-ng.conf
 
-    # stop and disable syslogd
-    service syslogd onestop || true
-    service syslogd disable
+# stop and disable syslogd
+service syslogd onestop || true
+service syslogd disable
 
-    # enable and start syslog-ng
-    service syslog-ng enable
-    #sysrc syslog_ng_flags="-u daemon"
-    sysrc syslog_ng_flags="-R /tmp/syslog-ng.persist"
-    service syslog-ng start
-else
-    echo "REMOTELOG parameter is not set to an IP address. syslog-ng won't operate."
-fi
+# enable and start syslog-ng
+service syslog-ng enable
+#sysrc syslog_ng_flags="-u daemon"
+sysrc syslog_ng_flags="-R /tmp/syslog-ng.persist"
+service syslog-ng start

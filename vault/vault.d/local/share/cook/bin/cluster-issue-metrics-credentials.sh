@@ -1,12 +1,14 @@
 #!/bin/sh
 
 CERT_NODENAME="$1"
-CERT_TTL="$2"
+CERT_DATACENTER="$2"
+CERT_IPS="$3"
+CERT_TTL="$4"
 
 trap "echo \$STEP failed" EXIT
 
-if [ -z "$CERT_NODENAME" ]; then
-    2>&1 echo "Usage: $0 cert_nodename [ttl]"
+if [ -z "$CERT_NODENAME" ] || [ -z "$CERT_DATACENTER" ]; then
+    2>&1 echo "Usage: $0 cert_nodename datacenter [cert_ips] [ttl]"
     exit 1
 fi
 
@@ -15,7 +17,7 @@ if [ -z "$CERT_IPS" ]; then
 fi
 
 if [ -z "$CERT_ALT_NAMES" ]; then
-    CERT_ALT_NAMES="localhost,server.global.metrics"
+    CERT_ALT_NAMES="localhost"
 fi
 
 if [ -z "$TOKEN_POLICIES" ]; then
@@ -50,7 +52,7 @@ STEP="Get root CA"
 CA_ROOT=$(vault read metricspki/cert/ca | jq -e ".data.certificate")
 STEP="Issue Client Certificate"
 CERT_JSON=$(vault write metricspki_int/issue/metrics \
-  common_name="$CERT_NODENAME.global.metrics" \
+  common_name="$CERT_NODENAME.$CERT_DATACENTER.metrics" \
   ttl="$CERT_TTL" \
   alt_names="$CERT_ALT_NAMES" \
   ip_sans="$CERT_IPS")
