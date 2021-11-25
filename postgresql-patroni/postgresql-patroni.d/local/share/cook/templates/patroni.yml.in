@@ -66,7 +66,7 @@ bootstrap:
       options:
         - replication
 
-# XXX: using sslmode=require instead of sslmode=verify-full
+# XXX: using sslmode=verify-ca instead of sslmode=verify-full
 # as postgresql doesn't look at IP address alt names
 postgresql:
   listen: %%ip%%:5432
@@ -78,21 +78,21 @@ postgresql:
     superuser:
       username: postgres
       password: %%kekpass%%
-      sslmode: require
+      sslmode: verify-ca
       sslcert: /mnt/postgrescerts/postgresserver.crt
       sslkey: /mnt/postgrescerts/postgresserver.key
       sslrootcert: /mnt/postgrescerts/ca_chain.crt
     replication:
       username: replicator
       password: %%reppass%%
-      sslmode: require
+      sslmode: verify-ca
       sslcert: /mnt/postgrescerts/postgresserver.crt
       sslkey: /mnt/postgrescerts/postgresserver.key
       sslrootcert: /mnt/postgrescerts/ca_chain.crt
     rewind:
       username: rewind_user
       password: rewind_password
-      sslmode: require
+      sslmode: verify-ca
       sslcert: /mnt/postgrescerts/postgresserver.crt
       sslkey: /mnt/postgrescerts/postgresserver.key
       sslrootcert: /mnt/postgrescerts/ca_chain.crt
