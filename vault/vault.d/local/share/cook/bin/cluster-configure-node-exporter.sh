@@ -10,7 +10,8 @@ echo "tls_server_config:
 
 # removed added in cook script because need to set perms on metricscerts dir
 ## add node_exporter user
-#/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+#/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \
+#  -s /usr/bin/nologin -h -
 
 # enable node_exporter service
 service node_exporter enable

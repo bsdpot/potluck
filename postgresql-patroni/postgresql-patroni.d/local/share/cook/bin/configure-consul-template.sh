@@ -27,7 +27,8 @@ echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
 # attl is the shorter TTL, e.g. 10m, bttl is the longer TTL, e.g. 12m
 for name in client.crt client.key ca.crt \
   consulagent.crt consulagent.key consulca.crt \
-  postgresserver.crt postgresserver.key postgresca.crt; do
+  postgresserver.crt postgresserver.key postgresca.crt \
+  metrics.crt metrics.key metricsca.crt; do
     < "$TEMPLATEPATH/$name.tpl.in" \
       sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
       sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \

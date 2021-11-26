@@ -70,7 +70,8 @@ start_precmd="promtail_start_precmd"
 promtail_start_precmd()
 {
         if [ ! -d "/var/run/${name}" ]; then
-                install -d -m 0750 -o ${promtail_user} -g ${promtail_group} "/var/run/${name}"
+                install -d -m 0750 -o ${promtail_user} -g ${promtail_group} \
+                  "/var/run/${name}"
         fi
 }
 

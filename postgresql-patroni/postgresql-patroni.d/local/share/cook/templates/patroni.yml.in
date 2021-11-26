@@ -49,7 +49,9 @@ bootstrap:
         max_wal_senders: 5
         max_replication_slots: 5
         checkpoint_timeout: 30
-  initdb:  # Note: this needs to be a yml list (some options need values, others are switches)
+  # Note: this needs to be a yml list
+  # (some options need values, others are switches)
+  initdb:
   - encoding: UTF8
   - data-checksums
   pg_hba:  # Add following lines to pg_hba.conf after running 'initdb'

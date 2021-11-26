@@ -36,7 +36,8 @@ telemetry = {
 }
 service = {
   name = "node-exporter"
-  tags = ["_app=consul", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=consul", "_service=node-exporter",
+          "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
 acl = {

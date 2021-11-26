@@ -120,8 +120,18 @@ unwrap-consul-credentials.sh
 log "Unwrap postgres credentials"
 unwrap-postgres-credentials.sh
 
+log "Unwrap metrics credentials"
+unwrap-metrics-credentials.sh
+
 log "Configure consul-template"
 configure-consul-template.sh
+
+log "Setup node_exporter"
+configure-node-exporter.sh
+
+# start early, as consul-template will restart it
+log "Start node_exporter"
+service node_exporter start
 
 log "Starting consul-template"
 service consul-template start
@@ -162,34 +172,13 @@ timeout --foreground 120 \
     sleep 5; service patroni start || true; sleep 15;
   done'
 
-# setup node_exporter
-log "Unwrap metrics credentials"
-#unwrap-metrics-credentials.sh
-
-# setup metrics pki stuff
-log "Configure metrics certificates"
-#configure-metrics.sh
-
-# setup node exporter
-log "Setup node_exporter"
-#configure-node-exporter.sh
-
-# setup consul-template for metrics
-log "Start consul-template-metrics"
-#service consul-template-metrics start
-
 # syslog-ng start is set in the script because it won't run if REMOTELOG
 # is empty or null
 log "Setup and start syslog-ng"
-#configure-syslog-ng.sh
+configure-syslog-ng.sh
 
-# make sure we start node_exporter
-log "Start node_exporter"
-service node_exporter start
-
-# start the postgres_exporter service
 log "Start postgres_exporter service"
-#service postgres_exporter start
+service postgres_exporter start
 
-# exit seasoned
+log "Exit seasoned"
 pot_seasoned_exit

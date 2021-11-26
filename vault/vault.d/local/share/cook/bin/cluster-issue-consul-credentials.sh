@@ -21,7 +21,7 @@ if [ -z "$CERT_ALT_NAMES" ]; then
 fi
 
 if [ -z "$TOKEN_POLICIES" ]; then
-    TOKEN_POLICIES="consul-tls-policy"
+    TOKEN_POLICIES="consul-tls-policy,metrics-tls-policy"
 fi
 
 TOKEN_POLICIES_PARAMS=""

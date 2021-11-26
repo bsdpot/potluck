@@ -16,6 +16,7 @@ if [ "$((NEW_ENDDATE - OLD_ENDDATE))" -gt 10 ]; then
     service consul-template stop; sleep 1;
     service consul-template restart"
   #service patroni reload
-  /usr/local/bin/patronictl -c /usr/local/etc/patroni/patroni.yml reload postgresql --force
+  /usr/local/bin/patronictl -c /usr/local/etc/patroni/patroni.yml reload \
+    postgresql --force
 fi
 exit 0

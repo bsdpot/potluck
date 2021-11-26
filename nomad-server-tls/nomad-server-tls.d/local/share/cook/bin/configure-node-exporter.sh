@@ -10,7 +10,8 @@ echo "tls_server_config:
 
 # done in cook script before unwrap credentials
 ## add node_exporter user
-#/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+#/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \
+#  -s /usr/bin/nologin -h -
 
 # enable node_exporter service
 service node_exporter enable

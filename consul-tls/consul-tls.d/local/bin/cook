@@ -86,8 +86,10 @@ log "Patching and cloning consul-template rc scripts"
 sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
 'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template
 
-# create nodeexport user, needed for chown, removed from config node_exporter script
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+# create nodeexport user, needed for chown, removed from config
+# node_exporter script
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \
+  -s /usr/bin/nologin -h -
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
@@ -113,6 +115,13 @@ unwrap-metrics-credentials.sh
 log "Configure consul-template"
 configure-consul-template.sh
 
+log "Setup node_exporter"
+configure-node-exporter.sh
+
+# start early, as consul-template will restart it
+log "Start node_exporter"
+service node_exporter start
+
 log "Starting consul-template"
 service consul-template start
 
@@ -135,16 +144,10 @@ setup-local-unbound.sh
 log "Symlink helper scripts"
 ln -s /usr/local/share/cook/bin/consul.sh /root/consul.sh
 
-# setup node exporter
-log "Setup node_exporter"
-configure-node-exporter.sh
-
-# syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
+# syslog-ng start is set in the script because it won't run if REMOTELOG
+# is empty or null
 log "Setup and start syslog-ng"
-#configure-syslog-ng.sh
+configure-syslog-ng.sh
 
-# make sure we start node_exporter
-log "Start node_exporter"
-service node_exporter start
-
+log "Exit seasoned"
 pot_seasoned_exit

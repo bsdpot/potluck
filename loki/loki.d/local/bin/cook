@@ -49,7 +49,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS ATTL BTTL"
-#optional_args="REMOTEIP"
+optional_args="IP" # hack, might bring back REMOTEIP
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -58,12 +58,12 @@ for var in $required_args; do
   fi
 done
 
-#for var in $optional_args; do
-#  if [ -z "$(eval echo "\${$var}")" ]; then
-#    log "Optional $var is unset - see documentation to configure this flavour."
-#    eval $var=null
-#  fi
-#done
+for var in $optional_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "Optional $var is unset - see documentation to configure this flavour."
+    eval $var=null
+  fi
+done
 
 ########################################################################
 ## Provision image
@@ -83,9 +83,11 @@ log "Patching consul-template rc scripts"
 sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
 'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
 
-# create nodeexport user, needed for chown, removed from config node_exporter script
+# create nodeexport user, needed for chown, removed from config
+# node_exporter script
 log "Create nodeexport user"
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \
+  -s /usr/bin/nologin -h -
 
 # add group for accessing certs (shared between services)
 log "Create certaccess group"
@@ -130,6 +132,13 @@ log "Unwrap metrics credentials"
 log "Configure consul-template"
 configure-consul-template.sh
 
+log "Setup node_exporter"
+#configure-node-exporter.sh
+
+# start early, as consul-template will restart it
+log "Start node_exporter"
+#service node_exporter start
+
 log "Starting consul-template"
 service consul-template start
 
@@ -153,19 +162,12 @@ log "Wait until we are able to resolve consul"
 timeout --foreground 120 \
   sh -c 'while ! host consul.service.consul; do sleep 5; done'
 
-# setup metrics pki stuff
 log "Configure metrics certificates"
 #configure-metrics.sh
 
-# setup loki
 log "Configure loki and promtail"
 configure-loki.sh
 
-# setup node exporter
-log "Setup node_exporter"
-#configure-node-exporter.sh
-
-# setup consul-template for metrics
 log "Start consul-template-metrics"
 #service consul-template-metrics start
 
@@ -182,13 +184,10 @@ timeout --foreground 120 \
     sleep 5; service promtail start || true; sleep 5;
   done'
 
-# syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
+# syslog-ng start is set in the script because it won't run if REMOTELOG
+# is empty or null
 log "Setup and start syslog-ng"
 #configure-syslog-ng.sh
 
-# start node_exporter
-log "Start node_exporter"
-service node_exporter start
-
-# exit seasoned
+log "Exit seasoned"
 pot_seasoned_exit

@@ -15,9 +15,10 @@
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
-# Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
-# You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script
+# Set this to true if this jail flavour is to be created as a nomad
+# (i.e. blocking) jail.
+# You can then query it in the cook script generation below and the script
+# is installed appropriately at the end of this script
 RUNS_IN_NOMAD=false
 
 # set the cook log path/filename
@@ -121,7 +122,8 @@ step "Install package python-consul2"
 # this version gives error
 pkg install -y py38-python-consul2
 
-# using pip to install this package, as pkg removes postgres13 now, and installs postgres12 client as dependency
+# using pip to install this package, as pkg removes postgres13 now,
+# and installs postgres12 client as dependency
 #step "Install package psycopg2"
 #pkg install -y py38-psycopg2
 
@@ -157,7 +159,7 @@ pip install patroni --prefix="/usr/local"
 #
 ## WARNING: The scripts patroni, patroni_aws, patroni_raft_controller,
 ## patroni_wale_restore and patronictl are installed in
-## '--prefix=/usr/local/bin' which is not on PATH.
+## '--prefix=/usr/local/bin' which is not in PATH.
 ## Consider adding this directory to PATH or, if you prefer to suppress
 ## this warning, use --no-warn-script-location.
 
@@ -250,7 +252,8 @@ then
   step "Enable cook service"
   # This is a non-nomad (non-blocking) jail, so we need to make sure the script
   # gets started when the jail is started:
-  # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
+  # Otherwise, /usr/local/bin/cook will be set as start script by the pot
+  # flavour
   echo "enabling cook" | tee -a $COOKLOG
   service cook enable
 fi

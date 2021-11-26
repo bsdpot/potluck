@@ -19,12 +19,15 @@ enable_agent_tls_for_checks = true
 start_join = [ %%consulservers%% ]
 services = {
   name = "node-exporter"
-  tags = ["_app=vault", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=vault", "_service=node-exporter",
+          "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
 services = {
   name = "postgres-exporter"
-  tags = ["_app=postgresql", "_service=postgres-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"]
+  tags = ["_app=postgresql", "_service=postgres-exporter",
+          "_hostname=%%nodename%%.%%datacenter%%.consul",
+          "_datacenter=%%datacenter%%"]
   port = 9187
 }
 telemetry = {

@@ -132,6 +132,10 @@ unwrap-consul-credentials.sh
 log "Configure consul-template"
 configure-consul-template.sh
 
+# start early, as consul-template will restart it
+log "Start node_exporter"
+service node_exporter start
+
 log "Starting consul-template"
 service consul-template start
 
@@ -155,43 +159,33 @@ log "Wait until we are able to resolve consul"
 timeout --foreground 120 \
   sh -c 'while ! host consul.service.consul; do sleep 5; done'
 
-# setup node_exporter
 log "Unwrap metrics credentials"
 unwrap-metrics-credentials.sh
 
-# setup metrics pki stuff
 log "Configure metrics certificates"
 configure-metrics.sh
 
-# setup prometheus goes here
 log "Setup prometheus"
 configure-prometheus.sh
 
-# setup node exporter
 log "Setup node_exporter"
 configure-node-exporter.sh
 
-# setup consul-template for metrics
 log "Start consul-template-metrics"
 service consul-template-metrics start
 
-# start prometheus
 log "Start prometheus"
 service prometheus start
 
-# start alertmanager
 log "Start alertmanager"
 service alertmanager start
 
-# syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
+# syslog-ng start is set in the script because it won't run if REMOTELOG
+# is empty or null
 log "Setup and start syslog-ng"
 configure-syslog-ng.sh
 
-# make sure we start node_exporter
-log "Start node_exporter"
-service node_exporter start
-
-# exit seasoned
+log "Exit seasoned"
 pot_seasoned_exit
 
 

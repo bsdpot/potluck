@@ -18,7 +18,8 @@ encrypt = "%%gossipkey%%"
 start_join = [ %%consulservers%% ]
 service = {
   name = "node-exporter"
-  tags = ["_app=vault", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=vault", "_service=node-exporter",
+          "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
 acl = {

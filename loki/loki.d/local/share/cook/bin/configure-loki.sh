@@ -57,7 +57,8 @@ v2.2.1/promtail-freebsd-amd64.zip --output=/root/promtail-freebsd-amd64.zip
 if [ -f /root/promtail-freebsd-amd64.zip ]; then
     unzip promtail-freebsd-amd64.zip
     if [ -f /root/promtail-freebsd-amd64 ]; then
-        cp -f /root/promtail-freebsd-amd64 /usr/local/bin/promtail-freebsd-amd64
+        cp -f /root/promtail-freebsd-amd64 \
+          /usr/local/bin/promtail-freebsd-amd64
         chmod a+x /usr/local/bin/promtail-freebsd-amd64
         ln -s /usr/local/bin/promtail-freebsd-amd64 /usr/local/bin/promtail
         rm -rf /root/promtail-freebsd-amd64

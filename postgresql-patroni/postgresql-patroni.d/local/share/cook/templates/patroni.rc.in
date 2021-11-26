@@ -16,7 +16,8 @@ history_cmd="patroni_history"
 extra_commands="list history"
 
 load_rc_config patroni
-load_rc_config postgresql # load postgres configuration for user and group permission
+# load postgres configuration for user and group permission
+load_rc_config postgresql
 : ${patroni_enable:=no}
 : ${patroni_config:="/usr/local/etc/patroni/patroni.yml"}
 : ${patroni_pid:="/tmp/patroni.pid"}
@@ -35,9 +36,12 @@ patroni_start()
   # -R 10 restart after 10s when patroni denied
   # -P daemon pidfile
   # -T syslog Tag
-  ${daemon_cmd} -c -S -R 10 -u ${postgresql_user} -P ${patroni_pid} -T ${name} ${patroni_cmd} ${patroni_config}
+  ${daemon_cmd} -c -S -R 10 -u ${postgresql_user} -P ${patroni_pid} \
+    -T ${name} ${patroni_cmd} ${patroni_config}
   # this doesn't work, while the above line does
-  #/usr/bin/su - postgres -c '/usr/sbin/daemon -c -S -R 10 -P /var/run/patroni.pid -T patroni /usr/local/bin/patroni /usr/local/etc/patroni/patroni.yml'
+  #/usr/bin/su - postgres -c '/usr/sbin/daemon -c -S -R 10 \
+  # -P /var/run/patroni.pid -T patroni /usr/local/bin/patroni \
+  # /usr/local/etc/patroni/patroni.yml'
 }
 
 patroni_stop()
