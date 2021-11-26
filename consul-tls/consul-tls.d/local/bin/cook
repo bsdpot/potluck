@@ -91,7 +91,7 @@ sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
-mkdir -p /mnt/certs/hash
+mkdir -p /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
 mkdir -p /mnt/metricscerts/hash

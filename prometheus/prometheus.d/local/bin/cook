@@ -106,6 +106,7 @@ log "Add nodeexport user to certaccess group"
 # setup directories for persistent storage and certificate usage
 log "Creating directories for persistent storage and certificate usage"
 mkdir -p /mnt/templates
+mkdir -p /mnt/certs
 chown -R prometheus /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts

@@ -83,6 +83,7 @@ pkg install -y consul-template
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
+mkdir -p /mnt/certs
 chown -R nomad /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts

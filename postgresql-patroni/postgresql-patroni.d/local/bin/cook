@@ -90,6 +90,7 @@ log "Create nodeexport user"
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
+mkdir -p /mnt/certs
 chown -R postgres /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts

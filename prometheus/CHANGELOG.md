@@ -1,3 +1,9 @@
+0.9.27
+
+* Fixing missing certs directory
+
+---
+
 0.9.26
 
 * Adding syslog-ng back

@@ -1,3 +1,9 @@
+0.1.1
+
+* Fixing missing certs directory
+
+---
+
 0.1.0
 
 * Big update for hashcluster changes

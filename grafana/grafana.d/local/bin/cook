@@ -106,6 +106,7 @@ chown -R grafana /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
 mkdir -p /mnt/vault
+mkdir -p /mnt/certs
 mkdir -p /mnt/metricscerts/hash
 chown -R grafana:certaccess /mnt/metricscerts
 mkdir -p /mnt/grafana

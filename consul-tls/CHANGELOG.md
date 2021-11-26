@@ -1,3 +1,9 @@
+0.1.6
+
+* Fixing certs directory to match other images
+
+---
+
 0.1.5
 
 * Adding syslog-ng back
