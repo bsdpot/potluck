@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# shellcheck disable=SC1091
+. /root/.env.cook
+
 set -e
 
 # node exporter needs tls setup
@@ -18,6 +21,7 @@ service node_exporter enable
 sysrc node_exporter_args="--web.config=/usr/local/etc/node-exporter.yml"
 sysrc node_exporter_user=nodeexport
 sysrc node_exporter_group=nodeexport
+sysrc node_exporter_listen_address="$IP:9100"
 
 # start node_exporter
 # service node_exporter start
