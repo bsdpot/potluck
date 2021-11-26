@@ -97,6 +97,7 @@ log "Create directories for vault usage"
 mkdir -p /mnt/templates
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
+mkdir -p /mnt/certs
 mkdir -p /mnt/metricscerts/hash
 mkdir -p /mnt/vault
 

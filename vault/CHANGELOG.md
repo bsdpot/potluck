@@ -1,3 +1,9 @@
+2.1.8
+
+* Fixing missing directory creation for /mnt/certs
+
+---
+
 2.1.7
 
 * Enabling syslog-ng
