@@ -89,6 +89,11 @@ log "Create nodeexport user"
 /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \
   -s /usr/bin/nologin -h -
 
+# create loki user
+log "Create loki user"
+/usr/sbin/pw useradd -n loki -c 'loki user' -m \
+  -s /usr/bin/nologin -h -
+
 # add group for accessing certs (shared between services)
 log "Create certaccess group"
 /usr/sbin/pw groupadd certaccess
@@ -98,8 +103,8 @@ log "Add nodeexport user to certaccess group"
 /usr/sbin/pw usermod nodeexport -G certaccess
 
 # add the loki user to the certaccess group
-#log "Add loki user to certaccess group"
-#/usr/sbin/pw usermod loki -G certaccess
+log "Add loki user to certaccess group"
+/usr/sbin/pw usermod loki -G certaccess
 
 # setup directories for vault usage
 mkdir -p /mnt/templates
@@ -107,7 +112,7 @@ mkdir -p /mnt/templates
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
 mkdir -p /mnt/metricscerts/hash
-#chown -R loki:certaccess /mnt/metricscerts
+chown -R loki:certaccess /mnt/metricscerts
 mkdir -p /mnt/vault
 mkdir -p /mnt/logs
 

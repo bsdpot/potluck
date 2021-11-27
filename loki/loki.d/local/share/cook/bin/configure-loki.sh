@@ -48,6 +48,9 @@ sysrc loki_syslog_output_enable="YES"
   sed "s${sep}%%ip%%${sep}$IP${sep}g" \
   > /usr/local/etc/loki-local-config.yaml
 
+# chown to loki user
+chown -R loki:loki /tmp/loki
+
 # promtail
 # download the source files
 fetch https://github.com/grafana/loki/releases/download/\
