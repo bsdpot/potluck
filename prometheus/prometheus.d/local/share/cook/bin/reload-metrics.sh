@@ -13,10 +13,7 @@ chown prometheus:certaccess /mnt/metricscerts/*
 
 # restart services
 # if sysylog-ng is enabled, then restart it
-checksyslogrc=$(service syslog-ng rcvar | grep -c YES)
-if [ "$checksyslogrc" = 1 ]; then
-    service syslog-ng restart
-fi
+service syslog-ng enabled && service syslog-ng restart
 service node_exporter restart
 service prometheus restart
 service alertmanager restart

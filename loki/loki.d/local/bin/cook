@@ -127,17 +127,17 @@ log "Unwrap consul credentials"
 unwrap-consul-credentials.sh
 
 log "Unwrap metrics credentials"
-#unwrap-metrics-credentials.sh
+unwrap-metrics-credentials.sh
 
 log "Configure consul-template"
 configure-consul-template.sh
 
 log "Setup node_exporter"
-#configure-node-exporter.sh
+configure-node-exporter.sh
 
 # start early, as consul-template will restart it
 log "Start node_exporter"
-#service node_exporter start
+service node_exporter start
 
 log "Starting consul-template"
 service consul-template start
@@ -162,14 +162,8 @@ log "Wait until we are able to resolve consul"
 timeout --foreground 120 \
   sh -c 'while ! host consul.service.consul; do sleep 5; done'
 
-log "Configure metrics certificates"
-#configure-metrics.sh
-
 log "Configure loki and promtail"
 configure-loki.sh
-
-log "Start consul-template-metrics"
-#service consul-template-metrics start
 
 # start loki and promtail
 log "Start loki and wait for it to become stable"
@@ -184,10 +178,9 @@ timeout --foreground 120 \
     sleep 5; service promtail start || true; sleep 5;
   done'
 
-# syslog-ng start is set in the script because it won't run if REMOTELOG
-# is empty or null
+# unlike in other images, this always starts, as it's the server
 log "Setup and start syslog-ng"
-#configure-syslog-ng.sh
+configure-syslog-ng.sh
 
 log "Exit seasoned"
 pot_seasoned_exit

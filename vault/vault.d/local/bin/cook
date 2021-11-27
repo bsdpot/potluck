@@ -216,10 +216,8 @@ ln -s /usr/local/share/cook/bin/cluster-vault.sh \
 log "Provision local_unbound"
 cluster-setup-local-unbound.sh
 
-# syslog-ng start is set in the script because it won't run if REMOTELOG
-# is empty or null
-log "Setup and start syslog-ng"
-cluster-configure-syslog-ng.sh
+# syslogng is configured later in the process, as it requires
+# metrics certificates
 
 log "Exit seasoned"
 pot_seasoned_exit

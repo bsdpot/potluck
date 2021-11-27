@@ -44,8 +44,11 @@ if [ ! -s /mnt/consulcerts/unwrapped.token ]; then
     chown consul /mnt/consulcerts/*
 fi
 
-# unwrap metrics credentials (if necessary=
+# unwrap metrics credentials (if necessary)
 "$SCRIPTDIR"/cluster-unwrap-metrics-credentials.sh
+
+# configure and start syslog-ng if necessary
+"$SCRIPTDIR"/cluster-configure-syslog-ng.sh
 
 GOSSIPKEY="$(cat /mnt/consulcerts/gossip.key)"
 TOKEN="$(cat /mnt/consulcerts/unwrapped.token)"
@@ -102,3 +105,4 @@ sleep 2
 service consul restart || true
 sleep 2
 service vault restart || true
+

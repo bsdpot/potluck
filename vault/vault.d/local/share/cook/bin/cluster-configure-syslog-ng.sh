@@ -20,7 +20,7 @@ sep=$'\001'
 if [ -n "$REMOTELOG" ] && [ "$REMOTELOG" != "null" ]; then
     # read in template conf file, update remote log IP address, and
     # write to correct destination
-    < "$TEMPLATEPATH/syslog-ng.conf.in" \
+    < "$TEMPLATEPATH/cluster-syslog-ng.conf.in" \
       sed "s${sep}%%remotelogip%%${sep}$REMOTELOG${sep}g" \
       > /usr/local/etc/syslog-ng.conf
 
