@@ -13,9 +13,16 @@ ln -sf ../ca_chain.crt "/mnt/metricscerts/hash/$(/usr/bin/openssl x509 \
 # change ownership again
 #chown loki:certaccess /mnt/metricscerts/*
 
-# restart services
-# if sysylog-ng is enabled, then restart it
-service syslog-ng enabled && service syslog-ng restart
+# reload/restart services
+# if sysylog-ng is enabled, then restart or reload it
+if service syslog-ng enabled; then
+    if service syslog-ng status; then
+        service syslog-ng reload
+    else
+        service syslog-ng restart
+    fi
+fi
+
 service node_exporter restart
 service loki restart
 service promtail restart
