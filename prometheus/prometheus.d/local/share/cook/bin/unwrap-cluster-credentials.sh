@@ -30,5 +30,5 @@ if [ ! -s /mnt/certs/unwrapped.token ]; then
       -client-cert=/mnt/certs/client.crt \
       -format=json "$UNSEALTOKEN" | \
       jq -r '.auth.client_token' > /mnt/certs/unwrapped.token
-    chown prometheus:certaccess /mnt/certs/*
+#    chown prometheus:certaccess /mnt/certs/*
 fi

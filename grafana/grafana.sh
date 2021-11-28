@@ -15,9 +15,10 @@
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
-# Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
-# You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script
+# Set this to true if this jail flavour is to be created as a nomad
+# (i.e. blocking) jail.
+# You can then query it in the cook script generation below and the script
+# is installed appropriately at the end of this script
 RUNS_IN_NOMAD=false
 
 # set the cook log path/filename
@@ -206,7 +207,8 @@ then
   step "Enable cook service"
   # This is a non-nomad (non-blocking) jail, so we need to make sure the script
   # gets started when the jail is started:
-  # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
+  # Otherwise, /usr/local/bin/cook will be set as start script by the pot
+  # flavour
   echo "enabling cook" | tee -a $COOKLOG
   service cook enable
 fi

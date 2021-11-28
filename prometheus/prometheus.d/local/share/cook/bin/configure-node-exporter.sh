@@ -6,7 +6,6 @@
 set -e
 
 # node exporter needs tls setup
-# caveat is prometheus is owner, need to add nodeexport user to a group?
 echo "tls_server_config:
   cert_file: /mnt/metricscerts/metrics.crt
   key_file: /mnt/metricscerts/metrics.key

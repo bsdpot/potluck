@@ -92,11 +92,13 @@ filter f_is_debug { level(debug); };
 filter f_ppp { program("ppp"); };
 
 # filter all
-filter f_all { level(debug..emerg) and not (program("devd") and level(debug..info) ); };
+filter f_all {
+  level(debug..emerg) and not (program("devd") and level(debug..info) ); };
 
 ## *.err;kern.warning;auth.notice;mail.crit      /dev/console
 # removing to remove
-# "syslog-ng[000]: Error opening file for writing; filename='/dev/console', error='No such file or directory (2)'"
+# "syslog-ng[000]: Error opening file for writing; filename='/dev/console',
+#    error='No such file or directory (2)'"
 # from spamming logs in jails
 #log { source(src); filter(f_err); destination(console); };
 #log { source(src); filter(f_kern); filter(f_warning); destination(console); };
@@ -104,7 +106,12 @@ filter f_all { level(debug..emerg) and not (program("devd") and level(debug..inf
 #log { source(src); filter(f_mail); filter(f_crit); destination(console); };
 
 # *.notice;authpriv.none;kern.debug;lpr.info;mail.crit  /var/log/messages
-log { source(src); filter(f_notice); filter(f_not_authpriv); destination(messages); };
+log {
+  source(src);
+  filter(f_notice);
+  filter(f_not_authpriv);
+  destination(messages);
+};
 log { source(src); filter(f_kern); filter(f_debug); destination(messages); };
 log { source(src); filter(f_lpr); filter(f_info); destination(messages); };
 log { source(src); filter(f_mail); filter(f_crit); destination(messages); };
@@ -141,5 +148,10 @@ log { source(src); filter(f_ppp); destination(ppp); };
 # uncomment this to enable logging to a remote loghost named loghost
 # *.*                           @loghost
 # turning flow control off
-#log { source(src); filter(f_all); destination(loghost); flags(flow-control); };
+#log {
+# source(src);
+# filter(f_all);
+# destination(loghost);
+# flags(flow-control);
+#};
 log { source(src); filter(f_all); destination(loghost); };

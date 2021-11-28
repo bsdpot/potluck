@@ -65,7 +65,8 @@ required_files="${grafana_config}"
 
 procname="/usr/local/bin/grafana-server"
 command="/usr/sbin/daemon"
-# updated to removeenv details as per https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
+# updated to removeenv details as per
+# https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
 command_args="-f ${grafana_syslog_output_flags} -p ${pidfile} -t ${name} \
         ${procname} \
         -config=${grafana_config} \
@@ -77,7 +78,8 @@ start_precmd="grafana_start_precmd"
 grafana_start_precmd()
 {
         if [ ! -d "/var/run/${name}" ]; then
-                install -d -m 0750 -o ${grafana_user} -g ${grafana_group} "/var/run/${name}"
+                install -d -m 0750 -o ${grafana_user} \
+                  -g ${grafana_group} "/var/run/${name}"
         fi
 }
 

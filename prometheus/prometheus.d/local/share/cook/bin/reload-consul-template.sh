@@ -1,7 +1,7 @@
 #!/bin/sh
 cat /mnt/certs/ca.crt /mnt/certs/ca_root.crt \
   >/mnt/certs/ca_chain.crt.tmp
-chown prometheus:certaccess /mnt/certs/*
+#chown prometheus:certaccess /mnt/certs/*
 mv /mnt/certs/ca_chain.crt.tmp /mnt/certs/ca_chain.crt
 
 NEW_ENDDATE=$(date -j -f "%b %d %T %Y %Z" \
