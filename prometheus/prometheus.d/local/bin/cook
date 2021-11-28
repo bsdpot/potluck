@@ -63,7 +63,6 @@ done
 for var in $optional_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
     log "Optional $var is unset - see documentation to configure this flavour."
-    eval "$var"=null
   fi
 done
 
