@@ -24,6 +24,7 @@ sep=$'\001'
 
 ## start prometheus config
 < "$TEMPLATEPATH/prometheus.yml.in" \
+  sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%consulservers%%${sep}$SCRAPECONSUL${sep}g" | \
   sed "s${sep}%%nomadservers%%${sep}$SCRAPENOMAD${sep}g" | \
   sed "s${sep}%%your_vault_server_here%%${sep}$VAULTSERVER${sep}g" | \
@@ -40,6 +41,7 @@ sysrc prometheus_syslog_output_enable="YES"
 ## start alertmanager config
 
 < "$TEMPLATEPATH/alertmanager.yml.in" \
+  sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%smtphostport%%${sep}$SMTPHOSTPORT${sep}g" | \
   sed "s${sep}%%smtpfrom%%${sep}$SMTPFROM${sep}g" | \
   sed "s${sep}%%smtpuser%%${sep}$SMTPUSER${sep}g" | \
@@ -49,6 +51,11 @@ sysrc prometheus_syslog_output_enable="YES"
 
 service alertmanager enable
 sysrc alertmanager_data_dir="/mnt/alertmanager"
+
+# if /mnt/altermanager does not exist, create it and set permissions
+if [ ! -d /mnt/alertmanager ]; then
+    mkdir -p /mnt/alertmanager
+fi
 chown -R alertmanager:alertmanager /mnt/alertmanager
 ## end alertmanager config
 
