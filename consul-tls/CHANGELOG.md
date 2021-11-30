@@ -18,7 +18,7 @@
 
 0.1.3
 
-* Adding metrics PKI stuff for node_exporter 
+* Adding metrics PKI stuff for node_exporter
 
 ---
 

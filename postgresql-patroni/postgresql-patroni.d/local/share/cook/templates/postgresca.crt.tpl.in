@@ -1,5 +1,6 @@
 {{ with secret "postgrespki_int/issue/postgres-cluster"
-"common_name=%%nodename%%.%%datacenter%%.postgres" "ttl=%%bttl%%"
-"alt_names=localhost,server.%%datacenter%%.postgres" "ip_sans=127.0.0.1"}}
+"common_name=%%nodename%%.global.postgres" "ttl=%%bttl%%"
+"alt_names=localhost,master.postgresql.service.consul,replica.postgresql.service.consul,standby-leader.postgresql.service.consul"
+"ip_sans=127.0.0.1,%%ip%%"}}
 {{ .Data.issuing_ca }}
 {{ end }}

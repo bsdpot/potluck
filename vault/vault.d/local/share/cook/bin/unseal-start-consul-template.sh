@@ -28,7 +28,12 @@ echo "s${sep}%%token%%${sep}$UNWRAP_TOKEN${sep}" | sed -f - -i '' \
 sysrc consul_template_syslog_output_enable=YES
 
 for name in unseal-agent.crt unseal-agent.key unseal-ca.crt; do
-    cat "$TEMPLATEPATH/$name.tpl.in" >"/mnt/templates/$name.tpl"
+    < "$TEMPLATEPATH/$name.tpl.in" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+      sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
+      sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
+      sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
+      > "/mnt/templates/$name.tpl"
 done
 
 service consul-template onestart

@@ -5,9 +5,11 @@ name: %%nodename%%
 restapi:
   listen: %%ip%%:8008
   connect_address: %%ip%%:8008
-  certfile: /mnt/postgrescerts/postgres.crt
-  keyfile: /mnt/postgrescerts/postgres.key
-  cafile: /mnt/postgrescerts/ca_chain.crt
+  # XXX: This should move to using its own certificates and some point
+  # Need to be from consul CA though, so consul can do health checks
+  certfile: /mnt/consulcerts/agent.crt
+  keyfile: /mnt/consulcerts/agent.key
+  cafile: /mnt/consulcerts/ca_chain.crt
   verify_client: required
   http_extra_headers:
     'X-Frame-Options': 'SAMEORIGIN'
@@ -18,15 +20,18 @@ restapi:
 
 ctl:
   insecure: false
-  certfile: /mnt/postgrescerts/postgres.crt
-  keyfile: /mnt/postgrescerts/postgres.key
-  cafile: /mnt/postgrescerts/ca_chain.crt
+  # These certs are used as client certs/ca to verify by patronictl
+  certfile: /mnt/consulcerts/agent.crt
+  keyfile: /mnt/consulcerts/agent.key
+  cafile: /mnt/consulcerts/ca_chain.crt
 
 consul:
-  host: %%ip%%:8500 # use local consul
-  service_tags: %%servicetag%% #master/replica/standby-leader
+  host: 127.0.0.1:8500 # use local consul
+  token: %%consultoken%%
+  # automatic - if used, make sure to use some valid array type
+  #service_tags: ["%%servicetag%%"] #master/replica/standby-leader
   register_service: true
-  service_check_interval: 15
+  service_check_interval: 15s
 
 bootstrap:
   dcs:
@@ -44,7 +49,9 @@ bootstrap:
         max_wal_senders: 5
         max_replication_slots: 5
         checkpoint_timeout: 30
-  initdb:  # Note: this needs to be a yml list (some options need values, others are switches)
+  # Note: this needs to be a yml list
+  # (some options need values, others are switches)
+  initdb:
   - encoding: UTF8
   - data-checksums
   pg_hba:  # Add following lines to pg_hba.conf after running 'initdb'
@@ -61,6 +68,8 @@ bootstrap:
       options:
         - replication
 
+# XXX: using sslmode=verify-ca instead of sslmode=verify-full
+# as postgresql doesn't look at IP address alt names
 postgresql:
   listen: %%ip%%:5432
   connect_address: %%ip%%:5432
@@ -71,29 +80,29 @@ postgresql:
     superuser:
       username: postgres
       password: %%kekpass%%
-      sslmode: verify-full
-      sslcert: /mnt/postgrescerts/postgres.crt
-      sslkey: /mnt/postgrescerts/postgres.key
+      sslmode: verify-ca
+      sslcert: /mnt/postgrescerts/postgresserver.crt
+      sslkey: /mnt/postgrescerts/postgresserver.key
       sslrootcert: /mnt/postgrescerts/ca_chain.crt
     replication:
       username: replicator
       password: %%reppass%%
-      sslmode: verify-full
-      sslcert: /mnt/postgrescerts/postgres.crt
-      sslkey: /mnt/postgrescerts/postgres.key
+      sslmode: verify-ca
+      sslcert: /mnt/postgrescerts/postgresserver.crt
+      sslkey: /mnt/postgrescerts/postgresserver.key
       sslrootcert: /mnt/postgrescerts/ca_chain.crt
     rewind:
       username: rewind_user
       password: rewind_password
-      sslmode: verify-full
-      sslcert: /mnt/postgrescerts/postgres.crt
-      sslkey: /mnt/postgrescerts/postgres.key
+      sslmode: verify-ca
+      sslcert: /mnt/postgrescerts/postgresserver.crt
+      sslkey: /mnt/postgrescerts/postgresserver.key
       sslrootcert: /mnt/postgrescerts/ca_chain.crt
   parameters:
     unix_socket_directories: '/tmp/'
     ssl: on
-    ssl_cert_file: /mnt/postgrescerts/postgres.crt
-    ssl_key_file: /mnt/postgrescerts/postgres.key
+    ssl_cert_file: /mnt/postgrescerts/postgresserver.crt
+    ssl_key_file: /mnt/postgrescerts/postgresserver.key
     ssl_ca_file: /mnt/postgrescerts/ca_chain.crt
 
 tags:

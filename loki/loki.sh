@@ -15,9 +15,10 @@
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
-# Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
-# You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script
+# Set this to true if this jail flavour is to be created as a nomad
+# (i.e. blocking) jail.
+# You can then query it in the cook script generation below and the script
+# is installed appropriately at the end of this script
 RUNS_IN_NOMAD=false
 
 # set the cook log path/filename
@@ -36,8 +37,8 @@ date >> $COOKLOG
 
 STEPCOUNT=0
 step() {
-  STEPCOUNT=$(expr "$STEPCOUNT" + 1)
-  STEP="$@"
+  STEPCOUNT=$(("$STEPCOUNT" + 1))
+  STEP="$*"
   echo "Step $STEPCOUNT: $STEP" | tee -a $COOKLOG
 }
 
@@ -48,7 +49,7 @@ exit_ok() {
 
 FAILED=" failed"
 exit_error() {
-  STEP="$@"
+  STEP="$*"
   FAILED=""
   exit 1
 }
@@ -60,9 +61,11 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
-  >/usr/local/etc/pkg/repos/FreeBSD.conf
+# only modify repo if not already done in base image
+# shellcheck disable=SC2016
+test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
 step "Touch /etc/rc.conf"
@@ -71,6 +74,7 @@ touch /etc/rc.conf
 # this is important, otherwise running /etc/rc from cook will
 # overwrite the IP address set in tinirc
 step "Remove ifconfig_epair0b from config"
+# shellcheck disable=SC2015
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 step "Disable sendmail"
@@ -85,6 +89,10 @@ mkdir -p /usr/local/etc/rc.d
 # we need consul for consul agent
 step "Install package consul"
 pkg install -y consul
+
+step "Patching consul-template rc scripts"
+sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
+'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
 
 step "Install package consul-template"
 pkg install -y consul-template
@@ -199,7 +207,8 @@ then
   step "Enable cook service"
   # This is a non-nomad (non-blocking) jail, so we need to make sure the script
   # gets started when the jail is started:
-  # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
+  # Otherwise, /usr/local/bin/cook will be set as start script by the pot
+  # flavour
   echo "enabling cook" | tee -a $COOKLOG
   service cook enable
 fi

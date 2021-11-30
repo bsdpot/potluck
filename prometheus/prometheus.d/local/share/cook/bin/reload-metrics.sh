@@ -5,18 +5,24 @@ chown prometheus:certaccess /mnt/metricscerts/*
 mv /mnt/metricscerts/ca_chain.crt.tmp /mnt/metricscerts/ca_chain.crt
 
 # we need to add hashed certificates for syslog-ng
-ln -s /mnt/metricscerts/ca_root.crt hash/$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/metricscerts/ca_root.crt).0
-ln -s /mnt/metricscerts/ca_chain.crt hash/$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/metricscerts/ca_chain.crt).0
+ln -sf ../ca_root.crt "/mnt/metricscerts/hash/$(/usr/bin/openssl x509 \
+  -subject_hash -noout -in /mnt/metricscerts/ca_root.crt).0"
+ln -sf ../ca_chain.crt "/mnt/metricscerts/hash/$(/usr/bin/openssl x509 \
+  -subject_hash -noout -in /mnt/metricscerts/ca_chain.crt).0"
 
-# set ownership again
-chown prometheus:certaccess /mnt/metricscerts/*
+# change ownership again
+chown -R prometheus:certaccess /mnt/metricscerts
 
-# restart services
-# if sysylog-ng is enabled, then restart it
-checksyslogrc=$(service syslog-ng rcvar | grep -c YES)
-if [ "$checksyslogrc" = 1 ]; then
-    service syslog-ng restart
+# reload/restart services
+# if sysylog-ng is enabled, then restart or reload it
+if service syslog-ng enabled; then
+    if service syslog-ng status; then
+        service syslog-ng reload
+    else
+        service syslog-ng restart
+    fi
 fi
+
 service node_exporter restart
 service prometheus restart
 service alertmanager restart

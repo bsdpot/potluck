@@ -1,5 +1,7 @@
 #!/bin/sh
 
+: "${TTL=10m}"
+
 set -e
 # shellcheck disable=SC3040
 set -o pipefail

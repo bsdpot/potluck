@@ -78,3 +78,23 @@ template {
   destination = "/mnt/nomadcerts/ca.crt"
   command     = "/usr/local/share/cook/bin/reload-nomad.sh"
 }
+
+template {
+  source      = "/mnt/templates/metrics.crt.tpl"
+  destination = "/mnt/metricscerts/metrics.crt"
+  backup      = true
+  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
+}
+
+template {
+  source      = "/mnt/templates/metrics.key.tpl"
+  destination = "/mnt/metricscerts/metrics.key"
+  perms       = 0640
+  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
+}
+
+template {
+  source      = "/mnt/templates/metricsca.crt.tpl"
+  destination = "/mnt/metricscerts/metricsca.crt"
+  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
+}

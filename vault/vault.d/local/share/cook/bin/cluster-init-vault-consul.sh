@@ -10,7 +10,8 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 SCRIPT=$(readlink -f "$0")
-TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+SCRIPTDIR=$(dirname "$SCRIPT")
+TEMPLATEPATH=$SCRIPTDIR/../templates
 
 if [ ! -s /mnt/consulcerts/unwrapped.token ]; then
     WRAPPED_TOKEN=$(< /mnt/consulcerts/credentials.json \
@@ -43,6 +44,12 @@ if [ ! -s /mnt/consulcerts/unwrapped.token ]; then
     chown consul /mnt/consulcerts/*
 fi
 
+# unwrap metrics credentials (if necessary)
+"$SCRIPTDIR"/cluster-unwrap-metrics-credentials.sh
+
+# configure and start syslog-ng if necessary
+"$SCRIPTDIR"/cluster-configure-syslog-ng.sh
+
 GOSSIPKEY="$(cat /mnt/consulcerts/gossip.key)"
 TOKEN="$(cat /mnt/consulcerts/unwrapped.token)"
 VAULT_SERVICE_TOKEN="$(cat /mnt/consulcerts/vault_service.token)"
@@ -73,11 +80,13 @@ if ! service consul-template-consul onestatus; then
     echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
       /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
 
-    for name in consul-agent.crt consul-agent.key consul-ca.crt; do
-        < "$TEMPLATEPATH/$name.tpl.in" \
+    for name in consul-agent.crt consul-agent.key consul-ca.crt \
+      metrics.crt metrics.key metrics-ca.crt; do
+        < "$TEMPLATEPATH/cluster-$name.tpl.in" \
           sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
           sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
           sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
+          sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
           sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
           > "/mnt/templates/$name.tpl"
     done
@@ -91,6 +100,9 @@ fi
 echo "s${sep}%%consultoken%%${sep}$VAULT_SERVICE_TOKEN${sep}g" |
   sed -i '' -f - /usr/local/etc/vault.hcl
 
+service node_exporter restart || true
+sleep 2
 service consul restart || true
 sleep 2
 service vault restart || true
+

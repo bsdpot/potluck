@@ -18,7 +18,13 @@ SCRIPTDIR=$(dirname "$SCRIPT")
 }
 service_prefix "" {
   policy = "read"
-}'
+}
+service "node-exporter" {
+  policy = "write"
+}
+'
+
+# XXX: Make node-exporter a separate policy
 
 TOKEN=$("$SCRIPTDIR"/issue-dns-request-token.sh "$NODENAME")
 

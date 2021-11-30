@@ -1,5 +1,5 @@
 {{ with secret "pki_int/issue/vault-cluster"
-"common_name=%%nodename%%.global.vaultcluster" "ttl=%%ttl%%"
+"common_name=%%nodename%%.global.vaultcluster" "ttl=%%attl%%"
 "alt_names=localhost,active.vault.service.consul,standby.vault.service.consul"
 "ip_sans=127.0.0.1,%%ip%%"}}
 {{ .Data.certificate }}

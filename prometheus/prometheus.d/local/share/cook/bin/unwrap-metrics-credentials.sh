@@ -22,8 +22,6 @@ if [ ! -s /mnt/metricscerts/unwrapped.token ]; then
     umask 177
     < /mnt/metricscerts/credentials.json \
       jq -re .key >/mnt/metricscerts/metrics.key
-    < /mnt/metricscerts/credentials.json \
-      jq -re .gossip_key >/mnt/metricscerts/gossip.key
     HOME=/var/empty \
     vault unwrap -address="https://active.vault.service.consul:8200" \
       -tls-server-name=active.vault.service.consul \
@@ -33,8 +31,9 @@ if [ ! -s /mnt/metricscerts/unwrapped.token ]; then
       -format=json "$TOKEN" | \
       jq -r '.auth.client_token' > /mnt/metricscerts/unwrapped.token
     # we need to add hashed certificates for syslog-ng
-    ln -s /mnt/metricscerts/ca_root.crt hash/$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/metricscerts/ca_root.crt).0
-    ln -s /mnt/metricscerts/ca_chain.crt hash/$(/usr/bin/openssl x509 -subject_hash -noout -in /mnt/metricscerts/ca_chain.crt).0
-    # set correct ownership
-    chown prometheus:certaccess /mnt/metricscerts/*
+    ln -sf ../ca_root.crt "/mnt/metricscerts/hash/$(/usr/bin/openssl x509 \
+      -subject_hash -noout -in /mnt/metricscerts/ca_root.crt).0"
+    ln -sf ../ca_chain.crt "/mnt/metricscerts/hash/$(/usr/bin/openssl x509 \
+      -subject_hash -noout -in /mnt/metricscerts/ca_chain.crt).0"
+    chown -R prometheus:certaccess /mnt/metricscerts
 fi

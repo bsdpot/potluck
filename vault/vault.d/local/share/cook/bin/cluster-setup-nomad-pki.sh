@@ -17,7 +17,8 @@ export VAULT_MAX_RETRIES=5
 export VAULT_CLIENT_CERT=/mnt/certs/agent.crt
 export VAULT_CLIENT_KEY=/mnt/certs/agent.key
 export VAULT_CACERT=/mnt/certs/ca_chain.crt
-
+mkdir -p /mnt/nomadcerts
+cd /mnt/nomadcerts
 vault secrets list | grep -c "^nomadpki/" || \
   vault secrets enable -path nomadpki pki
 vault secrets tune -max-lease-ttl=87600h nomadpki

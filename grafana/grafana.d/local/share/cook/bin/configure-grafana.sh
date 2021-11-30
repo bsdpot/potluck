@@ -28,7 +28,7 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
 
     # overwrite the rc file with a fixed one as per
     # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
-    < "$TEMPLATEPATH/grafana.rc.in" > /usr/local/etc/rc.d/grafana
+    cp "$TEMPLATEPATH/grafana.rc.in" /usr/local/etc/rc.d/grafana
     chmod 755 /usr/local/etc/rc.d/grafana
     # this seems to be required, grafana still crashes without it
     chmod 755 /root
@@ -38,23 +38,32 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
       sed "s${sep}%%mypromhost%%${sep}$PROMSOURCE${sep}g" | \
       sed "s${sep}%%mylokihost%%${sep}$LOKISOURCE${sep}g" | \
       sed "s${sep}%%myinfluxdatabase%%${sep}$INFLUXDATABASE${sep}g" | \
-      sed "s${sep}%%myinfluxhost%%${sep}$INFLUXDBSOURCE${sep}g" | \
-    > /mnt/grafana/provisioning/datasources/datasources.yml
+      sed "s${sep}%%myinfluxhost%%${sep}$INFLUXDBSOURCE${sep}g" \
+      > /mnt/grafana/provisioning/datasources/datasources.yml
 
     chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
 
     # copy in the dashboard.yml file to /mnt/grafana/provisioning/dashboards
-    < "$TEMPLATEPATH/dashboard.yml.in" > /mnt/grafana/provisioning/dashboards/default.yml
+    cp "$TEMPLATEPATH/dashboard.yml.in" \
+      /mnt/grafana/provisioning/dashboards/default.yml
     # include the relevant .json for actual dashboard as follows
-    # using https://raw.githubusercontent.com/rfrail3/grafana-dashboards/master/prometheus/node-exporter-freebsd.json
+    # using https://raw.githubusercontent.com/rfrail3/grafana-dashboards/\
+    # master/prometheus/node-exporter-freebsd.json
     # as source dashboard json for demo purposes
-    < "$TEMPLATEPATH/home.json.in" > /mnt/grafana/provisioning/dashboards/home.json
-    < "$TEMPLATEPATH/homelogs.json.in" > /mnt/grafana/provisioning/dashboards/homelogs.json
-    < "$TEMPLATEPATH/vault.json.in" > /mnt/grafana/provisioning/dashboards/vault.json
-    < "$TEMPLATEPATH/nomadcluster.json.in" > /mnt/grafana/provisioning/dashboards/nomadcluster.json
-    < "$TEMPLATEPATH/nomadjobs.json.in" > /mnt/grafana/provisioning/dashboards/nomadjobs.json
-    < "$TEMPLATEPATH/consulcluster.json.in" > /mnt/grafana/provisioning/dashboards/consulcluster.json
-    < "$TEMPLATEPATH/postgres.json.in" > /mnt/grafana/provisioning/dashboards/postgres.json
+    cp "$TEMPLATEPATH/home.json.in" \
+      /mnt/grafana/provisioning/dashboards/home.json
+    cp "$TEMPLATEPATH/homelogs.json.in" \
+      /mnt/grafana/provisioning/dashboards/homelogs.json
+    cp "$TEMPLATEPATH/vault.json.in" \
+      /mnt/grafana/provisioning/dashboards/vault.json
+    cp "$TEMPLATEPATH/nomadcluster.json.in" \
+      /mnt/grafana/provisioning/dashboards/nomadcluster.json
+    cp "$TEMPLATEPATH/nomadjobs.json.in" \
+      /mnt/grafana/provisioning/dashboards/nomadjobs.json
+    cp "$TEMPLATEPATH/consulcluster.json.in" \
+      /mnt/grafana/provisioning/dashboards/consulcluster.json
+    cp "$TEMPLATEPATH/postgres.json.in" \
+      /mnt/grafana/provisioning/dashboards/postgres.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/
@@ -65,7 +74,7 @@ else
 
     # overwrite the rc file with a fixed one as per
     # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
-    < "$TEMPLATEPATH/grafana.rc.in" > /usr/local/etc/rc.d/grafana
+    cp "$TEMPLATEPATH/grafana.rc.in" /usr/local/etc/rc.d/grafana
     chmod 755 /usr/local/etc/rc.d/grafana
     # this seems to be required, grafana still crashes without it
     chmod 755 /root
@@ -75,23 +84,32 @@ else
       sed "s${sep}%%mypromhost%%${sep}$PROMSOURCE${sep}g" | \
       sed "s${sep}%%mylokihost%%${sep}$LOKISOURCE${sep}g" | \
       sed "s${sep}%%myinfluxdatabase%%${sep}$INFLUXDATABASE${sep}g" | \
-      sed "s${sep}%%myinfluxhost%%${sep}$INFLUXDBSOURCE${sep}g" | \
-    > /mnt/grafana/provisioning/datasources/datasources.yml
+      sed "s${sep}%%myinfluxhost%%${sep}$INFLUXDBSOURCE${sep}g" \
+      > /mnt/grafana/provisioning/datasources/datasources.yml
 
     chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
 
     # copy in the dashboard.yml file to /mnt/grafana/provisioning/dashboards
-    < "$TEMPLATEPATH/dashboard.yml.in" > /mnt/grafana/provisioning/dashboards/default.yml
+    cp "$TEMPLATEPATH/dashboard.yml.in" \
+      /mnt/grafana/provisioning/dashboards/default.yml
     # include the relevant .json for actual dashboard as follows
-    # using https://raw.githubusercontent.com/rfrail3/grafana-dashboards/master/prometheus/node-exporter-freebsd.json
+    # using https://raw.githubusercontent.com/rfrail3/grafana-dashboards/\
+    # master/prometheus/node-exporter-freebsd.json
     # as source dashboard json for demo purposes
-    < "$TEMPLATEPATH/home.json.in" > /mnt/grafana/provisioning/dashboards/home.json
-    < "$TEMPLATEPATH/homelogs.json.in" > /mnt/grafana/provisioning/dashboards/homelogs.json
-    < "$TEMPLATEPATH/vault.json.in" > /mnt/grafana/provisioning/dashboards/vault.json
-    < "$TEMPLATEPATH/nomadcluster.json.in" > /mnt/grafana/provisioning/dashboards/nomadcluster.json
-    < "$TEMPLATEPATH/nomadjobs.json.in" > /mnt/grafana/provisioning/dashboards/nomadjobs.json
-    < "$TEMPLATEPATH/consulcluster.json.in" > /mnt/grafana/provisioning/dashboards/consulcluster.json
-    < "$TEMPLATEPATH/postgres.json.in" > /mnt/grafana/provisioning/dashboards/postgres.json
+    cp "$TEMPLATEPATH/home.json.in" \
+      /mnt/grafana/provisioning/dashboards/home.json
+    cp "$TEMPLATEPATH/homelogs.json.in" \
+      /mnt/grafana/provisioning/dashboards/homelogs.json
+    cp "$TEMPLATEPATH/vault.json.in" \
+      /mnt/grafana/provisioning/dashboards/vault.json
+    cp "$TEMPLATEPATH/nomadcluster.json.in" \
+      /mnt/grafana/provisioning/dashboards/nomadcluster.json
+    cp "$TEMPLATEPATH/nomadjobs.json.in" \
+      /mnt/grafana/provisioning/dashboards/nomadjobs.json
+    cp "$TEMPLATEPATH/consulcluster.json.in" \
+      /mnt/grafana/provisioning/dashboards/consulcluster.json
+    cp "$TEMPLATEPATH/postgres.json.in" \
+      /mnt/grafana/provisioning/dashboards/postgres.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/
@@ -102,7 +120,7 @@ fi
 < "$TEMPLATEPATH/grafana.conf.in" \
   sed "s${sep}%%grafanauser%%${sep}$GRAFANAUSER${sep}g" | \
   sed "s${sep}%%grafanapassword%%${sep}$GRAFANAPASSWORD${sep}g" \
-> /usr/local/etc/grafana.conf
+  > /usr/local/etc/grafana.conf
 
 # enable grafana service
 service grafana enable

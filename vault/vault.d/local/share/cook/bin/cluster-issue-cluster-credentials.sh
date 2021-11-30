@@ -4,7 +4,7 @@ CERT_NODENAME="$1"
 CERT_IPS="$2"
 CERT_ALT_NAMES="$3"
 TOKEN_POLICIES="$4"
-CERT_TIMETOLIVE="$5"
+CERT_TTL="$5"
 
 trap "echo \$STEP failed" EXIT
 
@@ -31,8 +31,8 @@ for policy in $(echo "$TOKEN_POLICIES" | tr ',' ' '); do
     TOKEN_POLICIES_PARAMS="$TOKEN_POLICIES_PARAMS -policy=$policy"
 done
 
-if [ -z "$CERT_TIMETOLIVE" ]; then
-    CERT_TIMETOLIVE="10m"
+if [ -z "$CERT_TTL" ]; then
+    CERT_TTL="10m"
 fi
 
 set -e
@@ -55,7 +55,7 @@ CA_ROOT=$(vault read pki/cert/ca | jq -e ".data.certificate")
 STEP="Issue Client Certificate"
 CERT_JSON=$(vault write pki_int/issue/vault-cluster \
   common_name="$CERT_NODENAME.global.vaultcluster" \
-  ttl="$CERT_TIMETOLIVE" \
+  ttl="$CERT_TTL" \
   alt_names="$CERT_ALT_NAMES" \
   ip_sans="$CERT_IPS")
 

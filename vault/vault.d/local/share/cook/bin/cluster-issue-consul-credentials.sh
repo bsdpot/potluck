@@ -2,12 +2,13 @@
 
 CERT_NODENAME="$1"
 CERT_DATACENTER="$2"
-CERT_TIMETOLIVE="$3"
+CERT_IPS="$3"
+CERT_TTL="$4"
 
 trap "echo \$STEP failed" EXIT
 
-if [ -z "$CERT_NODENAME" ]; then
-    2>&1 echo "Usage: $0 cert_nodename [cert_ips] [alt_names] [policies] [ttl]"
+if [ -z "$CERT_NODENAME" ] || [ -z "$CERT_DATACENTER" ]; then
+    2>&1 echo "Usage: $0 cert_nodename datacenter [cert_ips] [ttl]"
     exit 1
 fi
 
@@ -20,7 +21,7 @@ if [ -z "$CERT_ALT_NAMES" ]; then
 fi
 
 if [ -z "$TOKEN_POLICIES" ]; then
-    TOKEN_POLICIES="consul-tls-policy"
+    TOKEN_POLICIES="consul-tls-policy,metrics-tls-policy"
 fi
 
 TOKEN_POLICIES_PARAMS=""
@@ -28,8 +29,8 @@ for policy in $(echo "$TOKEN_POLICIES" | tr ',' ' '); do
     TOKEN_POLICIES_PARAMS="$TOKEN_POLICIES_PARAMS -policy=$policy"
 done
 
-if [ -z "$CERT_TIMETOLIVE" ]; then
-    CERT_TIMETOLIVE="12m"
+if [ -z "$CERT_TTL" ]; then
+    CERT_TTL="10m"
 fi
 
 set -e
@@ -52,7 +53,7 @@ CA_ROOT=$(vault read consulpki/cert/ca | jq -e ".data.certificate")
 STEP="Issue Client Certificate"
 CERT_JSON=$(vault write consulpki_int/issue/consul-cluster \
   common_name="$CERT_NODENAME.$CERT_DATACENTER.consul" \
-  ttl="$CERT_TIMETOLIVE" \
+  ttl="$CERT_TTL" \
   alt_names="$CERT_ALT_NAMES" \
   ip_sans="$CERT_IPS")
 

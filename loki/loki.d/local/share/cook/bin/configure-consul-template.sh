@@ -24,22 +24,17 @@ chmod 600 \
 echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
   /usr/local/etc/consul-template.d/consul-template.hcl
 
-for name in client.crt client.key ca.crt; do
-  < "$TEMPLATEPATH/$name.tpl.in" \
-    sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-    sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-    sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
-    sed "s${sep}%%attl%%${sep}$ATTL${sep}g" \
-    > "/mnt/templates/$name.tpl"
-done
-
-for othername in consulagent.crt consulagent.key consulca.crt; do
-  < "$TEMPLATEPATH/$othername.tpl.in" \
-    sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-    sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-    sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
-    sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
-    > "/mnt/templates/$othername.tpl"
+# attl is the shorter TTL, e.g. 10m, bttl is the longer TTL, e.g. 12m
+for name in client.crt client.key ca.crt \
+  consulagent.crt consulagent.key consulca.crt \
+  metrics.crt metrics.key metricsca.crt; do
+    < "$TEMPLATEPATH/$name.tpl.in" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+      sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
+      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
+      sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
+      sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
+      > "/mnt/templates/$name.tpl"
 done
 
 sysrc consul_template_syslog_output_enable=YES

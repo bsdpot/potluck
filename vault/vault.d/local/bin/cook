@@ -75,7 +75,6 @@ done
 for var in $optional_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
     log "Optional $var is unset - see documentation to configure this flavour."
-    eval $var=null
   fi
 done
 
@@ -86,15 +85,9 @@ done
 service vault onestop || true
 killall -9 vault || true
 
-log "Installing consul-template"
-pkg install -y consul-template
-
-log "Patching consul-template rc scripts"
-sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
-'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
-
 log "Create directories for vault usage"
 mkdir -p /mnt/templates
+mkdir -p /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
 mkdir -p /mnt/certs
@@ -171,8 +164,10 @@ fi
 export VAULT_CLIENT_TIMEOUT=300s
 export VAULT_MAX_RETRIES=5
 
-# create nodeexport user, needed for chown, removed from config node_exporter script
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+# create nodeexport user, needed for chown, removed from config
+# node_exporter script
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \
+  -s /usr/bin/nologin -h -
 
 log "Unwrap unseal credentials"
 cluster-unwrap-unseal-credentials.sh
@@ -186,20 +181,15 @@ cluster-configure-consul.sh
 log "Start consul (won't keep running)"
 service consul start
 
-log "Unwrap metrics credentials"
-unwrap-metrics-credentials.sh
-
-log "Configure metrics certificates"
-configure-metrics.sh
-
 log "Setup node_exporter"
-configure-node-exporter.sh
+cluster-configure-node-exporter.sh
+
+# start early - not strictly necessary, but in line with other images
+log "Start node_exporter"
+service node_exporter start
 
 log "Start consul-template-unseal"
 service consul-template-unseal start
-
-log "Start consul-template-metrics"
-service consul-template-metrics start
 
 log "Start Vault"
 timeout --foreground 120 \
@@ -218,15 +208,11 @@ ln -s /usr/local/share/cook/bin/cluster-vault.sh \
 log "Provision local_unbound"
 cluster-setup-local-unbound.sh
 
-# syslog-ng start is set in the script because it won't run if REMOTELOG is empty or null
-log "Setup and start syslog-ng"
-configure-syslog-ng.sh
+# syslogng is configured later in the process, as it requires
+# metrics certificates
 
-log "Start node_exporter"
-service node_exporter start
-
+log "Exit seasoned"
 pot_seasoned_exit
-
 
 # setup role
 #/usr/local/bin/vault write -address="$LOCAL_VAULT" \

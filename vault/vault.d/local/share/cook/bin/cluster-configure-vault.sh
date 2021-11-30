@@ -75,23 +75,14 @@ chmod 600 \
 echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
   /usr/local/etc/consul-template-unseal.d/consul-template-unseal.hcl
 
-< "$TEMPLATEPATH/cluster-unseal-client.crt.tpl.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-  sed "s${sep}%%attl%%${sep}$ATTL${sep}g" \
-  > /mnt/templates/unseal-client.crt.tpl
-
-< "$TEMPLATEPATH/cluster-unseal-client.key.tpl.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-  sed "s${sep}%%attl%%${sep}$ATTL${sep}g" \
-  > /mnt/templates/unseal-client.key.tpl
-
-< "$TEMPLATEPATH/cluster-unseal-ca.crt.tpl.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-  sed "s${sep}%%attl%%${sep}$ATTL${sep}g" \
-  > /mnt/templates/unseal-ca.crt.tpl
+for name in unseal-client.crt unseal-client.key unseal-ca.crt; do
+    < "$TEMPLATEPATH/cluster-$name.tpl.in" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+      sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
+      sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
+      sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
+      > "/mnt/templates/$name.tpl"
+done
 
 echo "Enabling and starting consul-template-unseal"
 sysrc consul_template_unseal_syslog_output_enable=YES

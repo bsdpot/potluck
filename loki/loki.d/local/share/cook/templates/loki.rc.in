@@ -37,8 +37,8 @@ rcvar=loki_enable
 load_rc_config $name
 
 : ${loki_enable:="NO"}
-: ${loki_user:="root"}
-: ${loki_group:="wheel"}
+: ${loki_user:="loki"}
+: ${loki_group:="loki"}
 : ${loki_config:="/usr/local/etc/loki-local-config.yaml"}
 : ${loki_syslog_output_enable:="NO"}
 : ${loki_args:=""}
@@ -70,7 +70,8 @@ start_precmd="loki_start_precmd"
 loki_start_precmd()
 {
         if [ ! -d "/var/run/${name}" ]; then
-                install -d -m 0750 -o ${loki_user} -g ${loki_group} "/var/run/${name}"
+                install -d -m 0750 -o ${loki_user} -g ${loki_group} \
+                  "/var/run/${name}"
         fi
 }
 

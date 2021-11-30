@@ -20,7 +20,7 @@ verify_incoming_rpc = true
 enable_syslog = true
 leave_on_terminate = true
 log_level = "WARN"
-node_name = "%%nodename%%"
+node_name = "%%nodename%%.%%datacenter%%.consul"
 translate_wan_addrs = true
 ui_config = {
   enabled= true
@@ -36,7 +36,8 @@ telemetry = {
 }
 service = {
   name = "node-exporter"
-  tags = ["_app=consul", "_service=node-exporter", "_hostname=%%nodename%%"]
+  tags = ["_app=consul", "_service=node-exporter",
+          "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
 acl = {

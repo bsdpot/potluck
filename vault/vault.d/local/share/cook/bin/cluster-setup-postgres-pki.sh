@@ -9,7 +9,8 @@ set -o pipefail
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
-
+mkdir -p /mnt/postgrescerts
+cd /mnt/postgrescerts
 export PATH=/usr/local/bin:$PATH
 export VAULT_ADDR=https://active.vault.service.consul:8200
 export VAULT_CLIENT_TIMEOUT=300s
@@ -41,7 +42,7 @@ vault read postgrespki/cert/ca_int ||
   )
 vault read postgrespki_int/roles/postgres-cluster || vault write \
   postgrespki_int/roles/postgres-cluster \
-  allowed_domains="global.postgres" \
+  allowed_domains="global.postgres,postgresql.service.consul" \
   allow_subdomains=true max_ttl=86400s \
   require_cn=false generate_lease=true
 vault policy list | grep -c "^postgres-tls-policy\$" ||

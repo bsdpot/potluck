@@ -4,7 +4,7 @@ TOKEN_POLICIES="$1"
 TOKEN_DESCRIPTION="$2"
 
 if [ -z "$TOKEN_POLICIES" ] || [ -z "$TOKEN_DESCRIPTION" ]; then
-    2>&1 echo "Usage: $0 cert_nodename policies description"
+    2>&1 echo "Usage: $0 policies description"
     exit 1
 fi
 

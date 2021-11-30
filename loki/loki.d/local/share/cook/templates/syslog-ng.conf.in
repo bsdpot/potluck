@@ -23,9 +23,11 @@ source src {
 };
 
 # network sources
-# for every 100 max connections, add 10000 log-fifo-size to destination, plus 10000 for local
-# so 300 max connections is (30000+10000) or log-fifo-size of 40000
-# https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/53
+# for every 100 max connections, add 10000 log-fifo-size to destination,
+# plus 10000 for local # so 300 max connections is (30000+10000) or
+# log-fifo-size of 40000
+# https://www.syslog-ng.com/technical-documents/doc/\
+# syslog-ng-open-source-edition/3.19/administration-guide/53
 source mynetwork {
  tcp(
   ip(0.0.0.0)
@@ -68,8 +70,8 @@ destination loghost {
   tls(
    key-file("/mnt/metricscerts/metrics.key")
    cert-file("/mnt/metricscerts/metrics.crt")
-   ca_dir("/mnt/metricscerts/hash") 
-   ca-file("/mnt/mericscerts/ca_chain.crt")
+   ca-dir("/mnt/metricscerts/hash")
+   ca-file("/mnt/metricscerts/ca_chain.crt")
    peer-verify(required-trusted)
   )
  );
@@ -113,12 +115,14 @@ filter f_is_debug { level(debug); };
 # program filters
 filter f_ppp { program("ppp"); };
 
-# all filter
-filter f_all { level(debug..emerg) and not (program("devd") and level(debug..info)); };
+# filter all
+filter f_all {
+  level(debug..emerg) and not (program("devd") and level(debug..info) ); };
 
 ## *.err;kern.warning;auth.notice;mail.crit      /dev/console
 # removing to remove
-# "syslog-ng[000]: Error opening file for writing; filename='/dev/console', error='No such file or directory (2)'" 
+# "syslog-ng[000]: Error opening file for writing; filename='/dev/console',
+#    error='No such file or directory (2)'"
 # from spamming logs in jails
 #log { source(src); filter(f_err); destination(console); };
 #log { source(src); filter(f_kern); filter(f_warning); destination(console); };
@@ -126,7 +130,12 @@ filter f_all { level(debug..emerg) and not (program("devd") and level(debug..inf
 #log { source(src); filter(f_mail); filter(f_crit); destination(console); };
 
 # *.notice;authpriv.none;kern.debug;lpr.info;mail.crit  /var/log/messages
-log { source(src); filter(f_notice); filter(f_not_authpriv); destination(messages); };
+log {
+  source(src);
+  filter(f_notice);
+  filter(f_not_authpriv);
+  destination(messages);
+};
 log { source(src); filter(f_kern); filter(f_debug); destination(messages); };
 log { source(src); filter(f_lpr); filter(f_info); destination(messages); };
 log { source(src); filter(f_mail); filter(f_crit); destination(messages); };
@@ -158,7 +167,12 @@ log { source(src); filter(f_emerg); destination(allusers); };
 
 # uncomment this to enable logging to a remote loghost named loghost
 # *.*                           @loghost
-#log { source(src); filter(f_all); destination(loghost); flags(flow-control); };
+#log {
+# source(src);
+# filter(f_all);
+# destination(loghost);
+# flags(flow-control);
+#};
 log { source(src); filter(f_all); destination(loghost); };
 
 # !ppp

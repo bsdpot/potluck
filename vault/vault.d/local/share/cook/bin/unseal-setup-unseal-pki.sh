@@ -1,5 +1,7 @@
 #!/bin/sh
 
+: "${TTL:=10m}"
+
 set -e
 # shellcheck disable=SC3040
 set -o pipefail
@@ -40,15 +42,15 @@ vault read pki_int/roles/vault-unseal || vault write \
 vault policy list | grep -c "^tls-policy\$" ||
   vault policy write tls-policy "$TEMPLATEPATH/unseal-tls-policy.hcl.in"
 
-TOKEN=$(vault token create -policy="tls-policy" -period=10m \
+TOKEN=$(vault token create -policy="tls-policy" -period="$TTL" \
   -orphan -format json | jq -r ".auth.client_token")
 
 JSON=$(VAULT_TOKEN="$TOKEN" \
        vault write -format=json pki_int/issue/vault-unseal \
          common_name=server.global.vaultunseal \
          ttl="$TTL" \
-          alt_names=localhost \
-          ip_sans=127.0.0.1 \
+         alt_names=localhost \
+         ip_sans=127.0.0.1 \
       )
 
 (echo "$JSON" | jq -r ".data.ca_chain[]"; echo) >/mnt/unsealcerts/ca.crt
