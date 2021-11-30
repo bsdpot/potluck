@@ -120,6 +120,10 @@ pw usermod vault -G daemon
 step "Install package consul-template"
 pkg install -y consul-template
 
+step "Patching consul-template rc scripts"
+sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
+'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
+
 step "Clean package installation"
 pkg autoremove -y
 pkg clean -y

@@ -76,14 +76,6 @@ timeout --foreground 10 \
 killall -9 consul || true
 /usr/local/etc/rc.d/postgresql onestop || true
 
-# install consul-template
-log "Installing consul-template"
-pkg install -y consul-template
-
-log "Patching consul-template rc scripts"
-sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
-'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
-
 # create nodeexport user, needed for chown, removed from config 
 # node_exporter script
 log "Create nodeexport user"

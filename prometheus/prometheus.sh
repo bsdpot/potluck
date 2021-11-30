@@ -96,6 +96,10 @@ pkg install -y consul
 step "Install package consul-template"
 pkg install -y consul-template
 
+step "Patching consul-template rc scripts"
+sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
+'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
+
 step "Install package prometheus"
 pkg install -y prometheus
 

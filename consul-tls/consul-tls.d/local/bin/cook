@@ -77,14 +77,6 @@ done
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
-# install consul-template
-log "Installing consul-template"
-pkg install -y consul-template
-
-log "Patching and cloning consul-template rc scripts"
-sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
-'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template
-
 # create nodeexport user, needed for chown, removed from config
 # node_exporter script
 /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \

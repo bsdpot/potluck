@@ -76,10 +76,6 @@ done
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
-# install consul-template
-log "Installing consul-template"
-pkg install -y consul-template
-
 # setup directories for vault usage
 mkdir -p /mnt/templates
 mkdir -p /mnt/certs

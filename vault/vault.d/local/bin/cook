@@ -85,13 +85,6 @@ done
 service vault onestop || true
 killall -9 vault || true
 
-log "Installing consul-template"
-pkg install -y consul-template
-
-log "Patching consul-template rc scripts"
-sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
-'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
-
 log "Create directories for vault usage"
 mkdir -p /mnt/templates
 mkdir -p /mnt/certs
