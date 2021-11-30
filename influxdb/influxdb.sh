@@ -36,8 +36,8 @@ date >> $COOKLOG
 
 STEPCOUNT=0
 step() {
-  STEPCOUNT=$(expr "$STEPCOUNT" + 1)
-  STEP="$@"
+  STEPCOUNT=$(("$STEPCOUNT" + 1))
+  STEP="$*"
   echo "Step $STEPCOUNT: $STEP" | tee -a $COOKLOG
 }
 
@@ -48,7 +48,7 @@ exit_ok() {
 
 FAILED=" failed"
 exit_error() {
-  STEP="$@"
+  STEP="$*"
   FAILED=""
   exit 1
 }
@@ -60,9 +60,11 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
-  >/usr/local/etc/pkg/repos/FreeBSD.conf
+# only modify repo if not already done in base image
+# shellcheck disable=SC2016
+test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
 step "Touch /etc/rc.conf"
@@ -71,6 +73,7 @@ touch /etc/rc.conf
 # this is important, otherwise running /etc/rc from cook will
 # overwrite the IP address set in tinirc
 step "Remove ifconfig_epair0b from config"
+# shellcheck disable=SC2015
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 step "Disable sendmail"
