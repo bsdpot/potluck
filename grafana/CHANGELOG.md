@@ -1,3 +1,9 @@
+0.0.23
+
+* Updating version for merge
+
+---
+
 0.0.22
 
 * Fixing missing certs directory

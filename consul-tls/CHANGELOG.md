@@ -1,3 +1,9 @@
+0.1.7
+
+* Updating version for merge
+
+---
+
 0.1.6
 
 * Fixing certs directory to match other images
