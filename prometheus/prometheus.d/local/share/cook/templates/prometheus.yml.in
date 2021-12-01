@@ -18,7 +18,7 @@ scrape_configs:
   - job_name: 'consul_registered_services'
     tls_config:
       insecure_skip_verify: false
-      ca_file: /mnt/metricscerts/metricsca.crt
+      ca_file: /mnt/metricscerts/ca_root.crt
       cert_file: /mnt/metricscerts/metrics.crt
       key_file: /mnt/metricscerts/metrics.key
     metrics_path: '/metrics'
