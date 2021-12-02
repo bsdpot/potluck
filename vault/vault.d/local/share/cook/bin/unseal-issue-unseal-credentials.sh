@@ -24,7 +24,7 @@ export VAULT_CACERT=/mnt/unsealcerts/ca_chain.crt
 export VAULT_FORMAT=json
 STEP="Issue token"
 TOKEN=$(vault token create -policy=autounseal \
-  -policy=tls-policy -wrap-ttl=300s -ttl=15m \
+  -policy=tls-policy -wrap-ttl=600s -ttl=15m \
   | jq -e ".wrap_info.token")
 STEP="Get root CA"
 CA_ROOT=$(vault read pki/cert/ca | jq -e ".data.certificate")

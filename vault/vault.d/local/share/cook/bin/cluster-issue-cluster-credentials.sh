@@ -48,7 +48,7 @@ export VAULT_FORMAT=json
 STEP="Issue token"
 # shellcheck disable=SC2086
 TOKEN=$(vault token create \
-  $TOKEN_POLICIES_PARAMS -wrap-ttl=300s -ttl=15m \
+  $TOKEN_POLICIES_PARAMS -wrap-ttl=600s -ttl=15m \
   | jq -e ".wrap_info.token")
 STEP="Get root CA"
 CA_ROOT=$(vault read pki/cert/ca | jq -e ".data.certificate")

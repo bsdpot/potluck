@@ -258,6 +258,6 @@ pot_seasoned_exit
 #export VAULT_CLIENT_CERT=/mnt/certs/agent.crt
 #export VAULT_CLIENT_KEY=/mnt/certs/agent.key
 #export VAULT_CACERT=/mnt/certs/ca_chain.crt
-#/usr/local/bin/vault token create -policy=tls-policy -wrap-ttl=300s -ttl=15m
+#/usr/local/bin/vault token create -policy=tls-policy -wrap-ttl=600s -ttl=15m
 #" > /root/issue-pki-token.sh
 #chmod +x /root/issue-pki-token.sh
