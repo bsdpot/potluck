@@ -44,13 +44,13 @@ consul {
 }
 vault {
   # XXX: Change below!
-  enabled = false
+  enabled = true
   address = "https://active.vault.service.consul:8200"
   ca_path = "/mnt/certs/ca_chain.crt"
   cert_file = "/mnt/certs/client.crt"
   key_file = "/mnt/certs/client.key"
   token = "%%vaulttoken%%"
-  create_from_role = "%%datacenter%%"
+  create_from_role = "nomad-cluster"
 }
 telemetry {
   publish_allocation_metrics = true

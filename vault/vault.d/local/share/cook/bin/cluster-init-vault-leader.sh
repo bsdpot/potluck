@@ -87,6 +87,11 @@ for i in $(jot 10); do
     sleep 2
 done
 
+if ! service vault-agent onestatus; then
+    echo "Starting vault-agent"
+    service vault-agent start
+fi
+
 if ! service consul-template onestatus; then
     echo "Getting local consul-template token"
     CLUSTER_PKI_TOKEN_JSON=$(\

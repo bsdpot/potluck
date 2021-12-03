@@ -1,0 +1,19 @@
+cache {  use_auto_auth_token = false }
+
+listener "unix" {
+  address = "/tmp/vault-agent.socket"
+  tls_disable = true
+  socket_mode = "0600"
+}
+
+vault {
+  address = "https://active.vault.service.consul:8200"
+  skip_verify = false
+  client_cert = "/mnt/certs/agent.crt"
+  client_key = "/mnt/certs/agent.key"
+  ca_path = "/mnt/certs/ca_chain.crt"
+  tls_server_name = "active.vault.service.consul"
+}
+
+log_level="TRACE"
+ 

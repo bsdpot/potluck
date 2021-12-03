@@ -2,12 +2,13 @@
 
 CERT_NODENAME="$1"
 CERT_IPS="$2"
-CERT_TTL="$3"
+TOKEN_POLICIES="$3"
+CERT_TTL="$4"
 
 trap "echo \$STEP failed" EXIT
 
 if [ -z "$CERT_NODENAME" ]; then
-    2>&1 echo "Usage: $0 cert_nodename [cert_ips] [ttl]"
+    2>&1 echo "Usage: $0 cert_nodename [cert_ips] [policies] [ttl]"
     exit 1
 fi
 

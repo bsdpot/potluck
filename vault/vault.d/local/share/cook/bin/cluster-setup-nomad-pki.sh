@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# in seconds
+: "${TOKEN_TTL=600}"
+
 # shellcheck disable=SC1091
 . /root/.env.cook
 
@@ -48,3 +51,10 @@ vault read nomadpki_int/roles/nomad-cluster || vault write \
 vault policy list | grep -c "^nomad-tls-policy\$" ||
   vault policy write nomad-tls-policy \
     "$TEMPLATEPATH/nomad-tls-policy.hcl.in"
+vault policy list | grep -c "^nomad-server-policy\$" ||
+  vault policy write nomad-server-policy \
+    "$TEMPLATEPATH/nomad-server-policy.hcl.in"
+vault read auth/token/roles/nomad-cluster ||
+  cat  "$TEMPLATEPATH/nomad-cluster-role.json.in" | \
+    sed "s/%%token_ttl%%/$TOKEN_TTL/g" | \
+    vault write auth/token/roles/nomad-cluster -

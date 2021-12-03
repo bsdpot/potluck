@@ -14,8 +14,8 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 GOSSIPKEY="$(cat /mnt/nomadcerts/gossip.key)"
 
-# Might be incorrect(!)
-VAULTTOKEN="$(cat /mnt/certs/unwrapped.token)"
+# This is the token that allows issuing nomad cluster token
+VAULTTOKEN="$(cat /mnt/nomadcerts/unwrapped.token)"
 
 # Get nomad consul service token
 NOMAD_SERVICE_TOKEN="$(cat /mnt/nomadcerts/nomad_service.token)"

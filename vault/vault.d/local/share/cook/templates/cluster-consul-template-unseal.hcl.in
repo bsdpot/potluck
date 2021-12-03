@@ -1,17 +1,17 @@
 vault {
-  address      = "https://%%unsealip%%:8200"
+  address      = "unix:///tmp/vault-agent-unseal.socket"
   token        = "%%token%%"
   unwrap_token = false
   renew_token  = true
 
-  ssl {
-    enabled = true
-    verify = true
-    ca_cert = "/mnt/unsealcerts/ca_chain.crt"
-    cert = "/mnt/unsealcerts/client.crt"
-    key = "/mnt/unsealcerts/client.key"
-    server_name = "server.global.vaultunseal"
-  }
+  #ssl {
+   # enabled = true
+   # verify = true
+   # ca_cert = "/mnt/unsealcerts/ca_chain.crt"
+   # cert = "/mnt/unsealcerts/client.crt"
+   # key = "/mnt/unsealcerts/client.key"
+   # server_name = "server.global.vaultunseal"
+  #}
 }
 
 syslog {

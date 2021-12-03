@@ -26,6 +26,18 @@ sep=$'\001'
   | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
   > /usr/local/etc/vault.hcl
 
+< "$TEMPLATEPATH/cluster-vault-agent.hcl.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
+  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
+  > /usr/local/etc/vault-agent.hcl
+
+< "$TEMPLATEPATH/cluster-vault-agent-unseal.hcl.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
+  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
+  > /usr/local/etc/vault-agent-unseal.hcl
+
 # Set permission for vault.hcl, so that vault can read it
 chown vault:wheel /usr/local/etc/vault.hcl
 chown vault:wheel /usr/local/etc/vault-bootstrap.hcl
@@ -44,6 +56,46 @@ sysrc vault_syslog_output_priority="warn"
 sysrc vault_config=/usr/local/etc/vault-bootstrap.hcl
 
 rm -f /root/.vault-token
+
+## vault-agent setup
+
+echo "Configure vault-agent"
+cp -a /usr/local/etc/rc.d/vault \
+  /usr/local/etc/rc.d/vault-agent
+sed -i '' 's/vault_/vault_agent_/g' \
+  /usr/local/etc/rc.d/vault-agent
+sed -i '' 's/vault.pid/vault-agent.pid/g' \
+  /usr/local/etc/rc.d/vault-agent
+sed -i '' 's/server/agent/g' \
+  /usr/local/etc/rc.d/vault-agent
+sed -i '' 's/vault$/vault_agent/g' \
+  /usr/local/etc/rc.d/vault-agent
+
+service vault-agent enable
+sysrc vault_agent_login_class=root
+sysrc vault_agent_syslog_output_enable="YES"
+sysrc vault_agent_syslog_output_priority="warn"
+sysrc vault_agent_config=/usr/local/etc/vault-agent.hcl
+
+## vault-agent-unseal setup
+
+echo "Configure vault-agent-unseal"
+cp -a /usr/local/etc/rc.d/vault \
+  /usr/local/etc/rc.d/vault-agent-unseal
+sed -i '' 's/vault_/vault_agent_unseal_/g' \
+  /usr/local/etc/rc.d/vault-agent-unseal
+sed -i '' 's/vault.pid/vault-agent-unseal.pid/g' \
+  /usr/local/etc/rc.d/vault-agent-unseal
+sed -i '' 's/server/agent/g' \
+  /usr/local/etc/rc.d/vault-agent-unseal
+sed -i '' 's/vault$/vault_agent_unseal/g' \
+  /usr/local/etc/rc.d/vault-agent-unseal
+
+service vault-agent-unseal enable
+sysrc vault_agent_unseal_login_class=root
+sysrc vault_agent_unseal_syslog_output_enable="YES"
+sysrc vault_agent_unseal_syslog_output_priority="warn"
+sysrc vault_agent_unseal_config=/usr/local/etc/vault-agent-unseal.hcl
 
 TOKEN=$(/bin/cat /mnt/unsealcerts/unwrapped.token)
 (
