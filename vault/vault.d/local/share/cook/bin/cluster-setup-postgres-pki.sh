@@ -28,7 +28,7 @@ vault read postgrespki/cert/ca || vault write -field=certificate \
 vault secrets list | grep -c "^postgrespki_int/" || \
   vault secrets enable -path postgrespki_int pki
 vault secrets tune -max-lease-ttl=43800h postgrespki_int
-vault read postgrespki/cert/ca_int ||
+vault read postgrespki_int/cert/ca ||
   (
     CSR=$(vault write -format=json \
       postgrespki_int/intermediate/generate/internal \

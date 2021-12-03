@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # in seconds
-: "${TOKEN_TTL=600}"
+: "${TOKEN_TTL=900}"
 
 # shellcheck disable=SC1091
 . /root/.env.cook
@@ -31,7 +31,7 @@ vault read nomadpki/cert/ca || vault write -field=certificate \
 vault secrets list | grep -c "^nomadpki_int/" || \
   vault secrets enable -path nomadpki_int pki
 vault secrets tune -max-lease-ttl=43800h nomadpki_int
-vault read nomadpki/cert/ca_int ||
+vault read nomadpki_int/cert/ca ||
   (
     CSR=$(vault write -format=json \
       nomadpki_int/intermediate/generate/internal \

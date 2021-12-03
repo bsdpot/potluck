@@ -29,7 +29,7 @@ vault read consulpki/cert/ca || vault write -field=certificate \
 vault secrets list | grep -c "^consulpki_int/" || \
   vault secrets enable -path consulpki_int pki
 vault secrets tune -max-lease-ttl=43800h consulpki_int
-vault read consulpki/cert/ca_int ||
+vault read consulpki_int/cert/ca ||
   (
     vault write -format=json \
       consulpki_int/intermediate/generate/internal \

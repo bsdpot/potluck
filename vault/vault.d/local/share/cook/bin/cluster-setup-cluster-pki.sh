@@ -21,7 +21,7 @@ vault read pki/cert/ca || vault write -field=certificate \
 vault secrets list | grep -c "^pki_int/" || \
   vault secrets enable -path pki_int pki
 vault secrets tune -max-lease-ttl=43800h pki_int
-vault read pki/cert/ca_int ||
+vault read pki_int/cert/ca ||
   (
     vault write -format=json \
       pki_int/intermediate/generate/internal \

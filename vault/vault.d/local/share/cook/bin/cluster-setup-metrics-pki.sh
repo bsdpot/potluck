@@ -27,7 +27,7 @@ vault read metricspki/cert/ca || vault write -field=certificate \
 vault secrets list | grep -c "^metricspki_int/" || \
   vault secrets enable -path metricspki_int pki
 vault secrets tune -max-lease-ttl=43800h metricspki_int
-vault read metricspki/cert/ca_int ||
+vault read metricspki_int/cert/ca ||
   (
     CSR=$(vault write -format=json \
       metricspki_int/intermediate/generate/internal \
