@@ -15,7 +15,5 @@ if [ "$((NEW_ENDDATE - OLD_ENDDATE))" -gt 10 ]; then
   daemon -Sf sh -c "timeout 3 \
     service consul-template stop; sleep 1;
     service consul-template restart"
-  service loki restart
-  service promtail restart
 fi
 exit 0
