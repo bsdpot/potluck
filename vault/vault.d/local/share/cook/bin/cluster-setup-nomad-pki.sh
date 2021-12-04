@@ -45,7 +45,7 @@ vault read nomadpki_int/cert/ca ||
   )
 vault read nomadpki_int/roles/nomad-cluster || vault write \
   nomadpki_int/roles/nomad-cluster \
-  allowed_domains="global.nomad" \
+  allowed_domains="global.nomad,service.consul" \
   allow_subdomains=true max_ttl=86400s \
   require_cn=false generate_lease=true
 vault policy list | grep -c "^nomad-tls-policy\$" ||
