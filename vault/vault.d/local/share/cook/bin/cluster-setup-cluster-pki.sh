@@ -1,7 +1,7 @@
 #!/bin/sh
 
 : "${TTL=2h}"
-: "${CERT_MAX_TTL=32d}"
+: "${CERT_MAX_TTL=768h}"
 
 set -e
 # shellcheck disable=SC3040

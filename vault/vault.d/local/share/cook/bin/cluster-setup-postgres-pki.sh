@@ -1,6 +1,6 @@
 #!/bin/sh
 
-: "${CERT_MAX_TTL=32d}"
+: "${CERT_MAX_TTL=768h}"
 
 # shellcheck disable=SC1091
 . /root/.env.cook

@@ -1,8 +1,7 @@
 #!/bin/sh
 
-# in seconds
-: "${TOKEN_TTL=7200}"
-: "${CERT_MAX_TTL=32d}"
+: "${TOKEN_TTL=7200}" # in seconds
+: "${CERT_MAX_TTL=768h}"
 
 # shellcheck disable=SC1091
 . /root/.env.cook
