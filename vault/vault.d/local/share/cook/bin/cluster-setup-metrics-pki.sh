@@ -1,5 +1,7 @@
 #!/bin/sh
 
+: "${CERT_MAX_TTL=32d}"
+
 # shellcheck disable=SC1091
 . /root/.env.cook
 
@@ -42,7 +44,7 @@ vault read metricspki_int/cert/ca ||
 vault read metricspki_int/roles/metrics || vault write \
   metricspki_int/roles/metrics \
   allowed_domains="$DATACENTER.metrics" \
-  allow_subdomains=true max_ttl=86400s \
+  allow_subdomains=true max_ttl="$CERT_MAX_TTL" \
   require_cn=false generate_lease=true
 vault policy list | grep -c "^metrics-tls-policy\$" ||
   vault policy write metrics-tls-policy \

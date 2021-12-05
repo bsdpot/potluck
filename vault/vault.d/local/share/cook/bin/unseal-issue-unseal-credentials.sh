@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# environment defaults
+: ${TOKEN_TTL=2h}
+: ${TOKEN_WRAP_TTL=10m}
+
 CERT_NODENAME="$1"
 CERT_TTL="$2"
 
@@ -11,7 +15,7 @@ if [ -z "$CERT_NODENAME" ]; then
 fi
 
 if [ -z "$CERT_TTL" ]; then
-  CERT_TTL="10m"
+  CERT_TTL="8h"
 fi
 
 set -e
@@ -24,7 +28,7 @@ export VAULT_CACERT=/mnt/unsealcerts/ca_chain.crt
 export VAULT_FORMAT=json
 STEP="Issue token"
 TOKEN=$(vault token create -policy=autounseal \
-  -policy=tls-policy -wrap-ttl=600s -ttl=15m \
+  -policy=tls-policy -wrap-ttl="$TOKEN_WRAP_TTL" -ttl="$TOKEN_TTL" \
   | jq -e ".wrap_info.token")
 STEP="Get root CA"
 CA_ROOT=$(vault read pki/cert/ca | jq -e ".data.certificate")

@@ -1,6 +1,7 @@
 #!/bin/sh
 
-: "${TTL=10m}"
+: "${TTL=2h}"
+: "${CERT_MAX_TTL=32d}"
 
 set -e
 # shellcheck disable=SC3040
@@ -36,7 +37,7 @@ vault read pki_int/cert/ca ||
 vault read pki_int/roles/vault-cluster || vault write \
   pki_int/roles/vault-cluster \
   allowed_domains=global.vaultcluster,vault.service.consul \
-  allow_subdomains=true max_ttl=86400s \
+  allow_subdomains=true max_ttl="$CERT_MAX_TTL" \
   require_cn=false generate_lease=true
 vault policy list | grep -c "^tls-policy\$" ||
   vault policy write tls-policy \

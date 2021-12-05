@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # in seconds
-: "${TOKEN_TTL=900}"
+: "${TOKEN_TTL=7200}"
+: "${CERT_MAX_TTL=32d}"
 
 # shellcheck disable=SC1091
 . /root/.env.cook
@@ -46,7 +47,7 @@ vault read nomadpki_int/cert/ca ||
 vault read nomadpki_int/roles/nomad-cluster || vault write \
   nomadpki_int/roles/nomad-cluster \
   allowed_domains="global.nomad,service.consul" \
-  allow_subdomains=true max_ttl=86400s \
+  allow_subdomains=true max_ttl="$CERT_MAX_TTL" \
   require_cn=false generate_lease=true
 vault policy list | grep -c "^nomad-tls-policy\$" ||
   vault policy write nomad-tls-policy \
