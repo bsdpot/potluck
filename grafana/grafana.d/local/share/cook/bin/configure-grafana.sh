@@ -118,6 +118,7 @@ fi
 # local edits for grafana.conf here
 # the mount path for some options is set to /mnt/grafana/...
 < "$TEMPLATEPATH/grafana.conf.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%grafanauser%%${sep}$GRAFANAUSER${sep}g" | \
   sed "s${sep}%%grafanapassword%%${sep}$GRAFANAPASSWORD${sep}g" \
   > /usr/local/etc/grafana.conf
