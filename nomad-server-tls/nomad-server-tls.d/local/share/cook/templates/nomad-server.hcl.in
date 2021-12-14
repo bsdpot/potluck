@@ -45,10 +45,7 @@ consul {
 vault {
   # XXX: Change below!
   enabled = true
-  address = "https://active.vault.service.consul:8200"
-  ca_path = "/mnt/certs/ca_chain.crt"
-  cert_file = "/mnt/certs/client.crt"
-  key_file = "/mnt/certs/client.key"
+  address = "unix:///tmp/vault-agent.socket"
   token = "%%vaulttoken%%"
   create_from_role = "nomad-cluster"
 }

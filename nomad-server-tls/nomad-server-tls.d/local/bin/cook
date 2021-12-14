@@ -111,6 +111,15 @@ unwrap-nomad-credentials.sh
 log "Unwrap metrics credentials"
 unwrap-metrics-credentials.sh
 
+log "Configure vault agent"
+configure-vault-agent.sh
+
+log "Start vault-agent and wait for it to become stable"
+timeout --foreground 120 \
+  sh -c 'while ! service vault-agent status; do
+    sleep 5; service vault-agent start || true; sleep 5;
+  done'
+
 log "Configure consul-template"
 configure-consul-template.sh
 
