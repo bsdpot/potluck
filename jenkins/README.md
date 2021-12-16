@@ -57,8 +57,6 @@ Setup takes a little while the first time, and you will need console access to t
 cat /usr/local/jenkins/secrets/initialAdminPassword
 ```
 
-If you get a ```jetty`` error about ```/jenkins not found``` then edit the URL in browser to http://<jenkins-host>:8080 and should load with plugin selection.
-
 On first usage plugins will need to be setup and this takes a little time too, and requires internet access to download files.
 
 ## Persistent storage
@@ -71,8 +69,6 @@ Setup takes a little while the first time, and you will need console access to t
 ```     
 cat /mnt/jenkins/secrets/initialAdminPassword
 ```
-
-If you get a ```jetty`` error about ```/jenkins not found``` then edit the URL in browser to http://<jenkins-host>:8080 and should load with plugin selection.
 
 On first usage plugins will need to be setup and this takes a little time too, and requires internet access to download files.
 
