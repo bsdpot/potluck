@@ -1,0 +1,2 @@
+set-attribute -A fdescfs -V YES
+set-attribute -A procfs -V YES
