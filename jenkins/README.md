@@ -2,7 +2,7 @@
 author: "Bretton Vine"
 title: Jenkins 
 summary: Jenkins is a tool used for Continuous Integration (CI) and testing 
-tags: ["CI", , "testing", "automated builds", "jenkins"]
+tags: ["CI", "testing", "automated builds", "jenkins"]
 ---
 
 # Overview
