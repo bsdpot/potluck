@@ -1,0 +1,114 @@
+<!-- Header -->
+{{ partial "header" . }}
+
+<!-- Navigation -->
+{{ partial "nav" . }}
+
+
+<!-- Microblog Area -->
+
+<!-- only show section if at least one microblog post -->
+{{ $microposts := (where .Site.RegularPages "Section" "==" "micro") }}
+{{ if ge (len $microposts) 1 }}
+
+<section class="section-highlight">
+    
+    <div  class ="container">
+        
+        <a href="/micro"><h2 class="areatitle">ABOUT THIS SITE</h2></a>
+        <br />
+
+        <!-- show "number" of latest "micro" type articles -->
+        {{ range first 3 (where .Site.RegularPages.ByDate.Reverse "Section" "==" "micro") }} 
+
+            <!-- Article Tags -->
+            <div class="subtitle tags is-6 is-pulled-right">
+                {{ if .Params.tags }}
+                {{ partial "tags" .Params.tags }}
+                {{ end }}
+            </div>
+
+
+            <!-- Article Title -->
+            <h1 class="title">
+                <a href="{{ .Permalink }}">{{ .Title }}</a>
+            </h1>
+
+        <h2 class="subtitle is-6">
+            {{ .Params.summary }} 
+        </h2>
+        <br />
+
+        <!-- End loop -->
+        {{ end }}
+    
+    </div>
+</section>
+{{ end }}
+
+
+<!-- Blog Area -->
+
+<!-- only show section if at least one blog post -->
+{{ $blogposts := (where .Site.RegularPages "Section" "==" "blog") }}
+{{ if ge (len $blogposts) 1 }}
+
+<section class="section">
+
+    <div class="container">
+
+        <a href="/blog"><h2 class="areatitle">POT IMAGES & FLAVOURS</h2></a>
+
+        <!-- Loop through all posts filtered by type "article" -->
+        {{ $paginator := .Paginate (where .Site.RegularPages.ByDate.Reverse "Section" "==" "blog") }}
+        {{ range .Paginator.Pages }}
+
+            <article>
+
+                <!-- Article Tags -->
+                <div class="subtitle tags is-6 is-pulled-right">
+                    {{ if .Params.tags }}
+                    {{ partial "tags" .Params.tags }}
+                    {{ end }}
+                  </div>
+
+                <!-- Date above Article Title-->
+                {{if not .Date.IsZero }}
+                    <h2 class="subtitle is-6">
+                    &nbsp;
+            </h2>
+                {{ end }}
+
+
+                <!-- Article Title -->
+                <h1 class="title">
+                    <a href="{{ .Permalink }}">{{ .Title }}</a>
+                </h1>
+
+                <div class="content">
+                    
+                    <!-- Article Summary -->
+                    <!-- {{ .Summary | plainify | safeHTML }} -->
+                    {{ .Params.summary }}
+                
+                    <!-- "Read More" Button-->
+                    <a class="button is-link" href="{{ .Permalink }}" style="height:28px">{{ i18n "read_more" }}</a>
+
+                </div>
+
+            </article>
+
+        <!-- End loop -->
+        {{ end }}
+
+    </div>
+</section>
+{{ end }}
+
+
+
+<!-- "Older Posts" / "Newer Posts" Buttons -->
+{{ partial "page-navigation" . }}
+
+<!-- Footer -->
+{{ partial "footer" . }}
