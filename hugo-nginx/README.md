@@ -18,11 +18,11 @@ You can adjust this flavour and rebuild your own pot image if you have other req
 # Installation
 
 * Create a ZFS data set on the parent system beforehand
-  ```zfs create -o mountpoint=/mnt/jaildata_hugo zroot/jaildata_hugo```
+  ```zfs create -o mountpoint=/mnt/<sitename> zroot/jaildata_hugo```
 * Create your local jail from the image or the flavour files. 
 * Clone the local jail
 * Mount in the ZFS data set you created:
-  ```pot mount-in -p <jailname> -d /mnt/jaildata_hugo -m /mnt```
+  ```pot mount-in -p <jailname> -d /mnt/<sitename> -m /mnt```
 * Optionally copy in jenkins user SSH public key:    
   ```pot copy-in -p <jailname> -s /path/to/jenkins/id_rsa.pub -d /root/jenkins.pub```
 * Optionally export the ports after creating the jail:     
