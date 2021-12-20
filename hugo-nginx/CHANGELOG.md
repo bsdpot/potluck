@@ -1,3 +1,9 @@
+0.0.5
+
+* Hugo site init wipes out a necessary directory creation, changing order of steps
+
+---
+
 0.0.4
 
 * Including sample blog and microblog post generation

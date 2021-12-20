@@ -205,13 +205,6 @@ fi
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 
-# make some directories from input variables
-mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}
-chown -R www:www /mnt/\${SITENAME}
-
-# link in /usr/local/www/SITENAME to /root/SITENAME
-ln -s /mnt/\${SITENAME}/public /usr/local/www/\${SITENAME}
-
 # create root ssh keys
 mkdir -p /root/.ssh
 /usr/bin/ssh-keygen -q -N '' -f /root/.ssh/id_rsa -t rsa
@@ -258,6 +251,14 @@ service goaccess enable
 # setup hugo
 cd /mnt
 /usr/local/bin/hugo new site \${SITENAME} --force
+
+# this has to happen after the force create of site as was wiping this
+# make some directories from input variables
+mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}
+chown -R www:www /mnt/\${SITENAME}
+
+# link in /usr/local/www/SITENAME to /root/SITENAME
+ln -s /mnt/\${SITENAME}/public /usr/local/www/\${SITENAME}
 chown -R www:www /mnt/\${SITENAME}
 
 # setup git
