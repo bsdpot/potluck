@@ -327,6 +327,14 @@ chown -R www:www /mnt/\${SITENAME}
 cd /mnt/\${SITENAME}
 /usr/local/bin/hugo
 
+
+# create sample pages
+/usr/local/bin/hugo new blog/sample-blog-post.md
+/usr/local/bin/hugo new micro/sample-microblog-post.md
+
+# return to /root
+cd ~
+
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 

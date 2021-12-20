@@ -1,3 +1,9 @@
+0.0.4
+
+* Including sample blog and microblog post generation
+
+---
+
 0.0.3
 
 * Triggering another rebuild
