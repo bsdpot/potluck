@@ -250,11 +250,11 @@ service goaccess enable
 
 # setup hugo
 cd /mnt
-/usr/local/bin/hugo new site \${SITENAME} --force
+/usr/local/bin/hugo new site \${SITENAME}
 
 # this has to happen after the force create of site as was wiping this
 # make some directories from input variables
-mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}
+mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}/
 chown -R www:www /mnt/\${SITENAME}
 
 # link in /usr/local/www/SITENAME to /root/SITENAME
@@ -312,14 +312,7 @@ cd /mnt/\${SITENAME}
 /usr/local/bin/git add -v *
 
 # commit and push
-/usr/local/bin/git commit -m \"Changed templates via cook script\"
-
-# this isn't working
-#/usr/local/bin/git push origin master
-
-# setup hugo second time
-#cd /mnt
-#/usr/local/bin/hugo new site \${SITENAME} --force
+#/usr/local/bin/git commit -m \"Changed templates via cook script\"
 
 # start hugo
 # test server
@@ -328,10 +321,12 @@ chown -R www:www /mnt/\${SITENAME}
 cd /mnt/\${SITENAME}
 /usr/local/bin/hugo
 
-
 # create sample pages
 /usr/local/bin/hugo new blog/sample-blog-post.md
 /usr/local/bin/hugo new micro/sample-microblog-post.md
+
+mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}/
+chown -R www:www /mnt/\${SITENAME}
 
 # return to /root
 cd ~

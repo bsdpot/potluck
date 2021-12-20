@@ -1,3 +1,9 @@
+0.0.6
+
+* More adjustment to order of steps and removal unnecessary items
+
+---
+
 0.0.5
 
 * Hugo site init wipes out a necessary directory creation, changing order of steps
