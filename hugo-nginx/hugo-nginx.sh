@@ -257,6 +257,13 @@ cd /mnt
 mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}/
 chown -R www:www /mnt/\${SITENAME}
 
+# set permissions so jenkins user can write files from jenkins image
+chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}/
+chmod 777 /mnt/\${SITENAME}/content/
+chmod 777 /mnt/\${SITENAME}/content/blog
+chmod 777 /mnt/\${SITENAME}/content/micro
+chmod 777 /mnt/\${SITENAME}/static
+
 # link in /usr/local/www/SITENAME to /root/SITENAME
 ln -s /mnt/\${SITENAME}/public /usr/local/www/\${SITENAME}
 chown -R www:www /mnt/\${SITENAME}

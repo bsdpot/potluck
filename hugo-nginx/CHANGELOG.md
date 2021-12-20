@@ -1,3 +1,9 @@
+0.0.7
+
+* Fixing directory perms on some hugo directories for remote user write access
+
+---
+
 0.0.6
 
 * More adjustment to order of steps and removal unnecessary items
