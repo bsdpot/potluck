@@ -1,3 +1,9 @@
+0.0.5
+
+* Triggering another rebuild
+
+---
+
 0.0.4
 
 * Triggering a rebuild
