@@ -1,3 +1,9 @@
+0.0.8
+
+* Fixing directory permissions second time
+
+---
+
 0.0.7
 
 * Fixing directory perms on some hugo directories for remote user write access

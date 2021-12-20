@@ -255,11 +255,10 @@ cd /mnt
 # this has to happen after the force create of site as was wiping this
 # make some directories from input variables
 mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}/
-chown -R www:www /mnt/\${SITENAME}
 
 # set permissions so jenkins user can write files from jenkins image
-chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}/
-chmod 777 /mnt/\${SITENAME}/content/
+chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}
+chmod 777 /mnt/\${SITENAME}/content
 chmod 777 /mnt/\${SITENAME}/content/blog
 chmod 777 /mnt/\${SITENAME}/content/micro
 chmod 777 /mnt/\${SITENAME}/static
@@ -329,11 +328,17 @@ cd /mnt/\${SITENAME}
 /usr/local/bin/hugo
 
 # create sample pages
-/usr/local/bin/hugo new blog/sample-blog-post.md
-/usr/local/bin/hugo new micro/sample-microblog-post.md
+#/usr/local/bin/hugo new blog/sample-blog-post.md
+#/usr/local/bin/hugo new micro/sample-microblog-post.md
 
-mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}/
 chown -R www:www /mnt/\${SITENAME}
+
+# set permissions so jenkins user can write files from jenkins image
+chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}
+chmod 777 /mnt/\${SITENAME}/content
+chmod 777 /mnt/\${SITENAME}/content/blog
+chmod 777 /mnt/\${SITENAME}/content/micro
+chmod 777 /mnt/\${SITENAME}/static
 
 # return to /root
 cd ~
