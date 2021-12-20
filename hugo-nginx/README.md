@@ -65,6 +65,3 @@ The default site is blank.
 # Persistent storage
 
 To use persistent storage make sure to mount-in a pre-configured data set to /mnt/<sitename>. 
-
-
-

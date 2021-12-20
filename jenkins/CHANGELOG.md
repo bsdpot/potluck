@@ -1,3 +1,9 @@
+0.0.4
+
+* Triggering a rebuild
+
+---
+
 0.0.3
 
 * Removing line with bad formatting of irrelevant jetty error
