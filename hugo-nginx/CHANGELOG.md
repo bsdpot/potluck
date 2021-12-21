@@ -1,3 +1,9 @@
+0.0.9
+
+* Fixing directory permissions third time
+
+---
+
 0.0.8
 
 * Fixing directory permissions second time

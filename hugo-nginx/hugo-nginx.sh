@@ -257,6 +257,7 @@ cd /mnt
 mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}/
 
 # set permissions so jenkins user can write files from jenkins image
+chmod 777 /mnt/\${SITENAME}
 chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}
 chmod 777 /mnt/\${SITENAME}/content
 chmod 777 /mnt/\${SITENAME}/content/blog
@@ -335,6 +336,7 @@ chown -R www:www /mnt/\${SITENAME}
 
 # set permissions again so jenkins user can write files from jenkins image
 # there might be another way to do this with more security
+chmod 777 /mnt/\${SITENAME}
 chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}
 chmod 777 /mnt/\${SITENAME}/content
 chmod 777 /mnt/\${SITENAME}/content/blog
