@@ -260,11 +260,15 @@ case \${RUNTYPE} in
         fi
 
         # enable quick access to remote pot builder host
+        echo \"Adding extra host \${BUILDHOST} keys\"
         su - jenkins -c \"ssh-keyscan -H \${BUILDHOST} >> /mnt/jenkins/.ssh/known_hosts\"
 
         # if an extra host been provided, enable quick ssh access to that host
-        if [ \${EXTRAHOST} -ne 0 ]; then
-            su - jenkins -c \"ssh-keyscan -H \${EXTRAHOST} >> /mnt/jenkins/.ssh/known_hosts\"
+        if [ ! -z \${EXTRAHOST+x} ]; then
+            if [ \${EXTRAHOST} != 0 ]; then
+                echo \"Adding extra host \${EXTRAHOST} keys\"
+                su - jenkins -c \"ssh-keyscan -H \${EXTRAHOST} >> /mnt/jenkins/.ssh/known_hosts\"
+            fi
         fi
 
         # set the jenkins home directory to persistent storage at /mnt/jenkins
@@ -306,8 +310,11 @@ case \${RUNTYPE} in
         su - jenkins -c \"ssh-keyscan -H \${BUILDHOST} >> /mnt/jenkins/.ssh/known_hosts\"
 
         # if an extra host been provided, enable quick ssh access to that host
-        if [ \${EXTRAHOST} -ne 0 ]; then
-            su - jenkins -c \"ssh-keyscan -H \${EXTRAHOST} >> /mnt/jenkins/.ssh/known_hosts\"
+        if [ ! -z \${EXTRAHOST+x} ]; then
+            if [ \${EXTRAHOST} != 0 ]; then
+                echo \"Adding extra host \${EXTRAHOST} keys\"
+                su - jenkins -c \"ssh-keyscan -H \${EXTRAHOST} >> /mnt/jenkins/.ssh/known_hosts\"
+            fi
         fi
 
         # set the jenkins home directory to persistent storage at /mnt/jenkins

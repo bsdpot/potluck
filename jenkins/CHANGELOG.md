@@ -1,3 +1,9 @@
+0.0.7
+
+* Attempted fixes to EXTRAHOST logic
+
+---
+
 0.0.6
 
 * Including optional EXTRAHOST paramter for ssh automation
