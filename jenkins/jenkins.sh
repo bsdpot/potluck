@@ -183,6 +183,10 @@ if [ -z \${BUILDHOST+x} ]; then
     echo 'BUILDHOST is unset - see documentation to configure this flavour for remote build host. This parameter is mandatory.'
     exit 1
 fi
+if [ -z \${EXTRAHOST+x} ]; then
+    echo 'EXTRAHOST is unset - defaulting to 0 - see documentation to configure this flavour for an additional host.'
+    EXTRAHOST=0
+fi
 if [ -z \${IMPORTKEYS+x} ]; then
     echo 'IMPORTKEYS is unset - SSH keys will be automatically generated - see documentation to configure this flavour to import existing SSH keys for jenkins user.'
     IMPORTKEYS=0
@@ -258,6 +262,11 @@ case \${RUNTYPE} in
         # enable quick access to remote pot builder host
         su - jenkins -c \"ssh-keyscan -H \${BUILDHOST} >> /mnt/jenkins/.ssh/known_hosts\"
 
+        # if an extra host been provided, enable quick ssh access to that host
+        if [ \${EXTRAHOST} -ne 0 ]; then
+            su - jenkins -c \"ssh-keyscan -H \${EXTRAHOST} >> /mnt/jenkins/.ssh/known_hosts\"
+        fi
+
         # set the jenkins home directory to persistent storage at /mnt/jenkins
         sysrc jenkins_home=\"/mnt/jenkins\"
 
@@ -295,6 +304,11 @@ case \${RUNTYPE} in
 
         # enable quick access to remote pot builder host
         su - jenkins -c \"ssh-keyscan -H \${BUILDHOST} >> /mnt/jenkins/.ssh/known_hosts\"
+
+        # if an extra host been provided, enable quick ssh access to that host
+        if [ \${EXTRAHOST} -ne 0 ]; then
+            su - jenkins -c \"ssh-keyscan -H \${EXTRAHOST} >> /mnt/jenkins/.ssh/known_hosts\"
+        fi
 
         # set the jenkins home directory to persistent storage at /mnt/jenkins
         sysrc jenkins_home=\"/mnt/jenkins\"

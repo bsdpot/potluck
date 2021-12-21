@@ -1,3 +1,9 @@
+0.0.10
+
+* Fixing SSH access from jenkins or other
+
+---
+
 0.0.9
 
 * Fixing directory permissions third time

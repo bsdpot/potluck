@@ -223,11 +223,30 @@ if [ \${IMPORTPUBKEY} -eq 1 ]; then
     fi
 fi
 
-# setup server ssh
+# setup ssh server with remote root access with a key
+
+echo \"Setting up ssh server\"
+echo \"Port 22
+PermitRootLogin prohibit-password
+PubkeyAuthentication yes
+AuthorizedKeysFile       .ssh/authorized_keys
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+StrictModes no
+UseDNS no
+Banner none
+LogLevel DEBUG
+AllowAgentForwarding yes
+PermitTTY yes\" >> /etc/ssh/sshd_config
+
 echo \"Manually setting up host keys\"
 cd /etc/ssh
 /usr/bin/ssh-keygen -A
 cd ~
+
+# restart ssh
+echo \"Restarting ssh\"
+service sshd restart
 
 # configure nginx
 # change variables in temp file and copy to /usr/local/nginx/nginx.conf
@@ -329,12 +348,14 @@ cd /mnt/\${SITENAME}
 /usr/local/bin/hugo
 
 # create sample pages
-#/usr/local/bin/hugo new blog/sample-blog-post.md
-#/usr/local/bin/hugo new micro/sample-microblog-post.md
+# we need this to create the blog and microblog directories
+/usr/local/bin/hugo new blog/sample-blog-post.md
+/usr/local/bin/hugo new micro/sample-microblog-post.md
 
+# check ownership again
 chown -R www:www /mnt/\${SITENAME}
 
-# set permissions again so jenkins user can write files from jenkins image
+# set permissions again so remote user can write files from other image
 # there might be another way to do this with more security
 chmod 777 /mnt/\${SITENAME}
 chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}

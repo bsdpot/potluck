@@ -1,3 +1,9 @@
+0.0.6
+
+* Including optional EXTRAHOST paramter for ssh automation
+
+---
+
 0.0.5
 
 * Triggering another rebuild
