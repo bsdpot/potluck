@@ -15,6 +15,10 @@ It has been put together specifically for use by the https://potluck.honeyguide.
 
 You can adjust this flavour and rebuild your own pot image if you have other requirements.
 
+# Disclaimer
+
+It is advised to run this image behind a proxy. The directory permissions on the hugo folder are very permissive to allow a jenkins user in another pot image to do stuff. Run the hugo-nginx and jenkins pot images behind a proxy with access control.
+
 # Installation
 
 * Create a ZFS data set on the parent system beforehand

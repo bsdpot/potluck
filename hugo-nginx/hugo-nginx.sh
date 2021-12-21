@@ -333,7 +333,8 @@ cd /mnt/\${SITENAME}
 
 chown -R www:www /mnt/\${SITENAME}
 
-# set permissions so jenkins user can write files from jenkins image
+# set permissions again so jenkins user can write files from jenkins image
+# there might be another way to do this with more security
 chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}
 chmod 777 /mnt/\${SITENAME}/content
 chmod 777 /mnt/\${SITENAME}/content/blog
