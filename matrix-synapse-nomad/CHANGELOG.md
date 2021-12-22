@@ -1,3 +1,9 @@
+0.9.3
+
+* Rebuild for FreeBSD 12_3 and 13 & pot 13
+
+---
+
 0.9.2
 
 * Rebuild for FreeBSD 13 & new packages

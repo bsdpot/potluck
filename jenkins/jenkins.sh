@@ -165,16 +165,6 @@ fi
 #
 
 # Check config variables are set
-#
-#if [ -z \${NODENAME+x} ];
-#then
-#    echo 'NODENAME is unset - see documentation to configure this flavour with a name for this node. This parameter is mandatory.'
-#    exit 1
-#fi
-#if [ -z \${IP+x} ]; then
-#    echo 'IP is unset - see documentation to configure this flavour for an IP address. This parameter is mandatory.'
-#    exit 1
-#fi
 if [ -z \${RUNTYPE+x} ]; then
     echo 'RUNTYPE is unset - see documentation to configure this flavour runtype of nostore|setupstore|activestore. This parameter is mandatory.'
     exit 1
@@ -333,7 +323,6 @@ case \${RUNTYPE} in
 
 esac
 
-#
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 # start services

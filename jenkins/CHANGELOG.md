@@ -1,3 +1,9 @@
+0.0.8
+
+* Rebuild for FreeBSD 12_3 and 13 & pot 13
+
+---
+
 0.0.7
 
 * Attempted fixes to EXTRAHOST logic

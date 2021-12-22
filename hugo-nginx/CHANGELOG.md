@@ -1,3 +1,9 @@
+0.0.11
+
+* Rebuild for FreeBSD 12_3 and 13 & pot 13
+
+---
+
 0.0.10
 
 * Fixing SSH access from jenkins or other

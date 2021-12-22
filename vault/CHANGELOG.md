@@ -1,3 +1,9 @@
+2.1.10
+
+* Rebuild for FreeBSD 12_3 and 13 & pot 13
+
+---
+
 2.1.9
 
 * Updating version for merge

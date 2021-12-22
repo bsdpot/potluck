@@ -1,3 +1,9 @@
+0.0.4
+
+* Rebuild for FreeBSD 12_3 and 13 & pot 13
+
+---
+
 0.0.3
 
 * Adding gossip key to consul config
