@@ -29,6 +29,8 @@ It is advised to run this image behind a proxy. The directory permissions on the
   ```pot mount-in -p <jailname> -d /mnt/<sitename> -m /mnt```
 * Optionally copy in jenkins user SSH public key:    
   ```pot copy-in -p <jailname> -s /path/to/jenkins/id_rsa.pub -d /root/jenkins.pub```
+* Optionally copy in customfile.tgz:    
+  ```pot copy-in -p <jailname> -s /path/to/customfile.tgz -d /root/customfile.tgz```
 * Optionally export the ports after creating the jail:     
   ```pot export-ports -p <jailname> -e 80:80```
 * Adjust to your environment:    
@@ -36,8 +38,9 @@ It is advised to run this image behind a proxy. The directory permissions on the
   sudo pot set-env -p <jailname> -E SERVERNAME=<fqdn> \
   -E IP=<IP of potbuilder VM> -E SITENAME=<site name> \
   -E GITEMAIL=<git user email> -E GITUSER=<git username> \
-  [-E CUSTOMDIR=<custom dir inside huge sitename> -E IMPORTKEYS=<1|0 default> ]
-  [-E THEMEADJUST=<1|0> ]
+  [-E CUSTOMDIR=<custom dir inside huge sitename> \
+   -E CUSTOMFILE=<1|0 default> -E IMPORTKEYS=<1|0 default> \
+   -E THEMEADJUST=<1|0> ]
   ```
 
 SERVERNAME is the fully qualified domain name to configure nginx with.
@@ -49,6 +52,8 @@ GITEMAIL is the email address to use for a git username.
 GITUSER is the git username associated with the email address.
 
 CUSTOMDIR is a custom directory to create inside the hugo installation in SITENAME.
+
+CUSTOMFILE defaults to 0. Set to 1 and copy in your own customfile.tgz which will be extracted to ```/mnt/{SITENAME}/```. This would be a custom config.toml, static microblog posts or about.md pages and images for static dir.
 
 IMPORTKEYS defaults to 0. Set to 1 to add the copied in pubkey to authenticated_keys.
 Copy in the applicable id_rsa.pub as part of the pot setup and start process.
@@ -65,6 +70,21 @@ To access ```hugo```:
 * http://<hugo-host>
 
 The default site is blank.
+
+# customfile.tgz
+
+If you wish to include a custom setup for hugo, you can create a file ```customfile.tgz``` with the following folder structure:
+
+```
+./config.toml
+./static
+./static/mylogo.png
+./content/info.md
+./content/micro/news.md
+./content/micro/about.md
+```
+
+Make sure to copy-in to /root/customfile.tgz and set ```-E CUSTOMFILE=1``` in the parameters. 
 
 # Persistent storage
 

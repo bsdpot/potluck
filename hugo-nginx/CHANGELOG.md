@@ -1,3 +1,9 @@
+0.0.12
+
+* Addition of CUSTOMFILE parameter to extract customfile.tgz into SITENAME directory
+
+---
+
 0.0.11
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

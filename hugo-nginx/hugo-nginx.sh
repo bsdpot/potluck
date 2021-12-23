@@ -192,6 +192,10 @@ if [ -z \${CUSTOMDIR+x} ]; then
     echo 'CUSTOMDIR is unset - will create default tmp - see documentation to configure this flavour with a custom directory inside hugo.'
     CUSTOMDIR=tmp
 fi
+if [ -z \${CUSTOMFILE+x} ]; then
+    echo 'CUSTOMFILE is unset - defaulting to 0 - see documentation to configure this flavour with a custom file to extract inside hugo.'
+    CUSTOMFILE=0
+fi
 if [ -z \${IMPORTPUBKEY+x} ]; then
     echo 'IMPORTPUBKEY is unset - see documentation to configure this flavour for adding SSH keys to authorized_keys file.'
     IMPORTPUBKEY=0
@@ -275,6 +279,13 @@ cd /mnt
 # make some directories from input variables
 mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}/
 
+# adding this to extract a custom archive over the hugo files in SITENAME directory
+if [ \${CUSTOMFILE} -eq 1 ]; then
+    if [ -f /root/customfile.tgz ]; then
+        /usr/bin/tar -xzf /root/customfile.tgz --directory /mnt/\${SITENAME}
+    fi
+fi
+
 # set permissions so jenkins user can write files from jenkins image
 chmod 777 /mnt/\${SITENAME}
 chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}
@@ -294,6 +305,9 @@ cd /mnt/\${SITENAME}
 /usr/local/bin/git config user.name \${GITUSER}
 /usr/local/bin/git submodule add https://github.com/pavel-pi/kiss-em.git themes/kiss-em
 /usr/local/bin/git add -v *
+
+# copy across site icons and css
+cp -r /mnt/\${SITENAME}/themes/kiss-em/static/* /mnt/\${SITENAME}/static/
 
 # implement custom theme changes for kiss-em
 if [ \${THEMEADJUST} -eq 1 ]; then
