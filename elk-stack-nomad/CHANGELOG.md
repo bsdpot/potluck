@@ -1,3 +1,9 @@
+1.0.6
+
+* Setting procfs parameters
+
+---
+
 1.0.5
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

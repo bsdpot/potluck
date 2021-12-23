@@ -1,3 +1,9 @@
+0.0.13
+
+* Permissions adjustments on mount in
+
+---
+
 0.0.12
 
 * Addition of CUSTOMFILE parameter to extract customfile.tgz into SITENAME directory

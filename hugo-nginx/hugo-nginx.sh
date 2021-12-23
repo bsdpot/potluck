@@ -288,11 +288,17 @@ fi
 
 # set permissions so jenkins user can write files from jenkins image
 chmod 777 /mnt/\${SITENAME}
+chmod g+s /mnt/\${SITENAME}
 chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}
+chmod g+s /mnt/\${SITENAME}/\${CUSTOMDIR}
 chmod 777 /mnt/\${SITENAME}/content
+chmod g+s /mnt/\${SITENAME}/content
 chmod 777 /mnt/\${SITENAME}/content/blog
+chmod g+s /mnt/\${SITENAME}/content/blog
 chmod 777 /mnt/\${SITENAME}/content/micro
+chmod g+s /mnt/\${SITENAME}/content/micro
 chmod 777 /mnt/\${SITENAME}/static
+chmod g+s /mnt/\${SITENAME}/static
 
 # link in /usr/local/www/SITENAME to /root/SITENAME
 ln -s /mnt/\${SITENAME}/public /usr/local/www/\${SITENAME}
@@ -379,7 +385,7 @@ chmod 777 /mnt/\${SITENAME}/content/micro
 chmod 777 /mnt/\${SITENAME}/static
 
 # return to /root
-cd ~
+cd /root
 
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION

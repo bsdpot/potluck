@@ -213,6 +213,9 @@ case \${RUNTYPE} in
         # enable quick access to remote pot builder host
         su - jenkins -c \"ssh-keyscan -H \${BUILDHOST} >> /usr/local/jenkins/.ssh/known_hosts\"
 
+        # add jenkins user to www group
+        /usr/sbin/pw usermod jenkins -G www
+
         # enable jenkins
         service jenkins enable
 
@@ -227,6 +230,9 @@ case \${RUNTYPE} in
 
         # change home directory for jenkins user to /mnt/jenkins
         /usr/sbin/pw usermod -n jenkins -d /mnt/jenkins -q
+
+        # add jenkins user to www group
+        /usr/sbin/pw usermod jenkins -G www
 
         # import ssh keys for jenkins user or create them?
         if [ \${IMPORTKEYS} -eq 1 ]; then
@@ -274,6 +280,9 @@ case \${RUNTYPE} in
 
         # change home directory for jenkins user to /mnt/jenkins
         /usr/sbin/pw usermod -n jenkins -d /mnt/jenkins -q
+
+        # add jenkins user to www group
+        /usr/sbin/pw usermod jenkins -G www
 
         # import ssh keys for jenkins user or create them?
         if [ \${IMPORTKEYS} -eq 1 ]; then

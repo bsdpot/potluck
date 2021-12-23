@@ -1,3 +1,9 @@
+0.0.9
+
+* Documentation updates and adding jenkins to www group
+
+---
+
 0.0.8
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

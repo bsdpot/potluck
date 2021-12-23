@@ -49,7 +49,7 @@ Copy in the files id_rsa & id_rsa.pub as part of the pot setup and start process
 ## No persistent storage
 
 To access ```jenkins```:
-* http://<jenkins-host>:8080
+* http://jenkins-host:8080
 
 Setup takes a little while the first time, and you will need console access to the ```jenkins``` pot image to run:
 
