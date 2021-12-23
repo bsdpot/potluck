@@ -1,3 +1,8 @@
+1.0.5
+
+* Fixing broken package samba
+---
+
 1.0.4
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

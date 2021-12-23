@@ -12,7 +12,7 @@
 
 # Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
 # You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script 
+# appropriately at the end of this script
 RUNS_IN_NOMAD=true
 
 # -------- BEGIN PACKAGE & MOUNTPOINT SETUP -------------
@@ -22,7 +22,7 @@ service sendmail onedisable
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
-pkg install -y samba411 rsync rsync-bpc rrdtool par2cmdline p5-XML-RSS backuppc4 apache24 ap24-mod_scgi p5-SCGI 
+pkg install -y samba412 rsync rsync-bpc rrdtool par2cmdline p5-XML-RSS backuppc4 apache24 ap24-mod_scgi p5-SCGI
 pkg clean -y
 
 # Create mountpoints
@@ -38,22 +38,22 @@ mkdir -p /usr/local/etc/backuppc && mkdir -p /usr/local/etc/backuppc/pc
 
 #
 # Now generate the run command script "cook"
-# It configures the system on the first run by creating the config file(s) 
-# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits 
+# It configures the system on the first run by creating the config file(s)
+# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
 #
 
-# ----------------- BEGIN COOK ------------------ 
+# ----------------- BEGIN COOK ------------------
 echo "#!/bin/sh
 RUNS_IN_NOMAD=$RUNS_IN_NOMAD
 # No need to change this, just ensures configuration is done only once
 if [ -e /usr/local/etc/pot-is-seasoned ]
 then
-    # If this pot flavour is blocking (i.e. it should not return), 
+    # If this pot flavour is blocking (i.e. it should not return),
     # we block indefinitely
     if [ \$RUNS_IN_NOMAD ]
     then
         /bin/sh /etc/rc
-        tail -f /dev/null 
+        tail -f /dev/null
     fi
     exit 0
 fi
@@ -71,7 +71,7 @@ fi
 
 #
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
-# 
+#
 
 # Convert parameters to variables if passed (overwrite environment)
 while getopts p: option
@@ -83,8 +83,8 @@ do
 done
 
 # Check config variables are set
-if [ -z \${PASSWORD+x} ]; 
-then 
+if [ -z \${PASSWORD+x} ];
+then
     echo 'PASSWORD is unset - see documentation how to configure this flavour' >> /var/log/cook.log
     echo 'PASSWORD is unset - see documentation how to configure this flavour'
     exit 1
@@ -92,10 +92,10 @@ fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE ADJUSTED & COPIED:
 
-mv /root/smb4.conf /usr/local/etc/ 
+mv /root/smb4.conf /usr/local/etc/
 mv /root/backuppc.conf /usr/local/etc/apache24/Includes/
 
-echo | sh /usr/local/etc/backuppc/update.sh 
+echo | sh /usr/local/etc/backuppc/update.sh
 
 sed -i .bak 's|^\$Conf{SCGIServerPort}.*|\$Conf{SCGIServerPort} = 10268;|g' /usr/local/etc/backuppc/config.pl
 sed -i .bak 's|^\$Conf{CgiAdminUsers}.*|\$Conf{CgiAdminUsers}     = \"*\";|g' /usr/local/etc/backuppc/config.pl
@@ -112,10 +112,10 @@ chmod 600 /home/backuppc/.ssh/id_rsa || true
 [ -w /etc/master.passwd ] && sed -i '' \"s|BackupPC pseudo-user:/nonexistent|BackupPC pseudo-user:/home/backuppc|\" /etc/master.passwd
 pwd_mkdb -p /etc/master.passwd
 
-sysrc backuppc_enable=\"YES\" 
+sysrc backuppc_enable=\"YES\"
 
 #htpasswd -b -c /usr/local/etc/backuppc/htpasswd backuppc \"\$PASSWORD\"
-htpasswd -b -c /usr/local/etc/backuppc/htpasswd admin \"\$PASSWORD\" 
+htpasswd -b -c /usr/local/etc/backuppc/htpasswd admin \"\$PASSWORD\"
 #ln -s /usr/local/www/cgi-bin/BackupPC_Admin /usr/local/www/cgi-bin/backuppc.pl
 
 [ -w /usr/local/etc/apache24/httpd.conf ] && sed -i '' \"s|/usr/local/www/apache24/data|/usr/local/www/backuppc|\" /usr/local/etc/apache24/httpd.conf
@@ -154,12 +154,11 @@ chmod u+x /usr/local/bin/cook
 # the "cook" script generated above each time, for the "Nomad" mode, the cook
 # script is started by pot (configuration through flavour file), therefore
 # we do not need to do anything here.
-# 
 
 # Create rc.d script for "normal" mode:
 echo "#!/bin/sh
 #
-# PROVIDE: cook 
+# PROVIDE: cook
 # REQUIRE: LOGIN
 # KEYWORD: shutdown
 #
