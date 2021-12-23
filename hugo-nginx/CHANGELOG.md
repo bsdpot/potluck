@@ -1,3 +1,9 @@
+0.0.14
+
+* More permissions adjustment
+
+---
+
 0.0.13
 
 * Permissions adjustments on mount in

@@ -381,6 +381,7 @@ chmod 777 /mnt/\${SITENAME}
 chmod 777 /mnt/\${SITENAME}/\${CUSTOMDIR}
 chmod 777 /mnt/\${SITENAME}/content
 chmod 777 /mnt/\${SITENAME}/content/blog
+chmod 666 /mnt/\${SITENAME}/content/blog/*.md
 chmod 777 /mnt/\${SITENAME}/content/micro
 chmod 777 /mnt/\${SITENAME}/static
 
