@@ -1,8 +1,8 @@
 ---
-author: "Stephan Lichtenauer & Bretton Vine"
-title: Consul
-summary: Consul is a service discovery platform for micro-services.
-tags: ["micro-services", "traefik", "nomad", "consul"]
+author: "Stephan Lichtenauer, Bretton Vine, Michael Gmelin"
+title: Consul-TLS
+summary: Consul-tls is a service discovery platform for micro-services integrated with Vault.
+tags: ["micro-services", "vault", "nomad", "consul"]
 ---
 
 # Overview
