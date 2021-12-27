@@ -1,3 +1,9 @@
+1.2.3
+
+* Adding header and tags to README
+
+---
+
 1.2.2
 
 * Fixing markdown in README

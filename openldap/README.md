@@ -1,3 +1,10 @@
+---
+author: "Bretton Vine"
+title: openldap
+summary: openldap in single or multiserver mode
+tags: ["ldap", "openldap", "directory services"]
+---
+
 # Overview
 
 This is an OpenLDAP jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
