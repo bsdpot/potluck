@@ -1,3 +1,9 @@
+0.0.3
+
+* Header and tags fixes
+
+---
+
 0.0.2
 
 * Typos and README fixes

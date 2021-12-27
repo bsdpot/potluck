@@ -1,8 +1,8 @@
 ---
 author: "Bretton Vine"
-title: nginx-rsync-ssh
+title: Nginx-rsync-ssh
 summary: Custom image with nginx, acme.sh, openssl, rsync, ssh requiring copied-in config files
-tags: ["nginx", "rsync", "custom image"]
+tags: ["nginx", "rsync", "development image", "custom image"]
 ---
 
 # Overview
