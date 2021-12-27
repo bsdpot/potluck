@@ -382,7 +382,7 @@
       "pluginVersion": "7.3.7",
       "targets": [
         {
-          "expr": "((node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"}) / (node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"} )) * 100",
+          "expr": "((node_memory_size_bytes{instance=\"$node\",job=\"$job\"} - node_memory_free_bytes{instance=\"$node\",job=\"$job\"}) / (node_memory_size_bytes{instance=\"$node\",job=\"$job\"} )) * 100",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 1,
@@ -390,7 +390,7 @@
           "step": 240
         },
         {
-          "expr": "100 - ((node_memory_MemAvailable_bytes{instance=\"$node\",job=\"$job\"} * 100) / node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"})",
+          "expr": "100 - ((node_memory_free_bytes{instance=\"$node\",job=\"$job\"} * 100) / node_memory_size_bytes{instance=\"$node\",job=\"$job\"})",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -467,7 +467,7 @@
       "pluginVersion": "7.3.7",
       "targets": [
         {
-          "expr": "((node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"}) / (node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} )) * 100",
+          "expr": "(node_memory_swap_used_bytes{instance=\"$node\",job=\"$job\"} / node_memory_swap_size_bytes{instance=\"$node\",job=\"$job\"}) * 100",
           "intervalFactor": 1,
           "refId": "A",
           "step": 240
@@ -895,7 +895,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"}",
+          "expr": "node_memory_size_bytes{instance=\"$node\",job=\"$job\"}",
           "intervalFactor": 1,
           "refId": "A",
           "step": 240
@@ -984,7 +984,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"}",
+          "expr": "node_memory_swap_size_bytes{instance=\"$node\",job=\"$job\"}",
           "intervalFactor": 1,
           "refId": "A",
           "step": 240
@@ -1302,7 +1302,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"}",
+          "expr": "node_memory_size_bytes{instance=\"$node\",job=\"$job\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -1311,7 +1311,7 @@
           "step": 240
         },
         {
-          "expr": "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"} - (node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"})",
+          "expr": "node_memory_size_bytes{instance=\"$node\",job=\"$job\"} - node_memory_free_bytes{instance=\"$node\",job=\"$job\"} - (node_memory_cache_bytes{instance=\"$node\",job=\"$job\"} + node_memory_buffer_bytes{instance=\"$node\",job=\"$job\"})",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -1320,7 +1320,7 @@
           "step": 240
         },
         {
-          "expr": "node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"}",
+          "expr": "node_memory_cache_bytes{instance=\"$node\",job=\"$job\"} + node_memory_buffer_bytes{instance=\"$node\",job=\"$job\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "RAM Cache + Buffer",
@@ -1328,7 +1328,7 @@
           "step": 240
         },
         {
-          "expr": "node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"}",
+          "expr": "node_memory_free_bytes{instance=\"$node\",job=\"$job\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "RAM Free",
@@ -1336,7 +1336,7 @@
           "step": 240
         },
         {
-          "expr": "(node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"})",
+          "expr": "node_memory_swap_used_bytes{instance=\"$node\",job=\"$job\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "SWAP Used",
@@ -2800,7 +2800,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "node_memory_Inactive_bytes{instance=\"$node\",job=\"$job\"}",
+              "expr": "node_memory_inactive_bytes{instance=\"$node\",job=\"$job\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Inactive - Memory which has been less recently used.  It is more eligible to be reclaimed for other purposes",
@@ -2808,7 +2808,7 @@
               "step": 240
             },
             {
-              "expr": "node_memory_Active_bytes{instance=\"$node\",job=\"$job\"}",
+              "expr": "node_memory_active_bytes{instance=\"$node\",job=\"$job\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Active - Memory that has been used more recently and usually not reclaimed unless absolutely necessary",
@@ -13852,7 +13852,7 @@
   "schemaVersion": 26,
   "style": "dark",
   "tags": [
-    "linux"
+    "freebsd"
   ],
   "templating": {
     "list": [
