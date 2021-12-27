@@ -66,8 +66,8 @@ POSTSCRIPT will run copied-in ```/root/postsetup.sh``` when set to 1. You can ad
 
 # Usage
 To access ```nginx```:
-* http://<hostname or IP>
+* http://hostname
 
 # Persistent storage
 
-To use persistent storage make sure to mount-in a pre-configured data set to /mnt/<name>. 
+To use persistent storage make sure to mount-in a pre-configured data set to the applicable directory. 

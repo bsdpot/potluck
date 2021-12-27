@@ -197,8 +197,8 @@ fi
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
 
 # add custom commands to setup.sh such as directory creation or doing stuff to files
-if [ \${SETUPSCRIPT} -eq 1 ];
-    if [ -f /root/setup.sh ];
+if [ \${SETUPSCRIPT} -eq 1 ]; then
+    if [ -f /root/setup.sh ]; then
         chmod +x /root/setup.sh
         /root/setup.sh
     fi
@@ -264,8 +264,8 @@ sysrc goaccess_log=\"/var/log/nginx/access.log\"
 service goaccess enable
 
 # add custom commands to postsetup.sh
-if [ \${POSTSCRIPT} -eq 1 ];
-    if [ -f /root/postsetup.sh ];
+if [ \${POSTSCRIPT} -eq 1 ]; then
+    if [ -f /root/postsetup.sh ]; then
         chmod +x /root/postsetup.sh
         /root/postsetup.sh
     else
