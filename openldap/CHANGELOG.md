@@ -1,3 +1,9 @@
+1.2.2
+
+* Fixing markdown in README
+
+---
+
 1.2.1
 
 * Version bump

@@ -15,20 +15,20 @@ For more details about ```nomad``` images, see [about potluck](https://potluck.h
 ## Prerequisites
 
 If you wish to import an existing `openldap` database, run the following on your existing `openldap` server to 
-export the config and schema:
+export the config and schema:    
 ``` slapcat -n 0 -l config.ldif ```
 
-Then edit config.ldif so that:
+Then edit config.ldif so that:    
 ```
 olcDbDirectory: /var/db/openldap-data
 ```
 
-becomes
+becomes    
 ```
 olcDbDirectory: /mnt/openldap-data
 ```
 
-Then run the following to export your data entries
+Then run the following to export your data entries    
 ```
 slapcat -n 1 -l data.ldif
 ```
@@ -40,11 +40,11 @@ Thereafter these files will load automatically, along with any updates, from per
 
 ## Installation
 
-* Create a ZFS data set on the parent system beforehand
+* Create a ZFS data set on the parent system beforehand    
   ```zfs create -o mountpoint=/mnt/openldap-data zroot/openldap-data```
 * Create your local jail from the image or the flavour files. 
 * Clone the local jail
-* Mount in the ZFS data set you created
+* Mount in the ZFS data set you created    
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/openldap-data```
 * Optional: Copy in YOUR config.ldif file if importing config:    
   ```pot copy-in -p <jailname> -s /path/to/config.ldif -d /root/config.ldif```
@@ -76,22 +76,22 @@ The optional SERVERID parameter is one of `001` or `002` for first or second ser
 
 Once started, a basic `openldap` configuration will be setup with data structures configured in `/mnt/openldap-data`.
 
-You can import your copied-in backup config.ldif files as follows for the configuration, database 0:
+You can import your copied-in backup config.ldif files as follows for the configuration, database 0:    
 ```
 /root/importldapconfig.sh
 ```
 
-This is the same as running:
+This is the same as running:    
 ```
 /usr/local/sbin/slapadd -c -n 0 -F /usr/local/etc/openldap/slapd.d/ -l /root/config.ldif
 ```
 
-You can import your copied-in data.ldif files as follows, for database 2:
+You can import your copied-in data.ldif files as follows, for database 2:    
 ```
 /root/importldapdata.sh
 ```
 
-This is the same as running:
+This is the same as running:    
 ```
 /usr/local/sbin/slapadd -c -n 1 -F /usr/local/etc/openldap/slapd.d/ -l /root/data.ldif
 ```
@@ -111,7 +111,7 @@ with a different SERVERID and setting REMOTEIP to the IP address of the first se
 
 ## Basic command line search
 
-Check entries in your `openldap` database by running an anonymous search (no auth):
+Check entries in your `openldap` database by running an anonymous search (no auth):    
 ```
 ldapsearch -x -b "dc=your-domain,dc=net"
 ```
