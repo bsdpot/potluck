@@ -1,3 +1,9 @@
+1.2.4
+
+* Capitilising header section in README for consistency
+
+---
+
 1.2.3
 
 * Adding header and tags to README

@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine"
-title: openldap
+title: Openldap
 summary: openldap in single or multiserver mode
 tags: ["ldap", "openldap", "directory services"]
 ---
