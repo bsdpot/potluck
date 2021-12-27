@@ -117,4 +117,4 @@ ldapsearch -x -b "dc=your-domain,dc=net"
 ```
 
 ## LAM web frontend
-Open http://<IP> to access the LAM `openldap` web frontend.
+Open http://yourhost to access the LAM `openldap` web frontend.
