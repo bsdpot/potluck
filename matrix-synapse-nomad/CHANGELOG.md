@@ -1,3 +1,9 @@
+0.10.1
+
+* Full rebuild nomad image for latest python and matrix
+
+---
+
 0.9.3
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

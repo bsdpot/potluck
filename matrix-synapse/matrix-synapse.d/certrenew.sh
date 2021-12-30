@@ -1,0 +1,9 @@
+#!/bin/sh
+cd /root
+/usr/local/etc/rc.d/nginx stop
+acme.sh --force --issue -d %%DOMAIN%% --standalone
+cd /root/.acme.sh/%%DOMAIN%%/
+mv * /usr/local/etc/ssl/
+service nginx start
+service synapse restart
+cd
