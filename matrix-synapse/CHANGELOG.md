@@ -1,5 +1,11 @@
 1.0.4
 
+* Further adjustment to certrenew script to make it run on start
+
+---
+
+1.0.4
+
 * Fix to certrenew run process
 
 ---

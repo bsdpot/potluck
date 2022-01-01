@@ -360,9 +360,9 @@ service synapse start
 service nginx start
 
 # run certificate renewal script
-if [ \${NOSSL} != true ]; then
+if [ \${NOSSL} = false ]; then
     if [ -f /root/certrenew.sh ]; then
-        /bin/sh /root/certrenew.sh
+        /root/certrenew.sh
     else
         echo \"Error: can't execute /root/certrenew.sh for \${DOMAIN}\"
     fi
