@@ -1,4 +1,4 @@
-1.0.4
+1.0.5
 
 * Further adjustment to certrenew script to make it run on start
 
