@@ -1,3 +1,9 @@
+1.0.7
+
+* New fix for certificate registration with renewal via script
+
+---
+
 1.0.6
 
 * Still fixing the certrenew script

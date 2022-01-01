@@ -355,17 +355,20 @@ fi
 service nginx enable
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-echo \"Starting services\"
-service synapse start
-service nginx start
 
 # run certificate renewal script
 if [ \${NOSSL} != true ]; then
-    if [ -f /root/certrenew.sh ]; then
-        . /root/certrenew.sh
-    else
-        echo \"Error: can't execute /root/certrenew.sh for \${DOMAIN}\"
-    fi
+    echo \"Generating certificates then starting services\"
+    cd /root
+    /usr/local/sbin/acme.sh --register-account -m \${SSLEMAIL} --server zerossl
+    /usr/local/sbin/acme.sh --force --issue -d \${DOMAIN} --standalone
+    cp -f /root/.acme.sh/\${DOMAIN}/* /usr/local/etc/ssl/
+    service nginx start
+    service synapse start
+else
+    echo \"Starting services\"
+    service synapse start
+    service nginx start
 fi
 
 #
