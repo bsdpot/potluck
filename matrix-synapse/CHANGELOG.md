@@ -1,3 +1,9 @@
+1.0.3
+
+* Fixes to certrenew script
+
+---
+
 1.0.2
 
 * Add step to register zerossl account for acme.sh
