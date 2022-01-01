@@ -357,16 +357,20 @@ service nginx enable
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 # run certificate renewal script
-if [ \${NOSSL} != true ]; then
-    echo \"Generating certificates then starting services\"
+if [ \${NOSSL} = false ]; then
+    echo \"Generating certificates then starting services with SSL\"
     cd /root
     /usr/local/sbin/acme.sh --register-account -m \${SSLEMAIL} --server zerossl
     /usr/local/sbin/acme.sh --force --issue -d \${DOMAIN} --standalone
     cp -f /root/.acme.sh/\${DOMAIN}/* /usr/local/etc/ssl/
-    service nginx start
-    service synapse start
+    if [ -f /usr/local/etc/ssl/\${DOMAIN}.key ]; then
+        service nginx start
+        service synapse start
+    else
+        echo \"Error: where is /usr/local/etc/ssl/\${DOMAIN}.key?\"
+    fi
 else
-    echo \"Starting services\"
+    echo \"Starting services without SSL\"
     service synapse start
     service nginx start
 fi

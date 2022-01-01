@@ -1,3 +1,9 @@
+1.0.8
+
+* Further adjustment to manual process for certificates
+
+---
+
 1.0.7
 
 * New fix for certificate registration with renewal via script
