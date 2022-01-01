@@ -362,7 +362,7 @@ service nginx start
 # run certificate renewal script
 if [ \${NOSSL} != true ]; then
     if [ -f /root/certrenew.sh ]; then
-        . /root/certrenew.sh
+        /bin/sh /root/certrenew.sh
     else
         echo \"Error: can't execute /root/certrenew.sh for \${DOMAIN}\"
     fi
