@@ -230,6 +230,10 @@ if [ -z \${CONTROLUSER+x} ]; then
     echo 'CONTROLUSER is unset - default false - see documentation for how to enable a control user SSH with authorized_keys file'
     CONTROLUSER=false
 fi
+if [ -z \${SSLEMAIL+x} ]; then
+    echo 'SSLEMAIL is unset - see documentation for how to set email address for acme.sh regitration'
+    exit 1
+fi
 
 #
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
@@ -341,7 +345,7 @@ else
     fi
     # ssl steps
     if [ -f /root/certrenew.sh ]; then
-        sed -i .orig \"s|%%DOMAIN%%|\${DOMAIN}|g\" /root/certrenew.sh
+        sed -i .orig -e \"s|%%SSLEMAIL%%|\${SSLEMAIL}|g\" -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" /root/certrenew.sh
         chmod u+x /root/certrenew.sh
         echo \"30      4       1       *       *       root   /bin/sh /root/certrenew.sh\" >> /etc/crontab
     fi
