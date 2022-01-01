@@ -1,3 +1,9 @@
+1.0.10
+
+* using /.acme.sh for acme.sh stuff as problems writing to /root/.acme.sh in cook
+
+---
+
 1.0.9
 
 * acme.sh needs additional steps to configure
