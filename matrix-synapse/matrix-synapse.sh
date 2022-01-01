@@ -360,6 +360,7 @@ service nginx enable
 if [ \${NOSSL} = false ]; then
     echo \"Generating certificates then starting services with SSL\"
     cd /root
+    /usr/local/sbin/acme.sh --install --home /root/.acme.sh
     /usr/local/sbin/acme.sh --register-account -m \${SSLEMAIL} --server zerossl
     /usr/local/sbin/acme.sh --force --issue -d \${DOMAIN} --standalone
     cp -f /root/.acme.sh/\${DOMAIN}/* /usr/local/etc/ssl/

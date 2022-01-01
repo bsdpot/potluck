@@ -1,3 +1,9 @@
+1.0.9
+
+* acme.sh needs additional steps to configure
+
+---
+
 1.0.8
 
 * Further adjustment to manual process for certificates
