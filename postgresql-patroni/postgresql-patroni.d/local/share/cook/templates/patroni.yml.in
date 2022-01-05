@@ -48,6 +48,7 @@ bootstrap:
         wal_keep_segments: 8
         max_wal_senders: 5
         max_replication_slots: 5
+        max_connections: 1000
         checkpoint_timeout: 30
   # Note: this needs to be a yml list
   # (some options need values, others are switches)
