@@ -1,3 +1,9 @@
+0.0.14
+
+* Incrementing changelog for pot 14 build
+
+---
+
 0.0.13
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13
