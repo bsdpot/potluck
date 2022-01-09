@@ -1,3 +1,9 @@
+1.0.17
+
+* Reverting nginx.conf files missed in previous commit
+
+---
+
 1.0.16
 
 * Reverting .well-known setup as manually specifying delegation not helping
