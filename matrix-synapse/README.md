@@ -2,7 +2,7 @@
 author: "Stephan Lichtenauer, Bretton Vine"
 title: Matrix Synapse
 summary: Matrix Synapse secure, decentralised, real-time communication server.
-tags: ["matrix", "synapse", "im", "instant messaging"]
+tags: ["matrix", "synapse", "im", "instant messaging", "rooms", "chat"]
 ---
 
 # Overview
@@ -65,4 +65,18 @@ LDAPDOMAIN is the domain for the LDAP server which will be split into name.tld f
 
 ## Usage
 
-To be added.
+### First Account
+
+You will need to setup an admin account via cli using ```register_new_matrix_user```.
+
+For example:
+```
+register_new_matrix_user -u adminusername -k "Ex4mpl3sH4r3dk3y"
+Password: 
+Confirm password: 
+Make admin [yes]: 
+Sending registration request...
+Success!
+```
+
+The shared secret (-k) is defined in the homeserver.yaml configuration via the MYSHAREDSECRET parameter. The command asks for a password which should be unused as authentication should happen against LDAP.
