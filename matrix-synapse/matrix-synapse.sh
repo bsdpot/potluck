@@ -116,6 +116,7 @@ step "Create necessary directories if they don't exist"
 mkdir -p /var/log/matrix-synapse
 mkdir -p /var/run/matrix-synapse
 mkdir -p /usr/local/etc/matrix-synapse
+mkdir -p /usr/local/www/well-known/matrix
 
 # -------------- END PACKAGE SETUP -------------
 
@@ -254,6 +255,7 @@ fi
 mkdir -p /mnt/matrixdata/matrix-synapse
 mkdir -p /mnt/matrixdata/media_store
 mkdir -p /mnt/matrixdata/control
+mkdir -p /usr/local/www/well-known/matrix
 
 # double check permissions on directories
 chown synapse /mnt/matrixdata
@@ -330,18 +332,34 @@ fi
 
 # setup nginx.conf
 if [ \${NOSSL} = true ]; then
+    MATRIXPORT=80
     if [ -f /root/nginx.nossl.conf ]; then
         sed < /root/nginx.nossl.conf \
         -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" > /usr/local/etc/nginx/nginx.conf
     else
         echo \"Error: no /root/nginx.nossl.conf file to modify. This error should not happen in prebuilt pot image.\"
     fi
+    if [ -f /root/server.in ]; then
+        sed < /root/server.in \
+        -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" \
+        -e \"s|%%MATRIXPORT%%|\${MATRIXPORT}|g\" > /usr/local/www/well-known/matrix/server
+    else
+        echo \"Error: no /root/server.in file to modify. This error should not happen in prebuilt pot image.\"
+    fi
 else
+    MATRIXPORT=443
     if [ -f /root/nginx.conf ]; then
         sed < /root/nginx.conf \
         -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" > /usr/local/etc/nginx/nginx.conf
     else
         echo \"Error: no /root/nginx.conf file to modify. This error should not happen in prebuilt pot image.\"
+    fi
+    if [ -f /root/server.in ]; then
+        sed < /root/server.in \
+        -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" \
+        -e \"s|%%MATRIXPORT%%|\${MATRIXPORT}|g\" > /usr/local/www/well-known/matrix/server
+    else
+        echo \"Error: no /root/server.in file to modify. This error should not happen in prebuilt pot image.\"
     fi
     # ssl steps
     if [ -f /root/certrenew.sh ]; then

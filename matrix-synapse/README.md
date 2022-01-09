@@ -17,6 +17,9 @@ latter either via ```nomad```, see example below, or by editing the downloaded j
 For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
 # Setup
+You must run your matrix instance from a top level domain such as example.com, not matrix.example.com. 
+
+This is a quirk of using .well-known/matrix/server with the server's details. 
 
 ## Installation
 

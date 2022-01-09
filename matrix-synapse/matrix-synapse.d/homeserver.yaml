@@ -575,6 +575,8 @@ database:
 #
 #event_cache_size: 10K
 
+# serve .well-known server file
+serve_server_wellknown: true
 
 ## Logging ##
 

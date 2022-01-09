@@ -1,3 +1,9 @@
+1.0.15
+
+* Nginx-server .well-known
+
+---
+
 1.0.14
 
 * Reverting nginx location to / and removing ssl on bit
