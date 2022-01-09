@@ -332,34 +332,18 @@ fi
 
 # setup nginx.conf
 if [ \${NOSSL} = true ]; then
-    MATRIXPORT=80
     if [ -f /root/nginx.nossl.conf ]; then
         sed < /root/nginx.nossl.conf \
         -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" > /usr/local/etc/nginx/nginx.conf
     else
         echo \"Error: no /root/nginx.nossl.conf file to modify. This error should not happen in prebuilt pot image.\"
     fi
-    if [ -f /root/server.in ]; then
-        sed < /root/server.in \
-        -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" \
-        -e \"s|%%MATRIXPORT%%|\${MATRIXPORT}|g\" > /usr/local/www/well-known/matrix/server
-    else
-        echo \"Error: no /root/server.in file to modify. This error should not happen in prebuilt pot image.\"
-    fi
 else
-    MATRIXPORT=443
     if [ -f /root/nginx.conf ]; then
         sed < /root/nginx.conf \
         -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" > /usr/local/etc/nginx/nginx.conf
     else
         echo \"Error: no /root/nginx.conf file to modify. This error should not happen in prebuilt pot image.\"
-    fi
-    if [ -f /root/server.in ]; then
-        sed < /root/server.in \
-        -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" \
-        -e \"s|%%MATRIXPORT%%|\${MATRIXPORT}|g\" > /usr/local/www/well-known/matrix/server
-    else
-        echo \"Error: no /root/server.in file to modify. This error should not happen in prebuilt pot image.\"
     fi
     # ssl steps
     if [ -f /root/certrenew.sh ]; then

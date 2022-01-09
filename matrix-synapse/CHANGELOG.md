@@ -1,3 +1,9 @@
+1.0.16
+
+* Reverting .well-known setup as manually specifying delegation not helping
+
+---
+
 1.0.15
 
 * Nginx-server .well-known
