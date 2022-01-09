@@ -1,3 +1,9 @@
+1.0.14
+
+* Reverting nginx location to / and removing ssl on bit
+
+---
+
 1.0.13
 
 * Adding skipped nginx updates for client_max_body_size
