@@ -1,3 +1,9 @@
+1.0.12
+
+* Nginx updates for x-forward
+
+---
+
 1.0.11
 
 * Adding useful steps to README.md
