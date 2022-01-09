@@ -1,3 +1,9 @@
+1.0.13
+
+* Adding skipped nginx updates for client_max_body_size
+
+---
+
 1.0.12
 
 * Nginx updates for x-forward
