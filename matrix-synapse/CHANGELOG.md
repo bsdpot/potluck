@@ -1,3 +1,9 @@
+1.0.18
+
+* Fixes to homeserver.yaml to remove well-known
+
+---
+
 1.0.17
 
 * Reverting nginx.conf files missed in previous commit
