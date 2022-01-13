@@ -1,3 +1,9 @@
+0.10.2
+
+* Updating to match matrix-synapse image
+
+---
+
 0.10.1
 
 * Full rebuild nomad image for latest python and matrix

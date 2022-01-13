@@ -107,17 +107,12 @@ pkg install -y nginx
 step "Clean package installation"
 pkg clean -y
 
-# Create mountpoints
-#mkdir -p /var/db/control
-#mkdir -p /var/db/matrix-synapse
-
-mkdir -p /mnt/matrixdata/matrix-synapse/
-mkdir -p /mnt/matrixdata/media_store
-mkdir -p /mnt/matrixdata/control
-#
-mkdir -p /var/log/matrix-synapse/
-mkdir -p /var/run/matrix-synapse/
-mkdir -p /usr/local/etc/matrix-synapse/
+step "Create necessary directories if they don't exist"
+# create some necessary directories
+mkdir -p /var/log/matrix-synapse
+mkdir -p /var/run/matrix-synapse
+mkdir -p /usr/local/etc/matrix-synapse
+mkdir -p /usr/local/www/well-known/matrix
 
 # ---------- END PACKAGE & MOUNTPOINT SETUP -------------
 
@@ -177,170 +172,250 @@ while getopts s:e:r:k:h:u:p:l:b:d:w:n: option
 do
     case \"\${option}\"
     in
-      s) SERVERNAME=\${OPTARG};;
-      e) ADMINEMAIL=\${OPTARG};;
-      r) ENABLEREGISTRATION=\${OPTARG};;
-      k) SHAREDSECRET=\${OPTARG};;
+      i) IP=\${OPTARG};;
+      d) DOMAIN=\${OPTARG};;
+      a) ALERTEMAIL=\${OPTARG};;
+      e) ENABLEREGISTRATION=\${OPTARG};;
+      s) MYSHAREDSECRET=\${OPTARG};;
       h) SMTPHOST=\${OPTARG};;
+      p) SMTPPORT=\${OPTARG};;
       u) SMTPUSER=\${OPTARG};;
-      p) SMTPPWD=\${OPTARG};;
-      l) LDAPURI=\${OPTARG};;
-      b) LDAPBASE=\${OPTARG};;
-      d) LDAPBINDDN=\${OPTARG};;
-      w) LDAPBINDPWD=\${OPTARG};;
+      c) SMTPPASS=\${OPTARG};;
+      f) SMTPFROM=\${OPTARG};;
+      l) LDAPSERVER=\${OPTARG};;
+      b) LDAPPASSWORD=\${OPTARG};;
+      t) LDAPDOMAIN=\${OPTARG};;
       n) NOSSL=\${OPTARG};;
+      x) CONTROLUSER=\${OPTARG};;
+      y) SSLEMAIL=\${OPTARG};;
     esac
 done
 
 # Check config variables are set
-if [ -z \${SERVERNAME+x} ];
+if [ -z \${IP+x} ];
 then
-    echo 'SERVERNAME is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-    echo 'SERVERNAME is unset - see documentation how to configure this flavour'
+    echo 'IP is unset - see documentation how to pass in the IP address as a parameter' >> /var/log/cook.log
+    echo 'IP is unset - see documentation how to pass in the IP address as a parameter'
     exit 1
 fi
-if [ -z \${ADMINEMAIL+x} ];
+if [ -z \${DOMAIN+x} ]; then
+    echo 'DOMAIN is unset - see documentation how to pass in a domain name as a parameter' >> /var/log/cook.log
+    echo 'DOMAIN is unset - see documentation how to pass in a domain name as a parameter'
+    exit 1
+fi
+if [ -z \${ALERTEMAIL+x} ];
 then
-    echo 'ADMINEMAIL is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-    echo 'ADMINEMAIL is unset - see documentation how to configure this flavour'
+    echo 'ALERTEMAIL is unset - see documentation for how to pass in the alert email address as a parameter' >> /var/log/cook.log
+    echo 'ALERTEMAIL is unset - see documentation for how to pass in the alert email address as a parameter'
     exit 1
 fi
 if [ -z \${ENABLEREGISTRATION+x} ];
 then
-    echo 'ENABLEREGISTRATION is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-    echo 'ENABLEREGISTRATION is unset - see documentation how to configure this flavour'
-    exit 1
+    echo 'REGISTRATIONENABLE is unset - defaulting to false - see documentation for how to set true or false to enable registrations' >> /var/log/cook.log
+    echo 'REGISTRATIONENABLE is unset - defaulting to false - see documentation for how to set true or false to enable registrations'
+    REGISTRATIONENABLE=false
 fi
-if [ -z \${SHAREDSECRET+x} ];
+if [ -z \${MYSHAREDSECRET+x} ];
 then
-    echo 'SHAREDSECRET is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-    echo 'SHAREDSECRET is unset - see documentation how to configure this flavour'
+    echo 'MYSHAREDSECRET is unset - please provide a shared secret - see documentation for how to pass this in as a parameter' >> /var/log/cook.log
+    echo 'MYSHAREDSECRET is unset - please provide a shared secret - see documentation for how to pass this in as a parameter'
     exit 1
 fi
 if [ -z \${SMTPHOST+x} ];
 then
-    echo 'SMTPHOST is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-    echo 'SMTPHOST is unset - see documentation how to configure this flavour'
+    echo 'SMTPHOST is unset - please include the mail host - see documentation for how to pass in the mail host as a parameter' >> /var/log/cook.log
+    echo 'SMTPHOST is unset - please include the mail host - see documentation for how to pass in the mail host as a parameter'
     exit 1
+fi
+if [ -z \${SMTPPORT+x} ]; then
+    echo 'SMTPPORT is unset - defaulting to port 25 - see documentation for how to pass in the smtp port as a parameter' >> /var/log/cook.log
+    echo 'SMTPPORT is unset - defaulting to port 25 - see documentation for how to pass in the smtp port as a parameter'
+    SMTPPORT=25
 fi
 if [ -z \${SMTPUSER+x} ];
 then
-    echo 'SMTPUSER is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-    echo 'SMTPUSER is unset - see documentation how to configure this flavour'
+    echo 'SMTPUSER is unset - see documentation for how to pass in a smtp username as a parameter' >> /var/log/cook.log
+    echo 'SMTPUSER is unset - see documentation for how to pass in a smtp username as a parameter'
     exit 1
 fi
-if [ -z \${SMTPPWD+x} ];
+if [ -z \${SMTPPASS+x} ];
 then
-    echo 'SMTPPWD is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-    echo 'SMTPPWD is unset - see documentation how to configure this flavour'
+    echo 'SMTPPASS is unset - see documentation for how to pass in a smtp password as a parameter' >> /var/log/cook.log
+    echo 'SMTPPASS is unset - see documentation for how to pass in a smtp password as a parameter'
     exit 1
 fi
-if [ -z \${NOSSL+x} ];
-then
-    echo 'NOSSL is unset - setting it to false' >> /var/log/cook.log
-    echo 'NOSSL is unset - setting it to false'
-    NOSSL=false
+if [ -z \${SMTPFROM+x} ]; then
+    echo 'SMTPFROM is unset - see documentation for how to pass in the from address as a parameter' >> /var/log/cook.log
+    echo 'SMTPFROM is unset - see documentation for how to pass in the from address as a parameter'
+    exit 1
 fi
-if [ ! -z \${LDAPURI+x} ];
-then
-    if [ -z \${LDAPBASE+x} ];
-    then
-        echo 'LDAPURI is set but LDAPBASE is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-        echo 'LDAPURI is set but LDAPBASE is unset - see documentation how to configure this flavour'
-        exit 1
-    fi
-    if [ -z \${LDAPBINDDN+x} ];
-    then
-        echo 'LDAPURI is set but LDAPBINDDN is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-        echo 'LDAPURI is set but LDAPBINDDN is unset - see documentation how to configure this flavour'
-        exit 1
-    fi
-    if [ -z \${LDAPBINDPWD+x} ];
-    then
-        echo 'LDAPURI is set but LDAPBINDPWD is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-        echo 'LDAPURI is set but LDAPBINDPWD is unset - see documentation how to configure this flavour'
-        exit 1
-    fi
+if [ -z \${LDAPSERVER+x} ]; then
+    echo 'LDAPSERVER is unset - see documentation for how to pass in the LDAP server as a parameter' >> /var/log/cook.log
+    echo 'LDAPSERVER is unset - see documentation for how to pass in the LDAP server as a parameter'
+    exit 1
 fi
+if [ -z \${LDAPPASSWORD+x} ]; then
+    echo 'LDAPPASSWORD is unset - see documentation for how to pass in the LDAP password as a parameter' >> /var/log/cook.log
+    echo 'LDAPPASSWORD is unset - see documentation for how to pass in the LDAP password as a parameter'
+    exit 1
+fi
+if [ -z \${LDAPDOMAIN+x} ]; then
+    echo 'LDAPDOMAIN is unset - see documentation how to pass in the LDAP domain name as a parameter' >> /var/log/cook.log
+    echo 'LDAPDOMAIN is unset - see documentation how to pass in the LDAP domain name as a parameter'
+    exit 1
+fi
+if [ -z \${NOSSL+x} ]; then
+    echo 'NOSSL is unset - default true - see documentation for how to enable SSL' >> /var/log/cook.log
+    echo 'NOSSL is unset - default true - see documentation for how to enable SSL'
+    NOSSL=true
+fi
+if [ -z \${CONTROLUSER+x} ]; then
+    echo 'CONTROLUSER is unset - default false - see documentation for how to enable a control user SSH with authorized_keys file' >> /var/log/cook.log
+    echo 'CONTROLUSER is unset - default false - see documentation for how to enable a control user SSH with authorized_keys file'
+    CONTROLUSER=false
+fi
+if [ -z \${SSLEMAIL+x} ]; then
+    echo 'SSLEMAIL is unset - see documentation for how to set email address for acme.sh regitration' >> /var/log/cook.log
+    echo 'SSLEMAIL is unset - see documentation for how to set email address for acme.sh regitration'
+    exit 1
+fi
+
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE ADJUSTED & COPIED:
 
-# homeserver.yaml
-[ -w /root/homeserver.yaml ] && sed -i '' \"s/\\\$SERVERNAME/\$SERVERNAME/\" /root/homeserver.yaml
-[ -w /root/homeserver.yaml ] && sed -i '' \"s/\\\$ADMINEMAIL/\$ADMINEMAIL/\" /root/homeserver.yaml
-[ -w /root/homeserver.yaml ] && sed -i '' \"s/\\\$ENABLEREGISTRATION/\$ENABLEREGISTRATION/\" /root/homeserver.yaml
-[ -w /root/homeserver.yaml ] && sed -i '' \"s/\\\$SHAREDSECRET/\$SHAREDSECRET/\" /root/homeserver.yaml
-[ -w /root/homeserver.yaml ] && sed -i '' \"s/\\\$SMTPHOST/\$SMTPHOST/\" /root/homeserver.yaml
-[ -w /root/homeserver.yaml ] && sed -i '' \"s/\\\$SMTPUSER/\$SMTPUSER/\" /root/homeserver.yaml
-[ -w /root/homeserver.yaml ] && sed -i '' \"s/\\\$SMTPPWD/\$SMTPPWD/\" /root/homeserver.yaml
-
-# homeserver.yaml.ldappart
-if [ -z \${LDAPURI+x} ];
-then
-    rm /root/homeserver.yaml.ldappart
+# check that /mnt/matrixdata exists
+if [ -d /mnt/matrixdata ]; then
+    echo \"INFO: /mnt/matrixdata exists. All good.\"
 else
-    [ -w /root/homeserver.yaml.ldappart ] && sed -i '' \"s#\\\$LDAPURI#\$LDAPURI#\" /root/homeserver.yaml.ldappart
-    [ -w /root/homeserver.yaml.ldappart ] && sed -i '' \"s/\\\$LDAPBASE/\$LDAPBASE/\" /root/homeserver.yaml.ldappart
-    [ -w /root/homeserver.yaml.ldappart ] && sed -i '' \"s/\\\$LDAPBINDDN/\$LDAPBINDDN/\" /root/homeserver.yaml.ldappart
-    [ -w /root/homeserver.yaml.ldappart ] && sed -i '' \"s/\\\$LDAPBINDPWD/\$LDAPBINDPWD/\" /root/homeserver.yaml.ldappart
-
-    cat /root/homeserver.yaml.ldappart >> /root/homeserver.yaml
+    echo \"ERROR: /mnt/matrixdata does not exist. Where is the persistent storage?\"
+    exit 1
 fi
 
-/usr/local/bin/python3.7 -B -m synapse.app.homeserver -c /usr/local/etc/matrix-synapse/homeserver.yaml --generate-config -H \$SERVERNAME --report-stats no
+# make dirs
+mkdir -p /mnt/matrixdata/matrix-synapse
+mkdir -p /mnt/matrixdata/media_store
+mkdir -p /mnt/matrixdata/control
+mkdir -p /usr/local/www/well-known/matrix
 
-mkdir -p /mnt/matrixdata/media_store && chown -R synapse /mnt/matrixdata/media_store && chmod -R ugo+rw /mnt/matrixdata/media_store
-mkdir -p /mnt/matrixdata/matrix-synapse && chown -R synapse /mnt/matrixdata/matrix-synapse && chmod -R ugo+rw /mnt/matrixdata/matrix-synapse
+# double check permissions on directories
+chown synapse /mnt/matrixdata
+chown -R synapse /mnt/matrixdata/matrix-synapse
+chmod -R ugo+rw /mnt/matrixdata/matrix-synapse
+chown -R synapse /mnt/matrixdata/media_store
+chmod -R ugo+rw /mnt/matrixdata/media_store
+chown -R synapse /var/log/matrix-synapse
+chown -R synapse /var/run/matrix-synapse
 
-# ...we bring our own config though, so we backup & replace the generated one
+# split domain into parts for use in matrix-synapse ldap configuration
+MYSUFFIX=\$(echo \${LDAPDOMAIN} | awk -F '.' 'NF>=2 {print \$(NF-1)}')
+MYTLD=\$(echo \${LDAPDOMAIN} | awk -F '.' 'NF>=2 {print \$(NF)}')
+echo \"From domain name of \${LDAPDOMAIN} we get MYSUFFIX of \${MYSUFFIX} and MYTLD of \${MYTLD}\"
+
+# generate macaroon and form key
+MYMACAROON=\$(/usr/bin/openssl rand -base64 48)
+MYFORMKEY=\$(/usr/bin/openssl rand -base64 48)
+
+# copy over log config
+if [ -f /root/my.log.config ]; then
+    cp -f /root/my.log.config /usr/local/etc/matrix-synapse/my.log.config
+fi
+
+# generate basic setup
+/usr/local/bin/python3.8 -B -m synapse.app.homeserver -c /usr/local/etc/matrix-synapse/homeserver.yaml --generate-config -H \${DOMAIN} --report-stats no
+
 mv /usr/local/etc/matrix-synapse/homeserver.yaml /usr/local/etc/matrix-synapse/homeserver.yaml.generated
-mv /root/homeserver.yaml /usr/local/etc/matrix-synapse
 
-# homeserver.log.config
-mv /root/homeserver.log.config /usr/local/etc/matrix-synapse
-
-
-if [ \"\$NOSSL\" = true ];
-then
-    # nginx.conf
-    [ -w /root/nginx.nossl.conf ] && sed -i '' \"s/\\\$SERVERNAME/\$SERVERNAME/\" /root/nginx.nossl.conf
-    mkdir -p /usr/local/etc/nginx
-    mv /root/nginx.nossl.conf /usr/local/etc/nginx/nginx.conf
+# set variables and copy over homeserver.yaml
+if [ -f /root/homeserver.yaml ]; then
+    sed < /root/homeserver.yaml \
+    -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" \
+    -e \"s|%%ALERTEMAIL%%|\${ALERTEMAIL}|g\" \
+    -e \"s|%%REGISTRATIONENABLE%%|\${REGISTRATIONENABLE}|g\" \
+    -e \"s|%%MYSHAREDSECRET%%|\${MYSHAREDSECRET}|g\" \
+    -e \"s|%%MYMACAROON%%|\${MYMACAROON}|g\" \
+    -e \"s|%%MYFORMKEY%%|\${MYFORMKEY}|g\" \
+    -e \"s|%%SMTPHOST%%|\${SMTPHOST}|g\" \
+    -e \"s|%%SMTPPORT%%|\${SMTPPORT}|g\" \
+    -e \"s|%%SMTPUSER%%|\${SMTPUSER}|g\" \
+    -e \"s|%%SMTPPASS%%|\${SMTPPASS}|g\" \
+    -e \"s|%%LDAPSERVER%%|\${LDAPSERVER}|g\" \
+    -e \"s|%%MYSUFFIX%%|\${MYSUFFIX}|g\" \
+    -e \"s|%%MYTLD%%|\${MYTLD}|g\" \
+    -e \"s|%%LDAPPASSWORD%%|\${LDAPPASSWORD}|g\" > /usr/local/etc/matrix-synapse/homeserver.yaml
 else
-    # nginx.conf
-    [ -w /root/nginx.conf ] && sed -i '' \"s/\\\$SERVERNAME/\$SERVERNAME/\" /root/nginx.conf
-    mkdir -p /usr/local/etc/nginx
-    mv /root/nginx.conf /usr/local/etc/nginx
-
-    # certrenew.sh
-    [ -w /root/nginx.conf ] && sed -i '' \"s/\\\$SERVERNAME/\$SERVERNAME/\" /root/nginx.conf
-    chmod u+x /root/certrenew.sh
-    echo \"30      4       1       *       *       root   /bin/sh /root/certrenew.sh\" >> /etc/crontab
+    echo \"Error: no /root/homeserver.yaml file to modify. This error should not happen in prebuilt pot image.\"
 fi
 
+# enable matrix
+service synapse enable
+
+# setup control user
 # sshd (control user)
-pw user add -n control -c 'Control Account' -d /mnt/matrixdata/control -G wheel -m -s /bin/sh
-mkdir -p /mnt/matrixdata/control/.ssh
-chown control:control /mnt/matrixdata/control/.ssh
-touch /mnt/matrixdata/control/.ssh/authorized_keys
-chown control:control /mnt/matrixdata/control/.ssh/authorized_keys
-chmod u+rw /mnt/matrixdata/control/.ssh/authorized_keys
-chmod go-w /mnt/matrixdata/control/.ssh/authorized_keys
-echo \"StrictModes no\" >> /etc/ssh/sshd_config
+if [ \${CONTROLUSER} = yes ]; then
+    pw user add -n control -c 'Control Account' -d /mnt/matrixdata/control -G wheel -m -s /bin/sh
+    mkdir -p /mnt/matrixdata/control/.ssh
+    chown control:control /mnt/matrixdata/control/.ssh
+    # copy in importauthkey to enable a specific pubkey access
+    if [ -f /root/importauthkey ]; then
+        cat /root/importauthkey > /mnt/matrixdata/control/.ssh/authorized_keys
+    else
+        touch /mnt/matrixdata/control/.ssh/authorized_keys
+    fi
+    chown control:control /mnt/matrixdata/control/.ssh/authorized_keys
+    chmod u+rw /mnt/matrixdata/control/.ssh/authorized_keys
+    chmod go-w /mnt/matrixdata/control/.ssh/authorized_keys
+    echo \"StrictModes no\" >> /etc/ssh/sshd_config
+    service sshd enable
+    service sshd restart
+fi
+
+# setup nginx.conf
+if [ \${NOSSL} = true ]; then
+    if [ -f /root/nginx.nossl.conf ]; then
+        sed < /root/nginx.nossl.conf \
+        -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" > /usr/local/etc/nginx/nginx.conf
+    else
+        echo \"Error: no /root/nginx.nossl.conf file to modify. This error should not happen in prebuilt pot image.\"
+    fi
+else
+    if [ -f /root/nginx.conf ]; then
+        sed < /root/nginx.conf \
+        -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" > /usr/local/etc/nginx/nginx.conf
+    else
+        echo \"Error: no /root/nginx.conf file to modify. This error should not happen in prebuilt pot image.\"
+    fi
+    # ssl steps
+    if [ -f /root/certrenew.sh ]; then
+        sed -i .orig -e \"s|%%SSLEMAIL%%|\${SSLEMAIL}|g\" -e \"s|%%DOMAIN%%|\${DOMAIN}|g\" /root/certrenew.sh
+        chmod u+x /root/certrenew.sh
+        echo \"30      4       1       *       *       root   /bin/sh /root/certrenew.sh\" >> /etc/crontab
+    fi
+fi
+
+# enable nginx
+service nginx enable
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-sysrc synapse_enable=\"YES\"
-sysrc nginx_enable=\"YES\"
-sysrc sshd_enable=\"YES\"
 
-/usr/local/etc/rc.d/synapse restart
-/usr/local/etc/rc.d/nginx restart
-/etc/rc.d/sshd restart
-
-if [ \"\$NOSSL\" = false ];
-then
-    . /root/certrenew.sh
+# run certificate renewal script
+if [ \${NOSSL} = false ]; then
+    echo \"Generating certificates then starting services with SSL\"
+    cd /root
+    /usr/local/sbin/acme.sh --register-account -m \${SSLEMAIL} --server zerossl
+    /usr/local/sbin/acme.sh --force --issue -d \${DOMAIN} --standalone
+    cp -f /.acme.sh/\${DOMAIN}/* /usr/local/etc/ssl/
+    if [ -f /usr/local/etc/ssl/\${DOMAIN}.key ]; then
+        service nginx start
+        service synapse start
+    else
+        echo \"Error: where is /usr/local/etc/ssl/\${DOMAIN}.key?\"
+    fi
+else
+    echo \"Starting services without SSL\"
+    service synapse start
+    service nginx start
 fi
+
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
 

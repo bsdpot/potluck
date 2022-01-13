@@ -13,7 +13,7 @@
 # e.g. matrix.org, localhost:8080, etc.
 # This is also the last part of your UserID.
 #
-server_name: $SERVERNAME 
+server_name: "%%DOMAIN%%"
 
 # When running as a daemon, the file to store the pid in
 #
@@ -30,7 +30,7 @@ pid_file: /var/run/matrix-synapse/homeserver.pid
 # use synapse with a reverse proxy, this should be the URL to reach
 # synapse via the proxy.
 #
-public_baseurl: https://$SERVERNAME/
+public_baseurl: https://%%DOMAIN%%/
 
 # Set the soft limit on the number of file descriptors synapse can use
 # Zero is used to indicate synapse should set the soft limit to the
@@ -201,7 +201,7 @@ listeners:
 #  - port: 8448 
 #    type: http
 #    tls: true
-#    bind_addresses: ['10.10.10.10']
+#    bind_addresses: ['10.27.0.5']
 #    resources:
 #      - names: [client, federation]
 
@@ -240,7 +240,7 @@ listeners:
 
 # How to reach the server admin, used in ResourceLimitError
 #
-admin_contact: 'mailto:$ADMINEMAIL'
+admin_contact: 'mailto:%%ALERTEMAIL%%'
 
 # Global blocking
 #
@@ -411,11 +411,11 @@ retention:
 # instance, if using certbot, use `fullchain.pem` as your certificate,
 # not `cert.pem`).
 #
-#tls_certificate_path: "/usr/local/etc/ssl/server.cer"
+#tls_certificate_path: "/usr/local/etc/ssl/domain.net.cer"
 
 # PEM-encoded private key for TLS
 #
-#tls_private_key_path: "/usr/local/etc/ssl/server.key"
+#tls_private_key_path: "/usr/local/etc/ssl/domain.net.key"
 
 # Whether to verify TLS server certificates for outbound federation requests.
 #
@@ -561,8 +561,6 @@ acme:
 #
 #tls_fingerprints: [{"sha256": "<base64_encoded_sha256_fingerprint>"}]
 
-
-
 ## Database ##
 
 database:
@@ -577,13 +575,12 @@ database:
 #
 #event_cache_size: 10K
 
-
 ## Logging ##
 
 # A yaml python logging config file as described by
 # https://docs.python.org/3.7/library/logging.config.html#configuration-dictionary-schema
 #
-log_config: "/usr/local/etc/matrix-synapse/homeserver.log.config"
+log_config: "/usr/local/etc/matrix-synapse/my.log.config"
 
 
 ## Ratelimiting ##
@@ -665,8 +662,6 @@ log_config: "/usr/local/etc/matrix-synapse/homeserver.log.config"
 # into fewer transactions.
 #
 #federation_rr_transactions_per_room_per_second: 50
-
-
 
 ## Media Store ##
 
@@ -871,7 +866,7 @@ media_store_path: "/mnt/matrixdata/media_store"
 
 # Enable registration for new users.
 #
-enable_registration: $ENABLEREGISTRATION 
+enable_registration: %%REGISTRATIONENABLE%%
 
 # Optional account validity configuration. This allows for accounts to be denied
 # any request after a given period.
@@ -976,7 +971,7 @@ account_validity:
 # If set, allows registration of standard or admin accounts by anyone who
 # has the shared secret, even if registration is otherwise disabled.
 #
-registration_shared_secret: "$SHAREDSECRET"
+registration_shared_secret: "%%MYSHAREDSECRET%%"
 
 # Set the number of bcrypt rounds used to generate password hash.
 # Larger numbers increase the work factor needed to generate the hash.
@@ -1122,19 +1117,19 @@ report_stats: false
 # the registration_shared_secret is used, if one is given; otherwise,
 # a secret key is derived from the signing key.
 #
-macaroon_secret_key: "$SHAREDSECRET"
+macaroon_secret_key: "%%MYMACAROON%%"
 
 # a secret which is used to calculate HMACs for form values, to stop
 # falsification of values. Must be specified for the User Consent
 # forms to work.
 #
-form_secret: "$SHAREDSECRET"
+form_secret: "%%MYFORMKEY%%"
 
 ## Signing Keys ##
 
 # Path to the signing key to sign messages with
 #
-signing_key_path: "/usr/local/etc/matrix-synapse/$SERVERNAME.signing.key"
+signing_key_path: "/usr/local/etc/matrix-synapse/%%DOMAIN%%.signing.key"
 
 # The keys that the server used to sign messages with but won't use
 # to sign new messages.
@@ -1353,8 +1348,6 @@ saml2_config:
   #
   #template_dir: "res/templates"
 
-
-
 # Enable CAS for registration and login.
 #
 #cas_config:
@@ -1446,17 +1439,17 @@ password_config:
 email:
   # The hostname of the outgoing SMTP server to use. Defaults to 'localhost'.
   #
-  smtp_host: $SMTPHOST 
+  smtp_host: %%SMTPHOST%%
 
   # The port on the mail server for outgoing SMTP. Defaults to 25.
   #
-  #smtp_port: 587
+  smtp_port: %%SMTPPORT%%
 
   # Username/password for authentication to the SMTP server. By default, no
   # authentication is attempted.
   #
-  smtp_user: $SMTPUSER 
-  smtp_pass: $SMTPPWD 
+  smtp_user: "%%SMTPUSER%%"
+  smtp_pass: "%%SMTPPASS%%"
 
   # Uncomment the following to require TLS transport security for SMTP.
   # By default, Synapse will connect over plain text, and will then switch to
@@ -1475,7 +1468,7 @@ email:
   # Note that the placeholder must be written '%(app)s', including the
   # trailing 's'.
   #
-  notif_from: "Your Friendly %(app)s homeserver <$ADMINEMAIL>"
+  notif_from: "Your Friendly %(app)s homeserver <%%SMTPFROM%%>"
 
   # app_name defines the default value for '%(app)s' in notif_from. It
   # defaults to 'Matrix'.
@@ -1547,6 +1540,21 @@ email:
   #
   #template_dir: "res/templates"
 
+password_providers:
+    - module: "ldap_auth_provider.LdapAuthProvider"
+      config:
+        enabled: true
+        mode: "search"
+        uri: "ldap://%%LDAPSERVER%%:389"
+        start_tls: true
+        base: "ou=People,dc=%%MYSUFFIX%%,dc=%%MYTLD%%"
+        attributes:
+           uid: "uid"
+           mail: "email"
+           name: "givenName"
+        bind_dn: "cn=Manager,dc=%%MYSUFFIX%%,dc=%%MYTLD%%"
+        bind_password: "%%LDAPPASSWORD%%"
+        filter: "(objectClass=posixAccount)"
 
 # Clients requesting push notifications can either have the body of
 # the message sent in the notification poke along with other details
