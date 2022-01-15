@@ -1,3 +1,9 @@
+0.11
+
+* Rebuild for new potluck template and other changes
+
+---
+
 0.10
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

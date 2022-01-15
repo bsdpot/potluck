@@ -7,7 +7,7 @@ tags: ["nginx", "http", "nextcloud", "documents", "nomad"]
 
 # Overview
 
-This is a Nextcloud on ```nginx``` jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
+This is a Nextcloud on ```nginx``` jail that can be deployed via ```nomad```.
 
 For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
@@ -22,7 +22,17 @@ Make sure to create the ZFS datasets beforehand, adapt to your data set naming c
 ```
 zfs create data/pot
 zfs create data/pot/jaildata_nextcloud
+zfs create data/pot/jaildata_nextcloud_files
 ```
+
+`jaildata_nextcloud` is where the nextcloud files are installed and is mounted to `/usr/local/www/nextcloud/` inside the image.
+
+`jaildata_nextcloud_files` is where the files will be kept, and is mounted to `/mnt/filestore` or similar inside the image.
+
+# Installation
+When you first run the image you'll need to setup Nextcloud via the web interface.
+
+Make sure to specify `/mnt/filestore` or similar for DATADIR parameter (-d) in the web interface for Nextcloud setup too by clicking the dropdown for database and storage.
 
 # Nomad Job Description Example
 
@@ -34,7 +44,7 @@ job "nextcloud" {
   group "group1" {
     count = 1 
 
-    task "www1" {
+    task "nextcloud1" {
       driver = "pot"
 
       restart {      
@@ -44,7 +54,7 @@ job "nextcloud" {
 
       service {
         tags = ["nginx", "www", "nextcloud"]
-        name = "nextcloud-server
+        name = "nextcloud-server"
         port = "http"
 
          check {
@@ -62,13 +72,13 @@ job "nextcloud" {
 
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
-        pot = "nextcloud-nginx-nomad-amd64-12_2"
-        tag = "0.4"
+        pot = "nextcloud-nginx-nomad-amd64-13_0"
+        tag = "0.11"
         command = "/usr/local/bin/cook"
-        args = [""]
-
+        args = ["-d","/mnt/filestore"]
         mount = [
-         "/mnt/data/pot/jaildata_nextcloud/:/usr/local/www/nextcloud"
+         "/mnt/data/pot/jaildata_nextcloud/:/usr/local/www/nextcloud",
+         "/mnt/data/pot/jaildata_nextcloud_extra/:/mnt/filestore",
         ]
         port_map = {
           http = "80"
@@ -79,9 +89,9 @@ job "nextcloud" {
         cpu = 1000
         memory = 1024
         network {
+          mbits = 10
           port "http" {
-            static = 20888
-            to = 80
+            static = 20900
           }
         }
       }
