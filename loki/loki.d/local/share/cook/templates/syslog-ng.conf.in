@@ -77,6 +77,10 @@ destination loghost {
  );
 };
 
+destination lokisyslog {
+  syslog("127.0.0.1" transport("tcp") port(1514));
+};
+
 # log facility filters
 filter f_auth { facility(auth); };
 filter f_authpriv { facility(authpriv); };
@@ -181,4 +185,4 @@ log { source(src); filter(f_ppp); destination(ppp); };
 
 # pot config
 # log network logs to lokilogs
-log { source(mynetwork); destination(lokilogs); };
+log { source(mynetwork); destination(lokilogs); destination(lokisyslog); };
