@@ -1,17 +1,17 @@
 vault {
-  address      = "unix:///tmp/vault-agent-unseal.socket"
+  address      = "https://127.0.0.1:8099"
   token        = "%%token%%"
   unwrap_token = false
   renew_token  = true
 
-  #ssl {
-   # enabled = true
-   # verify = true
-   # ca_cert = "/mnt/unsealcerts/ca_chain.crt"
+  ssl {
+    enabled = true
+    verify = true
+    ca_cert = "/mnt/unsealcerts/ca_chain.crt"
    # cert = "/mnt/unsealcerts/client.crt"
    # key = "/mnt/unsealcerts/client.key"
-   # server_name = "server.global.vaultunseal"
-  #}
+    server_name = "localhost"
+  }
 }
 
 syslog {

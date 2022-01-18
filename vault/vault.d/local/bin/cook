@@ -188,10 +188,10 @@ cluster-configure-node-exporter.sh
 log "Start node_exporter"
 service node_exporter start
 
-log "Start vault-agent-unseal"
+log "Start unsealproxy"
 timeout --foreground 120 \
-  sh -c 'while ! service vault-agent-unseal status; do
-    sleep 5; service vault-agent-unseal start || true; sleep 5;
+  sh -c 'while ! service nginx status unsealproxy; do
+    sleep 5; service nginx start unsealproxy || true; sleep 5;
   done'
 
 log "Start consul-template-unseal"

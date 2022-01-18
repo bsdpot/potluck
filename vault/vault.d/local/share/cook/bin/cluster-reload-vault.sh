@@ -5,5 +5,5 @@ chown vault /mnt/certs/*
 mv /mnt/certs/ca_chain.crt.tmp /mnt/certs/ca_chain.crt
 
 service vault reload
-service vault-agent restart
+service nginx reload vaultproxy
 exit 0

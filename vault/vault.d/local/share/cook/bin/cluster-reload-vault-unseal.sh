@@ -4,5 +4,5 @@ cat /mnt/unsealcerts/ca.crt /mnt/unsealcerts/ca_root.crt \
 chown vault /mnt/unsealcerts/*
 mv /mnt/unsealcerts/ca_chain.crt.tmp /mnt/unsealcerts/ca_chain.crt
 
-service vault-agent-unseal restart
+service nginx reload unsealproxy
 exit 0

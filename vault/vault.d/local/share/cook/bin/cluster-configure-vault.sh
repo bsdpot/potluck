@@ -26,18 +26,6 @@ sep=$'\001'
   | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
   > /usr/local/etc/vault.hcl
 
-< "$TEMPLATEPATH/cluster-vault-agent.hcl.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
-  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
-  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
-  > /usr/local/etc/vault-agent.hcl
-
-< "$TEMPLATEPATH/cluster-vault-agent-unseal.hcl.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
-  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
-  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
-  > /usr/local/etc/vault-agent-unseal.hcl
-
 # Set permission for vault.hcl, so that vault can read it
 chown vault:wheel /usr/local/etc/vault.hcl
 chown vault:wheel /usr/local/etc/vault-bootstrap.hcl
@@ -57,45 +45,27 @@ sysrc vault_config=/usr/local/etc/vault-bootstrap.hcl
 
 rm -f /root/.vault-token
 
-## vault-agent setup
+## setup vaultproxy and unsealproxy
 
-echo "Configure vault-agent"
-cp -a /usr/local/etc/rc.d/vault \
-  /usr/local/etc/rc.d/vault-agent
-sed -i '' 's/vault_/vault_agent_/g' \
-  /usr/local/etc/rc.d/vault-agent
-sed -i '' 's/vault.pid/vault-agent.pid/g' \
-  /usr/local/etc/rc.d/vault-agent
-sed -i '' 's/server/agent/g' \
-  /usr/local/etc/rc.d/vault-agent
-sed -i '' 's/vault$/vault_agent/g' \
-  /usr/local/etc/rc.d/vault-agent
+< "$TEMPLATEPATH/cluster-vaultproxy.conf.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
+  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
+  > /usr/local/etc/nginx/vaultproxy.conf
 
-service vault-agent enable
-sysrc vault_agent_login_class=root
-sysrc vault_agent_syslog_output_enable="YES"
-sysrc vault_agent_syslog_output_priority="warn"
-sysrc vault_agent_config=/usr/local/etc/vault-agent.hcl
+< "$TEMPLATEPATH/cluster-unsealproxy.conf.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
+  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
+  > /usr/local/etc/nginx/unsealproxy.conf
 
-## vault-agent-unseal setup
+service nginx enable
+sysrc nginx_profiles+="vaultproxy"
+sysrc nginx_vaultproxy_configfile="/usr/local/etc/nginx/vaultproxy.conf"
+sysrc nginx_profiles+="unsealproxy"
+sysrc nginx_unsealproxy_configfile="/usr/local/etc/nginx/unsealproxy.conf"
 
-echo "Configure vault-agent-unseal"
-cp -a /usr/local/etc/rc.d/vault \
-  /usr/local/etc/rc.d/vault-agent-unseal
-sed -i '' 's/vault_/vault_agent_unseal_/g' \
-  /usr/local/etc/rc.d/vault-agent-unseal
-sed -i '' 's/vault.pid/vault-agent-unseal.pid/g' \
-  /usr/local/etc/rc.d/vault-agent-unseal
-sed -i '' 's/server/agent/g' \
-  /usr/local/etc/rc.d/vault-agent-unseal
-sed -i '' 's/vault$/vault_agent_unseal/g' \
-  /usr/local/etc/rc.d/vault-agent-unseal
-
-service vault-agent-unseal enable
-sysrc vault_agent_unseal_login_class=root
-sysrc vault_agent_unseal_syslog_output_enable="YES"
-sysrc vault_agent_unseal_syslog_output_priority="warn"
-sysrc vault_agent_unseal_config=/usr/local/etc/vault-agent-unseal.hcl
+## Add token to vault configs
 
 TOKEN=$(/bin/cat /mnt/unsealcerts/unwrapped.token)
 (

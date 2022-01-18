@@ -35,17 +35,17 @@ storage "raft" {
   #}
 }
 seal "transit" {
-  address = "unix:///tmp/vault-agent-unseal.socket"
+  address = "https://127.0.0.1:8099"
 #  address = "https://%%unsealip%%:8200"
 #  disable_renewal = "true"
   key_name = "autounseal"
   mount_path = "transit/"
   token = "%%vaultunsealtoken%%"
-#  tls_skip_verify = false
+  tls_skip_verify = false
 #  tls_client_cert = "/mnt/unsealcerts/client.crt"
 #  tls_client_key = "/mnt/unsealcerts/client.key"
-#  tls_ca_cert = "/mnt/unsealcerts/ca_chain.crt"
-#  tls_server_name = "server.global.vaultunseal"
+  tls_ca_cert = "/mnt/unsealcerts/ca_chain.crt"
+  tls_server_name = "localhost"
 }
 telemetry {
   disable_hostname = true

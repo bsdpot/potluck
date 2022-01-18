@@ -61,9 +61,9 @@ for i in $(jot 30); do
     sleep 2
 done
 
-if ! service vault-agent onestatus; then
-    echo "Starting vault-agent"
-    service vault-agent start
+if ! service nginx onestatus vaultproxy; then
+    echo "Starting vaultproxy"
+    service nginx start vaultproxy
 fi
 
 if ! service consul-template onestatus; then

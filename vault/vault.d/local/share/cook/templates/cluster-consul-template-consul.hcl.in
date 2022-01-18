@@ -1,17 +1,17 @@
 vault {
-  address      = "unix:///tmp/vault-agent.socket"
+  address      = "https://127.0.0.1:8100"
   token        = "%%token%%"
   unwrap_token = false
   renew_token  = true
 
-  #ssl {
-  #  enabled = true
-  #  verify = true
-  #  ca_cert = "/mnt/certs/ca_chain.crt"
+  ssl {
+    enabled = true
+    verify = true
+    ca_cert = "/mnt/certs/ca_chain.crt"
   #  cert = "/mnt/certs/agent.crt"
   #  key = "/mnt/certs/agent.key"
-  #  server_name = "active.vault.service.consul"
-  #}
+    server_name = "localhost"
+  }
 }
 
 syslog {
