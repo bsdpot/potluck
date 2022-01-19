@@ -100,7 +100,7 @@ setup-local-unbound-provision.sh
 
 log "Wait until we are able to resolve active vault instance"
 timeout --foreground 120 \
-  sh -c 'while ! host active.vault.service.consul; do sleep 5; done'
+  sh -c 'while ! host -ta active.vault.service.consul; do sleep 5; done'
 
 log "Unwrap cluster credentials"
 unwrap-cluster-credentials.sh
@@ -124,6 +124,15 @@ configure-node-exporter.sh
 log "Start node_exporter"
 service node_exporter start
 
+log "Configure vaultproxy"
+configure-vaultproxy.sh
+
+log "Start vaultproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status vaultproxy; do
+    sleep 5; service nginx start vaultproxy || true; sleep 5;
+  done'
+
 log "Starting consul-template"
 service consul-template start
 
@@ -145,7 +154,7 @@ setup-local-unbound.sh
 
 log "Wait until we are able to resolve consul"
 timeout --foreground 120 \
-  sh -c 'while ! host consul.service.consul; do sleep 5; done'
+  sh -c 'while ! host -ta consul.service.consul; do sleep 5; done'
 
 log "configure postgres_exporter"
 configure-postgres-exporter.sh

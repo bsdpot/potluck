@@ -46,7 +46,7 @@ vault {
   # XXX: Change below!
   enabled = true
   address = "https://127.0.0.1:8100"
-  ca_file = "/opt/pot/cluster/certs/ca_chain.crt"
+  ca_file = "/mnt/certs/ca_chain.crt"
   tls_server_name="localhost"
   token = "%%vaulttoken%%"
   create_from_role = "nomad-cluster"
