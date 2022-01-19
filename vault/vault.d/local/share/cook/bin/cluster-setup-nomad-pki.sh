@@ -55,6 +55,6 @@ vault policy list | grep -c "^nomad-server-policy\$" ||
   vault policy write nomad-server-policy \
     "$TEMPLATEPATH/nomad-server-policy.hcl.in"
 vault read auth/token/roles/nomad-cluster ||
-  cat  "$TEMPLATEPATH/nomad-cluster-role.json.in" | \
+  < "$TEMPLATEPATH/nomad-cluster-role.json.in" \
     sed "s/%%token_ttl%%/$TOKEN_TTL/g" | \
     vault write auth/token/roles/nomad-cluster -

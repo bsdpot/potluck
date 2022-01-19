@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # environment defaults
-: ${TOKEN_TTL=2h}
-: ${TOKEN_WRAP_TTL=10m}
+: "${TOKEN_TTL=2h}"
+: "${TOKEN_WRAP_TTL=10m}"
 
 CERT_NODENAME="$1"
 CERT_TTL="$2"

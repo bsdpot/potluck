@@ -15,8 +15,6 @@ TEMPLATEPATH=$SCRIPTDIR/../templates
 
 LOCAL_VAULT="http://127.0.0.1:8200"
 
-echo "$IP active.vault.service.consul" >>/etc/hosts
-
 # perform operator init on unsealed node and get recovery keys instead of
 # unseal keys, save to file - might be moved out of this later
 if [ -s "/root/recovery.keys" ]; then

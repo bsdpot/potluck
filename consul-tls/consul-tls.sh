@@ -113,6 +113,9 @@ pkg install -y syslog-ng
 step "Install package rsync"
 pkg install -y rsync
 
+step "Install package nginx"
+pkg install -y nginx
+
 step "Install package vault"
 pkg install -y vault
 

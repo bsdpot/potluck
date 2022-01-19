@@ -92,7 +92,12 @@ chown -R nodeexport /mnt/metricscerts
 mkdir -p /mnt/vault/
 
 # add temporary /etc/hosts entry
-echo "$VAULTSERVER active.vault.service.consul" >>/etc/hosts
+log "Set up local_unbound using static vault ip"
+setup-local-unbound-static.sh "$VAULTSERVER"
+
+log "Wait until we are able to resolve active vault instance"
+timeout --foreground 120 \
+  sh -c 'while ! host -ta active.vault.service.consul; do sleep 5; done'
 
 log "Unwrap cluster credentials"
 unwrap-cluster-credentials.sh
@@ -113,6 +118,15 @@ configure-node-exporter.sh
 log "Start node_exporter"
 service node_exporter start
 
+log "Configure vaultproxy"
+configure-vaultproxy.sh
+
+log "Start vaultproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status vaultproxy; do
+    sleep 5; service nginx start vaultproxy || true; sleep 5;
+  done'
+
 log "Starting consul-template"
 service consul-template start
 
@@ -128,9 +142,6 @@ timeout --foreground 120 \
   sh -c 'while ! service consul status; do
     sleep 5; service consul start || true; sleep 5;
   done'
-
-log "Set up local_unbound"
-setup-local-unbound.sh
 
 log "Symlink helper scripts"
 ln -s /usr/local/share/cook/bin/consul.sh /root/consul.sh
