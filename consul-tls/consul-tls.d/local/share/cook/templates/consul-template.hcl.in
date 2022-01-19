@@ -1,5 +1,5 @@
 vault {
-  address      = "https://127.0.0.1:8200"
+  address      = "https://127.0.0.1:8100"
   token        = "%%token%%"
   unwrap_token = false
   renew_token  = true

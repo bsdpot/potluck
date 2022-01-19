@@ -12,5 +12,7 @@ stub-zone:
   stub-addr: 127.0.0.1@8600
 ' >/etc/unbound/conf.d/consul.conf
 
+rm -f /etc/unbound/conf.d/vault-static.conf
+
 service local_unbound enable
-service local_unbound start
+service local_unbound restart

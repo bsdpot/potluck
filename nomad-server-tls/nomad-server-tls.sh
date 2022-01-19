@@ -111,6 +111,9 @@ pkg install -y curl
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
+step "Install package nginx"
+pkg install -y nginx
+
 step "Install package vault"
 pkg install -y vault
 
