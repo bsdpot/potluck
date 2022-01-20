@@ -1,3 +1,9 @@
+2.2.0
+
+* Many improvements to service mesh components
+
+---
+
 2.1.9
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13
