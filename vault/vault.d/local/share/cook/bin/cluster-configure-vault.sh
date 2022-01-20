@@ -45,6 +45,28 @@ sysrc vault_config=/usr/local/etc/vault-bootstrap.hcl
 
 rm -f /root/.vault-token
 
+## setup vaultproxy and unsealproxy
+
+< "$TEMPLATEPATH/cluster-vaultproxy.conf.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
+  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
+  > /usr/local/etc/nginx/vaultproxy.conf
+
+< "$TEMPLATEPATH/cluster-unsealproxy.conf.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
+  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
+  > /usr/local/etc/nginx/unsealproxy.conf
+
+service nginx enable
+sysrc nginx_profiles+="vaultproxy"
+sysrc nginx_vaultproxy_configfile="/usr/local/etc/nginx/vaultproxy.conf"
+sysrc nginx_profiles+="unsealproxy"
+sysrc nginx_unsealproxy_configfile="/usr/local/etc/nginx/unsealproxy.conf"
+
+## Add token to vault configs
+
 TOKEN=$(/bin/cat /mnt/unsealcerts/unwrapped.token)
 (
     umask 177

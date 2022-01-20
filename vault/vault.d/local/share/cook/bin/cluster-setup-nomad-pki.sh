@@ -1,5 +1,8 @@
 #!/bin/sh
 
+: "${TOKEN_TTL=7200}" # in seconds
+: "${CERT_MAX_TTL=768h}"
+
 # shellcheck disable=SC1091
 . /root/.env.cook
 
@@ -28,7 +31,7 @@ vault read nomadpki/cert/ca || vault write -field=certificate \
 vault secrets list | grep -c "^nomadpki_int/" || \
   vault secrets enable -path nomadpki_int pki
 vault secrets tune -max-lease-ttl=43800h nomadpki_int
-vault read nomadpki/cert/ca_int ||
+vault read nomadpki_int/cert/ca ||
   (
     CSR=$(vault write -format=json \
       nomadpki_int/intermediate/generate/internal \
@@ -42,9 +45,16 @@ vault read nomadpki/cert/ca_int ||
   )
 vault read nomadpki_int/roles/nomad-cluster || vault write \
   nomadpki_int/roles/nomad-cluster \
-  allowed_domains="global.nomad" \
-  allow_subdomains=true max_ttl=86400s \
+  allowed_domains="global.nomad,service.consul" \
+  allow_subdomains=true max_ttl="$CERT_MAX_TTL" \
   require_cn=false generate_lease=true
 vault policy list | grep -c "^nomad-tls-policy\$" ||
   vault policy write nomad-tls-policy \
     "$TEMPLATEPATH/nomad-tls-policy.hcl.in"
+vault policy list | grep -c "^nomad-server-policy\$" ||
+  vault policy write nomad-server-policy \
+    "$TEMPLATEPATH/nomad-server-policy.hcl.in"
+vault read auth/token/roles/nomad-cluster ||
+  < "$TEMPLATEPATH/nomad-cluster-role.json.in" \
+    sed "s/%%token_ttl%%/$TOKEN_TTL/g" | \
+    vault write auth/token/roles/nomad-cluster -

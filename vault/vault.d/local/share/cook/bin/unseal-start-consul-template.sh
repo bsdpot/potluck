@@ -9,8 +9,8 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 service consul-template onestatus && service consul-template onestop
 UNWRAP_TOKEN=$(VAULT_CACERT=/mnt/unsealcerts/ca_chain.crt \
-  vault token create -policy="tls-policy" -period=10m \
-  -wrap-ttl=120s -orphan -format json | jq -r ".wrap_info.token")
+  vault token create -policy="tls-policy" -period=2h \
+  -wrap-ttl=480s -orphan -format json | jq -r ".wrap_info.token")
 
 mkdir -p /usr/local/etc/consul-template.d
 

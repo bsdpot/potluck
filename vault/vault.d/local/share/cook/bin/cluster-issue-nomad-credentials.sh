@@ -1,13 +1,18 @@
 #!/bin/sh
 
+# environment defaults
+: "${TOKEN_TTL=2h}"
+: "${TOKEN_WRAP_TTL=10m}"
+
 CERT_NODENAME="$1"
 CERT_IPS="$2"
-CERT_TTL="$3"
+TOKEN_POLICIES="$3"
+CERT_TTL="$4"
 
 trap "echo \$STEP failed" EXIT
 
 if [ -z "$CERT_NODENAME" ]; then
-    2>&1 echo "Usage: $0 cert_nodename [cert_ips] [ttl]"
+    2>&1 echo "Usage: $0 cert_nodename [cert_ips] [policies] [ttl]"
     exit 1
 fi
 
@@ -29,7 +34,7 @@ for policy in $(echo "$TOKEN_POLICIES" | tr ',' ' '); do
 done
 
 if [ -z "$CERT_TTL" ]; then
-    CERT_TTL="10m"
+    CERT_TTL="8h"
 fi
 
 set -e
@@ -45,7 +50,7 @@ export VAULT_FORMAT=json
 STEP="Issue token"
 # shellcheck disable=SC2086
 TOKEN=$(vault token create \
-  $TOKEN_POLICIES_PARAMS -wrap-ttl=300s -ttl=15m \
+  $TOKEN_POLICIES_PARAMS -wrap-ttl="$TOKEN_WRAP_TTL" -ttl="$TOKEN_TTL" \
   | jq -e ".wrap_info.token")
 STEP="Get root CA"
 CA_ROOT=$(vault read nomadpki/cert/ca | jq -e ".data.certificate")

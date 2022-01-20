@@ -95,6 +95,9 @@ pkg install -y sudo
 step "Install package openssl"
 pkg install -y openssl
 
+step "Install package nginx"
+pkg install -y nginx
+
 step "Install package vault"
 pkg install -y vault
 

@@ -3,7 +3,7 @@ server:
   grpc_listen_port: 0
 
 positions:
-  filename: /tmp/positions.yaml
+  filename: /mnt/logs/positions.yaml
 
 clients:
   - url: http://%%ip%%:3100/loki/api/v1/push
@@ -16,3 +16,14 @@ scrape_configs:
     labels:
       job: varlogs
       __path__: /mnt/logs/*log
+
+- job_name: syslog
+  syslog:
+    listen_address: 127.0.0.1:1514
+    idle_timeout: 60s
+    label_structured_data: yes
+    labels:
+      job: "syslog"
+  relabel_configs:
+    - source_labels: ['__syslog_message_hostname']
+      target_label: 'host'

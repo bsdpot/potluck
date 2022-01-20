@@ -127,6 +127,9 @@ pkg install -y jq
 step "Install package jo"
 pkg install -y jo
 
+step "Install package nginx"
+pkg install -y nginx
+
 step "Install package vault"
 pkg install -y vault
 

@@ -1,0 +1,8 @@
+{
+  "disallowed_policies": "nomad-server-policy",
+  "token_explicit_max_ttl": 0,
+  "name": "nomad-cluster",
+  "orphan": true,
+  "token_period": %%token_ttl%%,
+  "renewable": true
+}

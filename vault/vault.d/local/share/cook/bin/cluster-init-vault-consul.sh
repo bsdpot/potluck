@@ -106,3 +106,7 @@ service consul restart || true
 sleep 2
 service vault restart || true
 
+sleep 2
+
+# configure unbound to make use of consul
+"$SCRIPTDIR"/cluster-setup-local-unbound.sh

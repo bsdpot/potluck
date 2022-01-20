@@ -15,8 +15,6 @@ TEMPLATEPATH=$SCRIPTDIR/../templates
 
 LOCAL_VAULT="http://127.0.0.1:8200"
 
-echo "$IP active.vault.service.consul" >>/etc/hosts
-
 # perform operator init on unsealed node and get recovery keys instead of
 # unseal keys, save to file - might be moved out of this later
 if [ -s "/root/recovery.keys" ]; then
@@ -86,6 +84,11 @@ for i in $(jot 10); do
     [ "$LEADER_ADDRESS" = "https://$IP:8200" ] && break
     sleep 2
 done
+
+if ! service nginx onestatus vaultproxy; then
+    echo "Starting vaultproxy"
+    service nginx start vaultproxy
+fi
 
 if ! service consul-template onestatus; then
     echo "Getting local consul-template token"

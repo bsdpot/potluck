@@ -1,5 +1,7 @@
 #!/bin/sh
 
+: "${CERT_MAX_TTL=768h}"
+
 # shellcheck disable=SC1091
 . /root/.env.cook
 
@@ -28,7 +30,7 @@ vault read postgrespki/cert/ca || vault write -field=certificate \
 vault secrets list | grep -c "^postgrespki_int/" || \
   vault secrets enable -path postgrespki_int pki
 vault secrets tune -max-lease-ttl=43800h postgrespki_int
-vault read postgrespki/cert/ca_int ||
+vault read postgrespki_int/cert/ca ||
   (
     CSR=$(vault write -format=json \
       postgrespki_int/intermediate/generate/internal \
@@ -43,7 +45,7 @@ vault read postgrespki/cert/ca_int ||
 vault read postgrespki_int/roles/postgres-cluster || vault write \
   postgrespki_int/roles/postgres-cluster \
   allowed_domains="global.postgres,postgresql.service.consul" \
-  allow_subdomains=true max_ttl=86400s \
+  allow_subdomains=true max_ttl="$CERT_MAX_TTL" \
   require_cn=false generate_lease=true
 vault policy list | grep -c "^postgres-tls-policy\$" ||
   vault policy write postgres-tls-policy \

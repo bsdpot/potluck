@@ -1,5 +1,7 @@
 #!/bin/sh
 
+: "${CERT_MAX_TTL=768h}"
+
 # shellcheck disable=SC1091
 . /root/.env.cook
 
@@ -29,7 +31,7 @@ vault read consulpki/cert/ca || vault write -field=certificate \
 vault secrets list | grep -c "^consulpki_int/" || \
   vault secrets enable -path consulpki_int pki
 vault secrets tune -max-lease-ttl=43800h consulpki_int
-vault read consulpki/cert/ca_int ||
+vault read consulpki_int/cert/ca ||
   (
     vault write -format=json \
       consulpki_int/intermediate/generate/internal \
@@ -44,7 +46,7 @@ vault read consulpki/cert/ca_int ||
 vault read consulpki_int/roles/consul-cluster || vault write \
   consulpki_int/roles/consul-cluster \
   allowed_domains="$DATACENTER.consul" \
-  allow_subdomains=true max_ttl=86400s \
+  allow_subdomains=true max_ttl="$CERT_MAX_TTL" \
   require_cn=false generate_lease=true
 vault policy list | grep -c "^consul-tls-policy\$" ||
   vault policy write consul-tls-policy \

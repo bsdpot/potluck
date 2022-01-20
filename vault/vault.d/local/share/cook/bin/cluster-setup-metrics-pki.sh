@@ -1,5 +1,7 @@
 #!/bin/sh
 
+: "${CERT_MAX_TTL=768h}"
+
 # shellcheck disable=SC1091
 . /root/.env.cook
 
@@ -27,7 +29,7 @@ vault read metricspki/cert/ca || vault write -field=certificate \
 vault secrets list | grep -c "^metricspki_int/" || \
   vault secrets enable -path metricspki_int pki
 vault secrets tune -max-lease-ttl=43800h metricspki_int
-vault read metricspki/cert/ca_int ||
+vault read metricspki_int/cert/ca ||
   (
     CSR=$(vault write -format=json \
       metricspki_int/intermediate/generate/internal \
@@ -42,7 +44,7 @@ vault read metricspki/cert/ca_int ||
 vault read metricspki_int/roles/metrics || vault write \
   metricspki_int/roles/metrics \
   allowed_domains="$DATACENTER.metrics" \
-  allow_subdomains=true max_ttl=86400s \
+  allow_subdomains=true max_ttl="$CERT_MAX_TTL" \
   require_cn=false generate_lease=true
 vault policy list | grep -c "^metrics-tls-policy\$" ||
   vault policy write metrics-tls-policy \

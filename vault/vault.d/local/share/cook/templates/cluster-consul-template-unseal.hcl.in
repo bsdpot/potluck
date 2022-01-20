@@ -1,5 +1,5 @@
 vault {
-  address      = "https://%%unsealip%%:8200"
+  address      = "https://127.0.0.1:8099"
   token        = "%%token%%"
   unwrap_token = false
   renew_token  = true
@@ -8,9 +8,9 @@ vault {
     enabled = true
     verify = true
     ca_cert = "/mnt/unsealcerts/ca_chain.crt"
-    cert = "/mnt/unsealcerts/client.crt"
-    key = "/mnt/unsealcerts/client.key"
-    server_name = "server.global.vaultunseal"
+   # cert = "/mnt/unsealcerts/client.crt"
+   # key = "/mnt/unsealcerts/client.key"
+    server_name = "localhost"
   }
 }
 

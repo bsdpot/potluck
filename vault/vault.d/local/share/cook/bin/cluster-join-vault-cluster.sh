@@ -35,7 +35,11 @@ WRAPPED_TOKEN=$(< /mnt/certs/credentials.json \
 
 "$SCRIPTDIR"/cluster-enable-vault-tls.sh
 
-echo "$LEADER_IP active.vault.service.consul" >>/etc/hosts
+"$SCRIPTDIR"/cluster-setup-local-unbound-static.sh "$LEADER_IP"
+
+timeout --foreground 120 \
+  sh -c 'while ! host -ta active.vault.service.consul |
+    grep -F -- "'"$LEADER_IP"'"; do sleep 5; done'
 
 "$SCRIPTDIR"/cluster-vault.sh \
   operator raft join \
@@ -60,6 +64,11 @@ for i in $(jot 30); do
     esac
     sleep 2
 done
+
+if ! service nginx onestatus vaultproxy; then
+    echo "Starting vaultproxy"
+    service nginx start vaultproxy
+fi
 
 if ! service consul-template onestatus; then
     echo "Unwrapping local consul-template token"

@@ -90,12 +90,12 @@ mkdir -p /usr/local/etc/rc.d
 step "Install package consul"
 pkg install -y consul
 
+step "Install package consul-template"
+pkg install -y consul-template
+
 step "Patching consul-template rc scripts"
 sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
 'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
-
-step "Install package consul-template"
-pkg install -y consul-template
 
 step "Install package openssl"
 pkg install -y openssl
@@ -114,6 +114,9 @@ pkg install -y jq
 
 step "Install package jo"
 pkg install -y jo
+
+step "Install package nginx"
+pkg install -y nginx
 
 step "Install package vault"
 pkg install -y vault

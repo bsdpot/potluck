@@ -1,6 +1,6 @@
 #!/bin/sh
 
-: "${TTL:=10m}"
+: "${TTL=2h}"
 
 set -e
 # shellcheck disable=SC3040

@@ -24,7 +24,7 @@ if service syslog-ng enabled; then
 fi
 
 service node_exporter restart
-service loki restart
-service promtail restart
+#service loki restart
+#service promtail restart
 
 exit 0

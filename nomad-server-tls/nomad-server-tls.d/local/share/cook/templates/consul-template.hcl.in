@@ -1,5 +1,5 @@
 vault {
-  address      = "https://active.vault.service.consul:8200"
+  address      = "https://127.0.0.1:8100"
   token        = "%%token%%"
   unwrap_token = false
   renew_token  = true
@@ -8,9 +8,9 @@ vault {
     enabled = true
     verify = true
     ca_cert = "/mnt/certs/ca_chain.crt"
-    cert = "/mnt/certs/client.crt"
-    key = "/mnt/certs/client.key"
-    server_name = "active.vault.service.consul"
+  #  cert = "/mnt/certs/client.crt"
+  #  key = "/mnt/certs/client.key"
+    server_name = "localhost"
   }
 }
 
@@ -23,20 +23,20 @@ template {
   source      = "/mnt/templates/client.crt.tpl"
   destination = "/mnt/certs/client.crt"
   backup      = true
-  command     = "/usr/local/share/cook/bin/reload-consul-template.sh"
+  command     = "/usr/local/share/cook/bin/reload-vaultproxy.sh"
 }
 
 template {
   source      = "/mnt/templates/client.key.tpl"
   destination = "/mnt/certs/client.key"
   perms       = 0640
-  command     = "/usr/local/share/cook/bin/reload-consul-template.sh"
+  command     = "/usr/local/share/cook/bin/reload-vaultproxy.sh"
 }
 
 template {
   source      = "/mnt/templates/ca.crt.tpl"
   destination = "/mnt/certs/ca.crt"
-  command     = "/usr/local/share/cook/bin/reload-consul-template.sh"
+  command     = "/usr/local/share/cook/bin/reload-vaultproxy.sh"
 }
 
 template {
