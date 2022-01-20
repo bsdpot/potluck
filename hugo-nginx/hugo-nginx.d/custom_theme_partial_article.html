@@ -1,0 +1,26 @@
+<!-- Article Tags -->
+<div class="subtitle tags is-6 is-pulled-right">
+    {{ if .Params.tags }}
+        {{ partial "tags" .Params.tags }}
+    {{ end }}
+</div>
+
+<!-- Date above Article Title-->
+<h2 class="subtitle is-6">
+&nbsp;
+</h2>
+
+<!-- Article Title -->
+<h1 class="title">{{ .Title }}</h1>
+
+<div class="content">
+
+    <!-- Article Content -->
+    {{ .Content }}
+
+    <!-- Related Articles -->
+    {{ if .Site.Params.Info.related }}
+        <div class="related">{{ partial "related" . }}</div>
+    {{ end }}
+
+</div>

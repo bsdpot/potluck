@@ -1,3 +1,15 @@
+0.11
+
+* Rebuild for new potluck template and other changes
+
+---
+
+0.10
+
+* Rebuild for FreeBSD 12_3 and 13 & pot 13
+
+---
+
 0.9
 
 * Adding -9 to killall command as nginx not restarting correctly. Including setting of www perms, removing tweak for S3 mounts.

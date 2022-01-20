@@ -1,3 +1,9 @@
+2.0.11
+
+* Rebuild for FreeBSD 12_3 and 13 & pot 13
+
+---
+
 2.0.10
 
 * Quoting gossip key encrypt section

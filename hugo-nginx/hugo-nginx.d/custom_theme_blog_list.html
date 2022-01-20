@@ -1,0 +1,65 @@
+<!-- Header -->
+{{ partial "header" . }}
+
+<!-- Navigation -->
+{{ partial "nav" . }}
+
+
+<!-- Blog Area -->
+<section class="section">
+
+    <div class="container">
+
+        <h2 class="areatitle">{{ i18n "blog_title" }}</h2>
+        <br />
+        <br />
+
+        <!-- Loop through all posts filtered by type "article" -->
+        {{ $paginator := .Paginate (where .Data.Pages.ByDate.Reverse "Type" "in" "blog") }}
+        {{ range .Paginator.Pages }}
+
+            <article>
+
+                <!-- Article Tags -->
+                <div class="subtitle tags is-6 is-pulled-right">
+                    {{ if .Params.tags }}
+                    {{ partial "tags" .Params.tags }}
+                    {{ end }}
+                </div>
+
+                <!-- Date above Article Title-->
+                <h2 class="subtitle is-6">
+                    &nbsp;
+                </h2>
+
+
+                <!-- Article Title -->
+                <h1 class="title">
+                    <a href="{{ .Permalink }}">{{ .Title }}</a>
+                </h1>
+
+                <div class="content">
+                    
+                    <!-- Article Summary -->
+                    <!-- {{ .Summary | plainify | safeHTML }} -->
+                    {{ .Params.summary }}
+                
+                    <!-- "Read More" Button-->
+                    <a class="button is-link" href="{{ .Permalink }}" style="height:28px">{{ i18n "read_more" }}</a>
+
+                </div>
+
+            </article>
+
+        <!-- End loop -->
+        {{ end }}
+
+    </div>
+</section>
+
+
+<!-- "Older Posts" / "Newer Posts" Buttons -->
+{{ partial "page-navigation" . }}
+
+<!-- Footer -->
+{{ partial "footer" . }}

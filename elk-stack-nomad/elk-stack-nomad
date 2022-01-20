@@ -1,2 +1,4 @@
+set-attribute -A fdescfs -V YES
+set-attribute -A procfs -V YES
 set-attribute -A persistent -V OFF
 set-attribute -A no-rc-script -V ON
