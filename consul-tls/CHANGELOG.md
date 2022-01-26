@@ -1,3 +1,9 @@
+0.2.0
+
+* Many improvements to service mesh components
+
+---
+
 0.1.9
 
 * Fixing header and tags in README
