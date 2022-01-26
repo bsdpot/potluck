@@ -1,3 +1,9 @@
+0.10.1
+
+* Incrementing version number after pull request 25
+
+---
+
 0.10.0
 
 * Many improvements to service mesh components

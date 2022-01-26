@@ -1,3 +1,9 @@
+0.1.1
+
+* Version number increment for pull 25
+
+---
+
 0.1.0
 
 * Many improvements to service mesh components
