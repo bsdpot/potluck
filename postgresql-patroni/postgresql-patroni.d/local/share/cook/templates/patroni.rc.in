@@ -8,12 +8,9 @@
 name="patroni"
 rcvar=patroni_enable
 
-start_cmd="patroni_start"
-stop_cmd="patroni_stop"
-reload_cmd="patroni_reload"
 list_cmd="patroni_list"
 history_cmd="patroni_history"
-extra_commands="list history"
+extra_commands="list history reload"
 
 load_rc_config patroni
 # load postgres configuration for user and group permission
@@ -24,35 +21,13 @@ load_rc_config postgresql
 : ${patroni_cmd:="/usr/local/bin/patroni"}
 : ${patroni_ctl:="/usr/local/bin/patronictl"}
 : ${postgresql_user:="postgres"}
-: ${su_cmd:="/usr/bin/su"}
-: ${daemon_cmd:="/usr/sbin/daemon"}
-: ${kill_cmd:="/bin/kill"}
-: ${cat_cmd:="/bin/cat"}
 
+pidfile=${patroni_pid}
 
-patroni_start()
-{
-  # -S -> syslog output
-  # -R 10 restart after 10s when patroni denied
-  # -P daemon pidfile
-  # -T syslog Tag
-  ${daemon_cmd} -c -S -R 10 -u ${postgresql_user} -P ${patroni_pid} \
-    -T ${name} ${patroni_cmd} ${patroni_config}
-  # this doesn't work, while the above line does
-  #/usr/bin/su - postgres -c '/usr/sbin/daemon -c -S -R 10 \
-  # -P /var/run/patroni.pid -T patroni /usr/local/bin/patroni \
-  # /usr/local/etc/patroni/patroni.yml'
-}
-
-patroni_stop()
-{
-	${kill_cmd} `${cat_cmd} ${patroni_pid}`
-}
-
-patroni_reload()
-{
-	/usr/local/bin/patronictl -c /usr/local/etc/patroni/patroni.yml reload
-}
+procname="/usr/local/bin/python3.8"
+command="/usr/sbin/daemon"
+command_args="-f -c -S -u ${postgresql_user} -p ${patroni_pid} \
+    -t ${name} -T ${name} ${patroni_cmd} ${patroni_config}"
 
 patroni_list()
 {
