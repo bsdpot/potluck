@@ -61,5 +61,5 @@ acl {
   enabled = true
 }
 enable_syslog=true
-log_level="TRACE"
+log_level="WARN"
 syslog_facility="LOCAL5"

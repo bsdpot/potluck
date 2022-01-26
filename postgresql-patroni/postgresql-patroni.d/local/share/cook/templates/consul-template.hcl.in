@@ -22,7 +22,6 @@ syslog {
 template {
   source      = "/mnt/templates/client.crt.tpl"
   destination = "/mnt/certs/client.crt"
-  backup      = true
   command     = "/usr/local/share/cook/bin/reload-vaultproxy.sh"
 }
 
@@ -41,48 +40,45 @@ template {
 
 template {
   source      = "/mnt/templates/consulagent.crt.tpl"
-  destination = "/mnt/consulcerts/agent.crt"
-  backup      = true
+  destination = "/mnt/consulcerts/agent.crt.next"
   command     = "/usr/local/share/cook/bin/reload-consul.sh"
 }
 
 template {
   source      = "/mnt/templates/consulagent.key.tpl"
-  destination = "/mnt/consulcerts/agent.key"
+  destination = "/mnt/consulcerts/agent.key.next"
   perms       = 0640
   command     = "/usr/local/share/cook/bin/reload-consul.sh"
 }
 
 template {
   source      = "/mnt/templates/consulca.crt.tpl"
-  destination = "/mnt/consulcerts/ca.crt"
+  destination = "/mnt/consulcerts/ca.crt.next"
   command     = "/usr/local/share/cook/bin/reload-consul.sh"
 }
 
 template {
   source      = "/mnt/templates/postgresserver.crt.tpl"
-  destination = "/mnt/postgrescerts/postgresserver.crt"
-  backup      = true
+  destination = "/mnt/postgrescerts/postgresserver.crt.next"
   command     = "/usr/local/share/cook/bin/reload-patroni.sh"
 }
 
 template {
   source      = "/mnt/templates/postgresserver.key.tpl"
-  destination = "/mnt/postgrescerts/postgresserver.key"
+  destination = "/mnt/postgrescerts/postgresserver.key.next"
   perms       = 0600
   command     = "/usr/local/share/cook/bin/reload-patroni.sh"
 }
 
 template {
   source      = "/mnt/templates/postgresca.crt.tpl"
-  destination = "/mnt/postgrescerts/postgresca.crt"
+  destination = "/mnt/postgrescerts/postgresca.crt.next"
   command     = "/usr/local/share/cook/bin/reload-patroni.sh"
 }
 
 template {
   source      = "/mnt/templates/metrics.crt.tpl"
   destination = "/mnt/metricscerts/metrics.crt"
-  backup      = true
   command     = "/usr/local/share/cook/bin/reload-metrics.sh"
 }
 

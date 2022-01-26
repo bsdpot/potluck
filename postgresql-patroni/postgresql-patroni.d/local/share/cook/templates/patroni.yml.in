@@ -2,6 +2,9 @@ scope: postgresql
 #namespace: /service/
 name: %%nodename%%
 
+log:
+  level: WARNING
+
 restapi:
   listen: %%ip%%:8008
   connect_address: %%ip%%:8008

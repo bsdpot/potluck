@@ -25,5 +25,5 @@ listener "tcp" {
 storage "file" {
   path    = "/mnt/vault/"
 }
-log_level = "Trace"
+log_level = "Warn"
 api_addr = "https://%%ip%%:8200"

@@ -55,6 +55,6 @@ service_registration "consul" {
   token = "%%consultoken%%"
 }
 log_format = "standard"
-log_level = "Trace"
+log_level = "Warn"
 api_addr = "https://%%ip%%:8200"
 cluster_addr = "https://%%ip%%:8201"

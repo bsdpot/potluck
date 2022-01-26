@@ -23,6 +23,6 @@ seal "transit" {
   tls_ca_cert = "/mnt/unsealcerts/ca_chain.crt"
   tls_server_name = "server.global.vaultunseal"
 }
-log_level = "Trace"
+log_level = "Warn"
 api_addr = "http://127.0.0.1:8200"
 cluster_addr = "https://%%ip%%:8201"

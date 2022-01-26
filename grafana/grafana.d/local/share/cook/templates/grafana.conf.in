@@ -538,7 +538,7 @@ enabled = false
 mode = console file
 
 # Either "debug", "info", "warn", "error", "critical", default is "info"
-level = debug
+level = warn
 
 # optional settings to set different levels for specific loggers. Ex filters = sqlstore:debug
 ;filters =
