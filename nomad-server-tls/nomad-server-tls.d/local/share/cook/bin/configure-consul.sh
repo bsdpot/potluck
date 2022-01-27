@@ -49,9 +49,9 @@ sysrc consul_syslog_output_priority="warn"
 #sysrc consul_group="wheel"
 
 # setup consul logs, might be redundant if not specified in agent.hcl above
-mkdir -p /var/log/consul
-touch /var/log/consul/consul.log
-chown -R consul:wheel /var/log/consul
+mkdir -p /mnt/log/consul
+touch /mnt/log/consul/consul.log
+chown -R consul:wheel /mnt/log/consul
 
 # place acl-tokens
 mkdir -p /var/db/consul

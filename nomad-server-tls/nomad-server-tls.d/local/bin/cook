@@ -77,14 +77,15 @@ done
 export PATH=/usr/local/share/cook/bin:$PATH
 
 # setup directories for vault usage
-mkdir -p /mnt/templates
 mkdir -p /mnt/certs
 chown -R nomad /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
+mkdir -p /mnt/log
 mkdir -p /mnt/nomadcerts
-chown -R nomad /mnt/nomadcerts
 mkdir -p /mnt/metricscerts/hash
+chown -R nomad /mnt/nomadcerts
+mkdir -p /mnt/templates
 mkdir -p /mnt/vault
 
 # create nodeexport user, needed for chown, removed from config
