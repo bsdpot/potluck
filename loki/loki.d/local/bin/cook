@@ -102,10 +102,10 @@ mkdir -p /mnt/templates
 #chown -R loki /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
+mkdir -p /mnt/log
 mkdir -p /mnt/metricscerts/hash
 chown -R loki:certaccess /mnt/metricscerts
 mkdir -p /mnt/vault
-mkdir -p /mnt/logs
 
 export PATH=/usr/local/share/cook/bin:$PATH
 

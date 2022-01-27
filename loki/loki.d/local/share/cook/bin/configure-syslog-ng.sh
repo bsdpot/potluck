@@ -21,6 +21,9 @@ sep=$'\001'
   sed "s${sep}%%myip%%${sep}$IP${sep}g" \
   > /usr/local/etc/syslog-ng.conf
 
+# create remote log dir
+mkdir -p /mnt/log/remote
+
 # stop and disable syslogd
 service syslogd onestop || true
 service syslogd disable
