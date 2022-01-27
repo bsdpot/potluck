@@ -1,5 +1,5 @@
 worker_processes  1;
-error_log  /var/log/unsealproxy-error.log;
+error_log  /mnt/log/unsealproxy-error.log;
 
 events {
     worker_connections  1024;
@@ -13,7 +13,7 @@ http {
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
-    access_log  /var/log/unsealproxy-access.log  main;
+    access_log  /mnt/log/unsealproxy-access.log  main;
 
     sendfile        off;
     #tcp_nopush     on;
