@@ -42,15 +42,23 @@ destination ppp { file("/var/log/ppp.log"); };
 destination allusers { usertty("*"); };
 # pot settings
 destination loghost {
-  tcp("%%remotelogip%%" port(6514)
-  tls(
-   key-file("/mnt/metricscerts/metrics.key")
-   cert-file("/mnt/metricscerts/metrics.crt")
-   ca-dir("/mnt/metricscerts/hash")
-   ca-file("/mnt/metricscerts/ca_chain.crt")
-   peer-verify(required-trusted)
-  )
- );
+  tcp(
+    "%%remotelogip%%"
+    port(6514)
+    tls(
+      key-file("/mnt/metricscerts/metrics.key")
+      cert-file("/mnt/metricscerts/metrics.crt")
+      ca-dir("/mnt/metricscerts/hash")
+      ca-file("/mnt/metricscerts/ca_chain.crt")
+      peer-verify(required-trusted)
+    )
+    disk-buffer(
+      mem-buf-size(134217728)   # 128MiB
+      disk-buf-size(2147483648) # 2GiB
+      reliable(yes)
+      dir("/mnt/log/syslog-ng-disk-buffer")
+    )
+  );
 };
 
 # log facility filters
