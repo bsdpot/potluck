@@ -18,6 +18,10 @@ sep=$'\001'
 
 ## start grafana config
 
+# create log dir
+mkdir -p /mnt/log/grafana
+chown -R grafana:grafana /mnt/log/grafana
+
 # if /mnt/grafana is empty, copy in /var/db/grafana
 if [ ! -f /mnt/grafana/grafana.db ]; then
     # if empty we need to copy in the directory structure from install
