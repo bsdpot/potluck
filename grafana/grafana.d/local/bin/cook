@@ -178,5 +178,14 @@ configure-syslog-ng.sh
 log "Start grafana"
 service grafana start
 
+log "Configure grafanaproxy"
+configure-grafanaproxy.sh
+
+log "Start grafanaproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status grafanaproxy; do
+    sleep 1; service nginx start grafanaproxy || true; sleep 5;
+  done'
+
 log "Exit seasoned"
 pot_seasoned_exit

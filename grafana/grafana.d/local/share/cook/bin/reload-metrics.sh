@@ -24,7 +24,6 @@ if service syslog-ng enabled; then
 fi
 
 service node_exporter restart
-# maybe we can reload here?
-service grafana restart
+service nginx reload grafanaproxy
 
 exit 0
