@@ -51,7 +51,7 @@ JSON=$(VAULT_TOKEN="$TOKEN" \
          common_name="$NODENAME.global.vaultcluster" \
          ttl="$TTL" \
          alt_names=localhost,\
-active.vault.service.consul,standby.vault.service.consul \
+active.vault.service.consul,standby.vault.service.consul,vault.service.consul \
          ip_sans="127.0.0.1,$IP" \
       )
 

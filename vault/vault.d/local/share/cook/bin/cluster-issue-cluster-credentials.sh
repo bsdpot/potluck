@@ -24,6 +24,7 @@ fi
 if [ -z "$CERT_ALT_NAMES" ]; then
     CERT_ALT_NAMES="localhost,active.vault.service.consul"
     CERT_ALT_NAMES="$CERT_ALT_NAMES,standby.vault.service.consul"
+    CERT_ALT_NAMES="$CERT_ALT_NAMES,vault.service.consul"
 fi
 
 if [ -z "$TOKEN_POLICIES" ]; then
