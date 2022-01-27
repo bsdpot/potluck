@@ -18,7 +18,7 @@ data = /mnt/grafana
 ;temp_data_lifetime = 24h
 
 # Directory where grafana can store logs
-logs = /var/log/grafana
+logs = /mnt/log/grafana
 
 # Directory where grafana will automatically scan and look for plugins
 plugins = /mnt/grafana/plugins
