@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# shellcheck disable=SC1004
 lockf -t 20 /tmp/reload-patroni.lock sh -c '
   set -e
   cp -a /mnt/postgrescerts/postgresserver.key.next \
