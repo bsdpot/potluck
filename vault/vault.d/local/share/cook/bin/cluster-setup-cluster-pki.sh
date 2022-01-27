@@ -38,6 +38,7 @@ vault read pki_int/roles/vault-cluster || vault write \
   pki_int/roles/vault-cluster \
   allowed_domains=global.vaultcluster,vault.service.consul \
   allow_subdomains=true max_ttl="$CERT_MAX_TTL" \
+  allow_bare_domains=true \
   require_cn=false generate_lease=true
 vault policy list | grep -c "^tls-policy\$" ||
   vault policy write tls-policy \
