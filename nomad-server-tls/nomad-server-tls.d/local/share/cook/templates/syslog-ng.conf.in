@@ -1,4 +1,4 @@
-@version: 3.32
+@version: %%config_version%%
 @include "scl.conf"
 
 # options

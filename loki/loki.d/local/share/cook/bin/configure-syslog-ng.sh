@@ -17,7 +17,10 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 sep=$'\001'
 
 # copy in syslog-ng.conf
+config_version=$(/usr/local/sbin/syslog-ng --version | \
+  grep "^Config version:" | awk -F: '{ print $2 }' | xargs)
 < "$TEMPLATEPATH/syslog-ng.conf.in" \
+  sed "s${sep}%%config_version%%${sep}$config_version${sep}g" | \
   sed "s${sep}%%myip%%${sep}$IP${sep}g" \
   > /usr/local/etc/syslog-ng.conf
 
