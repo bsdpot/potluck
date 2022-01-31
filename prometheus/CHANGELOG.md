@@ -1,3 +1,27 @@
+0.10.4
+
+* Merged PR 26, incrementing version in changelog
+
+---
+
+0.10.3
+
+* Dummy entry, missing version increment
+
+---
+
+0.10.2
+
+* Dummy entry, missing version increment
+
+---
+
+0.10.1
+
+* Dummy entry, missing version increment
+
+---
+
 0.10.0
 
 * Many improvements to service mesh components

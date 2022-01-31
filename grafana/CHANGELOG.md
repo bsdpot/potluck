@@ -1,6 +1,42 @@
+0.1.7
+
+* Merged PR 26 and incremented version in changelog
+
+---
+
+0.1.6
+
+* Dummy changelog entry, missing version increment
+
+---
+
+0.1.5
+
+* Dummy changelog entry, missing version increment
+
+---
+
+0.1.4
+
+* Dummy changelog entry, missing version increment
+
+---
+
+0.1.3
+
+* Dummy changelog entry, missing version increment
+
+---
+
+0.1.2
+
+* Dummy changelog entry, missing version increment
+
+---
+
 0.1.1
 
-* Version number increment for pull 25
+* Dummy changelog entry, missing version increment
 
 ---
 
