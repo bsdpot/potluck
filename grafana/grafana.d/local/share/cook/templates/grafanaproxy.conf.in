@@ -1,5 +1,5 @@
 worker_processes  1;
-error_log  /mnt/log/unsealproxy-error.log;
+error_log  /mnt/log/grafanaproxy-error.log;
 
 events {
     worker_connections  1024;
@@ -13,7 +13,7 @@ http {
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
-    access_log  /mnt/log/unsealproxy-access.log  main;
+    access_log  /mnt/log/grafanaproxy-access.log  main;
 
     sendfile        off;
     #tcp_nopush     on;
@@ -22,11 +22,11 @@ http {
     keepalive_timeout  65;
 
     server {
-        listen       127.0.0.1:8099 ssl;
-        server_name  localhost;
+        listen       %%ip%%:3000 ssl http2;
+        server_name  %%nodename%%.%%datacenter%%.metrics;
 
-        ssl_certificate      /mnt/unsealcerts/client.crt;
-        ssl_certificate_key  /mnt/unsealcerts/client.key;
+        ssl_certificate      /mnt/metricscerts/metrics.crt;
+        ssl_certificate_key  /mnt/metricscerts/metrics.key;
 
         ssl_protocols TLSv1.3 TLSv1.2;
         # https://ssl-config.mozilla.org/#server=nginx&config=intermediate
@@ -34,14 +34,7 @@ http {
         ssl_prefer_server_ciphers off;
 
         location / {
-          proxy_pass https://%%unsealip%%:8200;
-          proxy_ssl_certificate /mnt/unsealcerts/client.crt;
-          proxy_ssl_certificate_key /mnt/unsealcerts/client.key;
-          proxy_ssl_verify on;
-          proxy_ssl_trusted_certificate /mnt/unsealcerts/ca_chain.crt;
-          proxy_ssl_server_name on;
-          proxy_set_header Host server.global.vaultunseal;
-          proxy_ssl_name server.global.vaultunseal;
+          proxy_pass http://127.0.0.1:3000;
         }
 
         # redirect server error pages to the static page /50x.html

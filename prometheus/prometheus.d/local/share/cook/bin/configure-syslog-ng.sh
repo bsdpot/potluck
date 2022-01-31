@@ -18,9 +18,13 @@ sep=$'\001'
 
 # copy in syslog-ng.conf
 if [ -n "$REMOTELOG" ] && [ "$REMOTELOG" != "null" ]; then
+    config_version=$(/usr/local/sbin/syslog-ng --version | \
+      grep "^Config version:" | awk -F: '{ print $2 }' | xargs)
+
     # read in template conf file, update remote log IP address, and
     # write to correct destination
     < "$TEMPLATEPATH/syslog-ng.conf.in" \
+      sed "s${sep}%%config_version%%${sep}$config_version${sep}g" | \
       sed "s${sep}%%remotelogip%%${sep}$REMOTELOG${sep}g" \
       > /usr/local/etc/syslog-ng.conf
 

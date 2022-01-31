@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# shellcheck disable=SC1004
 # lock named "reload-patroni" on purpose
 lockf -t 20 /tmp/reload-patroni.lock sh -c '
   set -e

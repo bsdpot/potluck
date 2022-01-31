@@ -83,14 +83,15 @@ log "Create nodeexport user"
   -m -s /usr/bin/nologin -h -
 
 # setup directories for vault usage
-mkdir -p /mnt/templates
 mkdir -p /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul:postgres /mnt/consulcerts
-mkdir -p /mnt/postgrescerts
-chown -R postgres /mnt/postgrescerts
+mkdir -p /mnt/log
 mkdir -p /mnt/metricscerts/hash
 chown -R nodeexport /mnt/metricscerts
+mkdir -p /mnt/postgrescerts
+chown -R postgres /mnt/postgrescerts
+mkdir -p /mnt/templates
 mkdir -p /mnt/vault
 
 export PATH=/usr/local/share/cook/bin:$PATH
@@ -100,7 +101,7 @@ setup-local-unbound-provision.sh
 
 log "Wait until we are able to resolve active vault instance"
 timeout --foreground 120 \
-  sh -c 'while ! host -ta active.vault.service.consul; do sleep 5; done'
+  sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
 
 log "Unwrap cluster credentials"
 unwrap-cluster-credentials.sh
@@ -130,7 +131,7 @@ configure-vaultproxy.sh
 log "Start vaultproxy"
 timeout --foreground 120 \
   sh -c 'while ! service nginx status vaultproxy; do
-    sleep 5; service nginx start vaultproxy || true; sleep 5;
+    service nginx start vaultproxy || true; sleep 3;
   done'
 
 log "Starting consul-template"
@@ -146,7 +147,7 @@ configure-consul.sh
 log "Start consul and wait for it to become stable"
 timeout --foreground 120 \
   sh -c 'while ! service consul status; do
-    sleep 5; service consul start || true; sleep 5;
+    service consul start || true; sleep 5;
   done'
 
 log "Set up local_unbound using local consul"
@@ -154,7 +155,7 @@ setup-local-unbound.sh
 
 log "Wait until we are able to resolve consul"
 timeout --foreground 120 \
-  sh -c 'while ! host -ta consul.service.consul; do sleep 5; done'
+  sh -c 'while ! host -ta consul.service.consul; do sleep 1; done'
 
 log "configure postgres_exporter"
 configure-postgres-exporter.sh
@@ -169,7 +170,7 @@ ln -s /usr/local/share/cook/bin/verifydbnode.sh /root/verifydbnode.sh
 log "Start patroni and wait for it to become stable"
 timeout --foreground 120 \
   sh -c 'while ! verifydbnode.sh ; do
-    sleep 5; service patroni start || true; sleep 15;
+    service patroni start || true; sleep 20;
   done'
 
 # syslog-ng start is set in the script because it won't run if REMOTELOG

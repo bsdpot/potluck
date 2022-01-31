@@ -77,14 +77,15 @@ done
 export PATH=/usr/local/share/cook/bin:$PATH
 
 # setup directories for vault usage
-mkdir -p /mnt/templates
 mkdir -p /mnt/certs
 chown -R nomad /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
+mkdir -p /mnt/log
 mkdir -p /mnt/nomadcerts
-chown -R nomad /mnt/nomadcerts
 mkdir -p /mnt/metricscerts/hash
+chown -R nomad /mnt/nomadcerts
+mkdir -p /mnt/templates
 mkdir -p /mnt/vault
 
 # create nodeexport user, needed for chown, removed from config
@@ -97,7 +98,7 @@ setup-local-unbound-provision.sh
 
 log "Wait until we are able to resolve active vault instance"
 timeout --foreground 120 \
-  sh -c 'while ! host -ta active.vault.service.consul; do sleep 5; done'
+  sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
 
 log "Unwrap cluster credentials"
 unwrap-cluster-credentials.sh
@@ -127,7 +128,7 @@ configure-vaultproxy.sh
 log "Start vaultproxy"
 timeout --foreground 120 \
   sh -c 'while ! service nginx status vaultproxy; do
-    sleep 5; service nginx start vaultproxy || true; sleep 5;
+    service nginx start vaultproxy || true; sleep 3;
   done'
 
 log "Starting consul-template"
@@ -143,7 +144,7 @@ configure-consul.sh
 log "Start consul and wait for it to become stable"
 timeout --foreground 120 \
   sh -c 'while ! service consul status; do
-    sleep 5; service consul start || true; sleep 5;
+    service consul start || true; sleep 5;
   done'
 
 log "Set up local_unbound using local consul"
@@ -151,7 +152,7 @@ setup-local-unbound.sh
 
 log "Wait until we are able to resolve consul"
 timeout --foreground 120 \
-  sh -c 'while ! host -ta consul.service.consul; do sleep 5; done'
+  sh -c 'while ! host -ta consul.service.consul; do sleep 1; done'
 
 log "Configure nomad"
 configure-nomad.sh
@@ -159,7 +160,7 @@ configure-nomad.sh
 log "Start nomad and wait for it to become stable"
 timeout --foreground 120 \
   sh -c 'while ! service nomad status; do
-    sleep 5; service nomad start || true; sleep 5;
+    service nomad start || true; sleep 5;
   done'
 
 log "Symlink helper scripts"

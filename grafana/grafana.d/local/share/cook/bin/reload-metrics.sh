@@ -1,7 +1,7 @@
 #!/bin/sh
 cat /mnt/metricscerts/metricsca.crt /mnt/metricscerts/ca_root.crt \
   >/mnt/metricscerts/ca_chain.crt.tmp
-chown grafana:certaccess /mnt/metricscerts/*
+chown -R grafana:certaccess /mnt/metricscerts/*
 mv /mnt/metricscerts/ca_chain.crt.tmp /mnt/metricscerts/ca_chain.crt
 
 # we need to add hashed certificates for syslog-ng
@@ -10,7 +10,6 @@ ln -sf ../ca_root.crt "/mnt/metricscerts/hash/$(/usr/bin/openssl x509 \
 ln -sf ../ca_chain.crt "/mnt/metricscerts/hash/$(/usr/bin/openssl x509 \
   -subject_hash -noout -in /mnt/metricscerts/ca_chain.crt).0"
 
-# set permissions again
 chown -R grafana:certaccess /mnt/metricscerts/*
 
 # reload/restart services
@@ -24,7 +23,6 @@ if service syslog-ng enabled; then
 fi
 
 service node_exporter restart
-# maybe we can reload here?
-service grafana restart
+service nginx reload grafanaproxy
 
 exit 0

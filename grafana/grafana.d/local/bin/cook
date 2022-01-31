@@ -97,14 +97,15 @@ log "Add grafana user to certaccess group"
 
 # setup directories for persistent storage and certificate usage
 log "Creating directories for persistent storage and certificate usage"
-mkdir -p /mnt/templates
+mkdir -p /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
-mkdir -p /mnt/vault
-mkdir -p /mnt/certs
+mkdir -p /mnt/grafana
+mkdir -p /mnt/log
 mkdir -p /mnt/metricscerts/hash
 chown -R grafana:certaccess /mnt/metricscerts
-mkdir -p /mnt/grafana
+mkdir -p /mnt/templates
+mkdir -p /mnt/vault
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
@@ -113,7 +114,7 @@ setup-local-unbound-provision.sh
 
 log "Wait until we are able to resolve active vault instance"
 timeout --foreground 120 \
-  sh -c 'while ! host -ta active.vault.service.consul; do sleep 5; done'
+  sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
 
 log "Unwrap cluster credentials"
 unwrap-cluster-credentials.sh
@@ -140,7 +141,7 @@ configure-vaultproxy.sh
 log "Start vaultproxy"
 timeout --foreground 120 \
   sh -c 'while ! service nginx status vaultproxy; do
-    sleep 5; service nginx start vaultproxy || true; sleep 5;
+    service nginx start vaultproxy || true; sleep 3;
   done'
 
 log "Starting consul-template"
@@ -156,7 +157,7 @@ configure-consul.sh
 log "Start consul and wait for it to become stable"
 timeout --foreground 120 \
   sh -c 'while ! service consul status; do
-    sleep 5; service consul start || true; sleep 5;
+    service consul start || true; sleep 5;
   done'
 
 log "Set up local_unbound using local consul"
@@ -164,7 +165,7 @@ setup-local-unbound.sh
 
 log "Wait until we are able to resolve consul"
 timeout --foreground 120 \
-  sh -c 'while ! host -ta consul.service.consul; do sleep 5; done'
+  sh -c 'while ! host -ta consul.service.consul; do sleep 1; done'
 
 log "Setup grafana"
 configure-grafana.sh
@@ -176,6 +177,15 @@ configure-syslog-ng.sh
 
 log "Start grafana"
 service grafana start
+
+log "Configure grafanaproxy"
+configure-grafanaproxy.sh
+
+log "Start grafanaproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status grafanaproxy; do
+    service nginx start grafanaproxy || true; sleep 3;
+  done'
 
 log "Exit seasoned"
 pot_seasoned_exit

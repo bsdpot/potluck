@@ -11,7 +11,6 @@ ln -sf ../ca_root.crt "/mnt/metricscerts/hash/$(/usr/bin/openssl x509 \
 ln -sf ../ca_chain.crt "/mnt/metricscerts/hash/$(/usr/bin/openssl x509 \
   -subject_hash -noout -in /mnt/metricscerts/ca_chain.crt).0"
 
-# set permissions again
 chown -R nodeexport /mnt/metricscerts/*
 
 # reload/restart services

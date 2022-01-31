@@ -90,7 +90,7 @@ mkdir -p /mnt/templates
 mkdir -p /mnt/certs
 mkdir -p /mnt/consulcerts
 chown -R consul /mnt/consulcerts
-mkdir -p /mnt/certs
+mkdir -p /mnt/log
 mkdir -p /mnt/metricscerts/hash
 mkdir -p /mnt/vault
 
@@ -115,7 +115,7 @@ if [ "$VAULTTYPE" = "unseal" ]; then
     log "Start Vault Unseal Node"
     timeout --foreground 120 \
       sh -c 'while ! service vault status; do
-        sleep 5; service vault start || true; sleep 5;
+        service vault start || true; sleep 5;
       done'
 
     log "\
@@ -174,7 +174,7 @@ cluster-setup-local-unbound-static.sh "$IP"
 
 log "Wait until we are able to resolve active vault instance"
 timeout --foreground 120 \
-  sh -c 'while ! host -ta active.vault.service.consul; do sleep 5; done'
+  sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
 
 log "Unwrap unseal credentials"
 cluster-unwrap-unseal-credentials.sh
@@ -198,7 +198,7 @@ service node_exporter start
 log "Start unsealproxy"
 timeout --foreground 120 \
   sh -c 'while ! service nginx status unsealproxy; do
-    sleep 5; service nginx start unsealproxy || true; sleep 5;
+    service nginx start unsealproxy || true; sleep 3;
   done'
 
 log "Start consul-template-unseal"
@@ -207,7 +207,7 @@ service consul-template-unseal start
 log "Start Vault"
 timeout --foreground 120 \
   sh -c 'while ! service vault status; do
-    sleep 5; service vault start || true; sleep 5;
+    service vault start || true; sleep 5;
   done'
 
 log "Symlink helper scripts"
@@ -223,51 +223,3 @@ ln -s /usr/local/share/cook/bin/cluster-vault.sh \
 
 log "Exit seasoned"
 pot_seasoned_exit
-
-# setup role
-#/usr/local/bin/vault write -address="$LOCAL_VAULT" \
-#  auth/token/roles/$DATACENTER allowed_policies="pki" \
-#  orphan=true period="24h"
-# we're using the same token as for vault, becauee vault sucks hard
-
-#log "Unwrapping unseal pki token"
-#UNSEAL_PKI_TOKEN_JSON=$(
-#  HOME=/var/empty \
-#  /usr/local/bin/vault unwrap \
-#    -address="https://$UNSEALIP:8200" \
-#    -tls-server-name=server.global.vaultunseal \
-#    -ca-cert=/mnt/unsealcerts/ca_chain.crt \
-#    -client-key=/mnt/unsealcerts/client.key \
-#    -client-cert=/mnt/unsealcerts/client.crt \
-#    -format=json "$(cat /mnt/unsealcerts/wrapped.token)")
-#UNSEAL_PKI_TOKEN=$(echo "$UNSEAL_PKI_TOKEN_JSON" |\
-#  /usr/local/bin/jq -r '.auth.client_token')
-
-#log "Creating auto-login script"
-## setup auto-login script (XXX: currently pointless)
-#echo "#!/bin/sh
-#export VAULT_ADDR=https://active.vault.service.consul:8200
-#export VAULT_CLIENT_TIMEOUT=300s
-#export VAULT_MAX_RETRIES=5
-#export VAULT_CLIENT_CERT=/mnt/certs/agent.crt
-#export VAULT_CLIENT_KEY=/mnt/certs/agent.key
-#export VAULT_CACERT=/mnt/certs/ca_chain.crt
-#if [ ! -s /root/login.token ]; then
-#  exit 1
-#fi
-#/bin/cat /root/login.token | /usr/local/bin/vault login token=-
-#" > /root/cli-vault-auto-login.sh
-#chmod +x /root/cli-vault-auto-login.sh
-
-#log "Creating script to issue pki tokens"
-## setup script to issue pki tokens (XXX: currently pointless)
-#echo "#!/bin/sh
-#export VAULT_ADDR=https://active.vault.service.consul:8200
-#export VAULT_CLIENT_TIMEOUT=300s
-#export VAULT_MAX_RETRIES=5
-#export VAULT_CLIENT_CERT=/mnt/certs/agent.crt
-#export VAULT_CLIENT_KEY=/mnt/certs/agent.key
-#export VAULT_CACERT=/mnt/certs/ca_chain.crt
-#/usr/local/bin/vault token create -policy=tls-policy -wrap-ttl=600s -ttl=15m
-#" > /root/issue-pki-token.sh
-#chmod +x /root/issue-pki-token.sh

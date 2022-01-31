@@ -1,4 +1,4 @@
-@version: 3.32
+@version: %%config_version%%
 @include "scl.conf"
 
 # options
@@ -64,7 +64,7 @@ destination ppp { file("/var/log/ppp.log"); };
 #destination console { file("/dev/console"); };
 destination allusers { usertty("*"); };
 # pot settings
-destination lokilogs { file("/mnt/logs/$HOST.log"); };
+destination lokilogs { file("/mnt/log/remote/$HOST.log"); };
 destination loghost {
   tcp("%%myip%%" port(6514)
   tls(
@@ -78,7 +78,14 @@ destination loghost {
 };
 
 destination lokisyslog {
-  syslog("127.0.0.1" transport("tcp") port(1514));
+  syslog("127.0.0.1" transport("tcp") port(1514)
+    disk-buffer(
+      mem-buf-size(536870912)    # 512MiB
+      disk-buf-size(10737418240) # 10GiB
+      reliable(yes)
+      dir("/mnt/log/syslog-ng-disk-buffer")
+    )
+);
 };
 
 # log facility filters

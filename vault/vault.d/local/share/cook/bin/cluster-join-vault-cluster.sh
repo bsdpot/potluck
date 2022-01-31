@@ -39,7 +39,7 @@ WRAPPED_TOKEN=$(< /mnt/certs/credentials.json \
 
 timeout --foreground 120 \
   sh -c 'while ! host -ta active.vault.service.consul |
-    grep -F -- "'"$LEADER_IP"'"; do sleep 5; done'
+    grep -F -- "'"$LEADER_IP"'"; do sleep 1; done'
 
 "$SCRIPTDIR"/cluster-vault.sh \
   operator raft join \

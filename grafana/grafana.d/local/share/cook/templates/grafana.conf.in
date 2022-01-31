@@ -18,7 +18,7 @@ data = /mnt/grafana
 ;temp_data_lifetime = 24h
 
 # Directory where grafana can store logs
-logs = /var/log/grafana
+logs = /mnt/log/grafana
 
 # Directory where grafana will automatically scan and look for plugins
 plugins = /mnt/grafana/plugins
@@ -29,10 +29,10 @@ provisioning = /mnt/grafana/provisioning
 #################################### Server ####################################
 [server]
 # Protocol (http, https, h2, socket)
-protocol = h2
+protocol = http
 
 # The ip address to bind to, empty will bind to all interfaces
-http_addr =%%ip%%
+http_addr = 127.0.0.1
 
 # The http port  to use
 ;http_port = 3000
@@ -61,8 +61,8 @@ router_logging = true
 ;enable_gzip = false
 
 # https certs & key file
-cert_file = /mnt/metricscerts/metrics.crt
-cert_key = /mnt/metricscerts/metrics.key
+;cert_file = /mnt/metricscerts/metrics.crt
+;cert_key = /mnt/metricscerts/metrics.key
 
 # Unix socket path
 ;socket =

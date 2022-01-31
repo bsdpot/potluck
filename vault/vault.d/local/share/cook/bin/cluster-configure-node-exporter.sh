@@ -15,7 +15,8 @@ echo "tls_server_config:
 
 # enable node_exporter service
 service node_exporter enable
-sysrc node_exporter_args="--web.config=/usr/local/etc/node-exporter.yml"
+sysrc node_exporter_args="--web.config=/usr/local/etc/node-exporter.yml\
+ --log.level=warn"
 sysrc node_exporter_user=nodeexport
 sysrc node_exporter_group=nodeexport
 
