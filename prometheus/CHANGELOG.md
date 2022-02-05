@@ -1,3 +1,9 @@
+0.10.5
+
+* Updating config, alerts and alertmanager templates
+
+---
+
 0.10.4
 
 * Merged PR 26, incrementing version in changelog
