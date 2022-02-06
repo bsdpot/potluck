@@ -1,3 +1,9 @@
+0.10.6
+
+* Fixing broken alert rulesets
+
+---
+
 0.10.5
 
 * Updating config, alerts and alertmanager templates
