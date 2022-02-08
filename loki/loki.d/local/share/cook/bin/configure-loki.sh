@@ -13,7 +13,7 @@ SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # setup directories for loki
-mkdir -p /tmp/loki/rules-temp
+mkdir -p /mnt/loki/rules-temp
 
 # shellcheck disable=SC3003
 # safe(r) separator for sed
@@ -49,7 +49,7 @@ sysrc loki_syslog_output_enable="YES"
   > /usr/local/etc/loki-local-config.yaml
 
 # chown to loki user
-chown -R loki:loki /tmp/loki
+chown -R loki:loki /mnt/loki
 
 # promtail
 # download the source files

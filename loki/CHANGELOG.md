@@ -1,3 +1,10 @@
+0.2.5
+
+* Serve loki over mTLS
+* Move loki data to persistent storage
+
+---
+
 0.2.0
 
 * Many improvements to service mesh components
