@@ -1,3 +1,10 @@
+0.10.8
+
+* Remove alertmanager rule copy-in from /root
+* Preload custom rules simply by pre-loading /mnt/prometheus/alerts
+
+---
+
 0.10.7
 
 * Serve prometheus and alertmanager over mTLS
