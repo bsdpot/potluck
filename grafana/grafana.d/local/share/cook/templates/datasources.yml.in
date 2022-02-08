@@ -14,7 +14,7 @@ datasources:
     access: proxy
     orgId: 1
     httpMethod: POST
-    url: http://%%mypromhost%%:9090
+    url: http://127.0.0.1:9090
     isDefault: 1
     version: 1
     editable: true
@@ -23,17 +23,17 @@ datasources:
     access: proxy
     orgId: 1
     httpMethod: POST
-    url: http://%%mylokihost%%:3100
+    url: http://127.0.0.1:3100
     isDefault: 0
     version: 1
     editable: true
   - name: InfluxDB
     type: influxdb
     access: proxy
-    database: %%myinfluxdatabase%%
+    database: %%influxdbname%%
     orgId: 1
     httpMethod: POST
-    url: http://%%myinfluxhost%%:8086
+    url: http://%%influxdbsource%%
     jsonData:
       httpMode: GET
     isDefault: 0

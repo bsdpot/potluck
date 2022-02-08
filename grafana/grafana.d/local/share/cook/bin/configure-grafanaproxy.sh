@@ -17,10 +17,30 @@ mkdir -p /usr/local/etc/nginx
 # safe(r) separator for sed
 sep=$'\001'
 
+if ! echo "$PROMSOURCE" | grep -qF ":"; then
+  PROMSOURCE="$PROMSOURCE:9090"
+fi
+
+if ! echo "$PROMTLSNAME" | grep -qF "."; then
+  PROMTLSNAME="$PROMTLSNAME.$DATACENTER.metrics"
+fi
+
+if ! echo "$LOKISOURCE" | grep -qF ":"; then
+  LOKISOURCE="$LOKISOURCE:3100"
+fi
+
+if ! echo "$LOKITLSNAME" | grep -qF "."; then
+  LOKITLSNAME="$LOKITLSNAME.$DATACENTER.metrics"
+fi
+
 < "$TEMPLATEPATH/grafanaproxy.conf.in" \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-  sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
+  sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" |\
+  sed "s${sep}%%promsource%%${sep}$PROMSOURCE${sep}g" | \
+  sed "s${sep}%%promtlsname%%${sep}$PROMTLSNAME${sep}g" | \
+  sed "s${sep}%%lokisource%%${sep}$LOKISOURCE${sep}g" | \
+  sed "s${sep}%%lokitlsname%%${sep}$LOKITLSNAME${sep}g" \
   > /usr/local/etc/nginx/grafanaproxy.conf
 
 service nginx enable

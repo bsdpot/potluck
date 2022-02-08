@@ -48,8 +48,10 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS ATTL BTTL"
-required_args="$required_args VAULTSERVER PROMSOURCE LOKISOURCE"
-required_args="$required_args INFLUXDATABASE INFLUXDBSOURCE"
+required_args="$required_args VAULTSERVER"
+required_args="$required_args PROMSOURCE PROMTLSNAME"
+required_args="$required_args LOKISOURCE LOKITLSNAME"
+required_args="$required_args INFLUXDBSOURCE INFLUXDBNAME"
 required_args="$required_args GRAFANAUSER GRAFANAPASSWORD"
 optional_args="REMOTELOG"
 
