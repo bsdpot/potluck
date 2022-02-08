@@ -1,6 +1,42 @@
-0.10.5
+0.10.7
 
 * Serve prometheus and alertmanager over mTLS
+
+---
+
+0.10.6
+
+* Fixing broken alert rulesets
+
+---
+
+0.10.5
+
+* Updating config, alerts and alertmanager templates
+
+---
+
+0.10.4
+
+* Merged PR 26, incrementing version in changelog
+
+---
+
+0.10.3
+
+* Dummy entry, missing version increment
+
+---
+
+0.10.2
+
+* Dummy entry, missing version increment
+
+---
+
+0.10.1
+
+* Dummy entry, missing version increment
 
 ---
 

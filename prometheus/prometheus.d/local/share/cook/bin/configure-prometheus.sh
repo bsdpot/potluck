@@ -16,6 +16,18 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 if [ ! -d /mnt/prometheus ]; then
     mkdir -p /mnt/prometheus
 fi
+
+# copy alert files to created alerts directory
+mkdir -p /mnt/prometheus/alerts
+cp -a "$TEMPLATEPATH/prometheusalerts/*.yml" /mnt/prometheus/alerts/
+
+# if custom alert copied in to /root then copy to prometheus alerts directory
+# might be another way to do this?
+if [ -f /root/customalert.yml ]; then
+    cp -f /root/customalert.yml /mnt/prometheus/alerts/customalert.yml
+fi
+
+# set permissions on /mnt/prometheus
 chown -R prometheus:prometheus /mnt/prometheus
 
 # shellcheck disable=SC3003
@@ -59,7 +71,14 @@ sysrc alertmanager_args="--web.listen-address=127.0.0.1:9093\
 if [ ! -d /mnt/alertmanager ]; then
     mkdir -p /mnt/alertmanager
 fi
+
+# make alertmanager templates directory copy over notification templates
+mkdir -p /mnt/alertmanager/templates
+cp -a "$TEMPLATEPATH/alertmanagertemplates/*" /mnt/alertmanager/templates/
+
+# set permissions on /mnt/alertmanager
 chown -R alertmanager:alertmanager /mnt/alertmanager
+
 ## end alertmanager config
 
 # starting services happens in cook script

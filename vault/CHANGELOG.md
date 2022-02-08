@@ -1,3 +1,33 @@
+2.2.5
+
+* Merged PR 26, incrementing version in changelog
+
+---
+
+2.2.4
+
+* Dummy entry, missing version increment
+
+---
+
+2.2.3
+
+* Dummy entry, missing version increment
+
+---
+
+2.2.2
+
+* Dummy entry, missing version increment
+
+---
+
+2.2.1
+
+* Incrementing version number after pull request 25
+
+---
+
 2.2.0
 
 * Many improvements to service mesh components

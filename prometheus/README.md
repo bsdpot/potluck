@@ -84,3 +84,17 @@ If you stop the image, the data will still exist, and a new image can be started
 If you need to change the directory parameters for the ZFS data set, adjust the ```mount-in``` command accordingly for the source directory as mounted by the parent OS.
 
 Do not adjust the image destination mount point at /mnt because Prometheus is configured to use this directory for data.
+
+# Custom alerts
+You can copy-in custom alerts to /root/customalert.yml and it will be copied into ```prometheus``` alerts folder.
+
+# Alertmanager
+To query the alertmanager config via cli:
+```
+amtool config show --alertmanager.url=http://localhost:9093
+```
+
+To query the alertmanager live alerts via cli:
+```
+amtool -o extended alert --alertmanager.url=http://localhost:9093
+```
