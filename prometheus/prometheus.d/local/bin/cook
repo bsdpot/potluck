@@ -184,5 +184,14 @@ service alertmanager start
 log "Setup and start syslog-ng"
 configure-syslog-ng.sh
 
+log "Configure prometheusproxy"
+configure-prometheusproxy.sh
+
+log "Start prometheusproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status prometheusproxy; do
+    service nginx start prometheusproxy || true; sleep 3;
+  done'
+
 log "Exit seasoned"
 pot_seasoned_exit

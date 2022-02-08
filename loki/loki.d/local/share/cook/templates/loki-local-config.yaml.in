@@ -1,8 +1,9 @@
 auth_enabled: false
 
 server:
-  http_listen_address: %%ip%%
+  http_listen_address: 127.0.0.1
   http_listen_port: 3100
+  grpc_listen_address: 127.0.0.1
   grpc_listen_port: 9096
   log_format: logfmt
   log_level: warn
@@ -10,7 +11,7 @@ server:
 ingester:
   wal:
     enabled: true
-    dir: /tmp/wal
+    dir: /mnt/loki/wal
   lifecycler:
     address: 127.0.0.1
     ring:
@@ -42,17 +43,17 @@ schema_config:
 
 storage_config:
   boltdb_shipper:
-    active_index_directory: /tmp/loki/boltdb-shipper-active
-    cache_location: /tmp/loki/boltdb-shipper-cache
+    active_index_directory: /mnt/loki/boltdb-shipper-active
+    cache_location: /mnt/loki/boltdb-shipper-cache
     # Can be increased for faster performance over longer query periods,
     # uses more disk space
     cache_ttl: 24h
     shared_store: filesystem
   filesystem:
-    directory: /tmp/loki/chunks
+    directory: /mnt/loki/chunks
 
 compactor:
-  working_directory: /tmp/loki/boltdb-shipper-compactor
+  working_directory: /mnt/loki/boltdb-shipper-compactor
   shared_store: filesystem
 
 limits_config:
@@ -70,8 +71,8 @@ ruler:
   storage:
     type: local
     local:
-      directory: /tmp/loki/rules
-  rule_path: /tmp/loki/rules-temp
+      directory: /mnt/loki/rules
+  rule_path: /mnt/loki/rules-temp
   alertmanager_url: http://localhost:9093
   ring:
     kvstore:

@@ -1,3 +1,10 @@
+0.2.5
+
+* Serve loki over mTLS
+* Move loki data to persistent storage
+
+---
+
 0.2.4
 
 * Merged PR 26, incrementing changelog version

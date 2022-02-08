@@ -187,5 +187,14 @@ timeout --foreground 120 \
 log "Setup and start syslog-ng"
 configure-syslog-ng.sh
 
+log "Configure lokiproxy"
+configure-lokiproxy.sh
+
+log "Start lokiproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status lokiproxy; do
+    service nginx start lokiproxy || true; sleep 3;
+  done'
+
 log "Exit seasoned"
 pot_seasoned_exit

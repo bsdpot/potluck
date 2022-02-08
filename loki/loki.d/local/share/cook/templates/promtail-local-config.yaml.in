@@ -1,12 +1,14 @@
 server:
+  http_listen_address: 127.0.0.1
   http_listen_port: 9080
-  grpc_listen_port: 0
+  grpc_listen_address: 127.0.0.1
+  grpc_listen_port: 9081
 
 positions:
   filename: /mnt/log/positions.yaml
 
 clients:
-  - url: http://%%ip%%:3100/loki/api/v1/push
+  - url: http://127.0.0.1:3100/loki/api/v1/push
 
 scrape_configs:
 - job_name: system

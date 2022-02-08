@@ -22,6 +22,10 @@ sep=$'\001'
 mkdir -p /mnt/log/grafana
 chown -R grafana:grafana /mnt/log/grafana
 
+if ! echo "$INFLUXDBSOURCE" | grep -qF ":"; then
+  INFLUXDBSOURCE="$INFLUXDBSOURCE:8086"
+fi
+
 # if /mnt/grafana is empty, copy in /var/db/grafana
 if [ ! -f /mnt/grafana/grafana.db ]; then
     # if empty we need to copy in the directory structure from install
@@ -39,10 +43,8 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     < "$TEMPLATEPATH/datasources.yml.in" \
-      sed "s${sep}%%mypromhost%%${sep}$PROMSOURCE${sep}g" | \
-      sed "s${sep}%%mylokihost%%${sep}$LOKISOURCE${sep}g" | \
-      sed "s${sep}%%myinfluxdatabase%%${sep}$INFLUXDATABASE${sep}g" | \
-      sed "s${sep}%%myinfluxhost%%${sep}$INFLUXDBSOURCE${sep}g" \
+      sed "s${sep}%%influxdbsource%%${sep}$INFLUXDBSOURCE${sep}g" |\
+      sed "s${sep}%%influxdbname%%${sep}$INFLUXDBNAME${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
 
     chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
@@ -85,10 +87,8 @@ else
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     < "$TEMPLATEPATH/datasources.yml.in" \
-      sed "s${sep}%%mypromhost%%${sep}$PROMSOURCE${sep}g" | \
-      sed "s${sep}%%mylokihost%%${sep}$LOKISOURCE${sep}g" | \
-      sed "s${sep}%%myinfluxdatabase%%${sep}$INFLUXDATABASE${sep}g" | \
-      sed "s${sep}%%myinfluxhost%%${sep}$INFLUXDBSOURCE${sep}g" \
+      sed "s${sep}%%influxdbsource%%${sep}$INFLUXDBSOURCE${sep}g" |\
+      sed "s${sep}%%influxdbname%%${sep}$INFLUXDBNAME${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
 
     chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml

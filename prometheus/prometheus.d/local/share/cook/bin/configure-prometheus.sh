@@ -12,22 +12,10 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# if /mnt/prometheus does not exist, create it and set permissions
-if [ ! -d /mnt/prometheus ]; then
-    mkdir -p /mnt/prometheus
-fi
-
-# copy alert files to created alerts directory
+# Create prometheus dirs and set permissions
+# Note: Alerts can be preloaded before image starts
 mkdir -p /mnt/prometheus/alerts
-cp -a "$TEMPLATEPATH/prometheusalerts/*.yml" /mnt/prometheus/alerts/
-
-# if custom alert copied in to /root then copy to prometheus alerts directory
-# might be another way to do this?
-if [ -f /root/customalert.yml ]; then
-    cp -f /root/customalert.yml /mnt/prometheus/alerts/customalert.yml
-fi
-
-# set permissions on /mnt/prometheus
+cp -a "$TEMPLATEPATH"/prometheusalerts/*.yml /mnt/prometheus/alerts/.
 chown -R prometheus:prometheus /mnt/prometheus
 
 # shellcheck disable=SC3003
@@ -47,6 +35,7 @@ sep=$'\001'
 service prometheus enable
 sysrc prometheus_data_dir="/mnt/prometheus"
 sysrc prometheus_syslog_output_enable="YES"
+sysrc prometheus_args="--web.listen-address=127.0.0.1:9090"
 
 ## end prometheus config
 
@@ -63,6 +52,8 @@ sysrc prometheus_syslog_output_enable="YES"
 
 service alertmanager enable
 sysrc alertmanager_data_dir="/mnt/alertmanager"
+sysrc alertmanager_args="--web.listen-address=127.0.0.1:9093\
+ --cluster.listen-address=''"
 
 # if /mnt/altermanager does not exist, create it and set permissions
 if [ ! -d /mnt/alertmanager ]; then
@@ -71,7 +62,8 @@ fi
 
 # make alertmanager templates directory copy over notification templates
 mkdir -p /mnt/alertmanager/templates
-cp -a "$TEMPLATEPATH/alertmanagertemplates/*" /mnt/alertmanager/templates/
+cp -a "$TEMPLATEPATH"/alertmanagertemplates/*.tmpl \
+  /mnt/alertmanager/templates/.
 
 # set permissions on /mnt/alertmanager
 chown -R alertmanager:alertmanager /mnt/alertmanager

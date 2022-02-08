@@ -25,5 +25,6 @@ fi
 service node_exporter restart
 #service loki restart
 #service promtail restart
+service nginx reload lokiproxy
 
 exit 0

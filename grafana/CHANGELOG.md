@@ -1,3 +1,14 @@
+0.2.0
+
+* Use TLS to access prometheus and loki
+* Add new mandatory parameters PROMTLSNAME and LOKITLSNAME
+* Rename INFLUXDATABASE to INFLUXDBNAME
+* LOKISOURCE, PROMSOURCE, INFLUXDBSOURCE allow specifying `host:port` now
+* Overhaul README.md
+* Serve grafana over mTLS
+
+---
+
 0.1.7
 
 * Merged PR 26 and incremented version in changelog
@@ -120,7 +131,7 @@
 
 0.0.12
 
-* Adding new dashboards for consul, nomad and vault 
+* Adding new dashboards for consul, nomad and vault
 
 ---
 

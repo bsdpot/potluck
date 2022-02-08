@@ -25,5 +25,6 @@ fi
 service node_exporter restart
 service prometheus restart
 service alertmanager restart
+service nginx reload prometheusproxy
 
 exit 0
