@@ -35,6 +35,7 @@ sep=$'\001'
 service prometheus enable
 sysrc prometheus_data_dir="/mnt/prometheus"
 sysrc prometheus_syslog_output_enable="YES"
+sysrc prometheus_args="--web.listen-address=127.0.0.1:9090"
 
 ## end prometheus config
 
@@ -51,6 +52,8 @@ sysrc prometheus_syslog_output_enable="YES"
 
 service alertmanager enable
 sysrc alertmanager_data_dir="/mnt/alertmanager"
+sysrc alertmanager_args="--web.listen-address=127.0.0.1:9093\
+ --cluster.listen-address=''"
 
 # if /mnt/altermanager does not exist, create it and set permissions
 if [ ! -d /mnt/alertmanager ]; then

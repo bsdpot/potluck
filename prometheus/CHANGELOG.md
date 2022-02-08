@@ -1,3 +1,9 @@
+0.10.5
+
+* Serve prometheus and alertmanager over mTLS
+
+---
+
 0.10.0
 
 * Many improvements to service mesh components
