@@ -22,6 +22,12 @@ mkdir -p /usr/local/etc/patroni/
 # safe(r) separator for sed
 sep=$'\001'
 
+# read credentials that were unwrapped
+ADMPASS=$(cat /mnt/postgrescerts/admin.pass)
+EXPPASS=$(cat /mnt/postgrescerts/exporter.pass)
+REPPASS=$(cat /mnt/postgrescerts/replicator.pass)
+SUPPASS=$(cat /mnt/postgrescerts/superuser.pass)
+
 # setup patroni.yml by updating variables
 < "$TEMPLATEPATH/patroni.yml.in" \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
@@ -31,9 +37,11 @@ sep=$'\001'
 chmod 600 /usr/local/etc/patroni/patroni.yml
 echo "s${sep}%%admpass%%${sep}$ADMPASS${sep}g" | sed -i '' -f - \
   /usr/local/etc/patroni/patroni.yml
+echo "s${sep}%%exppass%%${sep}$EXPPASS${sep}g" | sed -i '' -f - \
+  /usr/local/etc/patroni/patroni.yml
 echo "s${sep}%%reppass%%${sep}$REPPASS${sep}g" | sed -i '' -f - \
   /usr/local/etc/patroni/patroni.yml
-echo "s${sep}%%kekpass%%${sep}$KEKPASS${sep}g" | sed -i '' -f - \
+echo "s${sep}%%suppass%%${sep}$SUPPASS${sep}g" | sed -i '' -f - \
   /usr/local/etc/patroni/patroni.yml
 echo "s${sep}%%consultoken%%${sep}$POSTGRES_SERVICE_TOKEN${sep}g" | \
   sed -i '' -f - /usr/local/etc/patroni/patroni.yml

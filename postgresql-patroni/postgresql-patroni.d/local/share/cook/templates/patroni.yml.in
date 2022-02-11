@@ -71,6 +71,9 @@ bootstrap:
       password: %%reppass%%
       options:
         - replication
+    postgres_exporter:
+      password: %%exppass%%
+  post_init: /usr/local/share/cook/bin/postgres-post-init.sh
 
 # XXX: using sslmode=verify-ca instead of sslmode=verify-full
 # as postgresql doesn't look at IP address alt names
@@ -83,7 +86,7 @@ postgresql:
   authentication:
     superuser:
       username: postgres
-      password: %%kekpass%%
+      password: %%suppass%%
       sslmode: verify-ca
       sslcert: /mnt/postgrescerts/postgresserver.crt
       sslkey: /mnt/postgrescerts/postgresserver.key

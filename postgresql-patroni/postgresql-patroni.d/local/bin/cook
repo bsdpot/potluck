@@ -49,7 +49,6 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS ATTL BTTL SERVICETAG"
-required_args="$required_args ADMPASS REPPASS KEKPASS"
 optional_args="REMOTELOG"
 
 for var in $required_args; do
@@ -118,12 +117,23 @@ unwrap-metrics-credentials.sh
 log "Configure consul-template"
 configure-consul-template.sh
 
-log "Setup node_exporter"
-configure-node-exporter.sh
+log "Configure nodemetricsproxy"
+configure-nodemetricsproxy.sh
 
-# start early, as consul-template will restart it
-log "Start node_exporter"
-service node_exporter start
+log "Start nodemetricsproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status nodemetricsproxy; do
+    service nginx start nodemetricsproxy || true; sleep 3;
+  done'
+
+log "Configure postgresmetricsproxy"
+configure-postgresmetricsproxy.sh
+
+log "Start postgresmetricsproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status postgresmetricsproxy; do
+    service nginx start postgresmetricsproxy || true; sleep 3;
+  done'
 
 log "Configure vaultproxy"
 configure-vaultproxy.sh
@@ -157,7 +167,10 @@ log "Wait until we are able to resolve consul"
 timeout --foreground 120 \
   sh -c 'while ! host -ta consul.service.consul; do sleep 1; done'
 
-log "configure postgres_exporter"
+log "Configure node_exporter"
+configure-node-exporter.sh
+
+log "Configure postgres_exporter"
 configure-postgres-exporter.sh
 
 log "Configure patroni postgres"
@@ -177,6 +190,9 @@ timeout --foreground 120 \
 # is empty or null
 log "Setup and start syslog-ng"
 configure-syslog-ng.sh
+
+log "Start node_exporter"
+service node_exporter start
 
 log "Start postgres_exporter service"
 service postgres_exporter start

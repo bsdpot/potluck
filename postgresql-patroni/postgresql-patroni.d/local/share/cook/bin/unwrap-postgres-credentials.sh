@@ -33,6 +33,15 @@ if [ ! -s /mnt/postgrescerts/unwrapped.token ]; then
     < /mnt/postgrescerts/credentials.json \
       jq -re .postgres_service_token >/mnt/postgrescerts/postgres_service.token
 
+    < /mnt/postgrescerts/credentials.json \
+      jq -re .admin_key >/mnt/postgrescerts/admin.pass
+    < /mnt/postgrescerts/credentials.json \
+      jq -re .exporter_key >/mnt/postgrescerts/exporter.pass
+    < /mnt/postgrescerts/credentials.json \
+      jq -re .replicator_key >/mnt/postgrescerts/replicator.pass
+    < /mnt/postgrescerts/credentials.json \
+      jq -re .superuser_key >/mnt/postgrescerts/superuser.pass
+
  #   HOME=/var/empty \
  #   vault unwrap -address="https://active.vault.service.consul:8200" \
  #     -tls-server-name=active.vault.service.consul \

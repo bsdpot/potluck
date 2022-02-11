@@ -22,6 +22,7 @@ if service syslog-ng enabled; then
     fi
 fi
 
-service node_exporter restart
+service nginx reload nodemetricsproxy
+service nginx reload postgresmetricsproxy
 
 exit 0

@@ -27,7 +27,7 @@ on this site to run `consul`.
   `pot export-ports -p <jailname> -e 3000:3000`
 * Adjust to your environment:
 
-      sudo pot set-env -p <jailname> -E DATACENTER=<datacentername>
+      sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> \
         -E NODENAME=<nodename> -E IP=<IP address of this system> \
         -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
         -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
@@ -39,9 +39,9 @@ on this site to run `consul`.
 
 The CONSULSERVERS parameter defines the consul server instances, and must be
 set as
-- `CONSULSERVERS='"10.0.0.2"'` or
-- `CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'` or
-- `CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'`
+* `CONSULSERVERS='"10.0.0.2"'` or
+* `CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'` or
+* `CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'`
 
 The VAULTSERVER parameter is the IP address of the `vault` server to
 authenticate to, and obtain certificates from.

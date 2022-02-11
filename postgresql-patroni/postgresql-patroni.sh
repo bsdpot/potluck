@@ -144,17 +144,10 @@ pkg install -y jq
 step "Install package jo"
 pkg install -y jo
 
-step "Install package git-lite"
-pkg install -y git-lite
-
-step "Install package go"
-pkg install -y go
-
-step "Instal package gmake"
-pkg install -y gmake
-
-step "Instal package curl"
+step "Install package curl"
 pkg install -y curl
+
+
 
 #
 # pip MUST ONLY be used:
@@ -173,6 +166,53 @@ pip install patroni --prefix="/usr/local"
 ## '--prefix=/usr/local/bin' which is not in PATH.
 ## Consider adding this directory to PATH or, if you prefer to suppress
 ## this warning, use --no-warn-script-location.
+
+
+#### Build postgres_exporter - BEGIN
+# change to a temporary directory and clone the github repo for
+# postgres_exporter
+step "Install package git-lite"
+pkg install -y git-lite
+
+step "Install package go"
+pkg install -y go
+
+step "Install package gmake"
+pkg install -y gmake
+
+cd /tmp
+
+step "Fetch postgres_exporter sources"
+/usr/local/bin/git clone --depth 1 -b v0.10.1 \
+  https://github.com/prometheus-community/postgres_exporter.git
+# make sure we're at the correct commit
+
+step "Build postgres_exporter"
+cd /tmp/postgres_exporter
+# make sure we're at the expected commit
+/usr/local/bin/git checkout 6cff384d7433bcb1104efe3b496cd27c0658eb09
+/usr/local/bin/gmake build
+
+step "Install postgres_exporter"
+sed -i '' 's|-web.listen-address|--web.listen-address|g' \
+  /tmp/postgres_exporter/postgres_exporter.rc
+sed -i '' 's|sslmode=disable|sslmode=verify-ca|g' \
+  /tmp/postgres_exporter/postgres_exporter.rc
+# shellcheck disable=SC2016
+sed -i '' 's|-p ${pidfile}|-f -p ${pidfile} -T ${name}|g' \
+  /tmp/postgres_exporter/postgres_exporter.rc
+cp -f /tmp/postgres_exporter/postgres_exporter.rc \
+  /usr/local/etc/rc.d/postgres_exporter
+chmod +x /usr/local/etc/rc.d/postgres_exporter
+cp -f /tmp/postgres_exporter/postgres_exporter \
+  /usr/local/bin/postgres_exporter
+chmod +x /usr/local/bin/postgres_exporter
+
+step "Clean postgres_exporter build"
+rm -rf /tmp/postgres_exporter
+pkg delete -y git-lite gmake go
+
+#### Build postgres_exporter - END
 
 step "Clean package installation"
 pkg clean -y
