@@ -1,3 +1,9 @@
+0.2.6
+
+* Improve metrics collection
+
+---
+
 0.2.5
 
 * Serve loki over mTLS

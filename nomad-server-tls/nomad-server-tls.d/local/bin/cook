@@ -115,12 +115,14 @@ unwrap-metrics-credentials.sh
 log "Configure consul-template"
 configure-consul-template.sh
 
-log "Setup node_exporter"
-configure-node-exporter.sh
+log "Configure nodemetricsproxy"
+configure-nodemetricsproxy.sh
 
-# start early, as consul-template will restart it
-log "Start node_exporter"
-service node_exporter start
+log "Start nodemetricsproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status nodemetricsproxy; do
+    service nginx start nodemetricsproxy || true; sleep 3;
+  done'
 
 log "Configure vaultproxy"
 configure-vaultproxy.sh
@@ -137,6 +139,9 @@ service consul-template start
 log "Waiting up to 20 seconds for consul-template to start"
 timeout --foreground 20 \
   sh -c 'while ! service consul-template status; do sleep 1; done'
+
+log "Setup node_exporter"
+configure-node-exporter.sh
 
 log "Configure consul"
 configure-consul.sh
@@ -172,5 +177,8 @@ ln -s /usr/local/share/cook/bin/nomad.sh /root/nomad.sh
 # is empty or null
 log "Setup and start syslog-ng"
 configure-syslog-ng.sh
+
+log "Start node_exporter"
+service node_exporter start
 
 pot_seasoned_exit

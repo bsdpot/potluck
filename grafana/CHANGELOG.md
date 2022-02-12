@@ -1,3 +1,9 @@
+0.2.1
+
+* Improve metrics collection
+
+---
+
 0.2.0
 
 * Use TLS to access prometheus and loki

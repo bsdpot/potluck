@@ -1,3 +1,9 @@
+2.2.6
+
+* Improve metrics collection and image config
+
+---
+
 2.2.5
 
 * Merged PR 26, incrementing version in changelog

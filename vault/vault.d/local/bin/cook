@@ -188,12 +188,11 @@ cluster-configure-consul.sh
 log "Start consul (won't keep running)"
 service consul start
 
+log "Configure nodemetricsproxy"
+cluster-configure-nodemetricsproxy.sh
+
 log "Setup node_exporter"
 cluster-configure-node-exporter.sh
-
-# start early - not strictly necessary, but in line with other images
-log "Start node_exporter"
-service node_exporter start
 
 log "Start unsealproxy"
 timeout --foreground 120 \
@@ -220,6 +219,9 @@ ln -s /usr/local/share/cook/bin/cluster-vault.sh \
 
 # syslogng is configured later in the process, as it requires
 # metrics certificates
+
+log "Start node_exporter"
+service node_exporter start
 
 log "Exit seasoned"
 pot_seasoned_exit

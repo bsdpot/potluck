@@ -154,7 +154,7 @@ scrape_configs:
     metrics_path: "/metrics"
     params:
       format: ['prometheus']
-    scheme: http
+    scheme: https
     tls_config:
       insecure_skip_verify: false
       ca_file: /mnt/metricscerts/metricsca.crt
@@ -164,7 +164,7 @@ scrape_configs:
     - source_labels: ['__meta_consul_service']
       regex:         '(.*)'
       target_label:  '__scheme__'
-      replacement:   'http'
+      replacement:   'https'
     - source_labels: ['__meta_consul_service']
       regex:         '(.*)'
       target_label:  'job'

@@ -16,6 +16,6 @@ chown -R nodeexport /mnt/metricscerts/*
 # restart services
 # if sysylog-ng is enabled, then restart it
 service syslog-ng enabled && service syslog-ng restart
-service node_exporter restart
+service nginx reload nodemetricsproxy
 
 exit 0

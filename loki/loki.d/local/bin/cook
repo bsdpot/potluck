@@ -128,12 +128,14 @@ unwrap-metrics-credentials.sh
 log "Configure consul-template"
 configure-consul-template.sh
 
-log "Setup node_exporter"
-configure-node-exporter.sh
+log "Configure nodemetricsproxy"
+configure-nodemetricsproxy.sh
 
-# start early, as consul-template will restart it
-log "Start node_exporter"
-service node_exporter start
+log "Start nodemetricsproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status nodemetricsproxy; do
+    service nginx start nodemetricsproxy || true; sleep 3;
+  done'
 
 log "Configure vaultproxy"
 configure-vaultproxy.sh
@@ -167,6 +169,9 @@ log "Wait until we are able to resolve consul"
 timeout --foreground 120 \
   sh -c 'while ! host -ta consul.service.consul; do sleep 1; done'
 
+log "Setup node_exporter"
+configure-node-exporter.sh
+
 log "Configure loki and promtail"
 configure-loki.sh
 
@@ -195,6 +200,9 @@ timeout --foreground 120 \
   sh -c 'while ! service nginx status lokiproxy; do
     service nginx start lokiproxy || true; sleep 3;
   done'
+
+log "Start node_exporter"
+service node_exporter start
 
 log "Exit seasoned"
 pot_seasoned_exit

@@ -12,50 +12,22 @@ export PATH=/usr/local/bin:$PATH
 #SCRIPT=$(readlink -f "$0")
 #TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# change to a temporary directory and clone the github repo for
-# postgres_exporter
-cd /tmp
+# read credentials that were unwrapped, escape ":"
+EXPPASS=$(cat /mnt/postgrescerts/exporter.pass | sed 's|:|\\:|g')
+PGPASSFILE=/mnt/postgrescerts/exporter.pgpass
 
-# glone the github repo
-/usr/local/bin/git clone \
-  https://github.com/prometheus-community/postgres_exporter.git
+(
+  umask 177
+  echo "*:*:postgres:postgres_exporter:$EXPPASS" >$PGPASSFILE
+  chown nodeexport $PGPASSFILE
+)
 
-# change to the directory with the local repo
-cd /tmp/postgres_exporter
-
-# build the application using gmake, no configuration required beforehand
-/usr/local/bin/gmake build
-
-# add startup file to system, but fix bug in file before copy
-sed -i .orig 's|-web.listen-address|--web.listen-address|g' \
-  /tmp/postgres_exporter/postgres_exporter.rc
-
-# you can enable sslmode too
-#sed -i .orig 's|sslmode=disable|sslmode=require|g' \
-# /tmp/postgres_exporter/postgres_exporter.rc
-
-# force copy over postgres_exporter rc file to /usr/local/etc/rc.d
-cp -f /tmp/postgres_exporter/postgres_exporter.rc \
-  /usr/local/etc/rc.d/postgres_exporter
-
-# make postgres_exporter startup script executable
-chmod +x /usr/local/etc/rc.d/postgres_exporter
-
-# force copy over postgres_exporter binary to /usr/local/bin
-cp -f /tmp/postgres_exporter/postgres_exporter \
-  /usr/local/bin/postgres_exporter
-
-# make postgres_exporter binary executable
-chmod +x /usr/local/bin/postgres_exporter
-
-# set startup options for postgres_export, one of them a manual way to
-# get the IP address in
-sysrc postgres_exporter_enable="YES"
+service postgres_exporter enable
+sysrc postgres_exporter_args="--log.level=warn"
+sysrc postgres_exporter_user="nodeexport"
+sysrc postgres_exporter_group="nodeexport"
 sysrc postgres_exporter_pg_host="$IP"
-sysrc postgres_exporter_pg_user="postgres"
-
-# this probably shouldn't be in /etc/rc.conf file but only way atm
-sysrc postgres_exporter_pg_pass="$KEKPASS"
-
-# return to base directory as done with postgres_exporter setup
-cd /root
+sysrc postgres_exporter_pg_user="postgres_exporter"
+sysrc postgres_exporter_listen_address="127.0.0.1:9187"
+sysrc postgres_exporter_env="PGSSLROOTCERT=/mnt/postgrescerts/ca_root.crt\
+ PGPASSFILE=$PGPASSFILE"

@@ -1,3 +1,9 @@
+0.10.6
+
+* Improve metrics collection
+
+---
+
 0.10.5
 
 * Merged PR 26, incrementing version in changelog
