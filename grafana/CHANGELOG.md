@@ -1,3 +1,11 @@
+0.2.2
+
+* Fixed the home dashboard to use a FreeBSD specific dashboard from
+  https://github.com/rfrail3/grafana-dashboards/blob/master/prometheus/node-exporter-freebsd.json
+* Old full node exporter dashboard set as home.json.old
+
+---
+
 0.2.1
 
 * Improve metrics collection
