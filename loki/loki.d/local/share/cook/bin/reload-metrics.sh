@@ -22,7 +22,7 @@ if service syslog-ng enabled; then
     fi
 fi
 
-service node_exporter restart
+service nginx reload nodemetricsproxy
 #service loki restart
 #service promtail restart
 service nginx reload lokiproxy

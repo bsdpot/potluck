@@ -1,3 +1,9 @@
+0.10.9
+
+* Improve metrics collection
+
+---
+
 0.10.8
 
 * Remove alertmanager rule copy-in from /root

@@ -1,3 +1,9 @@
+0.2.4
+
+* Improve metrics collection
+
+---
+
 0.2.3
 
 * Merged PR 26 required version fix in changelog

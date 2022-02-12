@@ -100,6 +100,11 @@ fi
 echo "s${sep}%%consultoken%%${sep}$VAULT_SERVICE_TOKEN${sep}g" |
   sed -i '' -f - /usr/local/etc/vault.hcl
 
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status nodemetricsproxy; do
+    service nginx start nodemetricsproxy || true; sleep 3;
+  done'
+
 service node_exporter restart || true
 sleep 2
 service consul restart || true
