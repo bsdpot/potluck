@@ -1,3 +1,9 @@
+0.2.5
+
+* Add consul metrics policy
+
+---
+
 0.2.4
 
 * Improve metrics collection
