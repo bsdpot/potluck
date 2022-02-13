@@ -260,6 +260,11 @@ if [ \${IMPORTRSYNC} -eq 1 ]; then
 fi
 
 # goaccess
+# this seems to be needed as install places in /usr/local/etc/goaccess.conf
+# but default for goaccess is /usr/local/etc/goaccess/goaccess.conf
+if [ -f /usr/local/etc/goaccess.conf ]; then
+    ln -s /usr/local/etc/goaccess.conf /usr/local/etc/goaccess/goaccess.conf
+fi
 sysrc goaccess_log=\"/var/log/nginx/access.log\"
 service goaccess enable
 
