@@ -60,29 +60,23 @@ scrape_configs:
     metrics_path: "/v1/agent/metrics"
     params:
       format: ['prometheus']
-    scheme: https
-    tls_config:
-      insecure_skip_verify: false
-      ca_file: /mnt/metricscerts/metricsca.crt
-      cert_file: /mnt/metricscerts/metrics.crt
-      key_file: /mnt/metricscerts/metrics.key
+    scheme: http
+    bearer_token: %%consul_metrics_token%%
+    proxy_url: http://127.0.0.1:8443
     static_configs:
     - targets: [%%consulservers%%]
   - job_name: 'nomad'
     metrics_path: "/v1/metrics"
     params:
       format: ['prometheus']
-    scheme: https
-    tls_config:
-      insecure_skip_verify: false
-      ca_file: /mnt/metricscerts/metricsca.crt
-      cert_file: /mnt/metricscerts/metrics.crt
-      key_file: /mnt/metricscerts/metrics.key
+    scheme: http
+    #bearer_token: %%consul_metrics_token%%
+    proxy_url: http://127.0.0.1:8444
     relabel_configs:
     - source_labels: ['__meta_consul_service']
       regex:         '(.*)'
       target_label:  '__scheme__'
-      replacement:   'https'
+      replacement:   'http'
     - source_labels: ['__meta_consul_service']
       regex:         '(.*)'
       target_label:  'job'
@@ -116,9 +110,7 @@ scrape_configs:
     scheme: https
     tls_config:
       insecure_skip_verify: false
-      ca_file: /mnt/metricscerts/metricsca.crt
-      cert_file: /mnt/metricscerts/metrics.crt
-      key_file: /mnt/metricscerts/metrics.key
+      ca_file: /mnt/certs/ca.crt
     relabel_configs:
     - source_labels: ['__meta_consul_service']
       regex:         '(.*)'
@@ -149,7 +141,7 @@ scrape_configs:
       replacement: ${1}
       target_label: _datacenter
     static_configs:
-    - targets: ['%%your_vault_server_here%%:8200']
+    - targets: ['127.0.0.1:8100']
   - job_name: 'postgresql'
     metrics_path: "/metrics"
     params:

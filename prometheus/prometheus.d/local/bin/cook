@@ -48,8 +48,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS ATTL BTTL"
-required_args="$required_args SCRAPECONSUL SCRAPENOMAD VAULTSERVER"
-required_args="$required_args SCRAPEDATABASE"
+required_args="$required_args SCRAPECONSUL SCRAPENOMAD SCRAPEDATABASE"
 required_args="$required_args SMTPHOSTPORT SMTPFROM ALERTADDRESS"
 optional_args="REMOTELOG SMTPUSER SMTPPASS"
 
@@ -107,6 +106,7 @@ chown -R consul /mnt/consulcerts
 mkdir -p /mnt/log
 mkdir -p /mnt/metricscerts/hash
 chown -R prometheus:certaccess /mnt/metricscerts
+mkdir -p /mnt/nomadcerts
 mkdir -p /mnt/templates
 mkdir -p /mnt/vault
 
@@ -124,6 +124,9 @@ unwrap-cluster-credentials.sh
 
 log "Unwrap consul credentials"
 unwrap-consul-credentials.sh
+
+log "Unwrap nomad credentials"
+unwrap-nomad-credentials.sh
 
 log "Unwrap metrics credentials"
 unwrap-metrics-credentials.sh
@@ -147,6 +150,24 @@ log "Start vaultproxy"
 timeout --foreground 120 \
   sh -c 'while ! service nginx status vaultproxy; do
     service nginx start vaultproxy || true; sleep 3;
+  done'
+
+log "Configure consulmetricsproxy"
+configure-consulmetricsproxy.sh
+
+log "Start consulmetricsproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status consulmetricsproxy; do
+    service nginx start consulmetricsproxy || true; sleep 3;
+  done'
+
+log "Configure nomadmetricsproxy"
+configure-nomadmetricsproxy.sh
+
+log "Start nomadmetricsproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status nomadmetricsproxy; do
+    service nginx start nomadmetricsproxy || true; sleep 3;
   done'
 
 log "Starting consul-template"

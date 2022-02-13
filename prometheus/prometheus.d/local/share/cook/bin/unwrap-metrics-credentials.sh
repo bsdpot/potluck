@@ -22,6 +22,8 @@ if [ ! -s /mnt/metricscerts/unwrapped.token ]; then
     umask 177
     < /mnt/metricscerts/credentials.json \
       jq -re .key >/mnt/metricscerts/metrics.key
+    < /mnt/metricscerts/credentials.json \
+      jq -re .consul_metrics_token >/mnt/metricscerts/consul_metrics.token
     HOME=/var/empty \
     vault unwrap -address="https://active.vault.service.consul:8200" \
       -tls-server-name=active.vault.service.consul \
