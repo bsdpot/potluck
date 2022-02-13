@@ -1,3 +1,9 @@
+0.2.3
+
+* Fix bug in node exporter FreeBSD dashboard and add tag `#freebsd`
+
+---
+
 0.2.2
 
 * Fixed the home dashboard to use a FreeBSD specific dashboard from
