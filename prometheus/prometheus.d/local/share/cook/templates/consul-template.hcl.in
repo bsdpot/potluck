@@ -60,6 +60,26 @@ template {
 }
 
 template {
+  source      = "/mnt/templates/nomadagent.crt.tpl"
+  destination = "/mnt/nomadcerts/agent.crt"
+  backup      = true
+  command     = "/usr/local/share/cook/bin/reload-nomadmetricsproxy.sh"
+}
+
+template {
+  source      = "/mnt/templates/nomadagent.key.tpl"
+  destination = "/mnt/nomadcerts/agent.key"
+  perms       = 0640
+  command     = "/usr/local/share/cook/bin/reload-nomadmetricsproxy.sh"
+}
+
+template {
+  source      = "/mnt/templates/nomadca.crt.tpl"
+  destination = "/mnt/nomadcerts/ca.crt"
+  command     = "/usr/local/share/cook/bin/reload-nomadmetricsproxy.sh"
+}
+
+template {
   source      = "/mnt/templates/metrics.crt.tpl"
   destination = "/mnt/metricscerts/metrics.crt"
   backup      = true

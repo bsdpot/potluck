@@ -22,12 +22,14 @@ chown -R prometheus:prometheus /mnt/prometheus
 # safe(r) separator for sed
 sep=$'\001'
 
+CONSUL_METRICS_TOKEN=$(cat /mnt/metricscerts/consul_metrics.token)
+
 ## start prometheus config
 < "$TEMPLATEPATH/prometheus.yml.in" \
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%consulservers%%${sep}$SCRAPECONSUL${sep}g" | \
+  sed "s${sep}%%consul_metrics_token%%${sep}$CONSUL_METRICS_TOKEN${sep}g" | \
   sed "s${sep}%%nomadservers%%${sep}$SCRAPENOMAD${sep}g" | \
-  sed "s${sep}%%your_vault_server_here%%${sep}$VAULTSERVER${sep}g" | \
   sed "s${sep}%%dbservers%%${sep}$SCRAPEDATABASE${sep}g" \
   > /usr/local/etc/prometheus.yml
 

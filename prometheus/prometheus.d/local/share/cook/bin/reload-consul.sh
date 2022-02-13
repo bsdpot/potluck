@@ -5,4 +5,5 @@ chown consul /mnt/consulcerts/*
 mv /mnt/consulcerts/ca_chain.crt.tmp /mnt/consulcerts/ca_chain.crt
 
 service consul reload
+service nginx reload consulmetricsproxy
 exit 0

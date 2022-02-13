@@ -1,3 +1,10 @@
+0.11.0
+
+* Update README.md
+* Connect prometheus to nomad, consul, and vault using mTLS over nginx proxies
+
+---
+
 0.10.9
 
 * Improve metrics collection
