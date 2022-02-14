@@ -1,3 +1,9 @@
+0.11.1
+
+* Fixing alert rules to remove invalid rulesets
+
+---
+
 0.11.0
 
 * Update README.md
