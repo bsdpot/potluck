@@ -1,0 +1,2 @@
+copy-in -s /usr/local/etc/pot/flavours/haproxy-consul.d/syslog-ng.conf -d /root
+set-attribute -A start-at-boot -V YES
