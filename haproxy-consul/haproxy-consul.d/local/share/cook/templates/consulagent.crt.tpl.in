@@ -1,0 +1,5 @@
+{{ with secret "consulpki_int/issue/consul-cluster"
+"common_name=%%nodename%%.%%datacenter%%.consul" "ttl=%%bttl%%"
+"alt_names=localhost,server.%%datacenter%%.consul" "ip_sans=127.0.0.1,%%ip%%"}}
+{{ .Data.certificate }}
+{{ end }}

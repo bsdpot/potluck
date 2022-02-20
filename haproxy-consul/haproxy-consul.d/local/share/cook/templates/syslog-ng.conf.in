@@ -10,7 +10,7 @@ options {
  keep_hostname(no);
  flush_lines(0);
  threaded(yes);
- log-fifo-size(40000);
+ log-fifo-size(2000);
  stats_freq(0);
  time_reopen(120);
  ts_format(iso);
@@ -20,28 +20,6 @@ options {
 source src {
  system();
  internal();
-};
-
-# network sources
-# for every 100 max connections, add 10000 log-fifo-size to destination, plus 10000 for local
-# so 300 max connections is (30000+10000) or log-fifo-size of 40000
-# https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/53
-source mynetwork {
- tcp(
-  ip(0.0.0.0)
-  port(6514)
-  max-connections(300)
-  log-iw-size(30000)
-  so_keepalive(yes)
-  flags(no-multi-line)
-  tls(
-   key-file("/mnt/certs/key.pem")
-   cert-file("/mnt/certs/cert.pem")
-   ca-dir("/mnt/certs/hash")
-   ca-file("/mnt/certs/combinedca.pem")
-   peer-verify(required-trusted)
-  )
- );
 };
 
 # destinations
@@ -58,21 +36,29 @@ destination all { file("/var/log/all.log"); };
 destination newscrit { file("/var/log/news/news.crit"); };
 destination newserr { file("/var/log/news/news.err"); };
 destination newsnotice { file("/var/log/news/news.notice"); };
+destination slip { file("/var/log/slip.log"); };
 destination ppp { file("/var/log/ppp.log"); };
 #destination console { file("/dev/console"); };
 destination allusers { usertty("*"); };
 # pot settings
-destination lokilogs { file("/mnt/logs/$HOST.log"); };
 destination loghost {
-  tcp("MYIP" port(6514)
-  tls(
-   key-file("/mnt/certs/key.pem")
-   cert-file("/mnt/certs/cert.pem")
-   ca_dir("/mnt/certs/hash") 
-   ca-file("/mnt/certs/combinedca.pem")
-   peer-verify(required-trusted)
-  )
- );
+  tcp(
+    "%%remotelogip%%"
+    port(6514)
+    tls(
+      key-file("/mnt/metricscerts/metrics.key")
+      cert-file("/mnt/metricscerts/metrics.crt")
+      ca-dir("/mnt/metricscerts/hash")
+      ca-file("/mnt/metricscerts/ca_chain.crt")
+      peer-verify(required-trusted)
+    )
+    disk-buffer(
+      mem-buf-size(134217728)   # 128MiB
+      disk-buf-size(2147483648) # 2GiB
+      reliable(yes)
+      dir("/mnt/log/syslog-ng-disk-buffer")
+    )
+  );
 };
 
 # log facility filters
@@ -113,12 +99,14 @@ filter f_is_debug { level(debug); };
 # program filters
 filter f_ppp { program("ppp"); };
 
-# all filter
-filter f_all { level(debug..emerg) and not (program("devd") and level(debug..info)); };
+# filter all
+filter f_all {
+  level(debug..emerg) and not (program("devd") and level(debug..info) ); };
 
 ## *.err;kern.warning;auth.notice;mail.crit      /dev/console
 # removing to remove
-# "syslog-ng[000]: Error opening file for writing; filename='/dev/console', error='No such file or directory (2)'" 
+# "syslog-ng[000]: Error opening file for writing; filename='/dev/console',
+#    error='No such file or directory (2)'"
 # from spamming logs in jails
 #log { source(src); filter(f_err); destination(console); };
 #log { source(src); filter(f_kern); filter(f_warning); destination(console); };
@@ -126,7 +114,12 @@ filter f_all { level(debug..emerg) and not (program("devd") and level(debug..inf
 #log { source(src); filter(f_mail); filter(f_crit); destination(console); };
 
 # *.notice;authpriv.none;kern.debug;lpr.info;mail.crit  /var/log/messages
-log { source(src); filter(f_notice); filter(f_not_authpriv); destination(messages); };
+log {
+  source(src);
+  filter(f_notice);
+  filter(f_not_authpriv);
+  destination(messages);
+};
 log { source(src); filter(f_kern); filter(f_debug); destination(messages); };
 log { source(src); filter(f_lpr); filter(f_info); destination(messages); };
 log { source(src); filter(f_mail); filter(f_crit); destination(messages); };
@@ -156,15 +149,17 @@ log { source(src); filter(f_is_debug); destination(debuglog); };
 # *.emerg                       *
 log { source(src); filter(f_emerg); destination(allusers); };
 
-# uncomment this to enable logging to a remote loghost named loghost
-# *.*                           @loghost
-#log { source(src); filter(f_all); destination(loghost); flags(flow-control); };
-log { source(src); filter(f_all); destination(loghost); };
-
 # !ppp
 # *.*                           /var/log/ppp.log
 log { source(src); filter(f_ppp); destination(ppp); };
 
-# pot config
-# log network logs to lokilogs
-log { source(mynetwork); destination(lokilogs); };
+# uncomment this to enable logging to a remote loghost named loghost
+# *.*                           @loghost
+# turning flow control off
+#log {
+# source(src);
+# filter(f_all);
+# destination(loghost);
+# flags(flow-control);
+#};
+log { source(src); filter(f_all); destination(loghost); };
