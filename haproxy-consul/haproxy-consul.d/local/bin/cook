@@ -80,14 +80,6 @@ log "Create nodeexport user"
 /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \
   -s /usr/bin/nologin -h -
 
-# add group for accessing certs (shared between services)
-log "Create certaccess group"
-/usr/sbin/pw groupadd certaccess
-
-# add the nodeexport user to the certaccess group
-log "Add nodeexport user to certaccess group"
-/usr/sbin/pw usermod nodeexport -G certaccess
-
 # setup directories for persistent storage and certificate usage
 log "Creating directories for persistent storage and certificate usage"
 mkdir -p /mnt/certs

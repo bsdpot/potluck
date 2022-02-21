@@ -35,5 +35,4 @@ if [ ! -s /mnt/metricscerts/unwrapped.token ]; then
       -subject_hash -noout -in /mnt/metricscerts/ca_root.crt).0"
     ln -sf ../ca_chain.crt "/mnt/metricscerts/hash/$(/usr/bin/openssl x509 \
       -subject_hash -noout -in /mnt/metricscerts/ca_chain.crt).0"
-    chown -R grafana:certaccess /mnt/metricscerts
 fi
