@@ -163,5 +163,11 @@ configure-syslog-ng.sh
 log "Start node_exporter"
 service node_exporter start
 
+log "Configure haproxy"
+configure-haproxy.sh
+
+log "Try to start haproxy"
+service haproxy restart || true
+
 log "Exit seasoned"
 pot_seasoned_exit

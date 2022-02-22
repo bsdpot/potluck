@@ -7,9 +7,7 @@ vault {
   ssl {
     enabled = true
     verify = true
-    ca_cert = "/mnt/certs/ca_chain.crt"
-  #  cert = "/mnt/certs/client.crt"
-  #  key = "/mnt/certs/client.key"
+    ca_cert = "/mnt/certs/ca.crt"
     server_name = "localhost"
   }
 }
@@ -57,6 +55,26 @@ template {
   source      = "/mnt/templates/consulca.crt.tpl"
   destination = "/mnt/consulcerts/ca.crt"
   command     = "/usr/local/share/cook/bin/reload-consul.sh"
+}
+
+template {
+  source      = "/mnt/templates/serviceclient.crt.tpl"
+  destination = "/mnt/servicecerts/client.crt"
+  backup      = true
+  command     = "/usr/local/share/cook/bin/reload-haproxy.sh"
+}
+
+template {
+  source      = "/mnt/templates/serviceclient.key.tpl"
+  destination = "/mnt/servicecerts/client.key"
+  perms       = 0640
+  command     = "/usr/local/share/cook/bin/reload-haproxy.sh"
+}
+
+template {
+  source      = "/mnt/templates/serviceca.crt.tpl"
+  destination = "/mnt/servicecerts/ca.crt"
+  command     = "/usr/local/share/cook/bin/reload-haproxy.sh"
 }
 
 template {
