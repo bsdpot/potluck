@@ -38,7 +38,7 @@ http {
           proxy_ssl_certificate /mnt/unsealcerts/client.crt;
           proxy_ssl_certificate_key /mnt/unsealcerts/client.key;
           proxy_ssl_verify on;
-          proxy_ssl_trusted_certificate /mnt/unsealcerts/ca_chain.crt;
+          proxy_ssl_trusted_certificate /mnt/unsealcerts/ca_root.crt;
           proxy_ssl_server_name on;
           proxy_set_header Host server.global.vaultunseal;
           proxy_ssl_name server.global.vaultunseal;

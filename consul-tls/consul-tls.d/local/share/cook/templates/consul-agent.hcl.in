@@ -10,7 +10,7 @@ ports = {
   http = -1
   https = 8500
 }
-ca_file = "/mnt/consulcerts/ca_chain.crt"
+ca_file = "/mnt/consulcerts/ca_root.crt"
 cert_file = "/mnt/consulcerts/agent.crt"
 key_file = "/mnt/consulcerts/agent.key"
 verify_incoming = true
@@ -58,8 +58,8 @@ acl = {
 #    intermediate_cert_ttl = "8760h"
 #    private_key_type = "rsa"
 #    private_key_bits = 2048
-#    ca_file = "/mnt/certs/ca_chain.crt"
-#    cert_file = "/mnt/certs/client.crt"
-#    key_file = "/mnt/certs/client.key"
+#    ca_file = "/mnt/vaultcerts/ca_root.crt"
+#    cert_file = "/mnt/vaultcerts/client.crt"
+#    key_file = "/mnt/vaultcerts/client.key"
 #  }
 #}

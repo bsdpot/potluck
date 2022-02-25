@@ -1,3 +1,9 @@
+0.2.4
+
+* Major rework of templates, certificate issuing, and token/entity/group/role structure
+
+---
+
 0.2.3
 
 * Fix bug in node exporter FreeBSD dashboard and add tag `#freebsd`

@@ -1,5 +1,0 @@
-{{ with secret "pki_int/issue/vault-cluster"
-"common_name=%%nodename%%.global.vaultcluster" "ttl=%%attl%%"
-"alt_names=localhost" "ip_sans=127.0.0.1"}}
-{{ .Data.issuing_ca }}
-{{ end }}

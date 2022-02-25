@@ -37,7 +37,7 @@ http {
           proxy_ssl_certificate /mnt/nomadcerts/agent.crt;
           proxy_ssl_certificate_key /mnt/nomadcerts/agent.key;
           proxy_ssl_verify on;
-          proxy_ssl_trusted_certificate /mnt/nomadcerts/ca_chain.crt;
+          proxy_ssl_trusted_certificate /mnt/nomadcerts/ca_root.crt;
           proxy_ssl_server_name on;
           proxy_set_header Host server.global.nomad;
           proxy_ssl_name server.global.nomad;

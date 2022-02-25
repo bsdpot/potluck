@@ -5,10 +5,9 @@
 
 set -e
 
-# removed as enabled earlier in cook script
-## add node_exporter user
-#/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \
-#  -s /usr/bin/nologin -h -
+# add node_exporter user
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' \
+  -m -s /usr/bin/nologin -h -
 
 # enable node_exporter service
 service node_exporter enable

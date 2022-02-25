@@ -48,7 +48,7 @@ fi
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS ATTL BTTL SERVICETAG"
+required_args="DATACENTER IP NODENAME CONSULSERVERS SERVICETAG"
 optional_args="REMOTELOG"
 
 for var in $required_args; do
@@ -75,23 +75,10 @@ timeout --foreground 10 \
 killall -9 consul || true
 /usr/local/etc/rc.d/postgresql onestop || true
 
-# create nodeexport user, needed for chown, removed from config 
-# node_exporter script
-log "Create nodeexport user"
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' \
-  -m -s /usr/bin/nologin -h -
-
 # setup directories for vault usage
-mkdir -p /mnt/certs
-mkdir -p /mnt/consulcerts
-chown -R consul:postgres /mnt/consulcerts
 mkdir -p /mnt/log
-mkdir -p /mnt/metricscerts/hash
-chown -R nodeexport /mnt/metricscerts
-mkdir -p /mnt/postgrescerts
-chown -R postgres /mnt/postgrescerts
 mkdir -p /mnt/templates
-mkdir -p /mnt/vault
+mkdir -p /mnt/vaultcerts
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
@@ -109,13 +96,28 @@ log "Unwrap consul credentials"
 unwrap-consul-credentials.sh
 
 log "Unwrap postgres credentials"
-unwrap-postgres-credentials.sh
+unwrap-patroni-credentials.sh
 
-log "Unwrap metrics credentials"
-unwrap-metrics-credentials.sh
+log "Configure node_exporter"
+configure-node-exporter.sh
 
 log "Configure consul-template"
 configure-consul-template.sh
+
+log "Configure vaultproxy"
+configure-vaultproxy.sh
+
+log "Start vaultproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status vaultproxy; do
+    service nginx start vaultproxy || true; sleep 3;
+  done'
+
+log "Start consul-template"
+timeout --foreground 20 \
+  sh -c 'while ! service consul-template status; do
+    service consul-template start || true; sleep 3;
+  done'
 
 log "Configure nodemetricsproxy"
 configure-nodemetricsproxy.sh
@@ -135,22 +137,6 @@ timeout --foreground 120 \
     service nginx start postgresmetricsproxy || true; sleep 3;
   done'
 
-log "Configure vaultproxy"
-configure-vaultproxy.sh
-
-log "Start vaultproxy"
-timeout --foreground 120 \
-  sh -c 'while ! service nginx status vaultproxy; do
-    service nginx start vaultproxy || true; sleep 3;
-  done'
-
-log "Starting consul-template"
-service consul-template start
-
-log "Waiting up to 20 seconds for consul-template to start"
-timeout --foreground 20 \
-  sh -c 'while ! service consul-template status; do sleep 1; done'
-
 log "Configure consul"
 configure-consul.sh
 
@@ -166,9 +152,6 @@ setup-local-unbound.sh
 log "Wait until we are able to resolve consul"
 timeout --foreground 120 \
   sh -c 'while ! host -ta consul.service.consul; do sleep 1; done'
-
-log "Configure node_exporter"
-configure-node-exporter.sh
 
 log "Configure postgres_exporter"
 configure-postgres-exporter.sh

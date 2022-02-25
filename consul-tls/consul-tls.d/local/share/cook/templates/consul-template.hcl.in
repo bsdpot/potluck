@@ -3,13 +3,12 @@ vault {
   token        = "%%token%%"
   unwrap_token = false
   renew_token  = true
+  default_lease_duration = "30m"
 
   ssl {
     enabled = true
     verify = true
-    ca_cert = "/mnt/certs/ca_chain.crt"
-    #cert = "/mnt/certs/client.crt"
-    #key = "/mnt/certs/client.key"
+    ca_cert = "/mnt/vaultcerts/ca_root.crt"
     server_name = "localhost"
   }
 }
@@ -20,61 +19,19 @@ syslog {
 }
 
 template {
-  source      = "/mnt/templates/client.crt.tpl"
-  destination = "/mnt/certs/client.crt"
-  backup      = true
-  command     = "/usr/local/share/cook/bin/reload-vaultproxy.sh"
+  source      = "/mnt/templates/vault.tpl"
+  destination = "/mnt/vaultcerts/vault.checksum"
+  command     = "service nginx reload vaultproxy; true"
 }
 
 template {
-  source      = "/mnt/templates/client.key.tpl"
-  destination = "/mnt/certs/client.key"
-  perms       = 0640
-  command     = "/usr/local/share/cook/bin/reload-vaultproxy.sh"
+  source      = "/mnt/templates/consul.tpl"
+  destination = "/mnt/consulcerts/consul.checksum"
+  command     = "service consul reload; true"
 }
 
 template {
-  source      = "/mnt/templates/ca.crt.tpl"
-  destination = "/mnt/certs/ca.crt"
-  command     = "/usr/local/share/cook/bin/reload-vaultproxy.sh"
-}
-
-template {
-  source      = "/mnt/templates/consulagent.crt.tpl"
-  destination = "/mnt/consulcerts/agent.crt"
-  backup      = true
-  command     = "/usr/local/share/cook/bin/reload-consul.sh"
-}
-
-template {
-  source      = "/mnt/templates/consulagent.key.tpl"
-  destination = "/mnt/consulcerts/agent.key"
-  perms       = 0640
-  command     = "/usr/local/share/cook/bin/reload-consul.sh"
-}
-
-template {
-  source      = "/mnt/templates/consulca.crt.tpl"
-  destination = "/mnt/consulcerts/ca.crt"
-  command     = "/usr/local/share/cook/bin/reload-consul.sh"
-}
-
-template {
-  source      = "/mnt/templates/metrics.crt.tpl"
-  destination = "/mnt/metricscerts/metrics.crt"
-  backup      = true
-  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
-}
-
-template {
-  source      = "/mnt/templates/metrics.key.tpl"
-  destination = "/mnt/metricscerts/metrics.key"
-  perms       = 0640
-  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
-}
-
-template {
-  source      = "/mnt/templates/metricsca.crt.tpl"
-  destination = "/mnt/metricscerts/metricsca.crt"
+  source      = "/mnt/templates/metrics.tpl"
+  destination = "/mnt/metricscerts/metrics.checksum"
   command     = "/usr/local/share/cook/bin/reload-metrics.sh"
 }

@@ -43,9 +43,9 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 export VAULT_ADDR=https://active.vault.service.consul:8200
-export VAULT_CLIENT_CERT=/mnt/certs/agent.crt
-export VAULT_CLIENT_KEY=/mnt/certs/agent.key
-export VAULT_CACERT=/mnt/certs/ca_chain.crt
+export VAULT_CLIENT_CERT=/mnt/vaultcerts/agent.crt
+export VAULT_CLIENT_KEY=/mnt/vaultcerts/agent.key
+export VAULT_CACERT=/mnt/vaultcerts/ca_root.crt
 export VAULT_FORMAT=json
 STEP="Issue token"
 # shellcheck disable=SC2086

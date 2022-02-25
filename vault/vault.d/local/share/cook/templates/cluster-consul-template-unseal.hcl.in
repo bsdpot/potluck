@@ -3,13 +3,12 @@ vault {
   token        = "%%token%%"
   unwrap_token = false
   renew_token  = true
+  default_lease_duration = "30m"
 
   ssl {
     enabled = true
     verify = true
-    ca_cert = "/mnt/unsealcerts/ca_chain.crt"
-   # cert = "/mnt/unsealcerts/client.crt"
-   # key = "/mnt/unsealcerts/client.key"
+    ca_cert = "/mnt/unsealcerts/ca_root.crt"
     server_name = "localhost"
   }
 }
@@ -20,21 +19,7 @@ syslog {
 }
 
 template {
-  source      = "/mnt/templates/unseal-client.crt.tpl"
-  destination = "/mnt/unsealcerts/client.crt"
-  backup      = true
-  command     = "/usr/local/share/cook/bin/cluster-reload-vault-unseal.sh"
-}
-
-template {
-  source      = "/mnt/templates/unseal-client.key.tpl"
-  destination = "/mnt/unsealcerts/client.key"
-  perms       = 0640
-  command     = "/usr/local/share/cook/bin/cluster-reload-vault-unseal.sh"
-}
-
-template {
-  source      = "/mnt/templates/unseal-ca.crt.tpl"
-  destination = "/mnt/unsealcerts/ca.crt"
-  command     = "/usr/local/share/cook/bin/cluster-reload-vault-unseal.sh"
+  source      = "/mnt/templates/unseal-vault.tpl"
+  destination = "/mnt/unsealcerts/unseal-vault.checksum"
+  command     = "service nginx reload unsealproxy; true"
 }

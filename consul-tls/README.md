@@ -46,7 +46,6 @@ The REMOTELOG parameter is the IP address of a remote syslog server to send logs
 The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 
 (new info to be included, docs require update)
-The ATTL and BTTL parameters are 2 lengths of time for certificate TTL, where BTTL must be longer than ATTL, eg. if ATTL is 10m, BTTL is 12m.
 
 # Usage
 

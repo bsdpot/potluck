@@ -24,17 +24,11 @@ chmod 600 \
 echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
   /usr/local/etc/consul-template.d/consul-template.hcl
 
-# attl is the shorter TTL, e.g. 10m, bttl is the longer TTL, e.g. 12m
-for name in client.crt client.key ca.crt \
-  consulagent.crt consulagent.key consulca.crt \
-  serviceclient.crt serviceclient.key serviceca.crt \
-  metrics.crt metrics.key metricsca.crt; do
+for name in vault consul serviceclient metrics; do
     < "$TEMPLATEPATH/$name.tpl.in" \
       sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
       sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
-      sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
-      sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
+      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
       > "/mnt/templates/$name.tpl"
 done
 

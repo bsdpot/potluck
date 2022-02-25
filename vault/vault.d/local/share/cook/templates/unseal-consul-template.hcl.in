@@ -3,11 +3,12 @@ vault {
   token        = "%%token%%"
   unwrap_token = true
   renew_token  = true
+  default_lease_duration = "30m"
 
   ssl {
     enabled = true
     verify = true
-    ca_cert = "/mnt/unsealcerts/ca_chain.crt"
+    ca_cert = "/mnt/unsealcerts/ca_root.crt"
     server_name = "server.global.vaultunseal"
   }
 }
@@ -18,20 +19,7 @@ syslog {
 }
 
 template {
-  source      = "/mnt/templates/unseal-agent.crt.tpl"
-  destination = "/mnt/unsealcerts/agent.crt"
-  command     = "/usr/local/share/cook/bin/unseal-reload-vault.sh"
-}
-
-template {
-  source      = "/mnt/templates/unseal-agent.key.tpl"
-  destination = "/mnt/unsealcerts/agent.key"
-  perms       = 0640
-  command     = "/usr/local/share/cook/bin/unseal-reload-vault.sh"
-}
-
-template {
-  source      = "/mnt/templates/unseal-ca.crt.tpl"
-  destination = "/mnt/unsealcerts/ca.crt"
-  command     = "/usr/local/share/cook/bin/unseal-reload-vault.sh"
+  source      = "/mnt/templates/unseal-vault.tpl"
+  destination = "/mnt/unsealcerts/agent.checksum"
+  command     = "service vault reload; true"
 }

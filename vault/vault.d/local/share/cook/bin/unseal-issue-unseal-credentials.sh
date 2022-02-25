@@ -24,16 +24,16 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 export VAULT_ADDR=https://127.0.0.1:8200
-export VAULT_CACERT=/mnt/unsealcerts/ca_chain.crt
+export VAULT_CACERT=/mnt/unsealcerts/ca_root.crt
 export VAULT_FORMAT=json
 STEP="Issue token"
 TOKEN=$(vault token create -policy=autounseal \
-  -policy=tls-policy -wrap-ttl="$TOKEN_WRAP_TTL" -ttl="$TOKEN_TTL" \
+  -policy=unseal-tls-policy -wrap-ttl="$TOKEN_WRAP_TTL" -ttl="$TOKEN_TTL" \
   | jq -e ".wrap_info.token")
 STEP="Get root CA"
-CA_ROOT=$(vault read pki/cert/ca | jq -e ".data.certificate")
+CA_ROOT=$(vault read unsealpki/cert/ca | jq -e ".data.certificate")
 STEP="Issue Client Certificate"
-CERT_JSON=$(vault write pki_int/issue/vault-unseal \
+CERT_JSON=$(vault write unsealpki_int/issue/vault-unseal \
   common_name="$CERT_NODENAME.global.vaultunseal" \
   ttl="$CERT_TTL" alt_names=localhost ip_sans=127.0.0.1)
 

@@ -15,7 +15,7 @@ mkdir -p /usr/local/etc/nginx
 
 # shellcheck disable=SC3003
 # safe(r) separator for sed
-sep=$'\001'
+#sep=$'\001'
 
 cp "$TEMPLATEPATH/nomadmetricsproxy.conf.in" \
   /usr/local/etc/nginx/nomadmetricsproxy.conf

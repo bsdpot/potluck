@@ -19,16 +19,16 @@ mkdir -p /var/run/haproxy
 
 (
   timeout --foreground 60 \
-    sh -c 'while [ ! -e /mnt/servicecerts/ca_chain.crt ]; do sleep 3; done'
+    sh -c 'while [ ! -e /mnt/servicecerts/client.crt ]; do sleep 3; done'
 
   umask 177
 
-  cat /mnt/servicecerts/client.crt \
-    /mnt/servicecerts/client.key \
-    /mnt/servicecerts/ca_chain.crt \
-    >/usr/local/etc/haproxy/certs/serviceclient.pem
-  cp /mnt/servicecerts/ca_chain.crt \
-    /usr/local/etc/haproxy/certs/service-ca.pem
+#  cat /mnt/servicecerts/client.crt \
+#    /mnt/servicecerts/client.key \
+#    /mnt/servicecerts/ca_chain.crt \
+#    >/usr/local/etc/haproxy/certs/serviceclient.pem
+#  cp /mnt/servicecerts/ca_chain.crt \
+#    /usr/local/etc/haproxy/certs/service-ca.pem
 
   #CERT_DIR="/usr/local/etc/dehydrated/certs/$PUBLIC_NAME"
   #if [ -L "$CERT_DIR/privkey.pem" ] && [ -L "$CERT_DIR/fullchain.pem" ]; then

@@ -47,8 +47,7 @@ fi
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS ATTL BTTL"
-required_args="$required_args VAULTSERVER"
+required_args="DATACENTER IP NODENAME CONSULSERVERS VAULTSERVER"
 optional_args="REMOTELOG"
 
 for var in $required_args; do
@@ -69,7 +68,6 @@ done
 ########################################################################
 
 # stop services
-service vault onestop || true
 timeout --foreground 10 \
   service consul onestop || service consul onestop || true
 killall -9 consul || true
@@ -88,7 +86,6 @@ chown -R consul /mnt/consulcerts
 mkdir -p /mnt/log
 mkdir -p /mnt/metricscerts/hash
 mkdir -p /mnt/templates
-mkdir -p /mnt/vault
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
@@ -105,20 +102,8 @@ unwrap-cluster-credentials.sh
 log "Unwrap consul credentials"
 unwrap-consul-credentials.sh
 
-log "Unwrap metrics credentials"
-unwrap-metrics-credentials.sh
-
 log "Configure consul-template"
 configure-consul-template.sh
-
-log "Configure nodemetricsproxy"
-configure-nodemetricsproxy.sh
-
-log "Start nodemetricsproxy"
-timeout --foreground 120 \
-  sh -c 'while ! service nginx status nodemetricsproxy; do
-    service nginx start nodemetricsproxy || true; sleep 3;
-  done'
 
 log "Configure vaultproxy"
 configure-vaultproxy.sh
@@ -129,12 +114,20 @@ timeout --foreground 120 \
     service nginx start vaultproxy || true; sleep 3;
   done'
 
-log "Starting consul-template"
-service consul-template start
-
-log "Waiting up to 20 seconds for consul-template to start"
+log "Start consul-template"
 timeout --foreground 20 \
-  sh -c 'while ! service consul-template status; do sleep 1; done'
+  sh -c 'while ! service consul-template status; do
+    service consul-template start || true; sleep 3;
+  done'
+
+log "Configure nodemetricsproxy"
+configure-nodemetricsproxy.sh
+
+log "Start nodemetricsproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status nodemetricsproxy; do
+    service nginx start nodemetricsproxy || true; sleep 3;
+  done'
 
 log "Setup node_exporter"
 configure-node-exporter.sh

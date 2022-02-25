@@ -31,5 +31,4 @@ sysrc consul_syslog_output_priority="warn"
 
 # setup consul logs, might be redundant if not specified in agent.hcl above
 mkdir -p /mnt/log/consul
-touch /mnt/log/consul/consul.log
 chown -R consul:wheel /mnt/log/consul

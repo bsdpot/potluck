@@ -28,7 +28,7 @@ http {
         ssl_certificate      /mnt/metricscerts/metrics.crt;
         ssl_certificate_key  /mnt/metricscerts/metrics.key;
 
-        ssl_client_certificate /mnt/metricscerts/ca_chain.crt;
+        ssl_client_certificate /mnt/metricscerts/ca_root.crt;
         ssl_verify_client on;
 
         ssl_protocols TLSv1.3 TLSv1.2;
@@ -55,7 +55,7 @@ http {
         ssl_certificate      /mnt/metricscerts/metrics.crt;
         ssl_certificate_key  /mnt/metricscerts/metrics.key;
 
-        ssl_client_certificate /mnt/metricscerts/ca_chain.crt;
+        ssl_client_certificate /mnt/metricscerts/ca_root.crt;
         ssl_verify_client on;
 
         ssl_protocols TLSv1.3 TLSv1.2;

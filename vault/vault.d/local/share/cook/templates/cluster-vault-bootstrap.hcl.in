@@ -20,7 +20,7 @@ seal "transit" {
   token = "%%vaultunsealtoken%%"
   tls_client_cert = "/mnt/unsealcerts/client.crt"
   tls_client_key = "/mnt/unsealcerts/client.key"
-  tls_ca_cert = "/mnt/unsealcerts/ca_chain.crt"
+  tls_ca_cert = "/mnt/unsealcerts/ca_root.crt"
   tls_server_name = "server.global.vaultunseal"
 }
 log_level = "Warn"

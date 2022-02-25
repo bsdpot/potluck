@@ -39,8 +39,7 @@ source mynetwork {
   tls(
    key-file("/mnt/metricscerts/metrics.key")
    cert-file("/mnt/metricscerts/metrics.crt")
-   ca-dir("/mnt/metricscerts/hash")
-   ca-file("/mnt/metricscerts/ca_chain.crt")
+   ca-file("/mnt/metricscerts/ca_root.crt")
    peer-verify(required-trusted)
   )
  );
@@ -70,8 +69,7 @@ destination loghost {
   tls(
    key-file("/mnt/metricscerts/metrics.key")
    cert-file("/mnt/metricscerts/metrics.crt")
-   ca-dir("/mnt/metricscerts/hash")
-   ca-file("/mnt/metricscerts/ca_chain.crt")
+   ca-file("/mnt/metricscerts/ca_root.crt")
    peer-verify(required-trusted)
   )
  );

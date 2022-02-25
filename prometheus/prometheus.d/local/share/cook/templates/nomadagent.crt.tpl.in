@@ -1,5 +1,0 @@
-{{ with secret "nomadpki_int/issue/nomad-cluster"
-"common_name=%%nodename%%.global.nomad" "ttl=%%bttl%%"
-"alt_names=localhost,server.global.nomad" "ip_sans=127.0.0.1"}}
-{{ .Data.certificate }}
-{{ end }}

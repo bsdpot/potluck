@@ -1,3 +1,0 @@
-path "postgrespki_int/issue/postgres-cluster" {
-  capabilities = ["update"]
-}
