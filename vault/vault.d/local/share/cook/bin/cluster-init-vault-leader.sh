@@ -98,7 +98,7 @@ if ! service consul-template onestatus; then
         -ca-cert=/mnt/vaultcerts/ca_root.crt \
         -display-name "$NODENAME consul-template token" \
         -role "cert-issuer" \
-        -entity-alias "$NODENAME" \
+        -entity-alias "$NODENAME-vault" \
         -policy default \
         -format json)
     CLUSTER_PKI_TOKEN=$(echo "$CLUSTER_PKI_TOKEN_JSON" |\

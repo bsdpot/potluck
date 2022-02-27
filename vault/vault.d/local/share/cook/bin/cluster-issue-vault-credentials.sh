@@ -55,7 +55,7 @@ while getopts "ha:c:e:g:i:p:r:t:u:" _o ; do
     IPS="$IPS ${OPTARG}"
     ;;
   p)
-    POLICIES="$POLICIES ${OPTARG}"
+    POLICIES="$POLICIES $(echo "${OPTARG}" | tr ',' ' ')"
     ;;
   r)
     TOKEN_ROLE="${OPTARG}"
