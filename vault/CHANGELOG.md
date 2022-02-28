@@ -1,3 +1,9 @@
+2.2.9
+
+* Version bump to match ini, downgrading ini would still push version up
+
+---
+
 2.2.8
 
 * Major rework of templates, certificate issuing, and token/entity/group/role structure
