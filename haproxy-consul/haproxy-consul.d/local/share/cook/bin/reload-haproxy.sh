@@ -1,8 +1,5 @@
 #!/bin/sh
 
-SCRIPT=$(readlink -f "$0")
-SCRIPTDIR=$(dirname "$SCRIPT")
-
 cat /mnt/servicecerts/ca.crt \
   /mnt/servicecerts/ca_root.crt \
   >/mnt/servicecerts/ca_chain.crt.tmp

@@ -167,6 +167,10 @@ pip install patroni --prefix="/usr/local"
 ## Consider adding this directory to PATH or, if you prefer to suppress
 ## this warning, use --no-warn-script-location.
 
+step "Fetch and install patroni tls server name patch"
+fetch -qo /usr/local/lib/python3.8/site-packages/patroni/dcs/consul.py \
+  https://raw.githubusercontent.com/grembo/patroni/\
+dac9db548b3/patroni/dcs/consul.py
 
 #### Build postgres_exporter - BEGIN
 # change to a temporary directory and clone the github repo for

@@ -34,6 +34,7 @@ consul:
   #service_tags: ["%%servicetag%%"] #master/replica/standby-leader
   register_service: true
   service_check_interval: 15s
+  service_check_tls_server_name: %%nodename%%.%%datacenter%%.consul
 
 bootstrap:
   dcs:

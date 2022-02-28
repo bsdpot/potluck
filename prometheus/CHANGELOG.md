@@ -1,3 +1,15 @@
+0.11.4
+
+* Make consul node_names non-FQDN
+
+---
+
+0.11.3
+
+* Fix nomad-client metrics retrieval
+
+---
+
 0.11.2
 
 * Major rework of templates, certificate issuing, and token/entity/group/role structure

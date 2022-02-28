@@ -1,3 +1,14 @@
+0.1.4
+
+* Make consul node_names non-FQDN
+
+---
+0.1.3
+
+* Revision bump
+
+---
+
 0.1.2
 
 * First version integrated into cluster
