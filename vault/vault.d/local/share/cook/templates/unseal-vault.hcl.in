@@ -4,17 +4,17 @@ listener "tcp" {
   address = "127.0.0.1:8200"
   tls_cert_file = "/mnt/unsealcerts/agent.crt"
   tls_key_file = "/mnt/unsealcerts/agent.key"
-  tls_ca_file = "/mnt/unsealcerts/ca_chain.crt"
+  tls_ca_file = "/mnt/unsealcerts/ca_root.crt"
   tls_disable = 0
 }
 listener "tcp" {
   address = "%%ip%%:8200"
   tls_cert_file = "/mnt/unsealcerts/agent.crt"
   tls_key_file = "/mnt/unsealcerts/agent.key"
-  tls_ca_file = "/mnt/unsealcerts/ca_chain.crt"
+  tls_ca_file = "/mnt/unsealcerts/ca_root.crt"
   tls_disable = 0
   tls_require_and_verify_client_cert = 1
-  tls_client_ca_file = "/mnt/unsealcerts/ca.crt"
+  tls_client_ca_file = "/mnt/unsealcerts/ca_root.crt"
   telemetry {
     unauthenticated_metrics_access = true
   }

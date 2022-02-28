@@ -33,7 +33,8 @@ chmod 600 /usr/local/etc/vault.hcl
 chmod 600 /usr/local/etc/vault-bootstrap.hcl
 
 # set permissions on /mnt for vault data
-chown -R vault:wheel /mnt/vault /mnt/unsealcerts /mnt/certs
+mkdir -p /mnt/vault
+chown -R vault:wheel /mnt/vault
 
 # setup rc.conf entries
 # we do not set vault_user=vault because vault will not start
@@ -97,14 +98,12 @@ chmod 600 \
 echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
   /usr/local/etc/consul-template-unseal.d/consul-template-unseal.hcl
 
-for name in unseal-client.crt unseal-client.key unseal-ca.crt; do
-    < "$TEMPLATEPATH/cluster-$name.tpl.in" \
-      sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-      sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-      sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
-      sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
-      > "/mnt/templates/$name.tpl"
-done
+< "$TEMPLATEPATH/cluster-unseal-vault.tpl.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
+  sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
+  sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
+  > "/mnt/templates/unseal-vault.tpl"
 
 echo "Enabling and starting consul-template-unseal"
 sysrc consul_template_unseal_syslog_output_enable=YES

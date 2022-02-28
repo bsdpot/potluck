@@ -69,8 +69,8 @@ vault operator raft autopilot set-config \
   -server-stabilization-time=30s -cleanup-dead-servers=true \
   -min-quorum=3
 
-echo "Setup up cluster pki"
-"$SCRIPTDIR"/cluster-setup-cluster-pki.sh
+echo "Setup up vault cluster pki"
+"$SCRIPTDIR"/cluster-setup-vault-pki.sh
 
 LOCAL_VAULT="https://127.0.0.1:8200"
 
@@ -79,7 +79,7 @@ for i in $(jot 10); do
     echo "attempt: $i"
     LEADER_ADDRESS=$(vault status \
       -address="$LOCAL_VAULT" \
-      -ca-cert=/mnt/certs/ca_chain.crt \
+      -ca-cert=/mnt/vaultcerts/ca_root.crt \
        -format=json | jq -r ".leader_address" || true)
     [ "$LEADER_ADDRESS" = "https://$IP:8200" ] && break
     sleep 2
@@ -95,9 +95,12 @@ if ! service consul-template onestatus; then
     CLUSTER_PKI_TOKEN_JSON=$(\
       vault token create \
         -address="$LOCAL_VAULT" \
-        -ca-cert=/mnt/certs/ca_chain.crt \
-        -policy="tls-policy" -period="$ATTL" \
-        -orphan -format json)
+        -ca-cert=/mnt/vaultcerts/ca_root.crt \
+        -display-name "$NODENAME consul-template token" \
+        -role "cert-issuer" \
+        -entity-alias "$NODENAME-vault" \
+        -policy default \
+        -format json)
     CLUSTER_PKI_TOKEN=$(echo "$CLUSTER_PKI_TOKEN_JSON" |\
       jq -r ".auth.client_token")
 
@@ -115,14 +118,10 @@ if ! service consul-template onestatus; then
     echo "s${sep}%%token%%${sep}$CLUSTER_PKI_TOKEN${sep}" | sed -i '' -f - \
       /usr/local/etc/consul-template.d/consul-template.hcl
 
-    for name in cluster-agent.crt cluster-agent.key cluster-ca.crt; do
-        < "$TEMPLATEPATH/$name.tpl.in" \
-          sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-          sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-          sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
-          sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
-          > "/mnt/templates/$name.tpl"
-    done
+    < "$TEMPLATEPATH/cluster-vault.tpl.in" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+      sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+      > "/mnt/templates/cluster-vault.tpl"
 
     echo "Enabling and starting consul-template"
     sysrc consul_template_syslog_output_enable=YES

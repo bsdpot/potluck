@@ -22,7 +22,7 @@ chown -R prometheus:prometheus /mnt/prometheus
 # safe(r) separator for sed
 sep=$'\001'
 
-CONSUL_METRICS_TOKEN=$(cat /mnt/metricscerts/consul_metrics.token)
+CONSUL_METRICS_TOKEN=$(cat /mnt/consulcerts/consul_metrics.token)
 
 ## start prometheus config
 < "$TEMPLATEPATH/prometheus.yml.in" \

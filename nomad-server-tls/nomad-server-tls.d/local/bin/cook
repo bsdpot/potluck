@@ -54,7 +54,7 @@ killall -9 consul || true
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS BOOTSTRAP ATTL BTTL"
+required_args="DATACENTER IP NODENAME CONSULSERVERS BOOTSTRAP"
 optional_args="REMOTELOG"
 
 for var in $required_args; do
@@ -76,22 +76,10 @@ done
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
-# setup directories for vault usage
-mkdir -p /mnt/certs
-chown -R nomad /mnt/certs
-mkdir -p /mnt/consulcerts
-chown -R consul /mnt/consulcerts
+# setup directories
 mkdir -p /mnt/log
-mkdir -p /mnt/nomadcerts
-mkdir -p /mnt/metricscerts/hash
-chown -R nomad /mnt/nomadcerts
 mkdir -p /mnt/templates
-mkdir -p /mnt/vault
-
-# create nodeexport user, needed for chown, removed from config
-# node_exporter script
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' \
-  -m -s /usr/bin/nologin -h -
+mkdir -p /mnt/vaultcerts
 
 log "Set up local_unbound using cluster resolvers"
 setup-local-unbound-provision.sh
@@ -109,20 +97,11 @@ unwrap-consul-credentials.sh
 log "Unwrap nomad credentials"
 unwrap-nomad-credentials.sh
 
-log "Unwrap metrics credentials"
-unwrap-metrics-credentials.sh
+log "Configure node_exporter"
+configure-node-exporter.sh
 
 log "Configure consul-template"
 configure-consul-template.sh
-
-log "Configure nodemetricsproxy"
-configure-nodemetricsproxy.sh
-
-log "Start nodemetricsproxy"
-timeout --foreground 120 \
-  sh -c 'while ! service nginx status nodemetricsproxy; do
-    service nginx start nodemetricsproxy || true; sleep 3;
-  done'
 
 log "Configure vaultproxy"
 configure-vaultproxy.sh
@@ -133,15 +112,20 @@ timeout --foreground 120 \
     service nginx start vaultproxy || true; sleep 3;
   done'
 
-log "Starting consul-template"
-service consul-template start
-
-log "Waiting up to 20 seconds for consul-template to start"
+log "Start consul-template"
 timeout --foreground 20 \
-  sh -c 'while ! service consul-template status; do sleep 1; done'
+  sh -c 'while ! service consul-template status; do
+    service consul-template start || true; sleep 3;
+  done'
 
-log "Setup node_exporter"
-configure-node-exporter.sh
+log "Configure nodemetricsproxy"
+configure-nodemetricsproxy.sh
+
+log "Start nodemetricsproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status nodemetricsproxy; do
+    service nginx start nodemetricsproxy || true; sleep 3;
+  done'
 
 log "Configure consul"
 configure-consul.sh

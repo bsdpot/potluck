@@ -15,23 +15,22 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPT")
 TEMPLATEPATH=$SCRIPTDIR/../templates
 
-WRAPPED_TOKEN=$(< /mnt/certs/credentials.json \
+WRAPPED_TOKEN=$(< /mnt/vaultcerts/credentials.json \
   jq -re .wrapped_token)
-< /mnt/certs/credentials.json \
-  jq -re .cert >/mnt/certs/agent.crt
-< /mnt/certs/credentials.json \
-  jq -re .ca >/mnt/certs/ca.crt
-< /mnt/certs/credentials.json \
-  jq -re .ca_chain >/mnt/certs/ca_chain.crt
-< /mnt/certs/credentials.json \
-  jq -re .ca_root >>/mnt/certs/ca_chain.crt
-< /mnt/certs/credentials.json \
-  jq -re .ca_root >/mnt/certs/ca_root.crt
+< /mnt/vaultcerts/credentials.json \
+  jq -re .cert >/mnt/vaultcerts/agent.crt
+< /mnt/vaultcerts/credentials.json \
+  jq -re .ca >>/mnt/vaultcerts/agent.crt
+< /mnt/vaultcerts/credentials.json \
+  jq -re .ca_root >/mnt/vaultcerts/ca_root.crt
 (
     umask 177
-    < /mnt/certs/credentials.json \
-      jq -re .key >/mnt/certs/agent.key
+    < /mnt/vaultcerts/credentials.json \
+      jq -re .key >/mnt/vaultcerts/agent.key
 )
+
+chown vault /mnt/vaultcerts/agent.crt
+chown vault /mnt/vaultcerts/agent.key
 
 "$SCRIPTDIR"/cluster-enable-vault-tls.sh
 
@@ -43,9 +42,9 @@ timeout --foreground 120 \
 
 "$SCRIPTDIR"/cluster-vault.sh \
   operator raft join \
-  -leader-client-key=@/mnt/certs/agent.key \
-  -leader-client-cert=@/mnt/certs/agent.crt \
-  -leader-ca-cert=@/mnt/certs/ca_chain.crt \
+  -leader-client-key=@/mnt/vaultcerts/agent.key \
+  -leader-client-cert=@/mnt/vaultcerts/agent.crt \
+  -leader-ca-cert=@/mnt/vaultcerts/ca_root.crt \
   -tls-server-name=active.vault.service.consul \
   -retry "https://$LEADER_IP:8200"
 
@@ -54,8 +53,8 @@ for i in $(jot 30); do
     echo "attempt: $i"
     RAFT_JSON=$(vault status \
       -address="$LOCAL_VAULT" \
-      -ca-cert=/mnt/certs/ca_chain.crt \
-       -format=json || true)
+      -ca-cert=/mnt/vaultcerts/ca_root.crt \
+      -format=json || true)
     RAFT_COMMITTED=$(echo "$RAFT_JSON" | jq -r ".raft_committed_index")
     RAFT_APPLIED=$(echo "$RAFT_JSON" | jq -r ".raft_applied_index")
     case "$RAFT_COMMITTED" in
@@ -77,9 +76,9 @@ if ! service consul-template onestatus; then
       vault unwrap \
         -address="https://$LEADER_IP:8200" \
         -tls-server-name=active.vault.service.consul \
-        -ca-cert=/mnt/certs/ca_chain.crt \
-        -client-key=/mnt/certs/agent.key \
-        -client-cert=/mnt/certs/agent.crt \
+        -ca-cert=/mnt/vaultcerts/ca_root.crt \
+        -client-key=/mnt/vaultcerts/agent.key \
+        -client-cert=/mnt/vaultcerts/agent.crt \
         -format=json "$WRAPPED_TOKEN")
     CLUSTER_PKI_TOKEN=$(echo "$CLUSTER_PKI_TOKEN_JSON" |\
       jq -r ".auth.client_token")
@@ -98,14 +97,10 @@ if ! service consul-template onestatus; then
     echo "s${sep}%%token%%${sep}$CLUSTER_PKI_TOKEN${sep}" | sed -i '' -f - \
       /usr/local/etc/consul-template.d/consul-template.hcl
 
-    for name in cluster-agent.crt cluster-agent.key cluster-ca.crt; do
-        < "$TEMPLATEPATH/$name.tpl.in" \
-          sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-          sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-          sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
-          sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
-          > "/mnt/templates/$name.tpl"
-    done
+    < "$TEMPLATEPATH/cluster-vault.tpl.in" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+      sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+      > "/mnt/templates/cluster-vault.tpl"
 
     echo "Enabling and starting consul-template"
     sysrc consul_template_syslog_output_enable=YES

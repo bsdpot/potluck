@@ -1,3 +1,9 @@
+0.1.2
+
+* First version integrated into cluster
+
+---
+
 0.1.1
 
 * Split off haproxy-consul image

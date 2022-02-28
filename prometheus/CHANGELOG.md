@@ -1,3 +1,9 @@
+0.11.2
+
+* Major rework of templates, certificate issuing, and token/entity/group/role structure
+
+---
+
 0.11.1
 
 * Fixing alert rules to remove invalid rulesets

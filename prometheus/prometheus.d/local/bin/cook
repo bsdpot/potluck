@@ -47,7 +47,7 @@ fi
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS ATTL BTTL"
+required_args="DATACENTER IP NODENAME CONSULSERVERS"
 required_args="$required_args SCRAPECONSUL SCRAPENOMAD SCRAPEDATABASE"
 required_args="$required_args SMTPHOSTPORT SMTPFROM ALERTADDRESS"
 optional_args="REMOTELOG SMTPUSER SMTPPASS"
@@ -76,19 +76,9 @@ timeout --foreground 10 \
 killall -9 consul || true
 /usr/local/etc/rc.d/prometheus onestop || true
 
-# create nodeexport user, needed for chown, removed from config
-# node_exporter script
-log "Create nodeexport user"
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \
-  -s /usr/bin/nologin -h -
-
 # add group for accessing certs (shared between services)
 log "Create certaccess group"
 /usr/sbin/pw groupadd certaccess
-
-# add the nodeexport user to the certaccess group
-log "Add nodeexport user to certaccess group"
-/usr/sbin/pw usermod nodeexport -G certaccess
 
 # add the prometheus user to the certaccess group
 log "Add prometheus user to certaccess group"
@@ -100,15 +90,9 @@ log "Add alertmanager user to certaccess group"
 
 # setup directories for persistent storage and certificate usage
 log "Creating directories for persistent storage and certificate usage"
-mkdir -p /mnt/certs
-mkdir -p /mnt/consulcerts
-chown -R consul /mnt/consulcerts
 mkdir -p /mnt/log
-mkdir -p /mnt/metricscerts/hash
-chown -R prometheus:certaccess /mnt/metricscerts
-mkdir -p /mnt/nomadcerts
 mkdir -p /mnt/templates
-mkdir -p /mnt/vault
+mkdir -p /mnt/vaultcerts
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
@@ -125,23 +109,11 @@ unwrap-cluster-credentials.sh
 log "Unwrap consul credentials"
 unwrap-consul-credentials.sh
 
-log "Unwrap nomad credentials"
-unwrap-nomad-credentials.sh
-
-log "Unwrap metrics credentials"
-unwrap-metrics-credentials.sh
+log "Setup node_exporter"
+configure-node-exporter.sh
 
 log "Configure consul-template"
 configure-consul-template.sh
-
-log "Configure nodemetricsproxy"
-configure-nodemetricsproxy.sh
-
-log "Start nodemetricsproxy"
-timeout --foreground 120 \
-  sh -c 'while ! service nginx status nodemetricsproxy; do
-    service nginx start nodemetricsproxy || true; sleep 3;
-  done'
 
 log "Configure vaultproxy"
 configure-vaultproxy.sh
@@ -150,6 +122,21 @@ log "Start vaultproxy"
 timeout --foreground 120 \
   sh -c 'while ! service nginx status vaultproxy; do
     service nginx start vaultproxy || true; sleep 3;
+  done'
+
+log "Start consul-template"
+timeout --foreground 20 \
+  sh -c 'while ! service consul-template status; do
+    service consul-template start || true; sleep 3;
+  done'
+
+log "Configure nodemetricsproxy"
+configure-nodemetricsproxy.sh
+
+log "Start nodemetricsproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status nodemetricsproxy; do
+    service nginx start nodemetricsproxy || true; sleep 3;
   done'
 
 log "Configure consulmetricsproxy"
@@ -169,16 +156,6 @@ timeout --foreground 120 \
   sh -c 'while ! service nginx status nomadmetricsproxy; do
     service nginx start nomadmetricsproxy || true; sleep 3;
   done'
-
-log "Starting consul-template"
-service consul-template start
-
-log "Waiting up to 20 seconds for consul-template to start"
-timeout --foreground 20 \
-  sh -c 'while ! service consul-template status; do sleep 1; done'
-
-log "Setup node_exporter"
-configure-node-exporter.sh
 
 log "Configure consul"
 configure-consul.sh

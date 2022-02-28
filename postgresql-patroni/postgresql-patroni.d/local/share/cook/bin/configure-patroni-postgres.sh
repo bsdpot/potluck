@@ -13,7 +13,7 @@ SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # Get postgres consul service token
-POSTGRES_SERVICE_TOKEN="$(cat /mnt/postgrescerts/postgres_service.token)"
+POSTGRES_SERVICE_TOKEN="$(cat /mnt/patronicerts/postgres_service.token)"
 
 # create /usr/local/etc/patroni/
 mkdir -p /usr/local/etc/patroni/
@@ -23,10 +23,10 @@ mkdir -p /usr/local/etc/patroni/
 sep=$'\001'
 
 # read credentials that were unwrapped
-ADMPASS=$(cat /mnt/postgrescerts/admin.pass)
-EXPPASS=$(cat /mnt/postgrescerts/exporter.pass)
-REPPASS=$(cat /mnt/postgrescerts/replicator.pass)
-SUPPASS=$(cat /mnt/postgrescerts/superuser.pass)
+ADMPASS=$(cat /mnt/patronicerts/admin.pass)
+EXPPASS=$(cat /mnt/patronicerts/exporter.pass)
+REPPASS=$(cat /mnt/patronicerts/replicator.pass)
+SUPPASS=$(cat /mnt/patronicerts/superuser.pass)
 
 # setup patroni.yml by updating variables
 < "$TEMPLATEPATH/patroni.yml.in" \

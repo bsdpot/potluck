@@ -1,7 +1,5 @@
 #!/bin/sh
 
-: "${CERT_MAX_TTL=768h}"
-
 # shellcheck disable=SC1091
 . /root/.env.cook
 
@@ -10,44 +8,61 @@ set -e
 set -o pipefail
 
 SCRIPT=$(readlink -f "$0")
-TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+SCRIPTDIR=$(dirname "$SCRIPT")
+#TEMPLATEPATH=$SCRIPTDIR/../templates
 
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:"$PATH"
 export VAULT_ADDR=https://active.vault.service.consul:8200
 export VAULT_CLIENT_TIMEOUT=300s
 export VAULT_MAX_RETRIES=5
-export VAULT_CLIENT_CERT=/mnt/certs/agent.crt
-export VAULT_CLIENT_KEY=/mnt/certs/agent.key
-export VAULT_CACERT=/mnt/certs/ca_chain.crt
-mkdir -p /mnt/consulcerts
-chown consul:wheel /mnt/consulcerts
-cd /mnt/consulcerts
-vault secrets list | grep -c "^consulpki/" || \
-  vault secrets enable -path consulpki pki
-vault secrets tune -max-lease-ttl=87600h consulpki
-vault read consulpki/cert/ca || vault write -field=certificate \
-  consulpki/root/generate/internal \
-  common_name="$DATACENTER.consul" ttl=87600h > ca_root.crt
-vault secrets list | grep -c "^consulpki_int/" || \
-  vault secrets enable -path consulpki_int pki
-vault secrets tune -max-lease-ttl=43800h consulpki_int
-vault read consulpki_int/cert/ca ||
-  (
-    vault write -format=json \
-      consulpki_int/intermediate/generate/internal \
-      common_name="$DATACENTER.consul Intermediate Authority" \
-      ttl="43800h" | jq -r ".data.csr" > consulpki_intermediate.csr
-    vault write -format=json consulpki/root/sign-intermediate \
-      csr=@consulpki_intermediate.csr format=pem_bundle \
-      ttl="43800h" | jq -r ".data.certificate" > intermediate.cert.pem
-    vault write consulpki_int/intermediate/set-signed \
-      certificate=@intermediate.cert.pem
-  )
-vault read consulpki_int/roles/consul-cluster || vault write \
-  consulpki_int/roles/consul-cluster \
-  allowed_domains="$DATACENTER.consul" \
-  allow_subdomains=true max_ttl="$CERT_MAX_TTL" \
-  require_cn=false generate_lease=true
-vault policy list | grep -c "^consul-tls-policy\$" ||
-  vault policy write consul-tls-policy \
-    "$TEMPLATEPATH/consul-tls-policy.hcl.in"
+export VAULT_CLIENT_CERT=/mnt/vaultcerts/agent.crt
+export VAULT_CLIENT_KEY=/mnt/vaultcerts/agent.key
+export VAULT_CACERT=/mnt/vaultcerts/ca_root.crt
+unset VAULT_FORMAT
+
+. "${SCRIPTDIR}/lib.sh"
+
+create_root_pki "consulpki" "$DATACENTER.consul root"
+create_int_pki "consulpki" "consulpki_int" "$DATACENTER.consul intermediate"
+
+# Create consul-server role for issuing consul server certs
+create_pki_role "consulpki_int" "consul-server" \
+  "{{identity.entity.metadata.nodename}}.$DATACENTER.consul" \
+  "server.$DATACENTER.consul"
+
+vault policy write issue-consul-server-cert - <<-EOF
+	path "consulpki_int/issue/consul-server" {
+	  capabilities = ["update"]
+	}
+	path "consulpki/cert/ca" {
+	  capabilities = ["read"]
+	}
+	EOF
+
+# Create consul-servers group
+create_id_group "consul-servers" \
+  "issue-consul-server-cert" \
+  "issue-metrics-client-cert" \
+  "issue-vault-client-cert" \
+  >/dev/null
+
+
+# Create consul-client role for issuing consul client certs
+create_pki_role "consulpki_int" "consul-client" \
+  "{{identity.entity.metadata.nodename}}.$DATACENTER.consul"
+
+vault policy write issue-consul-client-cert - <<-EOF
+	path "consulpki_int/issue/consul-client" {
+	  capabilities = ["update"]
+	}
+	path "consulpki/cert/ca" {
+	  capabilities = ["read"]
+	}
+	EOF
+
+# Create special consul-vault-clients group
+create_id_group "consul-vault-clients" \
+  "issue-consul-client-cert" \
+  "issue-metrics-client-cert" \
+  "issue-vault-client-cert" \
+  >/dev/null

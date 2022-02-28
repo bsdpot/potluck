@@ -45,9 +45,6 @@ set as
 The REMOTELOG parameter is the IP address of a remote syslog server to send
 logs to, such as for the `loki` flavour on this site.
 
-The ATTL and BTTL parameters are 2 lengths of time for certificate TTL,
-where BTTL must be longer than ATTL, e.g., if ATTL is 10m, BTTL is 12m.
-
 To be documented: Booting the image the first time requires placing
 various credentials in /mnt/postgrescerts.
 

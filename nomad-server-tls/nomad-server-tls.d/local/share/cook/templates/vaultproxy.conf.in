@@ -27,8 +27,8 @@ http {
         listen       127.0.0.1:8100 ssl;
         server_name  localhost;
 
-        ssl_certificate      /mnt/certs/client.crt;
-        ssl_certificate_key  /mnt/certs/client.key;
+        ssl_certificate      /mnt/vaultcerts/client.crt;
+        ssl_certificate_key  /mnt/vaultcerts/client.key;
 
         ssl_protocols TLSv1.3 TLSv1.2;
         # https://ssl-config.mozilla.org/#server=nginx&config=intermediate
@@ -38,10 +38,10 @@ http {
         location / {
           set $vault_servers active.vault.service.consul;
           proxy_pass https://$vault_servers:8200;
-          proxy_ssl_certificate /mnt/certs/client.crt;
-          proxy_ssl_certificate_key /mnt/certs/client.key;
+          proxy_ssl_certificate /mnt/vaultcerts/client.crt;
+          proxy_ssl_certificate_key /mnt/vaultcerts/client.key;
           proxy_ssl_verify on;
-          proxy_ssl_trusted_certificate /mnt/certs/ca_chain.crt;
+          proxy_ssl_trusted_certificate /mnt/vaultcerts/ca_root.crt;
           proxy_ssl_server_name on;
           proxy_set_header Host active.vault.service.consul;
         }

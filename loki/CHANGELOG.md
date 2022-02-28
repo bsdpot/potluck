@@ -1,3 +1,9 @@
+0.2.7
+
+* Major rework of templates, certificate issuing, and token/entity/group/role structure
+
+---
+
 0.2.6
 
 * Improve metrics collection

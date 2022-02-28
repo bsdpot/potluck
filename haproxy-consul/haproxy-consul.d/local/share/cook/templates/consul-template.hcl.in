@@ -1,0 +1,43 @@
+vault {
+  address      = "https://127.0.0.1:8100"
+  token        = "%%token%%"
+  unwrap_token = false
+  renew_token  = true
+  default_lease_duration = "30m"
+
+  ssl {
+    enabled = true
+    verify = true
+    ca_cert = "/mnt/vaultcerts/ca_root.crt"
+    server_name = "localhost"
+  }
+}
+
+syslog {
+  enabled  = true
+  facility = "LOCAL5"
+}
+
+template {
+  source      = "/mnt/templates/vault.tpl"
+  destination = "/mnt/vaultcerts/vault.checksum"
+  command     = "service nginx reload vaultproxy; true"
+}
+
+template {
+  source      = "/mnt/templates/consul.tpl"
+  destination = "/mnt/consulcerts/consul.checksum"
+  command     = "service consul reload; true"
+}
+
+template {
+  source      = "/mnt/templates/serviceclient.tpl"
+  destination = "/mnt/servicecerts/serviceclient.checksum"
+  command     = "/usr/local/share/cook/bin/reload-haproxy.sh"
+}
+
+template {
+  source      = "/mnt/templates/metrics.tpl"
+  destination = "/mnt/metricscerts/metrics.checksum"
+  command     = "/usr/local/share/cook/bin/reload-metrics.sh"
+}

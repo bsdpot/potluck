@@ -1,0 +1,25 @@
+# default, not very useful haproxy.conf
+
+global
+  daemon
+  user www
+  group www
+  stats socket /var/run/haproxy/socket mode 600 level admin expose-fd listeners
+  server-state-file /var/tmp/haproxy.state
+
+defaults
+  mode http
+  option http-use-htx
+  timeout connect 5000ms
+  timeout client 50000ms
+  timeout server 50000ms
+
+resolvers localdns
+  nameserver dns0 127.0.0.1:53
+  resolve_retries 30
+  timeout retry 2s
+  hold valid 30s
+  accepted_payload_size 8192
+
+frontend default
+  bind 127.0.0.1:80

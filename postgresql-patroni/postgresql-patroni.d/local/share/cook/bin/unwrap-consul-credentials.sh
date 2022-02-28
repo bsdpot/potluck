@@ -12,37 +12,28 @@ export PATH=/usr/local/bin:$PATH
 #SCRIPT=$(readlink -f "$0")
 #TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-if [ ! -s /mnt/consulcerts/unwrapped.token ]; then
-    WRAPPED_TOKEN=$(< /mnt/consulcerts/credentials.json \
-      jq -re .wrapped_token)
-    < /mnt/consulcerts/credentials.json \
-      jq -re .cert >/mnt/consulcerts/agent.crt
-    < /mnt/consulcerts/credentials.json \
-      jq -re .ca >/mnt/consulcerts/ca.crt
-    < /mnt/consulcerts/credentials.json \
-      jq -re .ca_chain >/mnt/consulcerts/ca_chain.crt
-    < /mnt/consulcerts/credentials.json \
-      jq -re .ca_root >>/mnt/consulcerts/ca_chain.crt
-    < /mnt/consulcerts/credentials.json \
-      jq -re .ca_root >/mnt/consulcerts/ca_root.crt
-    umask 026
-    < /mnt/consulcerts/credentials.json \
-      jq -re .key >/mnt/consulcerts/agent.key
-    < /mnt/consulcerts/credentials.json \
-      jq -re .gossip_key >/mnt/consulcerts/gossip.key
+if [ ! -s /mnt/consulcerts/gossip.key ]; then
+    CREDENTIALS_TOKEN=$(< /mnt/consulcerts/credentials.json \
+      jq -re .credentials_token)
 
-    echo "{\"default\": $(< /mnt/consulcerts/credentials.json \
-      jq -e .default_consul_token), \"agent\": $(\
-      < /mnt/consulcerts/credentials.json \
-      jq -e .agent_consul_token)}" >/mnt/consulcerts/acl-tokens.json
+    umask 177
 
+    DATA=$(
     HOME=/var/empty \
-    vault unwrap -address="https://active.vault.service.consul:8200" \
+    VAULT_TOKEN="$CREDENTIALS_TOKEN" \
+    vault read -address="https://active.vault.service.consul:8200" \
       -tls-server-name=active.vault.service.consul \
-      -ca-cert=/mnt/certs/ca_chain.crt \
-      -client-key=/mnt/certs/client.key \
-      -client-cert=/mnt/certs/client.crt \
-      -format=json "$WRAPPED_TOKEN" | \
-      jq -r '.auth.client_token' > /mnt/consulcerts/unwrapped.token
-    chown consul /mnt/consulcerts/*
+      -ca-cert=/mnt/vaultcerts/ca_root.crt \
+      -client-key=/mnt/vaultcerts/client.key \
+      -client-cert=/mnt/vaultcerts/client.crt \
+      -format=json "cubbyhole/consul" |
+      jq -e '.data')
+
+    echo "$DATA" | jq -re '.gossip_key' >/mnt/consulcerts/gossip.key
+    DNS_TOKEN=$(echo "$DATA" | jq -re '.dns_request_token')
+    AGENT_TOKEN=$(echo "$DATA" | jq -re '.agent_consul_token')
+
+    # shellcheck disable=SC3037
+    echo -n '{"default":"'"$DNS_TOKEN"'","agent":"'"$AGENT_TOKEN"'"}' \
+      >/mnt/consulcerts/acl-tokens.json
 fi

@@ -15,11 +15,7 @@ if [ ! -s /mnt/unsealcerts/unwrapped.token ]; then
     < /mnt/unsealcerts/credentials.json \
       jq -re .cert >/mnt/unsealcerts/client.crt
     < /mnt/unsealcerts/credentials.json \
-      jq -re .ca >/mnt/unsealcerts/ca.crt
-    < /mnt/unsealcerts/credentials.json \
-      jq -re .ca_chain >/mnt/unsealcerts/ca_chain.crt
-    < /mnt/unsealcerts/credentials.json \
-      jq -re .ca_root >>/mnt/unsealcerts/ca_chain.crt
+      jq -re .ca >>/mnt/unsealcerts/client.crt
     < /mnt/unsealcerts/credentials.json \
       jq -re .ca_root >/mnt/unsealcerts/ca_root.crt
     umask 177
@@ -28,10 +24,11 @@ if [ ! -s /mnt/unsealcerts/unwrapped.token ]; then
     HOME=/var/empty \
     vault unwrap -address="https://$UNSEALIP:8200" \
       -tls-server-name=server.global.vaultunseal \
-      -ca-cert=/mnt/unsealcerts/ca_chain.crt \
+      -ca-cert=/mnt/unsealcerts/ca_root.crt \
       -client-key=/mnt/unsealcerts/client.key \
       -client-cert=/mnt/unsealcerts/client.crt \
       -format=json "$UNSEALTOKEN" | \
       jq -r '.auth.client_token' > /mnt/unsealcerts/unwrapped.token
-    chown vault /mnt/unsealcerts/*
+    chown vault /mnt/unsealcerts/client.crt
+    chown vault /mnt/unsealcerts/client.key
 fi

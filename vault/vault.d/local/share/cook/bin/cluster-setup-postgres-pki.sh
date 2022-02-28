@@ -1,7 +1,5 @@
 #!/bin/sh
 
-: "${CERT_MAX_TTL=768h}"
-
 # shellcheck disable=SC1091
 . /root/.env.cook
 
@@ -10,43 +8,57 @@ set -e
 set -o pipefail
 
 SCRIPT=$(readlink -f "$0")
-TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
-mkdir -p /mnt/postgrescerts
-cd /mnt/postgrescerts
-export PATH=/usr/local/bin:$PATH
+SCRIPTDIR=$(dirname "$SCRIPT")
+#TEMPLATEPATH=$SCRIPTDIR/../templates
+
+export PATH=/usr/local/bin:"$PATH"
 export VAULT_ADDR=https://active.vault.service.consul:8200
 export VAULT_CLIENT_TIMEOUT=300s
 export VAULT_MAX_RETRIES=5
-export VAULT_CLIENT_CERT=/mnt/certs/agent.crt
-export VAULT_CLIENT_KEY=/mnt/certs/agent.key
-export VAULT_CACERT=/mnt/certs/ca_chain.crt
+export VAULT_CLIENT_CERT=/mnt/vaultcerts/agent.crt
+export VAULT_CLIENT_KEY=/mnt/vaultcerts/agent.key
+export VAULT_CACERT=/mnt/vaultcerts/ca_root.crt
+unset VAULT_FORMAT
 
-vault secrets list | grep -c "^postgrespki/" || \
-  vault secrets enable -path postgrespki pki
-vault secrets tune -max-lease-ttl=87600h postgrespki
-vault read postgrespki/cert/ca || vault write -field=certificate \
-  postgrespki/root/generate/internal \
-  common_name="global.postgres" ttl=87600h > ca_root.crt
-vault secrets list | grep -c "^postgrespki_int/" || \
-  vault secrets enable -path postgrespki_int pki
-vault secrets tune -max-lease-ttl=43800h postgrespki_int
-vault read postgrespki_int/cert/ca ||
-  (
-    CSR=$(vault write -format=json \
-      postgrespki_int/intermediate/generate/internal \
-      common_name="global.postgres Intermediate Authority" \
-      ttl="43800h" | jq -r ".data.csr")
-    CERT=$(vault write -format=json postgrespki/root/sign-intermediate \
-      csr="$CSR" format=pem_bundle \
-      ttl="43800h" | jq -r ".data.certificate")
-    vault write postgrespki_int/intermediate/set-signed \
-      certificate="$CERT"
-  )
-vault read postgrespki_int/roles/postgres-cluster || vault write \
-  postgrespki_int/roles/postgres-cluster \
-  allowed_domains="global.postgres,postgresql.service.consul" \
-  allow_subdomains=true max_ttl="$CERT_MAX_TTL" \
-  require_cn=false generate_lease=true
-vault policy list | grep -c "^postgres-tls-policy\$" ||
-  vault policy write postgres-tls-policy \
-    "$TEMPLATEPATH/postgres-tls-policy.hcl.in"
+. "${SCRIPTDIR}/lib.sh"
+
+create_root_pki "postgrespki" "global.postgres root"
+create_int_pki "postgrespki" "postgrespki_int" "global.postgres intermediate"
+
+# Create postgres-server role for issuing postgres server certs
+create_pki_role "postgrespki_int" "postgres-server" \
+  "{{identity.entity.metadata.nodename}}.global.postgres" \
+  master.postgresql.service.consul \
+  replica.postgresql.service.consul \
+  standby-leader.postgresql.service.consul
+
+vault policy write issue-postgres-server-cert - <<-EOF
+	path "postgrespki_int/issue/postgres-server" {
+	  capabilities = ["update"]
+	}
+	path "postgrespki/cert/ca" {
+	  capabilities = ["read"]
+	}
+	EOF
+
+# Create postgres-servers group
+create_id_group "postgres-servers" \
+  "issue-consul-client-cert" \
+  "issue-metrics-client-cert" \
+  "issue-postgres-server-cert" \
+  "issue-vault-client-cert" \
+  >/dev/null
+
+
+# Create postgres-client role for issuing postgres client certs
+create_pki_role "postgrespki_int" "postgres-client" \
+  "{{identity.entity.metadata.nodename}}.global.postgres"
+
+vault policy write issue-postgres-client-cert - <<-EOF
+	path "postgrespki_int/issue/postgres-client" {
+	  capabilities = ["update"]
+	}
+	path "postgrespki/cert/ca" {
+	  capabilities = ["read"]
+	}
+	EOF

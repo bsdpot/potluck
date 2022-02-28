@@ -25,7 +25,8 @@ chown vault:wheel /usr/local/etc/vault-bootstrap.hcl
 
 # set permissions on /mnt for vault data
 mkdir -p /mnt/unsealcerts
-chown -R vault:wheel /mnt/templates /mnt/vault /mnt/unsealcerts
+mkdir -p /mnt/vault
+chown -R vault:wheel /mnt/vault
 
 service vault enable
 sysrc vault_login_class=root

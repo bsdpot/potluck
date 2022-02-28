@@ -10,7 +10,7 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 curl -sfS \
- --cacert /mnt/consulcerts/ca_chain.crt \
+ --cacert /mnt/consulcerts/ca_root.crt \
  --cert /mnt/consulcerts/agent.crt \
  --key /mnt/consulcerts/agent.key \
  "https://$IP:8008/cluster" | jq "."

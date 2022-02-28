@@ -1,0 +1,17 @@
+{{- $cert:="" }}{{ $key:="" }}
+{{- with secret "vaultpki_int/issue/vault-server"
+"common_name=%%nodename%%.global.vaultcluster"
+"alt_names=localhost,active.vault.service.consul,standby.vault.service.consul,vault.service.consul"
+"ip_sans=127.0.0.1,%%ip%%"}}
+{{- $cert = (print .Data.certificate "\n" .Data.issuing_ca) }}
+{{- $key = .Data.private_key }}
+{{- $cert |
+writeToFile "/mnt/vaultcerts/agent.crt" "vault" "wheel" "0600" "newline"}}
+{{- $key |
+writeToFile "/mnt/vaultcerts/agent.key" "vault" "wheel" "0600" "newline"}}
+{{- end }}
+{{- with secret "vaultpki/cert/ca" }}
+{{- .Data.certificate |
+writeToFile "/mnt/vaultcerts/ca_root.crt" "vault" "wheel" "0644" "newline"}}
+{{- end }}
+{{- (print $cert $key) | sha256Hex }}

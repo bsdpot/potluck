@@ -2,20 +2,20 @@ disable_mlock = true
 ui = true
 listener "tcp" {
   address = "127.0.0.1:8200"
-  tls_cert_file = "/mnt/certs/agent.crt"
-  tls_key_file = "/mnt/certs/agent.key"
-  tls_ca_file = "/mnt/certs/ca_chain.crt"
+  tls_cert_file = "/mnt/vaultcerts/agent.crt"
+  tls_key_file = "/mnt/vaultcerts/agent.key"
+  tls_ca_file = "/mnt/vaultcerts/ca_root.crt"
   tls_disable = 0
 }
 listener "tcp" {
   address = "%%ip%%:8200"
   cluster_address = "%%ip%%:8201"
-  tls_cert_file = "/mnt/certs/agent.crt"
-  tls_key_file = "/mnt/certs/agent.key"
-  tls_ca_file = "/mnt/certs/ca_chain.crt"
+  tls_cert_file = "/mnt/vaultcerts/agent.crt"
+  tls_key_file = "/mnt/vaultcerts/agent.key"
+  tls_ca_file = "/mnt/vaultcerts/ca_root.crt"
   tls_disable = 0
   tls_require_and_verify_client_cert = 1
-  tls_client_ca_file = "/mnt/certs/ca.crt"
+  tls_client_ca_file = "/mnt/vaultcerts/ca_root.crt"
   telemetry {
     unauthenticated_metrics_access = true
   }
@@ -29,9 +29,9 @@ storage "raft" {
   autopilot_reconcile_interval = "5s"
   #retry_join {
   #  leader_api_addr = "http://%%ip%%:8200"
-  #  #xyz#leader_ca_cert_file = "/mnt/certs/ca.pem"
-  #  #xyz#leader_client_cert_file = "/mnt/certs/cert.pem"
-  #  #xyz#leader_client_key_file = "/mnt/certs/key.pem"
+  #  #xyz#leader_ca_cert_file = "/mnt/vaultcerts/ca.pem"
+  #  #xyz#leader_client_cert_file = "/mnt/vaultcerts/cert.pem"
+  #  #xyz#leader_client_key_file = "/mnt/vaultcerts/key.pem"
   #}
 }
 seal "transit" {
@@ -44,7 +44,7 @@ seal "transit" {
   tls_skip_verify = false
 #  tls_client_cert = "/mnt/unsealcerts/client.crt"
 #  tls_client_key = "/mnt/unsealcerts/client.key"
-  tls_ca_cert = "/mnt/unsealcerts/ca_chain.crt"
+  tls_ca_cert = "/mnt/unsealcerts/ca_root.crt"
   tls_server_name = "localhost"
 }
 telemetry {

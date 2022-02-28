@@ -20,7 +20,7 @@ mkdir -p /mnt/loki/rules-temp
 sep=$'\001'
 
 # loki setup
-# download the source files
+# download the release files
 fetch https://github.com/grafana/loki/releases/download/\
 v2.2.1/loki-freebsd-amd64.zip --output=/root/loki-freebsd-amd64.zip
 
@@ -48,11 +48,15 @@ sysrc loki_syslog_output_enable="YES"
   sed "s${sep}%%ip%%${sep}$IP${sep}g" \
   > /usr/local/etc/loki-local-config.yaml
 
+# create loki user
+/usr/sbin/pw useradd -n loki -c 'loki user' -m \
+  -s /usr/bin/nologin -h -
+
 # chown to loki user
 chown -R loki:loki /mnt/loki
 
 # promtail
-# download the source files
+# download the release files
 fetch https://github.com/grafana/loki/releases/download/\
 v2.2.1/promtail-freebsd-amd64.zip --output=/root/promtail-freebsd-amd64.zip
 

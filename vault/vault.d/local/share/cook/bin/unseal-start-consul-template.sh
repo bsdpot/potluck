@@ -8,8 +8,8 @@ SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 service consul-template onestatus && service consul-template onestop
-UNWRAP_TOKEN=$(VAULT_CACERT=/mnt/unsealcerts/ca_chain.crt \
-  vault token create -policy="tls-policy" -period=2h \
+UNWRAP_TOKEN=$(VAULT_CACERT=/mnt/unsealcerts/ca_root.crt \
+  vault token create -policy="unseal-tls-policy" -period=2h \
   -wrap-ttl=480s -orphan -format json | jq -r ".wrap_info.token")
 
 mkdir -p /usr/local/etc/consul-template.d
@@ -27,13 +27,11 @@ echo "s${sep}%%token%%${sep}$UNWRAP_TOKEN${sep}" | sed -f - -i '' \
 
 sysrc consul_template_syslog_output_enable=YES
 
-for name in unseal-agent.crt unseal-agent.key unseal-ca.crt; do
-    < "$TEMPLATEPATH/$name.tpl.in" \
-      sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-      sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-      sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
-      sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
-      > "/mnt/templates/$name.tpl"
-done
+< "$TEMPLATEPATH/unseal-vault.tpl.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
+  sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
+  sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
+  > "/mnt/templates/unseal-vault.tpl"
 
 service consul-template onestart

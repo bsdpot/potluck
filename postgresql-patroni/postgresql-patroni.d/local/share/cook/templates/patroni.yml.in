@@ -8,11 +8,10 @@ log:
 restapi:
   listen: %%ip%%:8008
   connect_address: %%ip%%:8008
-  # XXX: This should move to using its own certificates and some point
-  # Need to be from consul CA though, so consul can do health checks
-  certfile: /mnt/consulcerts/agent.crt
-  keyfile: /mnt/consulcerts/agent.key
-  cafile: /mnt/consulcerts/ca_chain.crt
+  # Needs to be from consul CA, so consul can do health checks
+  certfile: /mnt/patronicerts/consul.crt
+  keyfile: /mnt/patronicerts/consul.key
+  cafile: /mnt/patronicerts/consul_ca_root.crt
   verify_client: required
   http_extra_headers:
     'X-Frame-Options': 'SAMEORIGIN'
@@ -24,9 +23,9 @@ restapi:
 ctl:
   insecure: false
   # These certs are used as client certs/ca to verify by patronictl
-  certfile: /mnt/consulcerts/agent.crt
-  keyfile: /mnt/consulcerts/agent.key
-  cafile: /mnt/consulcerts/ca_chain.crt
+  certfile: /mnt/patronicerts/consul.crt
+  keyfile: /mnt/patronicerts/consul.key
+  cafile: /mnt/patronicerts/consul_ca_root.crt
 
 consul:
   host: 127.0.0.1:8500 # use local consul
@@ -88,29 +87,29 @@ postgresql:
       username: postgres
       password: %%suppass%%
       sslmode: verify-ca
-      sslcert: /mnt/postgrescerts/postgresserver.crt
-      sslkey: /mnt/postgrescerts/postgresserver.key
-      sslrootcert: /mnt/postgrescerts/ca_chain.crt
+      sslcert: /mnt/patronicerts/postgres.crt
+      sslkey: /mnt/patronicerts/postgres.key
+      sslrootcert: /mnt/patronicerts/postgres_ca_root.crt
     replication:
       username: replicator
       password: %%reppass%%
       sslmode: verify-ca
-      sslcert: /mnt/postgrescerts/postgresserver.crt
-      sslkey: /mnt/postgrescerts/postgresserver.key
-      sslrootcert: /mnt/postgrescerts/ca_chain.crt
+      sslcert: /mnt/patronicerts/postgres.crt
+      sslkey: /mnt/patronicerts/postgres.key
+      sslrootcert: /mnt/patronicerts/postgres_ca_root.crt
     rewind:
       username: rewind_user
       password: rewind_password
       sslmode: verify-ca
-      sslcert: /mnt/postgrescerts/postgresserver.crt
-      sslkey: /mnt/postgrescerts/postgresserver.key
-      sslrootcert: /mnt/postgrescerts/ca_chain.crt
+      sslcert: /mnt/patronicerts/postgres.crt
+      sslkey: /mnt/patronicerts/postgres.key
+      sslrootcert: /mnt/patronicerts/postgres_ca_root.crt
   parameters:
     unix_socket_directories: '/tmp/'
     ssl: on
-    ssl_cert_file: /mnt/postgrescerts/postgresserver.crt
-    ssl_key_file: /mnt/postgrescerts/postgresserver.key
-    ssl_ca_file: /mnt/postgrescerts/ca_chain.crt
+    ssl_cert_file: /mnt/patronicerts/postgres.crt
+    ssl_key_file: /mnt/patronicerts/postgres.key
+    ssl_ca_file: /mnt/patronicerts/postgres_ca_root.crt
 
 tags:
     nofailover: false

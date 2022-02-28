@@ -6,31 +6,18 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
-if [ ! -s /mnt/consulcerts/unwrapped.token ]; then
-    TOKEN=$(< /mnt/consulcerts/credentials.json \
-      jq -re .wrapped_token)
-    < /mnt/consulcerts/credentials.json \
-      jq -re .cert >/mnt/consulcerts/agent.crt
-    < /mnt/consulcerts/credentials.json \
-      jq -re .ca >/mnt/consulcerts/ca.crt
-    < /mnt/consulcerts/credentials.json \
-      jq -re .ca_chain >/mnt/consulcerts/ca_chain.crt
-    < /mnt/consulcerts/credentials.json \
-      jq -re .ca_root >>/mnt/consulcerts/ca_chain.crt
-    < /mnt/consulcerts/credentials.json \
-      jq -re .ca_root >/mnt/consulcerts/ca_root.crt
+if [ ! -s /mnt/consulcerts/gossip.key ]; then
+    CREDENTIALS_TOKEN=$(< /mnt/consulcerts/credentials.json \
+      jq -re .credentials_token)
+
     umask 177
-    < /mnt/consulcerts/credentials.json \
-      jq -re .key >/mnt/consulcerts/agent.key
-    < /mnt/consulcerts/credentials.json \
-      jq -re .gossip_key >/mnt/consulcerts/gossip.key
     HOME=/var/empty \
-    vault unwrap -address="https://active.vault.service.consul:8200" \
+    VAULT_TOKEN="$CREDENTIALS_TOKEN" \
+    vault read -address="https://active.vault.service.consul:8200" \
       -tls-server-name=active.vault.service.consul \
-      -ca-cert=/mnt/certs/ca_chain.crt \
-      -client-key=/mnt/certs/client.key \
-      -client-cert=/mnt/certs/client.crt \
-      -format=json "$TOKEN" | \
-      jq -r '.auth.client_token' > /mnt/consulcerts/unwrapped.token
-    chown consul /mnt/consulcerts/*
+      -ca-cert=/mnt/vaultcerts/ca_root.crt \
+      -client-key=/mnt/vaultcerts/client.key \
+      -client-cert=/mnt/vaultcerts/client.crt \
+      -format=json "cubbyhole/consul" |
+      jq -r '.data.gossip_key' > /mnt/consulcerts/gossip.key
 fi
