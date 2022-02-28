@@ -1,3 +1,7 @@
+0.1.3
+
+* Revision bump
+
 0.1.2
 
 * First version integrated into cluster

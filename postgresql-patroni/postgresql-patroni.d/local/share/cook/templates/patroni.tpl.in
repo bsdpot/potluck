@@ -5,30 +5,39 @@
 {{- $consul_cert = (print .Data.certificate "\n" .Data.issuing_ca) }}
 {{- $consul_key = .Data.private_key }}
 {{- $consul_cert |
-writeToFile "/mnt/patronicerts/consul.crt" "postgres" "wheel" "0600" "newline"}}
+    writeToFile "/mnt/patronicerts/consul.crt" "postgres" "wheel" "0600"
+    "newline"}}
 {{- $consul_key |
-writeToFile "/mnt/patronicerts/consul.key" "postgres" "wheel" "0600" "newline"}}
+    writeToFile "/mnt/patronicerts/consul.key" "postgres" "wheel" "0600"
+    "newline"}}
 {{- end }}
 {{- with secret "consulpki/cert/ca" }}
 {{- .Data.certificate |
-writeToFile "/mnt/patronicerts/consul_ca_root.crt" "root" "wheel" "0644" "newline"}}
+    writeToFile "/mnt/patronicerts/consul_ca_root.crt" "root" "wheel" "0644"
+    "newline"}}
 {{- end }}
 
 {{- $psql_cert:="" }}{{ $psql_key:="" }}
 {{- with secret "postgrespki_int/issue/postgres-server"
-"common_name=%%nodename%%.global.postgres"
-"alt_names=localhost,master.postgresql.service.consul,replica.postgresql.service.consul,standby-leader.postgresql.service.consul"
-"ip_sans=127.0.0.1,%%ip%%"}}
+    "common_name=%%nodename%%.global.postgres"
+    (print "alt_names=localhost,"
+      "master.postgresql.service.consul,"
+      "replica.postgresql.service.consul,"
+      "standby-leader.postgresql.service.consul")
+    "ip_sans=127.0.0.1,%%ip%%"}}
 {{- $psql_cert = (print .Data.certificate "\n" .Data.issuing_ca) }}
 {{- $psql_key = .Data.private_key }}
 {{- $psql_cert |
-writeToFile "/mnt/patronicerts/postgres.crt" "postgres" "wheel" "0600" "newline"}}
+    writeToFile "/mnt/patronicerts/postgres.crt" "postgres" "wheel" "0600"
+    "newline"}}
 {{- $psql_key |
-writeToFile "/mnt/patronicerts/postgres.key" "postgres" "wheel" "0600" "newline"}}
+    writeToFile "/mnt/patronicerts/postgres.key" "postgres" "wheel" "0600"
+    "newline"}}
 {{- end }}
 {{- with secret "postgrespki/cert/ca" }}
 {{- .Data.certificate |
-writeToFile "/mnt/patronicerts/postgres_ca_root.crt" "root" "wheel" "0644" "newline"}}
+writeToFile "/mnt/patronicerts/postgres_ca_root.crt" "root" "wheel" "0644"
+  "newline"}}
 {{- end }}
 
 {{- (print $consul_cert $consul_key $psql_cert $psql_key) | sha256Hex }}

@@ -34,7 +34,8 @@ create_int_pki "nomadpki" "nomadpki_int" "global.nomad intermediate"
 # Create nomad-server role for issuing nomad server certs
 create_pki_role "nomadpki_int" "nomad-server" \
   "{{identity.entity.metadata.nodename}}.global.nomad" \
-  "server.global.nomad"
+  "server.global.nomad" \
+  "metrics.global.nomad"
 
 vault policy write issue-nomad-server-cert - <<-EOF
 	path "nomadpki_int/issue/nomad-server" {
@@ -77,7 +78,8 @@ create_id_group "nomad-servers" \
 # used on compute hosts
 create_pki_role "nomadpki_int" "nomad-client" \
   "{{identity.entity.metadata.nodename}}.global.nomad" \
-  "client.global.nomad"
+  "client.global.nomad" \
+  "metrics.global.nomad"
 
 vault policy write issue-nomad-client-cert - <<-EOF
 	path "nomadpki_int/issue/nomad-client" {

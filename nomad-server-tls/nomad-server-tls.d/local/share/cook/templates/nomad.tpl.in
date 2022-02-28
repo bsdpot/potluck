@@ -1,7 +1,8 @@
 {{- $cert:="" }}{{ $key:="" }}
 {{- with secret "nomadpki_int/issue/nomad-server"
 "common_name=%%nodename%%.global.nomad"
-"alt_names=localhost,server.global.nomad" "ip_sans=127.0.0.1"}}
+"alt_names=localhost,server.global.nomad,metrics.global.nomad"
+"ip_sans=127.0.0.1"}}
 {{- $cert = (print .Data.certificate "\n" .Data.issuing_ca) }}
 {{- $key = .Data.private_key }}
 {{- $cert |
