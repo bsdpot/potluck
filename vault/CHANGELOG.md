@@ -1,3 +1,15 @@
+2.2.11
+
+* Make consul node_names non-FQDN
+
+---
+
+2.2.10
+
+* Fix nomad-client metrics retrieval
+
+---
+
 2.2.9
 
 * Version bump to match ini, downgrading ini would still push version up

@@ -30,6 +30,7 @@ SUPPASS=$(cat /mnt/patronicerts/superuser.pass)
 
 # setup patroni.yml by updating variables
 < "$TEMPLATEPATH/patroni.yml.in" \
+  sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%servicetag%%${sep}$SERVICETAG${sep}g" \

@@ -1,3 +1,9 @@
+0.2.7
+
+* Make consul node_names non-FQDN
+
+---
+
 0.2.6
 
 * Major rework of templates, certificate issuing, and token/entity/group/role structure
