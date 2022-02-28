@@ -1,3 +1,9 @@
+0.2.8
+
+* Bugfix in consul agent policy
+
+---
+
 0.2.7
 
 * Make consul node_names non-FQDN

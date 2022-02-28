@@ -13,7 +13,7 @@ SCRIPTDIR=$(dirname "$SCRIPT")
 
 "$SCRIPTDIR"/consul.sh acl policy read -name "$NODENAME" ||
   "$SCRIPTDIR"/consul.sh acl policy create -name "$NODENAME" \
-    -rules 'node "'"$NODENAME.$DATACENTER.consul"'" {
+    -rules 'node "'"$NODENAME"'" {
   policy = "write"
 }
 '
