@@ -3,11 +3,12 @@ vault {
   token        = "%%token%%"
   unwrap_token = false
   renew_token  = true
+  default_lease_duration = "30m"
 
   ssl {
     enabled = true
     verify = true
-    ca_cert = "/mnt/certs/ca.crt"
+    ca_cert = "/mnt/vaultcerts/ca_root.crt"
     server_name = "localhost"
   }
 }
@@ -19,14 +20,14 @@ syslog {
 
 template {
   source      = "/mnt/templates/vault.tpl"
-  destination = "/mnt/certs/vault.checksum"
-  command     = "service nginx reload vaultproxy || true"
+  destination = "/mnt/vaultcerts/vault.checksum"
+  command     = "service nginx reload vaultproxy; true"
 }
 
 template {
   source      = "/mnt/templates/consul.tpl"
   destination = "/mnt/consulcerts/consul.checksum"
-  command     = "/usr/local/share/cook/bin/reload-consul.sh"
+  command     = "service consul reload; true"
 }
 
 template {

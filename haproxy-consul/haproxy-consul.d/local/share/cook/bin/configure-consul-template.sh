@@ -9,6 +9,7 @@ set -o pipefail
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+EXTRA_TEMPLATE=/mnt/extra_service.tpl.in
 
 mkdir -p /usr/local/etc/consul-template.d
 
@@ -16,7 +17,7 @@ mkdir -p /usr/local/etc/consul-template.d
 # safe(r) separator for sed
 sep=$'\001'
 
-TOKEN=$(/bin/cat /mnt/certs/unwrapped.token)
+TOKEN=$(/bin/cat /mnt/vaultcerts/unwrapped.token)
 cp "$TEMPLATEPATH/consul-template.hcl.in" \
   /usr/local/etc/consul-template.d/consul-template.hcl
 chmod 600 \
@@ -31,6 +32,18 @@ for name in vault consul serviceclient metrics; do
       sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
       > "/mnt/templates/$name.tpl"
 done
+
+if [ -e "$EXTRA_TEMPLATE" ]; then
+    < "$EXTRA_TEMPLATE" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+      sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
+      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
+      >> "/mnt/templates/serviceclient.tpl"
+fi
+
+
+mkdir -p /mnt/metricscerts
+mkdir -p /mnt/servicecerts
 
 sysrc consul_template_syslog_output_enable=YES
 sysrc consul_template_syslog_priority="warn"

@@ -72,20 +72,11 @@ timeout --foreground 10 \
   service consul onestop || service consul onestop || true
 killall -9 consul || true
 
-# create nodeexport user, needed for chown, removed from config
-# node_exporter script
-log "Create nodeexport user"
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m \
-  -s /usr/bin/nologin -h -
-
 # setup directories for persistent storage and certificate usage
 log "Creating directories for persistent storage and certificate usage"
-mkdir -p /mnt/certs
-mkdir -p /mnt/consulcerts
-chown -R consul /mnt/consulcerts
 mkdir -p /mnt/log
-mkdir -p /mnt/metricscerts/hash
 mkdir -p /mnt/templates
+mkdir -p /mnt/vaultcerts
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
@@ -101,6 +92,9 @@ unwrap-cluster-credentials.sh
 
 log "Unwrap consul credentials"
 unwrap-consul-credentials.sh
+
+log "Setup node_exporter"
+configure-node-exporter.sh
 
 log "Configure consul-template"
 configure-consul-template.sh
@@ -128,9 +122,6 @@ timeout --foreground 120 \
   sh -c 'while ! service nginx status nodemetricsproxy; do
     service nginx start nodemetricsproxy || true; sleep 3;
   done'
-
-log "Setup node_exporter"
-configure-node-exporter.sh
 
 log "Configure consul"
 configure-consul.sh

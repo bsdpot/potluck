@@ -12,7 +12,7 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPT")
 TEMPLATEPATH="$SCRIPTDIR/../templates"
-CONFIG_TMPL="/mnt/haproxy.conf.default.in"
+CONFIG_TMPL="/mnt/haproxy.conf.in"
 
 mkdir -p /usr/local/etc/haproxy/certs
 mkdir -p /var/run/haproxy
@@ -41,7 +41,7 @@ mkdir -p /var/run/haproxy
 # safe(r) separator for sed
 sep=$'\001'
 
-[ -e "$CONFIG_TMPL" ] || CONFIG_TMPL="$TEMPLATEPATH/haproxy.conf.in"
+[ -e "$CONFIG_TMPL" ] || CONFIG_TMPL="$TEMPLATEPATH/haproxy.conf.default.in"
 
 < "$CONFIG_TMPL" \
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
