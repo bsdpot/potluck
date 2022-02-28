@@ -1,3 +1,9 @@
+0.2.9
+
+* Move loki and promtail download to image build phase
+
+---
+
 0.2.8
 
 * Make consul node_names non-FQDN

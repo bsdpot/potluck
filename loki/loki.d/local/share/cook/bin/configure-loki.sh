@@ -20,22 +20,6 @@ mkdir -p /mnt/loki/rules-temp
 sep=$'\001'
 
 # loki setup
-# download the release files
-fetch https://github.com/grafana/loki/releases/download/\
-v2.2.1/loki-freebsd-amd64.zip --output=/root/loki-freebsd-amd64.zip
-
-# extract loki and copy to /usr/local/bin
-cd /root/
-if [ -f /root/loki-freebsd-amd64.zip ]; then
-   unzip loki-freebsd-amd64.zip
-   if [ -f /root/loki-freebsd-amd64 ]; then
-       cp -f /root/loki-freebsd-amd64 /usr/local/bin/loki-freebsd-amd64
-       chmod a+x /usr/local/bin/loki-freebsd-amd64
-       ln -s /usr/local/bin/loki-freebsd-amd64 /usr/local/bin/loki
-       rm -rf /root/loki-freebsd-amd64
-       rm -rf /root/loki-freebsd-amd64.zip
-   fi
-fi
 
 # copy in loki rc
 cp "$TEMPLATEPATH/loki.rc.in" /usr/local/etc/rc.d/loki
@@ -55,23 +39,7 @@ sysrc loki_syslog_output_enable="YES"
 # chown to loki user
 chown -R loki:loki /mnt/loki
 
-# promtail
-# download the release files
-fetch https://github.com/grafana/loki/releases/download/\
-v2.2.1/promtail-freebsd-amd64.zip --output=/root/promtail-freebsd-amd64.zip
-
-# extract promtail and copy to /usr/local/bin
-if [ -f /root/promtail-freebsd-amd64.zip ]; then
-    unzip promtail-freebsd-amd64.zip
-    if [ -f /root/promtail-freebsd-amd64 ]; then
-        cp -f /root/promtail-freebsd-amd64 \
-          /usr/local/bin/promtail-freebsd-amd64
-        chmod a+x /usr/local/bin/promtail-freebsd-amd64
-        ln -s /usr/local/bin/promtail-freebsd-amd64 /usr/local/bin/promtail
-        rm -rf /root/promtail-freebsd-amd64
-        rm -rf /root/promtail-freebsd-amd64.zip
-    fi
-fi
+# promtail setup
 
 # copy in the promtail rc file
 cp "$TEMPLATEPATH/promtail.rc.in" /usr/local/etc/rc.d/promtail
