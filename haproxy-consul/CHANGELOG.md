@@ -1,3 +1,9 @@
+0.1.5
+
+* Add missing package socat to allow graceful reloads
+
+---
+
 0.1.4
 
 * Make consul node_names non-FQDN

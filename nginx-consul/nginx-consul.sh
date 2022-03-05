@@ -103,12 +103,6 @@ sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
 step "Install package node_exporter"
 pkg install -y node_exporter
 
-step "Install package haproxy"
-pkg install -y haproxy
-
-step "Install package socat"
-pkg install -y socat
-
 step "Install package sudo"
 pkg install -y sudo
 
