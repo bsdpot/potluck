@@ -35,7 +35,7 @@ manually.
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
   -E IP=<IP address of this system> \
   -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
-  -E VAULTSERVER=<IP address vault server>
+  -E VAULTSERVER=<IP address vault server> -E SERVERNAME=server_name
 
 
 The CONSULSERVERS parameter defines the consul server instances, and must be
@@ -47,6 +47,7 @@ set as
 The VAULTSERVER parameter is the IP address of the `vault` server to
 authenticate to, and obtain certificates from.
 
+SERVERNAME is used in the server certificates SubjectAltName.
 
 # Usage
 

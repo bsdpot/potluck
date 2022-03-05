@@ -47,7 +47,7 @@ fi
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS VAULTSERVER"
+required_args="DATACENTER IP NODENAME CONSULSERVERS VAULTSERVER SERVERNAME"
 optional_args="REMOTELOG"
 
 for var in $required_args; do
@@ -152,8 +152,8 @@ configure-nginx.sh
 
 log "Start nginx"
 timeout --foreground 120 \
-  sh -c 'while ! service nginx status nodemetricsproxy; do
-    service nginx start nginx || true; sleep 3;
+  sh -c 'while ! service nginx status main; do
+    service nginx start main || true; sleep 3;
   done'
 
 log "Exit seasoned"

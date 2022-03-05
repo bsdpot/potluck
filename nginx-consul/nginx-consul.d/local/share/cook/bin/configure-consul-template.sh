@@ -25,11 +25,12 @@ chmod 600 \
 echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
   /usr/local/etc/consul-template.d/consul-template.hcl
 
-for name in vault consul serviceclient metrics; do
+for name in vault consul serviceserver metrics; do
     < "$TEMPLATEPATH/$name.tpl.in" \
       sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
       sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
+      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" |\
+      sed "s${sep}%%servername%%${sep}$SERVERNAME${sep}g" \
       > "/mnt/templates/$name.tpl"
 done
 
@@ -37,8 +38,9 @@ if [ -e "$EXTRA_TEMPLATE" ]; then
     < "$EXTRA_TEMPLATE" \
       sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
       sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
-      >> "/mnt/templates/serviceclient.tpl"
+      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
+      sed "s${sep}%%servername%%${sep}$SERVERNAME${sep}g" \
+      >> "/mnt/templates/serviceserver.tpl"
 fi
 
 

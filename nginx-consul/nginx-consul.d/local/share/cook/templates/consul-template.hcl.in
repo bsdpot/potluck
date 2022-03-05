@@ -31,6 +31,12 @@ template {
 }
 
 template {
+  source      = "/mnt/templates/serviceserver.tpl"
+  destination = "/mnt/servicecerts/serviceserver.checksum"
+  command     = "service nginx reload main; true"
+}
+
+template {
   source      = "/mnt/templates/metrics.tpl"
   destination = "/mnt/metricscerts/metrics.checksum"
   command     = "/usr/local/share/cook/bin/reload-metrics.sh"

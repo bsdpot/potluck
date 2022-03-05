@@ -52,7 +52,3 @@ sep=$'\001'
 # enable haproxy
 service haproxy enable
 sysrc haproxy_config=/usr/local/etc/haproxy/haproxy.conf
-
-#if [ -f /mnt/haproxycerts/compute.pem ]; then
-#    service haproxy restart || true
-#fi
