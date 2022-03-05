@@ -1,0 +1,14 @@
+{{- $cert:="" }}
+{{- with secret "servicepki_int/issue/client"
+"common_name=%%nodename%%.service.client"
+"alt_names=localhost,intproxy.service.client" "ip_sans=127.0.0.1"}}
+{{- $cert =
+(print .Data.certificate "\n" .Data.private_key "\n" .Data.issuing_ca) }}
+{{- $cert |
+writeToFile "/mnt/servicecerts/client.crt" "root" "wheel" "0600" "newline"}}
+{{- end }}
+{{- with secret "servicepki/cert/ca" }}
+{{- .Data.certificate |
+writeToFile "/mnt/servicecerts/ca_root.crt" "root" "wheel" "0644" "newline"}}
+{{- end }}
+{{- $cert | sha256Hex }}
