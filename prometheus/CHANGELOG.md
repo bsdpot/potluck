@@ -1,3 +1,9 @@
+0.11.5
+
+* Correct bug in consulmetricsproxy config
+
+---
+
 0.11.4
 
 * Make consul node_names non-FQDN
