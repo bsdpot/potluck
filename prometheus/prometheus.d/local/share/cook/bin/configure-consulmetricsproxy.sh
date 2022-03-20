@@ -21,7 +21,7 @@ sep=$'\001'
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
-  /usr/local/etc/nginx/consulmetricsproxy.conf
+  > /usr/local/etc/nginx/consulmetricsproxy.conf
 
 service nginx enable
 sysrc nginx_profiles+="consulmetricsproxy"
