@@ -10,7 +10,7 @@ usage() {
 	    [-e entity_suffix] [-p policy] [-t token_ttl] [-r token_role]
 	    [-u issue_vault_cert_role] cert_nodename
 
-	    token_tole -- defaults to "cert-issuer"
+	    token_role -- defaults to "cert-issuer"
 	    vault_issue_role -- good value is"vault-client".
 	    If not set, no vault client certificates will be
 	    issued.
