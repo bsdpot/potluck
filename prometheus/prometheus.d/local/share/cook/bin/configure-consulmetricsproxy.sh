@@ -15,10 +15,13 @@ mkdir -p /usr/local/etc/nginx
 
 # shellcheck disable=SC3003
 # safe(r) separator for sed
-#sep=$'\001'
+sep=$'\001'
 
-cp "$TEMPLATEPATH/consulmetricsproxy.conf.in" \
-  /usr/local/etc/nginx/consulmetricsproxy.conf
+< "$TEMPLATEPATH/consulmetricsproxy.conf.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
+  sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
+  > /usr/local/etc/nginx/consulmetricsproxy.conf
 
 service nginx enable
 sysrc nginx_profiles+="consulmetricsproxy"
