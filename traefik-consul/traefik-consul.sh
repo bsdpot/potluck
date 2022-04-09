@@ -14,8 +14,8 @@ RUNS_IN_NOMAD=false
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
 service sendmail onedisable
-#sysrc traefik_enable="YES"
-service traefik enable
+sysrc traefik_enable="YES"
+#service traefik enable
 
 # Install packages
 pkg install -y openssl traefik

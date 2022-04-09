@@ -1,3 +1,9 @@
+1.2.6
+
+* traefik service not enabled, reverting earlier change
+
+---
+
 1.2.5
 
 * Rebuild for latest version and adding remotelogs
