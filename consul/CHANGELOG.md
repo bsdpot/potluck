@@ -1,3 +1,9 @@
+2.0.13
+
+* Typos and formatting fixes
+
+---
+
 2.0.12
 
 * Minor updates and rebuild for latest consul version

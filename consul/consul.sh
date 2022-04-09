@@ -239,8 +239,8 @@ case \$BOOTSTRAP in
      }
     }\" > /usr/local/etc/consul.d/agent.json
 
-     echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
-     ;;
+    echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
+    ;;
 
   3|5)
     echo \"{
@@ -275,11 +275,10 @@ case \$BOOTSTRAP in
       \\\"name\\\": \\\"node-exporter\\\",
       \\\"tags\\\": [\\\"_app=consul\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
       \\\"port\\\": 9100
-  }
-}\" > /usr/local/etc/consul.d/agent.json
+   }
+  }\" > /usr/local/etc/consul.d/agent.json
 
-     echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
-
+    echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
     ;;
 
   *)
