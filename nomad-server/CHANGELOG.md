@@ -1,3 +1,9 @@
+2.0.8
+
+* Minor updates for telemetry and remote logs, latest version nomad
+
+---
+
 2.0.7
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

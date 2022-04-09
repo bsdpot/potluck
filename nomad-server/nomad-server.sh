@@ -92,11 +92,6 @@ pkg install -y nomad
 step "Install package sudo"
 pkg install -y sudo
 
-# we need vault for authentication and certificates
-# not yet configured
-step "Install package vault"
-pkg install -y vault
-
 step "Install package node_exporter"
 pkg install -y node_exporter
 
@@ -142,8 +137,8 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/consul stop || true
-/usr/local/etc/rc.d/nomad stop || true
+service consul stop || true
+service nomad stop || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -198,6 +193,12 @@ then
     echo 'NOMADKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
     NOMADKEY=\$GOSSIPKEY
 fi
+# Remotelog is a remote syslog server, need to pass in IP
+if [ -z \${REMOTELOG+x} ];
+then
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour'
+    REMOTELOG='unset'
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -223,24 +224,33 @@ echo \"{
   \\\"a_record_limit\\\": 3,
   \\\"enable_truncate\\\": true
  },
+ \\\"verify_incoming\\\": false,
+ \\\"verify_outgoing\\\": false,
+ \\\"verify_server_hostname\\\": false,
+ \\\"verify_incoming_rpc\\\": false,
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
  \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
  \\\"start_join\\\": [ \$CONSULSERVERS ],
+ \\\"telemetry\\\": {
+   \\\"prometheus_retention_time\\\": \\\"24h\\\"
+ },
  \\\"service\\\": {
-  \\\"address\\\": \\\"\$IP\\\",
-  \\\"name\\\": \\\"node-exporter\\\",
-  \\\"tags\\\": [\\\"_app=nomad-server\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
-  \\\"port\\\": 9100
+   \\\"address\\\": \\\"\$IP\\\",
+   \\\"name\\\": \\\"node-exporter\\\",
+   \\\"tags\\\": [\\\"_app=nomad-server\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
+   \\\"port\\\": 9100
  }
 }\" > /usr/local/etc/consul.d/agent.json
 
 # set owner and perms on agent.json
 chown -R consul:wheel /usr/local/etc/consul.d
-chmod 640 /usr/local/etc/consul.d/agent.json
+#chmod 640 /usr/local/etc/consul.d/agent.json
+chmod 750 /usr/local/etc/consul.d
 
 # enable consul
-sysrc consul_enable=\"YES\"
+#sysrc consul_enable=\"YES\"
+service consul enable
 
 # set load parameter for consul config
 sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
@@ -262,7 +272,11 @@ chown -R consul:wheel /var/log/consul
 # end consul #
 
 # enable node_exporter service
-sysrc node_exporter_enable=\"YES\"
+#sysrc node_exporter_enable=\"YES\"
+service node_exporter enable
+sysrc node_exporter_args=\"--log.level=warn\"
+sysrc node_exporter_user=nodeexport
+sysrc node_exporter_group=nodeexport
 
 # start nomad #
 
@@ -271,13 +285,11 @@ echo \"
 bind_addr = \\\"\$IP\\\"
 plugin_dir = \\\"/usr/local/libexec/nomad/plugins\\\"
 datacenter = \\\"\$DATACENTER\\\"
-
 advertise {
   # This should be the IP of THIS MACHINE and must be routable by every node
   # in your cluster
   http = \\\"\$IP:4646\\\"
 }
-
 server {
   enabled = true
   # set this to 3 or 5 for cluster setup
@@ -285,7 +297,6 @@ server {
   # Encrypt gossip communication
   encrypt = \\\"\$NOMADKEY\\\"
 }
-
 consul {
   # The address to the local Consul agent.
   address = \\\"\$IP:8500\\\"
@@ -296,25 +307,37 @@ consul {
   # Enabling the server and client to bootstrap using Consul.
   server_auto_join = true
 }
-
 enable_syslog=true
 log_level=\\\"INFO\\\"
 syslog_facility=\\\"LOCAL1\\\"\" > /usr/local/etc/nomad/server.hcl
 
 # set the rc startup
-sysrc nomad_enable=yes
+#sysrc nomad_enable=yes
+service nomad enable
 echo \"nomad_args=\\\"-config=/usr/local/etc/nomad/server.hcl -network-interface=\$IP\\\"\" >> /etc/rc.conf
+
+## remote syslogs
+if [ \"${REMOTELOG}\" == \"unset\" ]; then
+    echo \"Remotelog is not set. Try passing in an IP address of a syslog server\"
+else
+    mkdir -p /usr/local/etc/syslog.d
+    echo \"*.*     @${REMOTELOG}\" > /usr/local/etc/syslog.d/logtoremote.conf
+    service syslogd restart
+fi
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 # start consul agent
-/usr/local/etc/rc.d/consul start
+#/usr/local/etc/rc.d/consul start
+service consul start
 
 # start nomad
-/usr/local/etc/rc.d/nomad start
+#/usr/local/etc/rc.d/nomad start
+service nomad start
 
 # start node_exporter
-/usr/local/etc/rc.d/node_exporter start
+#/usr/local/etc/rc.d/node_exporter start
+service node_exporter start
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
