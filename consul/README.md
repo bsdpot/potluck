@@ -1,5 +1,5 @@
 ---
-author: "Stephan Lichtenauer & Bretton Vine"
+author: "Stephan Lichtenauer, Bretton Vine"
 title: Consul
 summary: Consul is a service discovery platform for micro-services.
 tags: ["micro-services", "traefik", "nomad", "consul"]

@@ -1,3 +1,9 @@
+2.0.15
+
+* Fixed bad character in README
+
+---
+
 2.0.14
 
 * Rebuild due to workflow error
