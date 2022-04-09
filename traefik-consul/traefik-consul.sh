@@ -7,14 +7,15 @@
 
 # Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
 # You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script 
+# appropriately at the end of this script
 RUNS_IN_NOMAD=false
 
 # -------------- BEGIN PACKAGE SETUP -------------
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
 service sendmail onedisable
-sysrc traefik_enable="YES"
+#sysrc traefik_enable="YES"
+service traefik enable
 
 # Install packages
 pkg install -y openssl traefik
@@ -30,11 +31,11 @@ mkdir -p /var/log/traefik
 
 #
 # Now generate the run command script "cook"
-# It configures the system on the first run by creating the config file(s) 
-# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits 
+# It configures the system on the first run by creating the config file(s)
+# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
 #
 
-# ----------------- BEGIN COOK ------------------ 
+# ----------------- BEGIN COOK ------------------
 echo "#!/bin/sh
 # No need to change this, just ensures configuration is done only once
 if [ -e /usr/local/etc/pot-is-seasoned ]
@@ -43,12 +44,13 @@ then
     # created by pot and we block indefinitely
     if [ ! -e /tmp/environment.sh ]
     then
-        tail -f /dev/null 
+        tail -f /dev/null
     fi
     exit 0
 fi
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/traefik stop  || true
+#/usr/local/etc/rc.d/traefik stop  || true
+service traefik stop || true
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
 # where pot is storing it in this case
@@ -65,10 +67,16 @@ then
     echo 'CONSULSERVER is unset - see documentation how to configure this flavour'
     exit 1
 fi
+# Remotelog is a remote syslog server, need to pass in IP
+if [ -z \${REMOTELOG+x} ];
+then
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour'
+    REMOTELOG='unset'
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
-# Create traefik server config file 
+# Create traefik server config file
 echo \"
 [entryPoints]
   [entryPoints.http]
@@ -127,8 +135,19 @@ openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout /usr/local/etc/ssl/
 chmod 644 /usr/local/etc/ssl/cert.crt
 chmod 600 /usr/local/etc/ssl/cert.key
 
+## remote syslogs
+if [ \"${REMOTELOG}\" == \"unset\" ]; then
+    echo \"Remotelog is not set. Try passing in an IP address of a syslog server\"
+else
+    mkdir -p /usr/local/etc/syslog.d
+    echo \"*.*     @${REMOTELOG}\" > /usr/local/etc/syslog.d/logtoremote.conf
+    service syslogd restart
+fi
+
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-/usr/local/etc/rc.d/traefik start
+#/usr/local/etc/rc.d/traefik start
+service traefik start
+
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
 # If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh

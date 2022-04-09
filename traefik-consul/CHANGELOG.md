@@ -1,3 +1,9 @@
+1.2.5
+
+* Rebuild for latest version and adding remotelogs
+
+---
+
 1.2.4
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13
