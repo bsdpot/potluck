@@ -1,3 +1,9 @@
+2.0.9
+
+* Adding missing nodeexport user
+
+---
+
 2.0.8
 
 * Minor updates for telemetry and remote logs, latest version nomad

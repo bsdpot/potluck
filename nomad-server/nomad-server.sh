@@ -271,6 +271,11 @@ chown -R consul:wheel /var/log/consul
 
 # end consul #
 
+# add node_exporter user
+if ! id -u "nodeexport" >/dev/null 2>&1; then
+  /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+fi
+
 # enable node_exporter service
 #sysrc node_exporter_enable=\"YES\"
 service node_exporter enable
