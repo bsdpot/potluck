@@ -1,3 +1,9 @@
+2.0.12
+
+* Minor updates and rebuild for latest consul version
+
+---
+
 2.0.11
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13
