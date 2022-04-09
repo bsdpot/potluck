@@ -80,8 +80,7 @@ step "Disable sendmail"
 service sendmail onedisable
 
 step "Enable consul startup"
-#sysrc consul_enable="YES"
-service consul enable
+sysrc consul_enable="YES"
 
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
@@ -312,7 +311,7 @@ sysrc node_exporter_group=nodeexport
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 # start consul
-#/usr/local/etc/rc.d/consul start
+service consul enable
 service consul start
 
 # start node_exporter

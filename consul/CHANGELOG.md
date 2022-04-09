@@ -1,3 +1,9 @@
+2.0.16
+
+* Wrong fix, consul enable mixup with legacy sysrc entry
+
+---
+
 2.0.15
 
 * Fixed bad character in README
