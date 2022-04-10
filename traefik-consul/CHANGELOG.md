@@ -1,3 +1,9 @@
+1.2.8
+
+* Changing method for remote syslog as variable wasn't expanding
+
+---
+
 1.2.7
 
 * Implementing prometheus metrics and other minor tweaks. Updating README.

@@ -186,7 +186,7 @@ fi
 if [ -z \${REMOTELOG+x} ];
 then
     echo 'REMOTELOG is unset - see documentation how to configure this flavour'
-    REMOTELOG='unset'
+    REMOTELOG=0
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
@@ -288,11 +288,11 @@ case \$BOOTSTRAP in
 esac
 
 ## remote syslogs
-if [ \"${REMOTELOG}\" == \"unset\" ]; then
-    echo \"Remotelog is not set. Try passing in an IP address of a syslog server\"
-else
+if [ \"\${REMOTELOG}\" != \"0\" ]; then
     mkdir -p /usr/local/etc/syslog.d
-    echo \"*.*     @${REMOTELOG}\" > /usr/local/etc/syslog.d/logtoremote.conf
+    < /root/logtoremote.conf.in \
+      sed \"s|%%remotelog%%|\${REMOTELOG}|g\" \
+      > /usr/local/etc/syslog.d/logtoremote.conf
     service syslogd restart
 fi
 

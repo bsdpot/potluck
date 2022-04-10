@@ -1,3 +1,9 @@
+2.0.10
+
+* Changing method for setting up remote syslog as variable wasn't expanding
+
+---
+
 2.0.9
 
 * Adding missing nodeexport user
