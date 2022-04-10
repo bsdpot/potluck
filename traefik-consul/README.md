@@ -15,10 +15,14 @@ This is a flavour containing the ```traefik``` reverse proxy and load balancer p
 * Export the ports after creating the jail:    
   ```pot export-ports -p <jailname> -e 8080:8080 -e 9002:9002```
 * Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E CONSULSERVER=<IP or hostname of consulserver> -E REMOTELOG=<IP of remote syslog server>```
+  ```sudo pot set-env -p <jailname> -E CONSULSERVER=<IP or hostname of consulserver> [ -E REMOTELOG=<IP of remote syslog server> ]```
 * Optional: Mount your traefik log storage directory into the jail:    
   ```sudo pot mount-in -p <jailname> -m /var/log/traefik -d <logdirectory_on_host>```
 * Start jail with ```pot start```
+
+The CONSULSERVER parameter is the IP address of a consul server to get setup from.
+
+The optional REMOTELOG parameter is the IP address of a remote syslog server.
 
 # Usage
 

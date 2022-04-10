@@ -15,7 +15,6 @@ ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
 service sendmail onedisable
 sysrc traefik_enable="YES"
-#service traefik enable
 
 # Install packages
 pkg install -y openssl traefik
@@ -54,22 +53,19 @@ service traefik stop || true
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
 # where pot is storing it in this case
-if [ -e /tmp/environment.sh ]
-then
+if [ -e /tmp/environment.sh ]; then
     . /tmp/environment.sh
 fi
 #
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
 # Check config variables are set
 #
-if [ -z \${CONSULSERVER+x} ];
-then
+if [ -z \${CONSULSERVER+x} ]; then
     echo 'CONSULSERVER is unset - see documentation how to configure this flavour'
     exit 1
 fi
 # Remotelog is a remote syslog server, need to pass in IP
-if [ -z \${REMOTELOG+x} ];
-then
+if [ -z \${REMOTELOG+x} ]; then
     echo 'REMOTELOG is unset - see documentation how to configure this flavour'
     REMOTELOG='unset'
 fi
@@ -85,6 +81,8 @@ echo \"
     address = \\\"0.0.0.0:9002\\\"
   [entryPoints.httpSSL]
     address = \\\"0.0.0.0:8443\\\"
+  [entryPoints.metrics]
+    address = \\\"0.0.0.0:8082\\\"
 
 [http.routers.my-api]
   entryPoints = [\\\"traefik\\\"]
@@ -114,8 +112,17 @@ echo \"
 
 [log]
   filePath = \\\"/var/log/traefik/traefik.log\\\"
+
 [accessLog]
   filePath = \\\"/var/log/traefik/traefik-access.log\\\"
+
+[metrics]
+  [metrics.prometheus]
+    entryPoint = \\\"metrics\\\"
+    buckets = [0.1,0.3,1.2,5.0]
+    addEntryPointsLabels = true
+    addRoutersLabels = true
+    addServicesLabels = true
 
 [providers.consulCatalog]
   stale = false
@@ -136,7 +143,7 @@ chmod 644 /usr/local/etc/ssl/cert.crt
 chmod 600 /usr/local/etc/ssl/cert.key
 
 ## remote syslogs
-if [ \"${REMOTELOG}\" == \"unset\" ]; then
+if [ ${REMOTELOG} == \"unset\" ]; then
     echo \"Remotelog is not set. Try passing in an IP address of a syslog server\"
 else
     mkdir -p /usr/local/etc/syslog.d
@@ -152,8 +159,7 @@ service traefik start
 touch /usr/local/etc/pot-is-seasoned
 # If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh
 # created by pot and we now after configuration block indefinitely
-if [ ! -e /tmp/environment.sh ]
-then
+if [ ! -e /tmp/environment.sh ]; then
     tail -f /dev/null
 fi
 " > /usr/local/bin/cook

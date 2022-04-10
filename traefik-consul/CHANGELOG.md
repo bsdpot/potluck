@@ -1,3 +1,9 @@
+1.2.7
+
+* Implementing prometheus metrics and other minor tweaks. Updating README.
+
+---
+
 1.2.6
 
 * traefik service not enabled, reverting earlier change
