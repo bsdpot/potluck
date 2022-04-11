@@ -1,3 +1,9 @@
+1.2.9
+
+* Switch to syslog-ng. Include traefik logs in syslog-ng. Update to modern base script.
+
+---
+
 1.2.8
 
 * Changing method for remote syslog as variable wasn't expanding

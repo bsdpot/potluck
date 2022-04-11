@@ -1,1 +1,1 @@
-copy-in -s /usr/local/etc/pot/flavours/traefik-consul.d/logtoremote.conf.in -d /root/logtoremote.conf.in
+copy-in -s /usr/local/etc/pot/flavours/traefik-consul.d/syslog-ng.conf.in -d /root/syslog-ng.conf.in

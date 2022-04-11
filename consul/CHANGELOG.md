@@ -1,3 +1,9 @@
+2.0.18
+
+* Switching to syslog-ng
+
+---
+
 2.0.17
 
 * Changing approach with setting up remote syslog as variable not working

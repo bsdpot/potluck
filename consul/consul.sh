@@ -79,17 +79,20 @@ sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 step "Disable sendmail"
 service sendmail onedisable
 
-step "Enable consul startup"
-sysrc consul_enable="YES"
-
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
+
+step "Install package sudo"
+pkg install -y sudo
 
 step "Install package consul"
 pkg install -y consul
 
-step "Install package sudo"
-pkg install -y sudo
+step "Enable consul startup"
+sysrc consul_enable="YES"
+
+step "Install package syslog-ng"
+pkg install -y syslog-ng
 
 step "Install package node_exporter"
 pkg install -y node_exporter
@@ -136,7 +139,8 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/consul stop  || true
+#/usr/local/etc/rc.d/consul stop  || true
+service consul onestop || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -289,15 +293,26 @@ esac
 
 ## remote syslogs
 if [ \"\${REMOTELOG}\" != \"0\" ]; then
-    mkdir -p /usr/local/etc/syslog.d
-    < /root/logtoremote.conf.in \
-      sed \"s|%%remotelog%%|\${REMOTELOG}|g\" \
-      > /usr/local/etc/syslog.d/logtoremote.conf
-    service syslogd restart
+    config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
+
+    # read in template conf file, update remote log IP address, and
+    # write to correct destination
+    < /root/syslog-ng.conf.in \
+      sed \"s|%%config_version%%|\$config_version|g\" | \
+      sed \"s|%%remotelogip%%|\$REMOTELOG|g\" > /usr/local/etc/syslog-ng.conf
+
+    # stop and disable syslogd
+    service syslogd onestop || true
+    service syslogd disable
+
+    # enable and start syslog-ng
+    service syslog-ng enable
+    sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+    service syslog-ng start
 fi
 
 ## end consul setup
-if ! id -u \\\"nodeexport\\\" >/dev/null 2>&1; then
+if ! id -u \"nodeexport\" >/dev/null 2>&1; then
   /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
 fi
 

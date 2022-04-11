@@ -92,6 +92,9 @@ pkg install -y nomad
 step "Install package sudo"
 pkg install -y sudo
 
+step "Install package syslog-ng"
+pkg install -y syslog-ng
+
 step "Install package node_exporter"
 pkg install -y node_exporter
 
@@ -137,8 +140,8 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-service consul stop || true
-service nomad stop || true
+service consul onestop || true
+service nomad onestop || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -323,11 +326,23 @@ echo \"nomad_args=\\\"-config=/usr/local/etc/nomad/server.hcl -network-interface
 
 ## remote syslogs
 if [ \"\${REMOTELOG}\" != \"0\" ]; then
-    mkdir -p /usr/local/etc/syslog.d
-    < /root/logtoremote.conf.in \
-      sed \"s|%%remotelog%%|\${REMOTELOG}|g\" \
-      > /usr/local/etc/syslog.d/logtoremote.conf
-    service syslogd restart
+    config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
+
+    # read in template conf file, update remote log IP address, and
+    # write to correct destination
+    < /root/syslog-ng.conf.in \
+      sed \"s|%%config_version%%|\$config_version|g\" | \
+      sed \"s|%%remotelogip%%|\$REMOTELOG|g\" \
+      > /usr/local/etc/syslog-ng.conf
+
+    # stop and disable syslogd
+    service syslogd onestop || true
+    service syslogd disable
+
+    # enable and start syslog-ng
+    service syslog-ng enable
+    sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+    service syslog-ng start
 fi
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION

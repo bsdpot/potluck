@@ -1,3 +1,9 @@
+2.0.11
+
+* Switch to syslog-ng
+
+---
+
 2.0.10
 
 * Changing method for setting up remote syslog as variable wasn't expanding
