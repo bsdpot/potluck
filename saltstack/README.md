@@ -45,11 +45,11 @@ The CONSULSERVERS parameter defines the consul server instances, and must be set
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if the parameter is not set, do not use the default key for production encryption, instead provide your own.
 
-The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
-
 The SSHUSER parameter is used to create a user with SSH keys for remote access.
 
 The SSHPORT parameter is to custom set the port SSH runs on. It defaults to port 7777 which is not a standard SSH port.
+
+REMOTELOG is an optional parameter for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
 # Usage
 

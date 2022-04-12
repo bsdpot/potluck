@@ -255,11 +255,10 @@ then
     echo 'PILLARPATH is unset - please provide a path for mounted in persistent storage to use for salt pillar files.'
     exit 1
 fi
-# optional logging to remote syslog server check
-if [ -z \${REMOTELOG+x} ];
-then
-    echo 'REMOTELOG is unset - please provide the IP address of a loki server, or set a null value.'
-    REMOTELOG=\"null\"
+# Remotelog is a remote syslog server, need to pass in IP
+if [ -z \${REMOTELOG+x} ]; then
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour'
+    REMOTELOG=0
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
@@ -322,28 +321,24 @@ echo \"Restarting ssh\"
 ## end ssh setup
 
 ## start remote logging setup
+if [ \"\${REMOTELOG}\" != \"0\" ]; then
+    config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
 
-# optional remote logging
-if [ ! -z \$REMOTELOG ] && [ \$REMOTELOG != \"null\" ]; then
-    if [ -f /root/syslog-ng.conf ]; then
-        /usr/bin/sed -i .orig \"s/REMOTELOGIP/\$REMOTELOG/g\" /root/syslog-ng.conf
-        cp -f /root/syslog-ng.conf /usr/local/etc/syslog-ng.conf
-        # stop syslogd
-        service syslogd onestop || true
-        # setup sysrc entries to start and set parameters to accept logs from remote subnet
-        sysrc syslogd_enable=\"NO\"
-        sysrc syslog_ng_enable=\"YES\"
-        #sysrc syslog_ng_flags=\"-u daemon\"
-        sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
-        service syslog-ng start
-        echo \"syslog-ng setup complete\"
-    else
-        echo \"/root/syslog-ng.conf is missing?\"
-    fi
-else
-    echo \"REMOTELOG parameter is not set to an IP address. syslog-ng won't operate.\"
+    # read in template conf file, update remote log IP address, and
+    # write to correct destination
+    < /root/syslog-ng.conf.in \
+      sed \"s|%%config_version%%|\$config_version|g\" | \
+      sed \"s|%%remotelogip%%|\$REMOTELOG|g\" > /usr/local/etc/syslog-ng.conf
+
+    # stop and disable syslogd
+    service syslogd onestop || true
+    service syslogd disable
+
+    # enable and start syslog-ng
+    service syslog-ng enable
+    sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+    service syslog-ng start
 fi
-
 ## end remote logging setup
 
 ## start consul setup
@@ -406,23 +401,16 @@ if [ \$ENABLECONSUL = 1 ]; then
     ## end consul setup
 
     ## start node exporter setup
-
-    ## DISABLED as not using TLS
-    ## node exporter needs tls setup
-    ##echo \"tls_server_config:
-    ##  cert_file: /mnt/certs/cert.pem
-    ##  key_file: /mnt/certs/key.pem
-    ##\" > /usr/local/etc/node-exporter.yml
-
-    ## replacement to above disabled bit with empty file
     touch /usr/local/etc/node-exporter.yml
 
-    # add node_exporter user
-    /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+    ## setup nodeexport user
+    if ! id -u \"nodeexport\" >/dev/null 2>&1; then
+      /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+    fi
 
     # enable node_exporter service
     service node_exporter enable
-    sysrc node_exporter_args=\"--web.config=/usr/local/etc/node-exporter.yml\"
+    sysrc node_exporter_args=\"--log.level=warn\"
     sysrc node_exporter_user=nodeexport
     sysrc node_exporter_group=nodeexport
 

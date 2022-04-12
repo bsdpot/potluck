@@ -61,9 +61,9 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
 # shellcheck disable=SC2016
-#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
-  >/usr/local/etc/pkg/repos/FreeBSD.conf
+test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
 step "Touch /etc/rc.conf"
@@ -99,6 +99,9 @@ pkg install -y jo
 
 step "Install package curl"
 pkg install -y curl
+
+step "Install package syslog-ng"
+pkg install -y syslog-ng
 
 # openldap25 has missing slap* binaries and other files
 step "Install package openldap24-server"
@@ -230,6 +233,11 @@ if [ -z \${SERVERID+x} ]; then
 fi
 if [ -z \${REMOTEIP+x} ]; then
     echo 'REMOTEIP is unset - please include the Remote IP address if this is a multi-master setup - see documentation for how to pass in the remote IP address as a parameter'
+fi
+# Remotelog is a remote syslog server, need to pass in IP
+if [ -z \${REMOTELOG+x} ]; then
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour'
+    REMOTELOG=0
 fi
 
 #
@@ -558,8 +566,27 @@ if [ -f /usr/local/etc/apache24/httpd.conf ]; then
 </IfModule>\" >> /usr/local/etc/apache24/httpd.conf
 fi
 #
-
 # end apache24 config #
+
+## remote syslogs
+if [ \"\${REMOTELOG}\" != \"0\" ]; then
+    config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
+
+    # read in template conf file, update remote log IP address, and
+    # write to correct destination
+    < /root/syslog-ng.conf.in \
+      sed \"s|%%config_version%%|\$config_version|g\" | \
+      sed \"s|%%remotelogip%%|\$REMOTELOG|g\" > /usr/local/etc/syslog-ng.conf
+
+    # stop and disable syslogd
+    service syslogd onestop || true
+    service syslogd disable
+
+    # enable and start syslog-ng
+    service syslog-ng enable
+    sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+    service syslog-ng start
+fi
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 echo \"Starting openldap and apache\"

@@ -1,3 +1,9 @@
+0.0.5
+
+* Adding syslog-ng and remote logging
+
+---
+
 0.0.4
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

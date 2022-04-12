@@ -50,6 +50,7 @@ You can adjust this flavour and rebuild your own pot image if you have other req
    -E IMPORTNGINX=<1 | 0 default> \
    -E IMPORTRSYNC=<1 | 0 default> \
    -E POSTSCRIPT=<1 | 0 default>
+   [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 
 SETUPSCRIPT will run copied-in ```/root/setup.sh``` when set to 1. You can set custom commands here like creating directories needed for nginx.
@@ -63,6 +64,8 @@ IMPORTNGINX will add copied-in ```/root/nginx.conf``` to ```/usr/local/etc/nginx
 IMPORTRSYNC will add copied-in ```/root/rsyncd.conf``` to ```/usr/local/etc/rsync/rsyncd.conf``` when set to 1. You can specify a custom rsyncd.conf this way. 
 
 POSTSCRIPT will run copied-in ```/root/postsetup.sh``` when set to 1. You can add additional commands to run to a script ```postsetup.sh``` here, which run AFTER all the services have been setup.
+
+REMOTELOG is an optional parameter for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
 # Usage
 To access ```nginx```:

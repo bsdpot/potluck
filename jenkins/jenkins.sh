@@ -60,9 +60,11 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
-  >/usr/local/etc/pkg/repos/FreeBSD.conf
+# only modify repo if not already done in base image
+# shellcheck disable=SC2016
+test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
 step "Touch /etc/rc.conf"
@@ -100,6 +102,9 @@ pkg install -y openjdk11
 # not known if needed yet
 #step "Install package tomcat9"
 #pkg install -y tomcat9
+
+step "Install package syslog-ng"
+pkg install -y syslog-ng
 
 step "Install package jenkins"
 pkg install -y jenkins
@@ -181,7 +186,11 @@ if [ -z \${IMPORTKEYS+x} ]; then
     echo 'IMPORTKEYS is unset - SSH keys will be automatically generated - see documentation to configure this flavour to import existing SSH keys for jenkins user.'
     IMPORTKEYS=0
 fi
-
+# Remotelog is a remote syslog server, need to pass in IP
+if [ -z \${REMOTELOG+x} ]; then
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour'
+    REMOTELOG=0
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -331,6 +340,26 @@ case \${RUNTYPE} in
         ;;
 
 esac
+
+## remote syslogs
+if [ \"\${REMOTELOG}\" != \"0\" ]; then
+    config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
+
+    # read in template conf file, update remote log IP address, and
+    # write to correct destination
+    < /root/syslog-ng.conf.in \
+      sed \"s|%%config_version%%|\$config_version|g\" | \
+      sed \"s|%%remotelogip%%|\$REMOTELOG|g\" > /usr/local/etc/syslog-ng.conf
+
+    # stop and disable syslogd
+    service syslogd onestop || true
+    service syslogd disable
+
+    # enable and start syslog-ng
+    service syslog-ng enable
+    sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+    service syslog-ng start
+fi
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 

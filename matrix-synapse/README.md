@@ -40,6 +40,7 @@ This is a quirk of using .well-known/matrix/server with the server's details.
    -E SMTPUSER=username -E SMTPPASS=password -E SMTPFROM=<email> \
    -E LDAPSERVER=<IP> -E LDAPPASSWORD=<password> -E LDAPDOMAIN=<domain for ldap> \
    -E NOSSL=<true|false> -E CONTROLUSER=<true|false>
+   [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 
 The DOMAIN parameter is the domain name to use for `matrix` configuration. It will be the same as the servername for the host.
@@ -65,6 +66,8 @@ LDAPSERVER is the domain name or IP address of an LDAP server. Don't include a p
 LDAPPASSWORD is the password to access the LDAP server.
 
 LDAPDOMAIN is the domain for the LDAP server which will be split into name.tld for the purposes of updating config.
+
+REMOTELOG is an optional parameter for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
 ## Usage
 

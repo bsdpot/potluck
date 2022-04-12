@@ -1,3 +1,9 @@
+0.0.15
+
+* Adding syslog-ng and remotelogs
+
+---
+
 0.0.14
 
 * More permissions adjustment

@@ -1,3 +1,9 @@
+0.0.10
+
+* Adding syslog-ng and remote logging
+
+---
+
 0.0.9
 
 * Documentation updates and adding jenkins to www group
