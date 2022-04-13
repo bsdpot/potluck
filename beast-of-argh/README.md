@@ -9,7 +9,7 @@ tags: ["monitoring", "alerting", "logs", "syslog", "prometheus", "alertmanager",
 
 ![Beast of Argh](beast-of-argh.jpg)
 
-This is a mega-flavour containing the ```prometheus`` time series database, ```alertmanager``` alert notification queue, ```loki``` log monitoring, ```promtail``` log ingestor,  and ```grafana``` viewer with custom dashboards.
+This is a mega-flavour containing the ```prometheus``` time series database, ```alertmanager``` alert notification queue, ```loki``` log monitoring, ```promtail``` log ingestor,  and ```grafana``` viewer with custom dashboards.
 
 The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. You can also connect to this host and ```service consul restart``` manually.
 

@@ -1,3 +1,9 @@
+0.0.4
+
+* Fixing formatting typo in README
+
+---
+
 0.0.3
 
 * Switch to syslog-ng
