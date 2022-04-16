@@ -61,7 +61,7 @@ scrape_configs:
     params:
       format: ['prometheus']
     scheme: http
-    proxy_url: http://%%ip%%:8443
+    #proxy_url: http://%%ip%%:8443
     static_configs:
     - targets: [%%consulservers%%]
   - job_name: 'nomad'
@@ -69,7 +69,7 @@ scrape_configs:
     params:
       format: ['prometheus']
     scheme: http
-    proxy_url: http://%%ip%%:8444
+    #proxy_url: http://%%ip%%:8444
     relabel_configs:
     - source_labels: ['__meta_consul_service']
       regex:         '(.*)'

@@ -1,3 +1,9 @@
+0.0.9
+
+* Cleanup lingering artifacts from proxy services for TLS versions of images
+
+---
+
 0.0.8
 
 * Removing syslogd central.log from loki, syslog-ng changes to promtail config weren't updated
