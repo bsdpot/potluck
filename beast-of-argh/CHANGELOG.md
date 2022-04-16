@@ -1,3 +1,9 @@
+0.0.5
+
+* Fixing grafana missing IP changes, failed to start
+
+---
+
 0.0.4
 
 * Fixing formatting typo in README

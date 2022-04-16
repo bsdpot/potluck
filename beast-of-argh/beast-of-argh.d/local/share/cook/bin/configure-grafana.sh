@@ -43,6 +43,7 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     < "$TEMPLATEPATH/datasources.yml.in" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" |\
       sed "s${sep}%%influxdbsource%%${sep}$INFLUXDBSOURCE${sep}g" |\
       sed "s${sep}%%influxdbname%%${sep}$INFLUXDBNAME${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
@@ -87,6 +88,7 @@ else
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     < "$TEMPLATEPATH/datasources.yml.in" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" |\
       sed "s${sep}%%influxdbsource%%${sep}$INFLUXDBSOURCE${sep}g" |\
       sed "s${sep}%%influxdbname%%${sep}$INFLUXDBNAME${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
@@ -128,7 +130,9 @@ fi
   > /usr/local/etc/grafana.conf
 
 # enable grafana service
-service grafana enable
+# not worked for some reason
+#service grafana enable
+sysrc grafana_enable="YES"
 sysrc grafana_config="/usr/local/etc/grafana.conf"
 sysrc grafana_user="grafana"
 sysrc grafana_group="grafana"
