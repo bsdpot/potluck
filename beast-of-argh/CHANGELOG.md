@@ -1,3 +1,9 @@
+0.0.6
+
+* Version increment for potbuilder build failure, retry
+
+---
+
 0.0.5
 
 * Fixing grafana missing IP changes, failed to start
