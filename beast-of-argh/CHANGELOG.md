@@ -1,3 +1,10 @@
+0.0.7
+
+* Missing dashboards for grafana fail in running image, fixed by adding back
+
+---
+
+
 0.0.6
 
 * Version increment for potbuilder build failure, retry
