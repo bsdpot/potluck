@@ -1,3 +1,10 @@
+2.0.12
+
+* Implement working prometheus telemetry
+* Update README for REMOTELOG
+
+---
+
 2.0.11
 
 * Switch to syslog-ng

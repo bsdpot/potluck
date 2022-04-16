@@ -315,6 +315,12 @@ consul {
   # Enabling the server and client to bootstrap using Consul.
   server_auto_join = true
 }
+telemetry {
+  publish_allocation_metrics = true
+  publish_node_metrics = true
+  prometheus_metrics = true
+  disable_hostname = true
+}
 enable_syslog=true
 log_level=\\\"INFO\\\"
 syslog_facility=\\\"LOCAL1\\\"\" > /usr/local/etc/nomad/server.hcl
