@@ -17,7 +17,7 @@ scrape_configs:
       - localhost
     labels:
       job: varlogs
-      __path__: /mnt/logs/remote/central.log
+      __path__: /mnt/logs/remote/*.log
 
 - job_name: syslog
   syslog:

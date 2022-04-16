@@ -120,7 +120,7 @@ Do not adjust the image destination mount point at /mnt because the included app
 # Client-side syslog-ng configuration
 Please see the included file `client-syslog-ng.conf.sample` and configure:
 
-`%%config_version%%` is the syslog-ng config version. You can extract a suitable value to update in scripts using:
+`%%config_version%%` is the syslog-ng config version in X.YY (not X.YY.Z). You can extract a suitable value to update in scripts using:
 
 ```
 /usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs

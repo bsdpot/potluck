@@ -1,3 +1,10 @@
+0.0.8
+
+* Removing syslogd central.log from loki, syslog-ng changes to promtail config weren't updated
+* Adding note that syslog-ng version must be 3.36 not 3.36.1
+
+---
+
 0.0.7
 
 * Missing dashboards for grafana fail in running image, fixed by adding back
