@@ -276,19 +276,6 @@ fi
 # enable nginx
 service nginx enable
 
-# goaccess
-# this seems to be needed as install places in /usr/local/etc/goaccess.conf
-# but default for goaccess is /usr/local/etc/goaccess/goaccess.conf
-# using custom goaccess.conf with nginx accesslog hardcoded in
-if [ -f /root/goaccess.conf.in ]; then
-    cp -f /root/goaccess.conf.in /usr/local/etc/goaccess/goaccess.conf
-    mv /usr/local/etc/goaccess.conf /usr/local/etc/goaccess.conf.ignore
-fi
-sysrc goaccess_config=\"/usr/local/etc/goaccess/goaccess.conf\"
-sysrc goaccess_log=\"/var/log/nginx/access.log\"
-service goaccess enable
-service goaccess start || true
-
 ## remote syslogs
 if [ \"\${REMOTELOG}\" != \"0\" ]; then
     config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
@@ -393,6 +380,8 @@ chown -R www:www /mnt/\${SITENAME}
 
 # add changed files
 cd /mnt/\${SITENAME}
+
+/usr/local/bin/git config --global --add safe.directory /mnt/\${SITENAME}
 /usr/local/bin/git add -v *
 
 # commit and push
@@ -426,11 +415,23 @@ chmod 777 /mnt/\${SITENAME}/static
 # return to /root
 cd /root
 
-#
-# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-
 # start services
 service nginx start
+
+# goaccess
+# this seems to be needed as install places in /usr/local/etc/goaccess.conf
+# but default for goaccess is /usr/local/etc/goaccess/goaccess.conf
+# using custom goaccess.conf with nginx accesslog hardcoded in
+if [ -f /root/goaccess.conf.in ]; then
+    cp -f /root/goaccess.conf.in /usr/local/etc/goaccess/goaccess.conf
+    mv /usr/local/etc/goaccess.conf /usr/local/etc/goaccess.conf.ignore
+fi
+sysrc goaccess_config=\"/usr/local/etc/goaccess/goaccess.conf\"
+sysrc goaccess_log=\"/var/log/nginx/access.log\"
+service goaccess enable
+service goaccess start || true
+#
+# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 #
 # Do not touch this:

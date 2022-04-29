@@ -1,3 +1,9 @@
+0.0.17
+
+* Starting nginx before configuring goaccess. Setting git safedirectory
+
+---
+
 0.0.16
 
 * Adjusting goaccess for custom goaccess.conf file
