@@ -1,3 +1,9 @@
+0.0.11
+
+* Adjustments to host key management for ssh
+
+---
+
 0.0.10
 
 * Adding syslog-ng and remote logging

@@ -220,6 +220,7 @@ case \${RUNTYPE} in
         fi
 
         # enable quick access to remote pot builder host
+        su - jenkins -c \"ssh-keygen -R \${BUILDHOST}\"
         su - jenkins -c \"ssh-keyscan -H \${BUILDHOST} >> /usr/local/jenkins/.ssh/known_hosts\"
 
         # add jenkins user to www group
@@ -227,7 +228,6 @@ case \${RUNTYPE} in
 
         # enable jenkins
         service jenkins enable
-
         ;;
 
     setupstore)
@@ -266,12 +266,14 @@ case \${RUNTYPE} in
 
         # enable quick access to remote pot builder host
         echo \"Adding extra host \${BUILDHOST} keys\"
+        su - jenkins -c \"ssh-keygen -R \${BUILDHOST}\"
         su - jenkins -c \"ssh-keyscan -H \${BUILDHOST} >> /mnt/jenkins/.ssh/known_hosts\"
 
         # if an extra host been provided, enable quick ssh access to that host
         if [ ! -z \${EXTRAHOST+x} ]; then
             if [ \${EXTRAHOST} != 0 ]; then
                 echo \"Adding extra host \${EXTRAHOST} keys\"
+                su - jenkins -c \"ssh-keygen -R \${EXTRAHOST}\"
                 su - jenkins -c \"ssh-keyscan -H \${EXTRAHOST} >> /mnt/jenkins/.ssh/known_hosts\"
             fi
         fi
@@ -315,12 +317,15 @@ case \${RUNTYPE} in
         fi
 
         # enable quick access to remote pot builder host
+        echo \"Adding extra host \${BUILDHOST} keys\"
+        su - jenkins -c \"ssh-keygen -R \${BUILDHOST}\"
         su - jenkins -c \"ssh-keyscan -H \${BUILDHOST} >> /mnt/jenkins/.ssh/known_hosts\"
 
         # if an extra host been provided, enable quick ssh access to that host
         if [ ! -z \${EXTRAHOST+x} ]; then
             if [ \${EXTRAHOST} != 0 ]; then
                 echo \"Adding extra host \${EXTRAHOST} keys\"
+                su - jenkins -c \"ssh-keygen -R \${EXTRAHOST}\"
                 su - jenkins -c \"ssh-keyscan -H \${EXTRAHOST} >> /mnt/jenkins/.ssh/known_hosts\"
             fi
         fi
@@ -330,7 +335,6 @@ case \${RUNTYPE} in
 
         # enable jenkins
         service jenkins enable
-
         ;;
 
     *)
