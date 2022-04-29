@@ -1,3 +1,9 @@
+0.0.18
+
+* Adding customdir to gitignore and other tweaks
+
+---
+
 0.0.17
 
 * Starting nginx before configuring goaccess. Setting git safedirectory

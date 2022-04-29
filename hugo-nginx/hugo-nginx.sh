@@ -304,6 +304,9 @@ cd /mnt
 # make some directories from input variables
 mkdir -p /mnt/\${SITENAME}/\${CUSTOMDIR}/
 
+# setup .gitignore, overwrite any existing
+echo \"\${CUSTOMDIR}/**\" > /mnt/\${SITENAME}/.gitignore
+
 # adding this to extract a custom archive over the hugo files in SITENAME directory
 if [ \${CUSTOMFILE} -eq 1 ]; then
     if [ -f /root/customfile.tgz ]; then
@@ -334,6 +337,7 @@ cd /mnt/\${SITENAME}
 /usr/local/bin/git init
 /usr/local/bin/git config user.email \${GITEMAIL}
 /usr/local/bin/git config user.name \${GITUSER}
+/usr/local/bin/git config --global --add safe.directory /mnt/\${SITENAME}
 /usr/local/bin/git submodule add https://github.com/pavel-pi/kiss-em.git themes/kiss-em
 /usr/local/bin/git add -v *
 
@@ -380,8 +384,6 @@ chown -R www:www /mnt/\${SITENAME}
 
 # add changed files
 cd /mnt/\${SITENAME}
-
-/usr/local/bin/git config --global --add safe.directory /mnt/\${SITENAME}
 /usr/local/bin/git add -v *
 
 # commit and push
