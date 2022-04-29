@@ -1,3 +1,9 @@
+0.0.6
+
+* Fixing goaccess conf parameter as not working. Using custom goaccess.conf now.
+
+---
+
 0.0.5
 
 * Adding syslog-ng and remote logging

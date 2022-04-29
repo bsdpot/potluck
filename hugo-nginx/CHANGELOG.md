@@ -1,3 +1,9 @@
+0.0.16
+
+* Adjusting goaccess for custom goaccess.conf file
+
+---
+
 0.0.15
 
 * Adding syslog-ng and remotelogs
