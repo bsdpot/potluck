@@ -29,7 +29,7 @@ mkdir -p /mnt/logs/remote
 
 # stop and disable syslogd
 service syslogd onestop || true
-service syslogd disable
+sysrc syslogd_enable="NO"
 
 # enable and start syslog-ng
 service syslog-ng enable

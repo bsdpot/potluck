@@ -91,9 +91,6 @@ mkdir -p /mnt/loki
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
-#log "Configure syslog server"
-#configure-syslogg.sh
-
 log "Configure and start syslog-ng server"
 configure-syslog-ng.sh
 

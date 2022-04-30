@@ -1,3 +1,9 @@
+0.0.10
+
+* Using different approach to disable syslogd
+
+---
+
 0.0.9
 
 * Cleanup lingering artifacts from proxy services for TLS versions of images
