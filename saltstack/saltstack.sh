@@ -113,6 +113,9 @@ pkg install -y syslog-ng
 step "Install package py38-salt"
 pkg install -y py38-salt
 
+step "Install py38-pip"
+pkg install -y py38-pip
+
 step "Install package git-lite"
 pkg install -y git-lite
 
@@ -130,6 +133,9 @@ pkg install -y nano
 
 step "Install package tmux"
 pkg install -y tmux
+
+step "Install salt-lint via pip"
+pip install --prefix /usr/local salt-lint
 
 step "Clean package installation"
 pkg autoremove -y

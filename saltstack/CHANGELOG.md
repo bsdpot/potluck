@@ -1,3 +1,9 @@
+0.0.6
+
+* Including salt-lint installed via pip
+
+---
+
 0.0.5
 
 * Adding syslog-ng and remote logging
