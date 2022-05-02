@@ -98,6 +98,9 @@ pkg install -y syslog-ng
 step "Install package node_exporter"
 pkg install -y node_exporter
 
+step "Create nomad jobs directory"
+mkdir -p /root/nomadjobs
+
 step "Clean package installation"
 pkg clean -y
 
@@ -195,6 +198,12 @@ if [ -z \${NOMADKEY+x} ];
 then
     echo 'NOMADKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
     NOMADKEY=\$GOSSIPKEY
+fi
+# Importjobs flag to enable automatic job importing
+if [ -z \${IMPORTJOBS+x} ];
+then
+    echo 'IMPORTJOBS is unset - see documentation how to configure this flavour'
+    IMPORTJOBS=0
 fi
 # Remotelog is a remote syslog server, need to pass in IP
 if [ -z \${REMOTELOG+x} ];
@@ -355,15 +364,42 @@ fi
 
 # start consul agent
 #/usr/local/etc/rc.d/consul start
-service consul start
+#service consul start
+timeout --foreground 120 \
+  sh -c 'while ! service consul status; do
+    service consul start || true; sleep 5;
+  done'
 
 # start nomad
 #/usr/local/etc/rc.d/nomad start
-service nomad start
+#service nomad start
+
+timeout --foreground 120 \
+  sh -c 'while ! service nomad status; do
+    service nomad start || true; sleep 5;
+  done'
 
 # start node_exporter
 #/usr/local/etc/rc.d/node_exporter start
 service node_exporter start
+
+# job imports
+if [ \"\${IMPORTJOBS}\" -eq 1 ]; then
+    echo \"Importing job files from /root/nomadjobs\"
+    # set var /root/nomadjobs
+    cd /root/nomadjobs/
+    # count .nomad files in /root/nomadjobs
+    JOBSCOUNT=\$(ls *.nomad |wc -l)
+    # for each .nomad job file run nomad plan
+    if [ \"\${JOBSCOUNT}\" -gt \"0\" ];then
+        # get a file list of .nomad files
+        JOBSLIST=\$(find . -type f -name \"*.nomad\")
+        # nomad job plan /root/jobfiles/jobname.nomad
+        for job in \$(echo \"\${JOBSLIST}\"); do
+            /usr/local/bin/nomad job run -address=http://\"\${IP}\":4646 -detach \"\$job\";
+        done
+    fi
+fi
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned

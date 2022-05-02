@@ -1,3 +1,9 @@
+2.0.13
+
+* Automatic job import, plan, from copied-in job files in .nomad format
+
+---
+
 2.0.12
 
 * Implement working prometheus telemetry
