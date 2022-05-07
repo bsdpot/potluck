@@ -1,3 +1,10 @@
+0.12
+
+* Adjust start process for php-fpm and nginx, rebuild for latest packages
+* Fixup nomad job file example
+
+---
+
 0.11
 
 * Rebuild for new potluck template and other changes

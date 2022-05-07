@@ -44,6 +44,12 @@ job "nextcloud" {
   group "group1" {
     count = 1 
 
+    network {
+      port "http" {
+        static = 20900
+      }
+    }
+
     task "nextcloud1" {
       driver = "pot"
 
@@ -73,7 +79,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-13_0"
-        tag = "0.11"
+        tag = "0.12"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore"]
         mount = [
@@ -88,14 +94,14 @@ job "nextcloud" {
       resources {
         cpu = 1000
         memory = 1024
-        network {
-          mbits = 10
-          port "http" {
-            static = 20900
-          }
-        }
       }
     }
   }
 }
 ```
+
+# Warnings
+
+This is a very large pot image. The nomad job will timeout on first run as `pot` takes a while to download the image and add it.
+
+The image boots with https enabled in nginx. You will need a frontend proxy like `haproxy` or similar to handle the redirect from a domain name, with SSL, to the internal nomad host and port configured in job file. A valid digital certificate would be useful too.

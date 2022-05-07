@@ -364,10 +364,9 @@ echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf
 cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 cp -f /root/99-custom.ini /usr/local/etc/php/99-custom.ini
 
-# disabling as confusing perms change
 # Fix www group memberships so it works with fuse mounted directories
-#pw addgroup -n newwww -g 1001
-#pw moduser www -u 1001 -G 80,0,1001
+pw addgroup -n newwww -g 1001
+pw moduser www -u 1001 -G 80,0,1001
 
 # set perms on /usr/local/www/nextcloud/*
 chown -R www:www /usr/local/www/nextcloud
@@ -385,8 +384,19 @@ killall -9 nginx
 kill -9 \$(pgrep nginx)
 
 # restart services
-service php-fpm restart
-service nginx restart
+
+#service php-fpm restart
+timeout --foreground 120 \
+  sh -c 'while ! service php-fpm status; do
+    service php-fpm start || true; sleep 5;
+  done'
+
+#service nginx restart
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status; do
+    service nginx start || true; sleep 5;
+  done'
+
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
