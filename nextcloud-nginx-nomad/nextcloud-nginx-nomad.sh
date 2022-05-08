@@ -348,8 +348,7 @@ fi
 # from within the Nextcloud installation, we install it. If we do find something though,
 # we do not install/overwrite anything as we assume that updates/modifications are happening
 # from within Nextcloud.
-if [ ! -e /usr/local/www/nextcloud/status.php ]
-then
+if [ ! -e /usr/local/www/nextcloud/status.php ]; then
     #pkg install -y nextcloud-php74-21.0.2 nextcloud-twofactor_totp-php74-6.1.0 nextcloud-deck-php74-1.4.2 nextcloud-mail-php74-1.9.6 nextcloud-contacts-php74-3.5.1 nextcloud-calendar-php74-2.2.2 nextcloud-end_to_end_encryption-php74-1.7.1
     pkg install -y nextcloud-php74 nextcloud-twofactor_totp-php74 nextcloud-deck-php74 nextcloud-mail-php74 nextcloud-contacts-php74 nextcloud-calendar-php74 nextcloud-end_to_end_encryption-php74
 fi
@@ -363,6 +362,14 @@ echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf
 # Configure PHP
 cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 cp -f /root/99-custom.ini /usr/local/etc/php/99-custom.ini
+
+# check for presence of copied-in /root/nc-config.php and copy over any existing (with backup)
+if [ -s /root/nc-config.php ]; then
+    if [ -s /usr/local/www/nextcloud/config/config.php ]; then
+        cp -f /usr/local/www/nextcloud/config/config.php /usr/local/www/nextcloud/config/config.php.old
+    fi
+    cp -f /root/nc-config.php /usr/local/www/nextcloud/config/config.php
+fi
 
 # Fix www group memberships so it works with fuse mounted directories
 pw addgroup -n newwww -g 1001

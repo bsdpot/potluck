@@ -15,7 +15,7 @@ You should mount an outside directory that can (but does not need to) contain a 
 
 If there already is a ```nextcloud``` installation present, only ```nginx``` is started so that all following updates of Nextcloud can be done through the web gui itself.
 
-Since the service is expected to be published via ```consul``` and a web proxy like ```traefik```, no HTTPS configuration is set up in ```nginx``` as it is expected that this is happening in the web proxy.
+Since the service is expected to be published via ```consul``` and a web proxy like ```traefik```, plus frontend ```haproxy``` no HTTPS configuration is specified in ```nginx``` as it is expected that this is happening in the web proxy. HTTPS is merely enabled.
 
 # ZFS datasets
 Make sure to create the ZFS datasets beforehand, adapt to your data set naming convention:
@@ -34,7 +34,73 @@ When you first run the image you'll need to setup Nextcloud via the web interfac
 
 Make sure to specify `/mnt/filestore` or similar for DATADIR parameter (-d) in the web interface for Nextcloud setup too by clicking the dropdown for database and storage.
 
-# Nomad Job Description Example
+## Custom Nextcloud config.php
+If you wish to make use of object storage for file backing you will need to copy-in a custom `nextcloud` config.php to `/root/nc-config.php`. A sample would look like the following, however please pull your source file from a working instance and include the relevant S3 parameters:
+
+```
+<?php
+$CONFIG = array (
+  'apps_paths' => 
+  array (
+    0 => 
+    array (
+      'path' => '/usr/local/www/nextcloud/apps',
+      'url' => '/apps',
+      'writable' => true,
+    ),
+    1 => 
+    array (
+      'path' => '/usr/local/www/nextcloud/apps-pkg',
+      'url' => '/apps-pkg',
+      'writable' => false,
+    ),
+  ),
+  'logfile' => '/var/log/nextcloud/nextcloud.log',
+  'memcache.local' => '\\OC\\Memcache\\APCu',
+  'instanceid' => 'REDACTED',
+  'passwordsalt' => '+REDACTED',
+  'secret' => 'REDACTED',
+  'trusted_domains' => 
+  array (
+    0 => '10.0.0.2:20900',
+  ),
+  'datadirectory' => '/mnt/filestore',
+  'version' => '23.0.3.2',
+  'dbtype' => 'mysql',
+  'dbname' => 'nextcloud',
+  'dbhost' => '10.0.0.3',
+  'dbport' => '3306',
+  'dbtableprefix' => 'nc_',
+  'dbuser' => 'REDACTED',
+  'dbpassword' => 'REDACTED',
+  'installed' => true,
+  'overwrite.cli.url' => 'https://10.0.0.2:20900',
+  'installed' => true,
+  'theme' => '',
+  'loglevel' => 0,
+  'mysql.utf8mb4' => true,
+  'objectstore' => array (
+    'class' => '\\OC\\Files\\ObjectStore\\S3',
+    'arguments' => array(
+      'bucket' => 'mynextcloud',
+      'autocreate' => true,
+      'key'    => 'REDACTED',
+      'secret' => 'REDACTED',
+      'hostname' => '10.0.0.4',
+      'port' => '1234',
+      'use_ssl' => true,
+      'region' => 'optional',
+      'use_path_style' => true
+    ),
+  ),
+);
+```
+
+Take note: the addition of an objectstore array in config.php will stop the mounted-in filestore from working.
+
+## Nomad Job File
+
+A sample nomad job file is included here, and includes an optional copy-in step for a custom config.php. Remove if not used.
 
 ```
 job "nextcloud" {
@@ -79,12 +145,15 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-13_0"
-        tag = "0.12"
+        tag = "0.13"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore"]
+        copy = [
+          "/path/to/custom/config.php:/root/nc-config.php",
+        ]
         mount = [
-         "/mnt/data/pot/jaildata_nextcloud/:/usr/local/www/nextcloud",
-         "/mnt/data/pot/jaildata_nextcloud_extra/:/mnt/filestore",
+         "/mnt/data/pot/jaildata_nextcloud/www:/usr/local/www/nextcloud",
+         "/mnt/data/pot/jaildata_nextcloud/files:/mnt/filestore",
         ]
         port_map = {
           http = "80"
@@ -104,4 +173,4 @@ job "nextcloud" {
 
 This is a very large pot image. The nomad job will timeout on first run as `pot` takes a while to download the image and add it.
 
-The image boots with https enabled in nginx. You will need a frontend proxy like `haproxy` or similar to handle the redirect from a domain name, with SSL, to the internal nomad host and port configured in job file. A valid digital certificate would be useful too.
+The image boots with https enabled in nginx. You will need a frontend proxy like `haproxy` or `traefik` or similar to handle the redirect from a domain name, with SSL, to the internal nomad host and port configured in job file. A valid digital certificate would be useful too.

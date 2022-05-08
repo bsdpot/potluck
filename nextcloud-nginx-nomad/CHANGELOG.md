@@ -1,3 +1,9 @@
+0.13
+
+* Check for presence of /root/nc-config.php and copy to /usr/local/www/nextcloud/config/config.php if exists, to allow for custom config setup
+
+---
+
 0.12
 
 * Adjust start process for php-fpm and nginx, rebuild for latest packages
