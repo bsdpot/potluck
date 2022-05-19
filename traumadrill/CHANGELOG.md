@@ -1,3 +1,9 @@
+0.0.4
+
+* Yet another version bump to trigger a rebuild, last one
+
+---
+
 0.0.3
 
 * Another version bump to trigger a rebuild
