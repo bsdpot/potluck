@@ -53,4 +53,6 @@ sysrc consul_syslog_output_priority="warn"
 mkdir -p /var/db/consul
 chmod 750 /var/db/consul
 chown -R consul:consul /var/db/consul
+mkdir -p /var/log/consul
+chmod 750 /var/log/consul
 chown -R consul:consul /var/log/consul

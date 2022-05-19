@@ -1,3 +1,9 @@
+0.0.6
+
+* Consul log directory fix
+
+---
+
 0.0.5
 
 * Fixing copy in to use correct image name
