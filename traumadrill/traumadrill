@@ -1,1 +1,1 @@
-copy-in -s /usr/local/etc/pot/flavours/beast-of-argh.d/local -d /root/.pot_local
+copy-in -s /usr/local/etc/pot/flavours/traumadrill.d/local -d /root/.pot_local

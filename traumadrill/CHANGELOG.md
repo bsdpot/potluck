@@ -1,3 +1,9 @@
+0.0.5
+
+* Fixing copy in to use correct image name
+
+---
+
 0.0.4
 
 * Yet another version bump to trigger a rebuild, last one
