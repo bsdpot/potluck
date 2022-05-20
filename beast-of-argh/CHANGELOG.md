@@ -1,3 +1,10 @@
+0.0.11
+
+* Full path required for alert rules directory in prometheus.yml
+* Using hard-coded mount-in persistant storage at /mnt
+
+---
+
 0.0.10
 
 * Using different approach to disable syslogd
