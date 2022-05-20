@@ -1,24 +1,6 @@
-0.11.6
-
-* Correct further bug in consulmetricsproxy config
-
----
-
-0.11.5
-
-* Correct bug in consulmetricsproxy config
-
----
-
-0.11.4
-
-* Make consul node_names non-FQDN
-
----
-
 0.11.3
 
-* Fix nomad-client metrics retrieval
+* Need full path for alerts directory in prometheus.yml for alerts to work
 
 ---
 
