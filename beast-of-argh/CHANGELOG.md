@@ -1,3 +1,9 @@
+0.0.13
+
+* Fixing broken indentation in prometheus.yml.in
+
+---
+
 0.0.12
 
 * Adding scrape job for file-based targets in persistent storage to enable dynamic configuration
