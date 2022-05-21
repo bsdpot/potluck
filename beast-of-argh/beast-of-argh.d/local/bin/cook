@@ -49,9 +49,8 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
-required_args="$required_args INFLUXDBSOURCE INFLUXDBNAME"
 required_args="$required_args GRAFANAUSER GRAFANAPASSWORD"
-required_args="$required_args SCRAPECONSUL SCRAPENOMAD SCRAPEDATABASE"
+required_args="$required_args SCRAPECONSUL SCRAPENOMAD"
 required_args="$required_args TRAEFIKSERVER"
 required_args="$required_args SMTPHOSTPORT SMTPFROM ALERTADDRESS"
 optional_args="REMOTELOG SMTPUSER SMTPPASS"

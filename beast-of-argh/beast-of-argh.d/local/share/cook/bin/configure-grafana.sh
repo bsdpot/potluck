@@ -22,9 +22,10 @@ sep=$'\001'
 mkdir -p /mnt/applog/grafana
 chown -R grafana:grafana /mnt/applog/grafana
 
-if ! echo "$INFLUXDBSOURCE" | grep -qF ":"; then
-  INFLUXDBSOURCE="$INFLUXDBSOURCE:8086"
-fi
+# removed influxdb for now
+#if ! echo "$INFLUXDBSOURCE" | grep -qF ":"; then
+#  INFLUXDBSOURCE="$INFLUXDBSOURCE:8086"
+#fi
 
 # if /mnt/grafana is empty, copy in /var/db/grafana
 if [ ! -f /mnt/grafana/grafana.db ]; then
@@ -41,11 +42,17 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
     # this seems to be required, grafana still crashes without it
     chmod 755 /root
 
+    # removed influxdb for now
+    ## copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
+    #< "$TEMPLATEPATH/datasources.yml.in" \
+    #  sed "s${sep}%%ip%%${sep}$IP${sep}g" |\
+    #  sed "s${sep}%%influxdbsource%%${sep}$INFLUXDBSOURCE${sep}g" |\
+    #  sed "s${sep}%%influxdbname%%${sep}$INFLUXDBNAME${sep}g" \
+    #  > /mnt/grafana/provisioning/datasources/datasources.yml
+
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     < "$TEMPLATEPATH/datasources.yml.in" \
-      sed "s${sep}%%ip%%${sep}$IP${sep}g" |\
-      sed "s${sep}%%influxdbsource%%${sep}$INFLUXDBSOURCE${sep}g" |\
-      sed "s${sep}%%influxdbname%%${sep}$INFLUXDBNAME${sep}g" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
 
     chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
@@ -86,11 +93,17 @@ else
     # this seems to be required, grafana still crashes without it
     chmod 755 /root
 
+    # removed influxdb for now
+    ## copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
+    #< "$TEMPLATEPATH/datasources.yml.in" \
+    #  sed "s${sep}%%ip%%${sep}$IP${sep}g" |\
+    #  sed "s${sep}%%influxdbsource%%${sep}$INFLUXDBSOURCE${sep}g" |\
+    #  sed "s${sep}%%influxdbname%%${sep}$INFLUXDBNAME${sep}g" \
+    #  > /mnt/grafana/provisioning/datasources/datasources.yml
+
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     < "$TEMPLATEPATH/datasources.yml.in" \
-      sed "s${sep}%%ip%%${sep}$IP${sep}g" |\
-      sed "s${sep}%%influxdbsource%%${sep}$INFLUXDBSOURCE${sep}g" |\
-      sed "s${sep}%%influxdbname%%${sep}$INFLUXDBNAME${sep}g" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
 
     chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml

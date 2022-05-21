@@ -18,6 +18,11 @@ mkdir -p /mnt/prometheus/alerts
 cp -a "$TEMPLATEPATH"/prometheusalerts/*.yml /mnt/prometheus/alerts/.
 chown -R prometheus:prometheus /mnt/prometheus
 
+# create file-based-targets dir, copy in sample files and set permissions
+mkdir -p /mnt/prometheus/targets.d
+cp -a "$TEMPLATEPATH"/sampletargets/*.yml /mnt/prometheus/targets.d/.
+chown -R prometheus:prometheus /mnt/prometheus
+
 # shellcheck disable=SC3003
 # safe(r) separator for sed
 sep=$'\001'
@@ -28,7 +33,6 @@ sep=$'\001'
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%consulservers%%${sep}$SCRAPECONSUL${sep}g" | \
   sed "s${sep}%%nomadservers%%${sep}$SCRAPENOMAD${sep}g" | \
-  sed "s${sep}%%dbservers%%${sep}$SCRAPEDATABASE${sep}g" | \
   sed "s${sep}%%traefikserver%%${sep}$TRAEFIKSERVER${sep}g" \
   > /usr/local/etc/prometheus.yml
 

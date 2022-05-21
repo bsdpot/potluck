@@ -35,7 +35,6 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E GRAFANAPASSWORD=<grafana password> \
     -E SCRAPECONSUL='<correctly formatted list of quoted IP addresses>' \
     -E SCRAPENOMAD='<correctly formatted list of quoted IP addresses>' \
-    -E SCRAPEDATABASE='<correctly formatted list of quoted IP addresses>' \
     -E TRAEFIKSERVER='<ip:port of traefik-consul instance>' \
     -E SMTPHOSTPORT="10.0.0.2:25" \
     -E SMTPFROM=<from email address> \
@@ -60,11 +59,7 @@ The SCRAPECONSUL parameter is a list of consul servers to scrape data from. Metr
 
 The SCRAPENOMAD parameter is a list of nomad servers to scrape data from. Metrics must be configured in nomad.
 
-The SCRAPEDATABASE parameter is a list of PostgreSQL servers to scrape data from. Metric must be configured with the postgres_exporter.
-
 The TRAEFIKSERVER parameter is the IP address and port of a `traefik-consul` instance to scrape metrics from. It must be setup with metrics endpoint.
-
-The INFLUXDBSOURCE parameter is the IP address of an InfluxDB server to monitor. The INFLUXDBNAME parameter name is the database name. Metrics must be configured. Pass in a placeholder IP if no active InfluxDB server.
 
 The SMTPHOSTPORT parameter is the IP address and port of the mail server to use when sending alerts.
 
@@ -102,11 +97,28 @@ This is a very broad and blunt approach, where ```syslog-ng``` may be a preferre
 
 # Usage
 
-To access ```loki``` make sure your ```grafana``` flavour has a data source with this host's IP:
-* http://host:3000
-and open the ```search logs``` dashboard.
+Access grafana dashboards at ```http://yourhost:3000``` and choose from various dashboards, or access ```loki``` logs via the ```search logs``` dashboard.
 
-++ update usage
+Access ```prometheus``` at ```http://yourhost:9090```.
+
+Access ```alertmanager``` at ```http://yourhost:9093```.
+
+# Dynamic inventory for scrape targets
+
+File-based scrape targets are configured for the following files, which you can copy in replacements to, or update on the system.
+
+(assumes persistent storage mounted in)
+
+* /mnt/prometheus/targets.d/mytargets.yml
+* /mnt/prometheus/targets.d/postgres.yml
+
+These files need to in the format:
+```
+- targets:
+  - <fqdn or ip>:<optional port>
+  labels:
+    job: jobtype1
+```
 
 # Persistent Storage
 Persistent storage will be in the ZFS dataset zroot/beastdata, available inside the image at /mnt

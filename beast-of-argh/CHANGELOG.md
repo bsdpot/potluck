@@ -1,3 +1,11 @@
+0.0.12
+
+* Adding scrape job for file-based targets in persistent storage to enable dynamic configuration
+* Moved postgres scrape job to file-based target in persistent storage, and removed dbserver parameter
+* Removed influxdb datasource from grafana for now
+
+---
+
 0.0.11
 
 * Full path required for alert rules directory in prometheus.yml

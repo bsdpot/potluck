@@ -5,8 +5,10 @@ deleteDatasources:
     orgId: 1
   - name: Loki
     orgId: 1
-  - name: InfluxDB
-    orgId: 1
+
+# removed influxdb datasource for now
+#  - name: InfluxDB
+#    orgId: 1
 
 datasources:
   - name: Prometheus
@@ -27,15 +29,17 @@ datasources:
     isDefault: 0
     version: 1
     editable: true
-  - name: InfluxDB
-    type: influxdb
-    access: proxy
-    database: %%influxdbname%%
-    orgId: 1
-    httpMethod: POST
-    url: http://%%influxdbsource%%
-    jsonData:
-      httpMode: GET
-    isDefault: 0
-    version: 1
-    editable: true
+
+# removed influxdb datasource for now
+#  - name: InfluxDB
+#    type: influxdb
+#    access: proxy
+#    database: %%influxdbname%%
+#    orgId: 1
+#    httpMethod: POST
+#    url: http://%%influxdbsource%%
+#    jsonData:
+#      httpMode: GET
+#    isDefault: 0
+#    version: 1
+#    editable: true

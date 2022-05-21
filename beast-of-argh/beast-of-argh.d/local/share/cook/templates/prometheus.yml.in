@@ -101,6 +101,13 @@ scrape_configs:
       target_label: _datacenter
     static_configs:
     - targets: [%%nomadservers%%]
+  - job_name: 'traefik-consul'
+    static_configs:
+    - targets: [%%traefikserver%%]
+  - job_name: 'file-based-targets'
+    file_sd_configs:
+    - files:
+      - '/mnt/prometheus/targets.d/mytargets.yml'
   - job_name: 'postgresql'
     metrics_path: "/metrics"
     params:
@@ -140,8 +147,9 @@ scrape_configs:
       regex: .*,_datacenter=([^,]+),.*
       replacement: ${1}
       target_label: _datacenter
-    static_configs:
-    - targets: [%%dbservers%%]
-  - job_name: 'traefik-consul'
-    static_configs:
-    - targets: [%%traefikserver%%]
+    #static_configs:
+    #- targets: [%%dbservers%%]
+    file_sd_configs:
+    - files:
+     - '/mnt/prometheus/targets.d/postgres.yml'
+
