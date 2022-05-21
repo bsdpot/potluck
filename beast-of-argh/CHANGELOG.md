@@ -1,3 +1,9 @@
+0.0.14
+
+* Avoid copying over existing files for file-based-targets
+
+---
+
 0.0.13
 
 * Fixing broken indentation in prometheus.yml.in

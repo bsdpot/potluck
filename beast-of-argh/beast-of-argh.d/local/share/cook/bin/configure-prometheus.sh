@@ -18,9 +18,14 @@ mkdir -p /mnt/prometheus/alerts
 cp -a "$TEMPLATEPATH"/prometheusalerts/*.yml /mnt/prometheus/alerts/.
 chown -R prometheus:prometheus /mnt/prometheus
 
-# create file-based-targets dir, copy in sample files and set permissions
+# create file-based-targets dir, copy in sample files if don't exist, and set permissions
 mkdir -p /mnt/prometheus/targets.d
-cp -a "$TEMPLATEPATH"/sampletargets/*.yml /mnt/prometheus/targets.d/.
+if [ ! -f /mnt/prometheus/targets.d/mytargets.yml ]; then
+    cp -a "$TEMPLATEPATH"/sampletargets/mytargets.yml /mnt/prometheus/targets.d/mytargets.yml
+fi
+if [ ! -f /mnt/prometheus/targets.d/postgres.yml ]; then
+    cp -a "$TEMPLATEPATH"/sampletargets/postgres.yml /mnt/prometheus/targets.d/postgres.yml
+fi
 chown -R prometheus:prometheus /mnt/prometheus
 
 # shellcheck disable=SC3003
