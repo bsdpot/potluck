@@ -111,6 +111,7 @@ File-based scrape targets are configured for the following files, which you can 
 
 * /mnt/prometheus/targets.d/mytargets.yml
 * /mnt/prometheus/targets.d/postgres.yml
+* /mnt/prometheus/targets.d/minio.yml
 
 These files need to in the format:
 ```
@@ -119,6 +120,20 @@ These files need to in the format:
   labels:
     job: jobtype1
 ```
+
+## Scraping minio metrics
+This image is setup with the assumption of a self-signed certificate for minio, and env ```MINIO_PROMETHEUS_AUTH_TYPE=public``` configured on minio start.
+
+Test metrics scraping with ```curl -k https://your-minio-host:9000/minio/v2/metrics/cluster``` and if successful, add targets to the file ```/mnt/prometheus/targets.d/minio.yml``` in the format:
+
+```
+- targets:
+  - your-minio-host:9000
+  labels:
+    job: minio
+```
+
+If you require authentication, you can adjust the ```minio``` scrape job in the file ```/usr/local/etc/prometheus.yml```, via external script, after image boot and with a reload of ```prometheus```, to include the relevant token option and optional SSL config.
 
 # Persistent Storage
 Persistent storage will be in the ZFS dataset zroot/beastdata, available inside the image at /mnt
@@ -141,3 +156,4 @@ Please see the included file `client-syslog-ng.conf.sample` and configure:
 `%%remotelogip%%` is the IP address of the Beast of Argh pot jail.
 
 Update manually or via `sed` in scripts.
+

@@ -108,18 +108,13 @@ scrape_configs:
     file_sd_configs:
     - files:
       - '/mnt/prometheus/targets.d/mytargets.yml'
-  - job_name: 'minio'
-    scheme: https
-    tls_config:
-      insecure_skip_verify: true
-    metrics_path: '/minio/v2/metrics/cluster'
-    file_sd_configs:
-    - files:
-      - '/mnt/prometheus/targets.d/minio.yml'
   - job_name: 'postgresql'
     metrics_path: "/metrics"
     params:
       format: ['prometheus']
+    file_sd_configs:
+    - files:
+     - '/mnt/prometheus/targets.d/postgres.yml'
     scheme: http
     #tls_config:
     #  insecure_skip_verify: false
@@ -155,7 +150,4 @@ scrape_configs:
       regex: .*,_datacenter=([^,]+),.*
       replacement: ${1}
       target_label: _datacenter
-    file_sd_configs:
-    - files:
-      - '/mnt/prometheus/targets.d/postgres.yml'
 

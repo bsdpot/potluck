@@ -1,3 +1,9 @@
+0.0.15
+
+* Minio additions for file-based-targets and documentation to enable metrics
+
+---
+
 0.0.14
 
 * Avoid copying over existing files for file-based-targets
