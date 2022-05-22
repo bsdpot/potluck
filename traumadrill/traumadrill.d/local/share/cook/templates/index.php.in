@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Traumadrill Control Panel</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Traumadrill Control Panel</h1>
+
+<section>
+    <div>
+        <p><strong>Click the button to start stress-ng test</strong></p>
+    </div>
+    <div>
+        <form action="index.php" method="post">
+            <input type="submit" name="submit" value="Run Test" />
+        </form>
+    </div>
+    <div>
+        <p>Test will start up with the following flags and run for 5 minutes without any feedback, then show result below.</p>
+        <pre>stress-ng --cpu 4 --vm 2 --hdd 1 --fork 8 --timeout 5m --metrics-brief --temp-path /tmp/stress-tmp/ </pre>
+    </div>
+</section>
+
+<section>
+    <div>
+        <pre>
+            <?php
+            ini_set('display_errors', 1);
+            ini_set('display_startup_errors', 1);
+            error_reporting(E_ALL);
+            if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST["submit"])){
+            $message = shell_exec("/usr/local/bin/my-stress-ng.sh 2>&1");
+            print_r($message);
+            }
+            ?>
+        </pre>
+    </div>
+</section>
+
+</body>
+</html>

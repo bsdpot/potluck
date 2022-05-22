@@ -98,5 +98,20 @@ timeout --foreground 120 \
 log "Start node_exporter"
 service node_exporter start
 
+log "Configure nginx"
+configure-nginx.sh
+
+log "Start nginx"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status; do
+    service nginx start || true; sleep 5;
+  done'
+
+log "Start php-fpm"
+timeout --foreground 120 \
+  sh -c 'while ! service php-fpm status; do
+    service php-fpm start || true; sleep 5;
+  done'
+
 log "Exit seasoned"
 pot_seasoned_exit

@@ -7,22 +7,16 @@ tags: ["monitoring", "alerting", "benchmarking", "stress", "alertmanager", "test
 
 # Overview
 
-This flavour currently contains the tools ```stress-ng``` and ```sysbench``` for generating artificial load and testing alert rules.
+This flavour currently contains ```stress-ng``` for generating artificial load and testing alert rules.
 
-It is a continual work-in-progress for testing ```prometheus``` alert rules for system load within a pot environment.
+It is a work-in-progress for testing ```prometheus``` alert rules for system load within a pot environment.
 
 The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. You can also connect to this host and ```service consul restart``` manually.
 
 # Installation
 
-* Optionally create a ZFS data set on the parent system beforehand
-  ```zfs create -o mountpoint=/mnt/stressdata zroot/stressdata```
 * Create your local jail from the image or the flavour files. 
 * Clone the local jail
-* Optionally mount in the ZFS data set you created
-  ```pot mount-in -p <jailname> -m /mnt -d /mnt/stressdata```
-* Optionally export the ports after creating the jail:     
-  ```pot export-ports -p <jailname> -e 3100:3100 -e 3000:3000```
 * Adjust to your environment:    
   ```
   sudo pot set-env -p <jailname> \
@@ -33,6 +27,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
     [ -E REMOTELOG=<IP address> ]
   ```
+* Start the jail
 
 ## Required Paramaters
 The DATACENTER parameter defines a common datacenter. 
@@ -51,5 +46,17 @@ The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` serve
 
 # Usage
 
-TODO update usage portion of docs
+Open a browser and navigate to ```http://traumadrill-ip/index.php``` and click the button to start a test.
+
+Currently a fixed 5min test runs with the following parameters:
+
+```
+stress-ng --cpu 4 --vm 2 --hdd 1 --fork 8 --timeout 5m --metrics-brief --temp-path /tmp/stress-tmp/
+```
+
+There will be no output in the browser until 5min have passed, then brief metrics will be output.
+
+To run another 5min test click the button again.
+
+Watch for ```prometheus``` alerts, there should be a high CPU alert, or mnonitor ```grafana``` dashboards to see the load.
 

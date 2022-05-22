@@ -1,3 +1,11 @@
+0.0.7
+
+* Web frontend to trigger 5m tests run as shell in background
+* Removed sysbench for now, not going to use it
+* This could be a stress-ng image but sticking with Traumadrill label for now
+
+---
+
 0.0.6
 
 * Consul log directory fix

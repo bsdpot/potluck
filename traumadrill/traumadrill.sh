@@ -117,17 +117,17 @@ pkg install -y rsync
 step "Install package node_exporter"
 pkg install -y node_exporter
 
-#step "Install package nginx"
-#pkg install -y nginx
+step "Install package nginx"
+pkg install -y nginx
+
+step "Install package php74 and related"
+pkg install -y php74 php74-mbstring php74-zlib php74-curl php74-gd php74-json
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
 step "Install package stress-ng"
 pkg install -y stress-ng
-
-step "Install package sysbench"
-pkg install -y sysbench
 
 step "Clean package installation"
 pkg clean -y
