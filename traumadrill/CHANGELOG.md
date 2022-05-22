@@ -1,3 +1,9 @@
+0.0.9
+
+* Fix nginx paths
+
+---
+
 0.0.8
 
 * Fix typo in README
