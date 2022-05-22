@@ -1,3 +1,10 @@
+0.0.8
+
+* Fix typo in README
+* Fix typo in configure-nginx.sh script
+
+---
+
 0.0.7
 
 * Web frontend to trigger 5m tests run as shell in background

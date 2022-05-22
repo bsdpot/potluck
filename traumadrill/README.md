@@ -58,5 +58,5 @@ There will be no output in the browser until 5min have passed, then brief metric
 
 To run another 5min test click the button again.
 
-Watch for ```prometheus``` alerts, there should be a high CPU alert, or mnonitor ```grafana``` dashboards to see the load.
+Watch for ```prometheus``` alerts, there should be a high CPU alert, or monitor ```grafana``` dashboards to see the load.
 
