@@ -30,6 +30,9 @@ fi
 if [ ! -f /mnt/prometheus/targets.d/minio.yml ]; then
     cp -a "$TEMPLATEPATH"/sampletargets/minio.yml /mnt/prometheus/targets.d/minio.yml
 fi
+if [ ! -f /mnt/prometheus/targets.d/mysql.yml ]; then
+    cp -a "$TEMPLATEPATH"/sampletargets/mysql.yml /mnt/prometheus/targets.d/mysql.yml
+fi
 chown -R prometheus:prometheus /mnt/prometheus/targets.d
 
 # shellcheck disable=SC3003

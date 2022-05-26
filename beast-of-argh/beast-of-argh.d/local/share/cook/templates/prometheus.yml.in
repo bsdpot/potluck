@@ -116,6 +116,10 @@ scrape_configs:
     file_sd_configs:
     - files:
       - '/mnt/prometheus/targets.d/minio.yml'
+  - job_name: 'mysql'
+    file_sd_configs:
+    - files:
+      - '/mnt/prometheus/targets.d/mysql.yml'
   - job_name: 'postgresql'
     metrics_path: "/metrics"
     params:

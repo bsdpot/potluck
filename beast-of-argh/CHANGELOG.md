@@ -1,3 +1,9 @@
+0.0.16
+
+* Scrape config for mysql/mariadb file-based-targets
+
+---
+
 0.0.15
 
 * Minio additions for file-based-targets and documentation to enable metrics
