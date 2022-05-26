@@ -1,5 +1,5 @@
 ---
-author: "Stephan Lichtenauer, Bretton Vine"
+author: "Stephan Lichtenauer, Bretton Vine, Michael Gmelin"
 title: MariaDB (Server)
 summary: MariaDB is a database server derived from (and largely compatible with) MySQL.
 tags: ["mariadb", "mysql", "database", "sql"]
