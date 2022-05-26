@@ -1,3 +1,10 @@
+2.0.1
+
+* Rebuild for new format flavour image
+* Include consul, node_exporter, mysql_exporter
+
+---
+
 1.0.2
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13
