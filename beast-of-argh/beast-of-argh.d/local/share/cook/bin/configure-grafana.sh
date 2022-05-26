@@ -78,6 +78,8 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
       /mnt/grafana/provisioning/dashboards/consulcluster.json
     cp "$TEMPLATEPATH/postgres.json.in" \
       /mnt/grafana/provisioning/dashboards/postgres.json
+    cp "$TEMPLATEPATH/mysql.json.in" \
+      /mnt/grafana/provisioning/dashboards/mysql.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/
@@ -129,6 +131,8 @@ else
       /mnt/grafana/provisioning/dashboards/consulcluster.json
     cp "$TEMPLATEPATH/postgres.json.in" \
       /mnt/grafana/provisioning/dashboards/postgres.json
+    cp "$TEMPLATEPATH/mysql.json.in" \
+      /mnt/grafana/provisioning/dashboards/mysql.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/

@@ -1,3 +1,9 @@
+0.0.17
+
+* Added mysql dashboard to grafana default dashboards
+
+---
+
 0.0.16
 
 * Scrape config for mysql/mariadb file-based-targets
