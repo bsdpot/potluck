@@ -1,3 +1,10 @@
+0.15
+
+* Include basic cli admin scripts
+* Set php error log
+
+---
+
 0.14
 
 * Add nextcloud logs with www perms

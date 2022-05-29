@@ -88,8 +88,8 @@ $CONFIG = array (
       'autocreate' => true,
       'key'    => 'REDACTED',
       'secret' => 'REDACTED',
-      'hostname' => '10.0.0.4',
-      'port' => '1234',
+      'hostname' => '<your host>',
+      'port' => '<your port>',
       'use_ssl' => true,
       'region' => 'optional',
       'use_path_style' => true
@@ -147,7 +147,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-13_0"
-        tag = "0.14"
+        tag = "0.15"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
@@ -164,7 +164,7 @@ job "nextcloud" {
 
       resources {
         cpu = 1000
-        memory = 1024
+        memory = 2000
       }
     }
   }
@@ -180,3 +180,39 @@ The image boots with https enabled in nginx. You will need a frontend proxy like
 ## Self-signed SSL for Object storage
 
 Pass in a ```ip:port``` paramater for ```SELFSIGNHOST``` or ```-s ip:port```. If you don't specify a port 443 will be used.
+
+# Useful CLI admin commands
+
+The following commands can be entered in via the command line, from the pot host with
+
+```
+pot term nextcloud_id...
+```
+
+## Get the LDAP config
+```
+su -m www -c 'php /usr/local/www/nextcloud/occ ldap:show-config'
+su -m www -c 'php /usr/local/www/nextcloud/occ ldap:show-config' |grep -e ldapHost -e ldapBase
+```
+
+## Set a new LDAP server
+Get the value in the top row of command above, ```Configuration```, should be something like ```s01``` and set your new LDAP host with
+```
+su -m www -c 'php /usr/local/www/nextcloud/occ ldap:set-config s01 ldapHost 10.0.0.2'
+```
+or possibly scripted like follows:
+```
+myhost=10.0.0.2
+myconfig=$(su -m www -c 'php /usr/local/www/nextcloud/occ ldap:show-config' | grep -e "| Configuration" | awk -F"|" '{print $3}' | sed 's/^ //g')
+su -m www -c "php /usr/local/www/nextcloud/occ ldap:set-config ${myconfig} ldapHost ${myhost}"
+```
+
+## Perform basic maintenance to fix errors with layout or stylesheets
+```
+su -m www -c 'php /usr/local/www/nextcloud/occ maintenance:repair'
+```
+
+## Get a list of all possible commands
+```
+su -m www -c 'php /usr/local/www/nextcloud/occ list'
+```

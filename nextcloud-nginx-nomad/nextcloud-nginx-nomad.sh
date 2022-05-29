@@ -258,6 +258,15 @@ pkg install -y php74-zip
 step "Install package php74-zlib"
 pkg install -y php74-zlib
 
+step "Install package jq"
+pkg install -y jq
+
+step "Install package nano"
+pkg install -y nano
+
+step "Install package sudo"
+pkg install -y sudo
+
 pkg clean -y
 
 step "Create necessary directories if they don't exist"
@@ -389,6 +398,10 @@ chown -R www:www /usr/local/www/nextcloud
 # this needs to be configured in nextcloud config.php in copy-in file
 touch /var/log/nginx/nextcloud.log
 chown www:www /var/log/nginx/nextcloud.log
+
+# manually create php log and set owner
+touch /var/log/nginx/php.scripts.log
+chown www:www /var/log/nginx/php.scripts.log
 
 # set perms on DATADIR
 chown -R www:www \${DATADIR}
