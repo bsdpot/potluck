@@ -1,3 +1,10 @@
+0.14
+
+* Add nextcloud logs with www perms
+* Added mechanism to import self-signed cert for libcurl usage
+
+---
+
 0.13
 
 * Check for presence of /root/nc-config.php and copy to /usr/local/www/nextcloud/config/config.php if exists, to allow for custom config setup

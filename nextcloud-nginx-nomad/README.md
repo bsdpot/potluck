@@ -34,6 +34,8 @@ When you first run the image you'll need to setup Nextcloud via the web interfac
 
 Make sure to specify `/mnt/filestore` or similar for DATADIR parameter (-d) in the web interface for Nextcloud setup too by clicking the dropdown for database and storage.
 
+If you have S3 object storage with a self-signed certificate, set the SELFSIGNHOST parameter to ```ip:port``` or pass with with ```-s ip:port```. 
+
 ## Custom Nextcloud config.php
 If you wish to make use of object storage for file backing you will need to copy-in a custom `nextcloud` config.php to `/root/nc-config.php`. A sample would look like the following, however please pull your source file from a working instance and include the relevant S3 parameters:
 
@@ -55,7 +57,7 @@ $CONFIG = array (
       'writable' => false,
     ),
   ),
-  'logfile' => '/var/log/nextcloud/nextcloud.log',
+  'logfile' => '/var/log/nginx/nextcloud.log',
   'memcache.local' => '\\OC\\Memcache\\APCu',
   'instanceid' => 'REDACTED',
   'passwordsalt' => '+REDACTED',
@@ -145,9 +147,9 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-13_0"
-        tag = "0.13"
+        tag = "0.14"
         command = "/usr/local/bin/cook"
-        args = ["-d","/mnt/filestore"]
+        args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
           "/path/to/custom/config.php:/root/nc-config.php",
         ]
@@ -174,3 +176,7 @@ job "nextcloud" {
 This is a very large pot image. The nomad job will timeout on first run as `pot` takes a while to download the image and add it.
 
 The image boots with https enabled in nginx. You will need a frontend proxy like `haproxy` or `traefik` or similar to handle the redirect from a domain name, with SSL, to the internal nomad host and port configured in job file. A valid digital certificate would be useful too.
+
+## Self-signed SSL for Object storage
+
+Pass in a ```ip:port``` paramater for ```SELFSIGNHOST``` or ```-s ip:port```. If you don't specify a port 443 will be used.

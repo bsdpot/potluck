@@ -325,11 +325,12 @@ fi
 #
 
 # Convert parameters to variables if passed (overwrite environment)
-while getopts d: option
+while getopts d:s: option
 do
     case \"\${option}\"
     in
       d) DATADIR=\${OPTARG};;
+      s) SELFSIGNHOST=\${OPTARG};;
     esac
 done
 
@@ -339,6 +340,12 @@ then
     echo 'DATADIR is unset - see documentation how to configure this flavour' >> /var/log/cook.log
     echo 'DATADIR is unset - see documentation how to configure this flavour'
     DATADIR=\"/usr/local/www/nextcloud/data\"
+fi
+if [ -z \${SELFSIGNHOST+x} ];
+then
+    echo 'SELFSIGNHOST is unset - see documentation how to configure this flavour' >> /var/log/cook.log
+    echo 'SELFSIGNHOST is unset - see documentation how to configure this flavour'
+    SELFSIGNHOST=\"none\"
 fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE ADJUSTED & COPIED:
@@ -378,8 +385,18 @@ pw moduser www -u 1001 -G 80,0,1001
 # set perms on /usr/local/www/nextcloud/*
 chown -R www:www /usr/local/www/nextcloud
 
+# create a nextcloud log file
+# this needs to be configured in nextcloud config.php in copy-in file
+touch /var/log/nginx/nextcloud.log
+chown www:www /var/log/nginx/nextcloud.log
+
 # set perms on DATADIR
 chown -R www:www \${DATADIR}
+
+# configure self-signed certificates for libcurl, mostly used for minio with self-signed certificates
+if [ \"\${SELFSIGNHOST}\" != \"none\" ]; then
+   echo \"\" | /usr/bin/openssl s_client -showcerts -connect \"\${SELFSIGNHOST}\" |/usr/bin/openssl x509 -outform PEM > /tmp/cert.pem && cat /tmp/cert.pem >> /usr/local/share/certs/ca-root-nss.crt
+fi
 
 # Configure NGINX
 cp -f /root/nginx.conf /usr/local/etc/nginx/nginx.conf
