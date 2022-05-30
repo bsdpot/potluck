@@ -1,3 +1,9 @@
+0.16
+
+* Enable fopen for php
+* Enable apc.enable_cli for php
+---
+
 0.15
 
 * Include basic cli admin scripts
