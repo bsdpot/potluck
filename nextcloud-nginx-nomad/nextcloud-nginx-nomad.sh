@@ -407,8 +407,22 @@ chown www:www /var/log/nginx/php.scripts.log
 chown -R www:www \${DATADIR}
 
 # configure self-signed certificates for libcurl, mostly used for minio with self-signed certificates
+# nextcloud source needs patching to work with self-signed certificates too
 if [ \"\${SELFSIGNHOST}\" != \"none\" ]; then
-   echo \"\" | /usr/bin/openssl s_client -showcerts -connect \"\${SELFSIGNHOST}\" |/usr/bin/openssl x509 -outform PEM > /tmp/cert.pem && cat /tmp/cert.pem >> /usr/local/share/certs/ca-root-nss.crt
+    echo \"\" | /usr/bin/openssl s_client -showcerts -connect \"\${SELFSIGNHOST}\" |/usr/bin/openssl x509 -outform PEM > /tmp/cert.pem && cat /tmp/cert.pem >> /usr/local/share/certs/ca-root-nss.crt
+    # Patch nextcloud source for self-signed certificates with S3
+    if [ -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php ] && [ -f /root/S3ObjectTrait.patch ]; then
+        # make sure we haven't already applied the patch
+        checknotapplied=\$(grep -c verify_peer_name /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php)
+        if [ \"\${checknotapplied}\" -eq 0 ]; then
+            # check the patch will apply cleanly
+            testpatch=\$(patch --check -i /root/S3ObjectTrait.patch /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php | echo \"\$?\")
+            if [ \"\${testpatch}\" -eq 0 ]; then
+                # apply the patch
+                patch -i /root/S3ObjectTrait.patch /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php
+            fi
+        fi
+    fi
 fi
 
 # Configure NGINX

@@ -1,0 +1,5 @@
+70a71,74
+>               'ssl' => [
+>                   'verify_peer' => false,
+>                   'verify_peer_name' => false,
+>               ],
