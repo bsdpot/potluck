@@ -1,3 +1,9 @@
+0.18
+
+* Improved patch file
+
+---
+
 0.17
 
 * Patch nextcloud for self-signed S3 if self-signed var enabled

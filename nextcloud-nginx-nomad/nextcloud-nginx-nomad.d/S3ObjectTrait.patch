@@ -1,5 +1,29 @@
-70a71,74
->               'ssl' => [
->                   'verify_peer' => false,
->                   'verify_peer_name' => false,
->               ],
+*** 1/S3ObjectTrait.php Fri Jun  3 19:32:16 2022
+--- 2/S3ObjectTrait.php Fri Jun  3 19:32:38 2022
+***************
+*** 61,80 ****
+--- 61,84 ----
+            foreach ($request->getHeaders() as $key => $values) {
+                foreach ($values as $value) {
+                    $headers[] = "$key: $value";
+                }
+            }
+            $opts = [
+                'http' => [
+                    'protocol_version' => $request->getProtocolVersion(),
+                    'header' => $headers,
+                ],
++               'ssl' => [
++                   'verify_peer' => false,
++                   'verify_peer_name' => false,
++               ],
+            ];
+  
+            if ($this->getProxy()) {
+                $opts['http']['proxy'] = $this->getProxy();
+                $opts['http']['request_fulluri'] = true;
+            }
+  
+            $context = stream_context_create($opts);
+            return fopen($request->getUri(), 'r', false, $context);
+        });
