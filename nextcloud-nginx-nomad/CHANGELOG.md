@@ -1,3 +1,11 @@
+0.21
+
+* Updates to nginx.conf copy in
+* Adding missing packages for php libraries
+* Added cron job to /etc/crontab
+
+---
+
 0.20
 
 * Added ocdata dotfile setup

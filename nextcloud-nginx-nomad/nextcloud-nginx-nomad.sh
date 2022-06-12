@@ -183,6 +183,9 @@ pkg install -y php74-fileinfo
 step "Install package php74-filter"
 pkg install -y php74-filter
 
+step "Install package php74-ftp"
+pkg install -y php74-ftp
+
 step "Install package php74-gd"
 pkg install -y php74-gd
 
@@ -191,6 +194,9 @@ pkg install -y php74-gmp
 
 step "Install package php74-iconv"
 pkg install -y php74-iconv
+
+step "Install package php74-imap"
+pkg install -y php74-imap
 
 step "Install package php74-intl"
 pkg install -y php74-intl
@@ -225,6 +231,12 @@ pkg install -y php74-pecl-APCu
 step "Install package php74-pecl-memcached"
 pkg install -y php74-pecl-memcached
 
+step "Install package php74-pecl-redis"
+pkg install -y php74-pecl-redis
+
+step "Install package php74-pecl-imagick"
+pkg install -y php74-pecl-imagick
+
 step "Install package php74-pHash"
 pkg install -y php74-pHash
 
@@ -257,6 +269,9 @@ pkg install -y php74-zip
 
 step "Install package php74-zlib"
 pkg install -y php74-zlib
+
+step "Install package ffmpeg"
+pkg install -y ffmpeg
 
 step "Install package jq"
 pkg install -y jq
@@ -371,9 +386,14 @@ fi
 
 # Configure PHP FPM
 sed -i .orig 's|listen = 127.0.0.1:9000|listen = /var/run/php74-fpm.sock|g' /usr/local/etc/php-fpm.d/www.conf
+echo \"# Nomad Nextcloud settings...\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.owner = www\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.group = www\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf
+echo \"env[PATH] = /usr/local/bin:/usr/bin:/bin\" >> /usr/local/etc/php-fpm.d/www.conf
+echo \"env[TMP] = /tmp\" >> /usr/local/etc/php-fpm.d/www.conf
+echo \"env[TMPDIR] = /tmp\" >> /usr/local/etc/php-fpm.d/www.conf
+echo \"env[TEMP] = /tmp\" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Configure PHP
 cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
@@ -445,7 +465,7 @@ cp -f /root/nginx.conf /usr/local/etc/nginx/nginx.conf
 
 # we need to kill nginx then start it
 killall -9 nginx
-kill -9 \$(pgrep nginx)
+kill -9 \$(/bin/pgrep nginx)
 
 # restart services
 
@@ -456,11 +476,15 @@ timeout --foreground 120 \
   done'
 
 #service nginx restart
-timeout --foreground 120 \
-  sh -c 'while ! service nginx status; do
-    service nginx start || true; sleep 5;
-  done'
+#timeout --foreground 120 \
+#  sh -c 'while ! service nginx status; do
+#    service nginx start || true; sleep 5;
+#  done'
 
+service nginx start || true
+
+# setup cronjob
+echo \"*/5    *    *    *    *    www    /usr/local/bin/php -f /usr/local/www/nextcloud/cron.php\" >> /etc/crontab
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
