@@ -1,3 +1,9 @@
+0.20
+
+* Added ocdata dotfile setup
+
+---
+
 0.19
 
 * Include self-signed CA cert in nextcloud files

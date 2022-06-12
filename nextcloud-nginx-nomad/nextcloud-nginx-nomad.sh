@@ -403,8 +403,16 @@ chown www:www /var/log/nginx/nextcloud.log
 touch /var/log/nginx/php.scripts.log
 chown www:www /var/log/nginx/php.scripts.log
 
+# check for .ocdata in DATADIR
+# if using S3 with no mount-in this should set it up in the default DATADIR
+# /usr/local/nginx/nextcloud/data
+if [ ! -f \"\${DATADIR}\"/.ocdata ]; then
+   touch\"\${DATADIR}\"/.ocdata
+   chown www:www \"\${DATADIR}\"/.ocdata
+fi
+
 # set perms on DATADIR
-chown -R www:www \${DATADIR}
+chown -R www:www \"\${DATADIR}\"
 
 # configure self-signed certificates for libcurl, mostly used for minio with self-signed certificates
 # nextcloud source needs patching to work with self-signed certificates too
