@@ -386,7 +386,7 @@ fi
 
 # Configure PHP FPM
 sed -i .orig 's|listen = 127.0.0.1:9000|listen = /var/run/php74-fpm.sock|g' /usr/local/etc/php-fpm.d/www.conf
-echo \"# Nomad Nextcloud settings...\" >> /usr/local/etc/php-fpm.d/www.conf
+echo \";Nomad Nextcloud settings...\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.owner = www\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.group = www\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf
@@ -476,15 +476,13 @@ timeout --foreground 120 \
   done'
 
 #service nginx restart
-#timeout --foreground 120 \
-#  sh -c 'while ! service nginx status; do
-#    service nginx start || true; sleep 5;
-#  done'
-
-service nginx start || true
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status; do
+    service nginx start || true; sleep 5;
+  done'
 
 # setup cronjob
-echo \"*/5    *    *    *    *    www    /usr/local/bin/php -f /usr/local/www/nextcloud/cron.php\" >> /etc/crontab
+echo \"*/5  *  *  *  *  www  /usr/local/bin/php -f /usr/local/www/nextcloud/cron.php\" >> /etc/crontab
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned

@@ -1,3 +1,9 @@
+0.22
+
+* Fixing nginx and php-fpm problems
+
+---
+
 0.21
 
 * Updates to nginx.conf copy in
