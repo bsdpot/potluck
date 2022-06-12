@@ -1,15 +1,6 @@
-*** 1/S3ObjectTrait.php Fri Jun  3 19:32:16 2022
---- 2/S3ObjectTrait.php Fri Jun  3 19:32:38 2022
-***************
-*** 61,80 ****
---- 61,84 ----
-            foreach ($request->getHeaders() as $key => $values) {
-                foreach ($values as $value) {
-                    $headers[] = "$key: $value";
-                }
-            }
-            $opts = [
-                'http' => [
+--- 1/S3ObjectTrait.php 2022-06-12 12:04:09.460410000 +0000
++++ 2/S3ObjectTrait.php 2022-06-12 12:03:45.516229000 +0000
+@@ -68,6 +68,10 @@
                     'protocol_version' => $request->getProtocolVersion(),
                     'header' => $headers,
                 ],
@@ -18,12 +9,5 @@
 +                   'verify_peer_name' => false,
 +               ],
             ];
-  
+ 
             if ($this->getProxy()) {
-                $opts['http']['proxy'] = $this->getProxy();
-                $opts['http']['request_fulluri'] = true;
-            }
-  
-            $context = stream_context_create($opts);
-            return fopen($request->getUri(), 'r', false, $context);
-        });

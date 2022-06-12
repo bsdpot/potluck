@@ -1,3 +1,9 @@
+0.19
+
+* Include self-signed CA cert in nextcloud files
+
+---
+
 0.18
 
 * Improved patch file

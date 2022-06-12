@@ -65,6 +65,7 @@ $CONFIG = array (
   'trusted_domains' => 
   array (
     0 => '10.0.0.2:20900',
+    1 => 'my.host.name',
   ),
   'datadirectory' => '/mnt/filestore',
   'version' => '23.0.3.2',
@@ -76,7 +77,9 @@ $CONFIG = array (
   'dbuser' => 'REDACTED',
   'dbpassword' => 'REDACTED',
   'installed' => true,
-  'overwrite.cli.url' => 'https://10.0.0.2:20900',
+  'overwrite.cli.url' => 'https://my.host.name',
+  'overwritehost' => 'my.host.name',
+  'overwriteprotocol' => 'https',
   'installed' => true,
   'theme' => '',
   'loglevel' => 0,
@@ -147,7 +150,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-13_0"
-        tag = "0.18"
+        tag = "0.19"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
