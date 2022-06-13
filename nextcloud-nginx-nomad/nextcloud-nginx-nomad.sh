@@ -240,9 +240,6 @@ pkg install -y php74-pecl-redis
 step "Install package php74-pecl-imagick"
 pkg install -y php74-pecl-imagick
 
-step "Install package php74-pHash"
-pkg install -y php74-pHash
-
 step "Install package php74-phar"
 pkg install -y php74-phar
 
@@ -273,8 +270,11 @@ pkg install -y php74-zip
 step "Install package php74-zlib"
 pkg install -y php74-zlib
 
-step "Install package ImageMagick7"
-pkg install -y ImageMagick7
+step "Install package ImageMagick6-nox11"
+pkg install -y ImageMagick6-nox11
+
+step "Install package libheif"
+pkg install -y libheif
 
 step "Install package ffmpeg"
 pkg install -y ffmpeg
@@ -386,12 +386,12 @@ fi
 # we do not install/overwrite anything as we assume that updates/modifications are happening
 # from within Nextcloud.
 if [ ! -e /usr/local/www/nextcloud/status.php ]; then
-    #pkg install -y nextcloud-php74-21.0.2 nextcloud-twofactor_totp-php74-6.1.0 nextcloud-deck-php74-1.4.2 nextcloud-mail-php74-1.9.6 nextcloud-contacts-php74-3.5.1 nextcloud-calendar-php74-2.2.2 nextcloud-end_to_end_encryption-php74-1.7.1
     pkg install -y nextcloud-php74 nextcloud-twofactor_totp-php74 nextcloud-deck-php74 nextcloud-mail-php74 nextcloud-contacts-php74 nextcloud-calendar-php74 nextcloud-end_to_end_encryption-php74
 fi
 
 # Configure PHP FPM
 sed -i .orig 's|listen = 127.0.0.1:9000|listen = /var/run/php74-fpm.sock|g' /usr/local/etc/php-fpm.d/www.conf
+sed -i .orig 's|pm.max_children = 5|pm.max_children = 10|g' /usr/local/etc/php-fpm.d/www.conf
 echo \";Nomad Nextcloud settings...\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.owner = www\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.group = www\" >> /usr/local/etc/php-fpm.d/www.conf

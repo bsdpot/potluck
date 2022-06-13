@@ -1,3 +1,13 @@
+0.24
+
+* Replacing package ImageMagick7 with ImageMagick6-nox11
+* Removing php74-pHash due to conflicts
+* Fixing version in nomad job file in readme missed last update
+* Adding package libheif
+* Fixing occache setup in php.ini extra file
+
+---
+
 0.23
 
 * Adding package ImageMagick7, php74-mysqli
