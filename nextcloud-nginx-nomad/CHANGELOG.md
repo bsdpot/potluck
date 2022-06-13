@@ -1,3 +1,10 @@
+0.23
+
+* Adding package ImageMagick7, php74-mysqli
+* Additions to php.ini extra file
+
+---
+
 0.22
 
 * Fixing nginx and php-fpm problems

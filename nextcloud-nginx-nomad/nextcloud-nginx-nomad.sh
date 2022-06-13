@@ -207,6 +207,9 @@ pkg install -y php74-json
 step "Install package php74-ldap"
 pkg install -y php74-ldap
 
+step "Install package php74-mysqli"
+pkg install -y php74-mysqli
+
 step "Install package php74-mbstring"
 pkg install -y php74-mbstring
 
@@ -269,6 +272,9 @@ pkg install -y php74-zip
 
 step "Install package php74-zlib"
 pkg install -y php74-zlib
+
+step "Install package ImageMagick7"
+pkg install -y ImageMagick7
 
 step "Install package ffmpeg"
 pkg install -y ffmpeg
