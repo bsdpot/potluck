@@ -1,3 +1,9 @@
+0.1.6
+
+* Version bump for layered images
+
+---
+
 0.1.5
 
 * Add missing package socat to allow graceful reloads
