@@ -123,20 +123,20 @@ pkg install -y postgresql13-server
 step "Install package postgresql-client"
 pkg install -y postgresql13-client
 
-step "Install package python37"
-pkg install -y python38
+step "Install package python39"
+pkg install -y python39
 
 step "Install package python3-pip"
-pkg install -y py38-pip
+pkg install -y py39-pip
 
 step "Install package python-consul2"
 # this version gives error
-pkg install -y py38-python-consul2
+pkg install -y py39-python-consul2
 
 # using pip to install this package, as pkg removes postgres13 now,
 # and installs postgres12 client as dependency
 #step "Install package psycopg2"
-#pkg install -y py38-psycopg2
+#pkg install -y py39-psycopg2
 
 step "Install package jq"
 pkg install -y jq
@@ -146,8 +146,6 @@ pkg install -y jo
 
 step "Install package curl"
 pkg install -y curl
-
-
 
 #
 # pip MUST ONLY be used:
@@ -168,7 +166,7 @@ pip install patroni --prefix="/usr/local"
 ## this warning, use --no-warn-script-location.
 
 step "Fetch and install patroni tls server name patch"
-fetch -qo /usr/local/lib/python3.8/site-packages/patroni/dcs/consul.py \
+fetch -qo /usr/local/lib/python3.9/site-packages/patroni/dcs/consul.py \
   https://raw.githubusercontent.com/grembo/patroni/\
 dac9db548b3/patroni/dcs/consul.py
 

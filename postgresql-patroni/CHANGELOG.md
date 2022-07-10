@@ -1,3 +1,9 @@
+2.2.10
+
+* Updating for python39
+
+---
+
 2.2.9
 
 * Version bump for layered images
