@@ -1,3 +1,9 @@
+0.10.10
+
+* Version bump for layered images
+
+---
+
 0.10.9
 
 * Make consul node_names non-FQDN
