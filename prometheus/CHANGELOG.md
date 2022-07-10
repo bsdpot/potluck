@@ -1,3 +1,9 @@
+0.11.7
+
+* Version bump for layered images
+
+---
+
 0.11.6
 
 * Correct further bug in consulmetricsproxy config
