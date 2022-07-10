@@ -1,3 +1,9 @@
+0.0.15
+
+* Version bump for layered images
+
+---
+
 0.0.14
 
 * Incrementing changelog for pot 14 build
