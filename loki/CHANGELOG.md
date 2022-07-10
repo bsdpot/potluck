@@ -1,3 +1,9 @@
+0.2.10
+
+* Version bump for layered images
+
+---
+
 0.2.9
 
 * Move loki and promtail download to image build phase
