@@ -1,3 +1,9 @@
+0.0.11
+
+* Version bump
+
+---
+
 0.0.10
 
 * Version bump
