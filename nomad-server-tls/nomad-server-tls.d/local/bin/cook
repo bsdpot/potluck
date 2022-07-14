@@ -81,6 +81,11 @@ mkdir -p /mnt/log
 mkdir -p /mnt/templates
 mkdir -p /mnt/vaultcerts
 
+# temporary solution, moved here to remove /var/tmp/nomad
+if [ -d /var/tmp/nomad ]; then
+    mv -f /var/tmp/nomad /var/tmp/oldnomad
+fi
+
 log "Set up local_unbound using cluster resolvers"
 setup-local-unbound-provision.sh
 

@@ -1,3 +1,9 @@
+0.10.13
+
+* Moving /var/tmp/nomad out the way early in cook script
+
+---
+
 0.10.12
 
 * Moving /var/tmp/nomad out the way, if it exists, so it will be re-created on nomad start
