@@ -1,3 +1,9 @@
+0.2.11
+
+* Add support for json logs with pipeline_stages in promtail conf
+
+---
+
 0.2.10
 
 * Version bump for layered images
