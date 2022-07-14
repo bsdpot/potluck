@@ -1,3 +1,9 @@
+0.10.12
+
+* Moving /var/tmp/nomad out the way, if it exists, so it will be re-created on nomad start
+
+---
+
 0.10.11
 
 * Set 700 permissions on /var/tmp/nomad else nomad won't start

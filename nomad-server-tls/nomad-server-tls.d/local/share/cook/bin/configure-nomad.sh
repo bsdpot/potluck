@@ -24,7 +24,12 @@ NOMAD_SERVICE_TOKEN="$(cat /mnt/nomadcerts/nomad_service.token)"
 mkdir -p /usr/local/libexec/nomad/plugins
 
 # Set 700 permissions on /var/tmp/nomad else nomad won't start
-chmod 700 /var/tmp/nomad
+##chmod 700 /var/tmp/nomad
+# nomad start works if no /var/tmp/nomad present
+# move it aside for now, should be recreated on nomad start
+if [ -d /var/tmp/nomad ];
+  mv -f /var/tmp/nomad /var/tmp/oldnomad
+fi
 
 # shellcheck disable=SC3003
 # safe(r) separator for sed
