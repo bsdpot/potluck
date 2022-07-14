@@ -1,3 +1,9 @@
+0.10.11
+
+* Set 700 permissions on /var/tmp/nomad else nomad won't start
+
+---
+
 0.10.10
 
 * Version bump for layered images

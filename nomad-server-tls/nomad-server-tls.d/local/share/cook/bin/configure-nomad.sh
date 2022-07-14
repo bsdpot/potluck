@@ -23,6 +23,9 @@ NOMAD_SERVICE_TOKEN="$(cat /mnt/nomadcerts/nomad_service.token)"
 # make nomad plugin directory, may be useful in future
 mkdir -p /usr/local/libexec/nomad/plugins
 
+# Set 700 permissions on /var/tmp/nomad else nomad won't start
+chmod 700 /var/tmp/nomad
+
 # shellcheck disable=SC3003
 # safe(r) separator for sed
 sep=$'\001'
