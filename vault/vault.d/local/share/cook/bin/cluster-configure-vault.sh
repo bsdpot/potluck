@@ -14,23 +14,31 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 sep=$'\001'
 
-< "$TEMPLATEPATH/cluster-vault-bootstrap.hcl.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
-  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
-  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
-  > /usr/local/etc/vault-bootstrap.hcl
-
 < "$TEMPLATEPATH/cluster-vault.hcl.in" \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" \
   | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
   | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
   > /usr/local/etc/vault.hcl
 
+< "$TEMPLATEPATH/cluster-vault-bootstrap.hcl.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
+  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
+  > /usr/local/etc/vault-bootstrap.hcl
+
+< "$TEMPLATEPATH/cluster-vault-recover.hcl.in" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
+  | sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
+  | sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
+  > /usr/local/etc/vault-recover.hcl
+
 # Set permission for vault.hcl, so that vault can read it
 chown vault:wheel /usr/local/etc/vault.hcl
 chown vault:wheel /usr/local/etc/vault-bootstrap.hcl
+chown vault:wheel /usr/local/etc/vault-recover.hcl
 chmod 600 /usr/local/etc/vault.hcl
 chmod 600 /usr/local/etc/vault-bootstrap.hcl
+chmod 600 /usr/local/etc/vault-recover.hcl
 
 # set permissions on /mnt for vault data
 mkdir -p /mnt/vault
@@ -75,6 +83,8 @@ TOKEN=$(/bin/cat /mnt/unsealcerts/unwrapped.token)
       /usr/bin/sed -f - -i '' /usr/local/etc/vault.hcl
     echo "s${sep}%%vaultunsealtoken%%${sep}$TOKEN${sep}g" |
       /usr/bin/sed -f - -i '' /usr/local/etc/vault-bootstrap.hcl
+    echo "s${sep}%%vaultunsealtoken%%${sep}$TOKEN${sep}g" |
+      /usr/bin/sed -f - -i '' /usr/local/etc/vault-recover.hcl
 )
 
 echo "Cloning consul-template rc scripts"
