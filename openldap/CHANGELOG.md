@@ -1,3 +1,9 @@
+1.2.5
+
+* Added syslog-ng and remote logging
+
+---
+
 1.2.4
 
 * Capitilising header section in README for consistency

@@ -1,0 +1,3 @@
+#!/usr/local/bin/bash
+mkdir -p /tmp/stress-tmp
+/usr/local/bin/stress-ng --cpu 4 --vm 2 --hdd 1 --fork 8 --timeout 5m --metrics-brief --temp-path /tmp/stress-tmp/

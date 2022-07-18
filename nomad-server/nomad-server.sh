@@ -92,13 +92,14 @@ pkg install -y nomad
 step "Install package sudo"
 pkg install -y sudo
 
-# we need vault for authentication and certificates
-# not yet configured
-step "Install package vault"
-pkg install -y vault
+step "Install package syslog-ng"
+pkg install -y syslog-ng
 
 step "Install package node_exporter"
 pkg install -y node_exporter
+
+step "Create nomad jobs directory"
+mkdir -p /root/nomadjobs
 
 step "Clean package installation"
 pkg clean -y
@@ -142,8 +143,8 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/consul stop || true
-/usr/local/etc/rc.d/nomad stop || true
+service consul onestop || true
+service nomad onestop || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -198,6 +199,18 @@ then
     echo 'NOMADKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
     NOMADKEY=\$GOSSIPKEY
 fi
+# Importjobs flag to enable automatic job importing
+if [ -z \${IMPORTJOBS+x} ];
+then
+    echo 'IMPORTJOBS is unset - see documentation how to configure this flavour'
+    IMPORTJOBS=0
+fi
+# Remotelog is a remote syslog server, need to pass in IP
+if [ -z \${REMOTELOG+x} ];
+then
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour'
+    REMOTELOG=0
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -223,24 +236,33 @@ echo \"{
   \\\"a_record_limit\\\": 3,
   \\\"enable_truncate\\\": true
  },
+ \\\"verify_incoming\\\": false,
+ \\\"verify_outgoing\\\": false,
+ \\\"verify_server_hostname\\\": false,
+ \\\"verify_incoming_rpc\\\": false,
  \\\"log_file\\\": \\\"/var/log/consul/\\\",
  \\\"log_level\\\": \\\"WARN\\\",
  \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
  \\\"start_join\\\": [ \$CONSULSERVERS ],
+ \\\"telemetry\\\": {
+   \\\"prometheus_retention_time\\\": \\\"24h\\\"
+ },
  \\\"service\\\": {
-  \\\"address\\\": \\\"\$IP\\\",
-  \\\"name\\\": \\\"node-exporter\\\",
-  \\\"tags\\\": [\\\"_app=nomad-server\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
-  \\\"port\\\": 9100
+   \\\"address\\\": \\\"\$IP\\\",
+   \\\"name\\\": \\\"node-exporter\\\",
+   \\\"tags\\\": [\\\"_app=nomad-server\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
+   \\\"port\\\": 9100
  }
 }\" > /usr/local/etc/consul.d/agent.json
 
 # set owner and perms on agent.json
 chown -R consul:wheel /usr/local/etc/consul.d
-chmod 640 /usr/local/etc/consul.d/agent.json
+#chmod 640 /usr/local/etc/consul.d/agent.json
+chmod 750 /usr/local/etc/consul.d
 
 # enable consul
-sysrc consul_enable=\"YES\"
+#sysrc consul_enable=\"YES\"
+service consul enable
 
 # set load parameter for consul config
 sysrc consul_args=\"-config-file=/usr/local/etc/consul.d/agent.json\"
@@ -261,8 +283,17 @@ chown -R consul:wheel /var/log/consul
 
 # end consul #
 
+# add node_exporter user
+if ! id -u \"nodeexport\" >/dev/null 2>&1; then
+  /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+fi
+
 # enable node_exporter service
-sysrc node_exporter_enable=\"YES\"
+#sysrc node_exporter_enable=\"YES\"
+service node_exporter enable
+sysrc node_exporter_args=\"--log.level=warn\"
+sysrc node_exporter_user=nodeexport
+sysrc node_exporter_group=nodeexport
 
 # start nomad #
 
@@ -271,13 +302,11 @@ echo \"
 bind_addr = \\\"\$IP\\\"
 plugin_dir = \\\"/usr/local/libexec/nomad/plugins\\\"
 datacenter = \\\"\$DATACENTER\\\"
-
 advertise {
   # This should be the IP of THIS MACHINE and must be routable by every node
   # in your cluster
   http = \\\"\$IP:4646\\\"
 }
-
 server {
   enabled = true
   # set this to 3 or 5 for cluster setup
@@ -285,7 +314,6 @@ server {
   # Encrypt gossip communication
   encrypt = \\\"\$NOMADKEY\\\"
 }
-
 consul {
   # The address to the local Consul agent.
   address = \\\"\$IP:8500\\\"
@@ -296,25 +324,82 @@ consul {
   # Enabling the server and client to bootstrap using Consul.
   server_auto_join = true
 }
-
+telemetry {
+  publish_allocation_metrics = true
+  publish_node_metrics = true
+  prometheus_metrics = true
+  disable_hostname = true
+}
 enable_syslog=true
 log_level=\\\"INFO\\\"
 syslog_facility=\\\"LOCAL1\\\"\" > /usr/local/etc/nomad/server.hcl
 
 # set the rc startup
-sysrc nomad_enable=yes
+#sysrc nomad_enable=yes
+service nomad enable
 echo \"nomad_args=\\\"-config=/usr/local/etc/nomad/server.hcl -network-interface=\$IP\\\"\" >> /etc/rc.conf
+
+## remote syslogs
+if [ \"\${REMOTELOG}\" != \"0\" ]; then
+    config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
+
+    # read in template conf file, update remote log IP address, and
+    # write to correct destination
+    < /root/syslog-ng.conf.in \
+      sed \"s|%%config_version%%|\$config_version|g\" | \
+      sed \"s|%%remotelogip%%|\$REMOTELOG|g\" \
+      > /usr/local/etc/syslog-ng.conf
+
+    # stop and disable syslogd
+    service syslogd onestop || true
+    service syslogd disable
+
+    # enable and start syslog-ng
+    service syslog-ng enable
+    sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+    service syslog-ng start
+fi
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 # start consul agent
-/usr/local/etc/rc.d/consul start
+#/usr/local/etc/rc.d/consul start
+#service consul start
+timeout --foreground 120 \
+  sh -c 'while ! service consul status; do
+    service consul start || true; sleep 5;
+  done'
 
 # start nomad
-/usr/local/etc/rc.d/nomad start
+#/usr/local/etc/rc.d/nomad start
+#service nomad start
+
+timeout --foreground 120 \
+  sh -c 'while ! service nomad status; do
+    service nomad start || true; sleep 5;
+  done'
 
 # start node_exporter
-/usr/local/etc/rc.d/node_exporter start
+#/usr/local/etc/rc.d/node_exporter start
+service node_exporter start
+
+# job imports
+if [ \"\${IMPORTJOBS}\" -eq 1 ]; then
+    echo \"Importing job files from /root/nomadjobs\"
+    # set var /root/nomadjobs
+    cd /root/nomadjobs/
+    # count .nomad files in /root/nomadjobs
+    JOBSCOUNT=\$(ls *.nomad |wc -l)
+    # for each .nomad job file run nomad plan
+    if [ \"\${JOBSCOUNT}\" -gt \"0\" ];then
+        # get a file list of .nomad files
+        JOBSLIST=\$(find . -type f -name \"*.nomad\")
+        # nomad job plan /root/jobfiles/jobname.nomad
+        for job in \$(echo \"\${JOBSLIST}\"); do
+            /usr/local/bin/nomad job run -address=http://\"\${IP}\":4646 -detach \"\$job\";
+        done
+    fi
+fi
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned

@@ -40,7 +40,8 @@ It is advised to run this image behind a proxy. The directory permissions on the
   -E GITEMAIL=<git user email> -E GITUSER=<git username> \
   [-E CUSTOMDIR=<custom dir inside huge sitename> \
    -E CUSTOMFILE=<1|0 default> -E IMPORTKEYS=<1|0 default> \
-   -E THEMEADJUST=<1|0> ]
+   -E THEMEADJUST=<1|0> \
+   -E REMOTELOG=<IP syslog-ng server> ]
   ```
 
 SERVERNAME is the fully qualified domain name to configure nginx with.
@@ -59,6 +60,8 @@ IMPORTKEYS defaults to 0. Set to 1 to add the copied in pubkey to authenticated_
 Copy in the applicable id_rsa.pub as part of the pot setup and start process.
 
 THEMEADJUST defaults to 0 and makes no changes to the ```kiss-em``` theme in use. If set to 1 will make changes specific to http://potluck.honeyguide.net.
+
+REMOTELOG is an optional parameter for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
 # Usage
 Start hugo manually (not necessary):

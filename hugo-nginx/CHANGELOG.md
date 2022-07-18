@@ -1,3 +1,27 @@
+0.0.18
+
+* Adding customdir to gitignore and other tweaks
+
+---
+
+0.0.17
+
+* Starting nginx before configuring goaccess. Setting git safedirectory
+
+---
+
+0.0.16
+
+* Adjusting goaccess for custom goaccess.conf file
+
+---
+
+0.0.15
+
+* Adding syslog-ng and remotelogs
+
+---
+
 0.0.14
 
 * More permissions adjustment

@@ -1,3 +1,27 @@
+0.10.13
+
+* Moving /var/tmp/nomad out the way early in cook script
+
+---
+
+0.10.12
+
+* Moving /var/tmp/nomad out the way, if it exists, so it will be re-created on nomad start
+
+---
+
+0.10.11
+
+* Set 700 permissions on /var/tmp/nomad else nomad won't start
+
+---
+
+0.10.10
+
+* Version bump for layered images
+
+---
+
 0.10.9
 
 * Make consul node_names non-FQDN

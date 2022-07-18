@@ -1,3 +1,40 @@
+2.0.13
+
+* Automatic job import, plan, from copied-in job files in .nomad format
+
+---
+
+2.0.12
+
+* Implement working prometheus telemetry
+* Update README for REMOTELOG
+
+---
+
+2.0.11
+
+* Switch to syslog-ng
+
+---
+
+2.0.10
+
+* Changing method for setting up remote syslog as variable wasn't expanding
+
+---
+
+2.0.9
+
+* Adding missing nodeexport user
+
+---
+
+2.0.8
+
+* Minor updates for telemetry and remote logs, latest version nomad
+
+---
+
 2.0.7
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

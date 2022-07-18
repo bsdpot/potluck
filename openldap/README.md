@@ -61,7 +61,8 @@ Thereafter these files will load automatically, along with any updates, from per
   ```
   sudo pot set-env -p <jailname> -E DOMAIN=<domain name> -E MYCREDS=<openldap root pass> \
   -E IP=<IP address> -E HOSTNAME=<hostname> \
-  [-E REMOTEIP=<IP address second instance> -E SERVERID=<001 or 002>]
+  [ -E REMOTEIP=<IP address second instance> -E SERVERID=<001 or 002> ]
+  [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 
 The DOMAIN parameter is the domain name to use for `openldap` configuration.
@@ -76,6 +77,8 @@ The optional REMOTEIP parameter is the IP address of a second `openldap` pot ser
 cluster. If set, a cluster setup will be initiated.
 
 The optional SERVERID parameter is one of `001` or `002` for first or second server if running a multi-master cluster.
+
+The optional REMOTELOG parameter is for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
 # Usage
 

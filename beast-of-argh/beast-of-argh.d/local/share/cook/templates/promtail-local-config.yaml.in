@@ -1,0 +1,31 @@
+server:
+  http_listen_address: %%ip%%
+  http_listen_port: 9080
+  grpc_listen_address: %%ip%%
+  grpc_listen_port: 9081
+
+positions:
+  filename: /mnt/logs/positions.yaml
+
+clients:
+  - url: http://%%ip%%:3100/loki/api/v1/push
+
+scrape_configs:
+- job_name: system
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: varlogs
+      __path__: /mnt/logs/remote/*.log
+
+- job_name: syslog
+  syslog:
+    listen_address: 127.0.0.1:1514
+    idle_timeout: 60s
+    label_structured_data: yes
+    labels:
+      job: "syslog"
+  relabel_configs:
+    - source_labels: ['__syslog_message_hostname']
+      target_label: 'host'

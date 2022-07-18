@@ -60,9 +60,10 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
-  >/usr/local/etc/pkg/repos/FreeBSD.conf
+# shellcheck disable=SC2016
+test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
 step "Touch /etc/rc.conf"
@@ -108,6 +109,9 @@ pkg install -y openssl
 
 step "Install package rsync"
 pkg install -y rsync
+
+step "Install package syslog-ng"
+pkg install -y syslog-ng
 
 step "Clean package installation"
 pkg autoremove -y
@@ -192,6 +196,11 @@ if [ -z \${POSTSCRIPT+x} ]; then
     echo 'POSTSCRIPT is unset - see documentation to configure this flavour to run a script at the end'
     POSTSCRIPT=0
 fi
+# Remotelog is a remote syslog server, need to pass in IP
+if [ -z \${REMOTELOG+x} ]; then
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour'
+    REMOTELOG=0
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -262,11 +271,15 @@ fi
 # goaccess
 # this seems to be needed as install places in /usr/local/etc/goaccess.conf
 # but default for goaccess is /usr/local/etc/goaccess/goaccess.conf
-if [ -f /usr/local/etc/goaccess.conf ]; then
-    ln -s /usr/local/etc/goaccess.conf /usr/local/etc/goaccess/goaccess.conf
+# using custom goaccess.conf with nginx accesslog hardcoded in
+if [ -f /root/goaccess.conf.in ]; then
+    cp -f /root/goaccess.conf.in /usr/local/etc/goaccess/goaccess.conf
+    mv /usr/local/etc/goaccess.conf /usr/local/etc/goaccess.conf.ignore
 fi
+sysrc goaccess_config=\"/usr/local/etc/goaccess/goaccess.conf\"
 sysrc goaccess_log=\"/var/log/nginx/access.log\"
 service goaccess enable
+service goaccess start || true
 
 # add custom commands to postsetup.sh
 if [ \${POSTSCRIPT} -eq 1 ]; then
@@ -278,8 +291,30 @@ if [ \${POSTSCRIPT} -eq 1 ]; then
     fi
 fi
 
+## remote syslogs
+if [ \"\${REMOTELOG}\" != \"0\" ]; then
+    config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
+
+    # read in template conf file, update remote log IP address, and
+    # write to correct destination
+    < /root/syslog-ng.conf.in \
+      sed \"s|%%config_version%%|\$config_version|g\" | \
+      sed \"s|%%remotelogip%%|\$REMOTELOG|g\" > /usr/local/etc/syslog-ng.conf
+
+    # stop and disable syslogd
+    service syslogd onestop || true
+    service syslogd disable
+
+    # enable and start syslog-ng
+    service syslog-ng enable
+    sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+    service syslog-ng start
+fi
+
 #
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
+
+
 
 #
 # Do not touch this:

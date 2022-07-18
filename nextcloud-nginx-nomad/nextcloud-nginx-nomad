@@ -2,3 +2,5 @@ set-attribute -A persistent -V OFF
 set-attribute -A no-rc-script -V ON
 copy-in -s /usr/local/etc/pot/flavours/nextcloud-nginx-nomad.d/nginx.conf -d /root/nginx.conf
 copy-in -s /usr/local/etc/pot/flavours/nextcloud-nginx-nomad.d/99-custom.ini -d /root/99-custom.ini
+copy-in -s /usr/local/etc/pot/flavours/nextcloud-nginx-nomad.d/S3ObjectTrait.patch -d /root/S3ObjectTrait.patch
+

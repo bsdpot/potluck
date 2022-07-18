@@ -79,17 +79,20 @@ sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 step "Disable sendmail"
 service sendmail onedisable
 
-step "Enable consul startup"
-sysrc consul_enable="YES"
-
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
+
+step "Install package sudo"
+pkg install -y sudo
 
 step "Install package consul"
 pkg install -y consul
 
-step "Install package sudo"
-pkg install -y sudo
+step "Enable consul startup"
+sysrc consul_enable="YES"
+
+step "Install package syslog-ng"
+pkg install -y syslog-ng
 
 step "Install package node_exporter"
 pkg install -y node_exporter
@@ -136,7 +139,8 @@ then
 fi
 
 # ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/consul stop  || true
+#/usr/local/etc/rc.d/consul stop  || true
+service consul onestop || true
 
 # No need to adjust this:
 # If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
@@ -182,6 +186,12 @@ then
     echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
     GOSSIPKEY='BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw='
 fi
+# Remotelog is a remote syslog server, need to pass in IP
+if [ -z \${REMOTELOG+x} ];
+then
+    echo 'REMOTELOG is unset - see documentation how to configure this flavour'
+    REMOTELOG=0
+fi
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
 # Don't forget to double(!)-escape quotes and dollar signs in the config files
@@ -189,6 +199,8 @@ fi
 # Create consul server config file, set the bootstrap_expect value to number
 # of servers in the cluster, 3 or 5
 mkdir -p /usr/local/etc/consul.d
+chown consul /usr/local/etc/consul.d
+chmod 750 /usr/local/etc/consul.d
 
 # There are two different configs whether consul is a single server or 3 or 5
 # The BOOTSTRAP parameter MUST be set, and the PEERS variable MUST be in the
@@ -206,6 +218,10 @@ case \$BOOTSTRAP in
        \\\"a_record_limit\\\": 3,
        \\\"enable_truncate\\\": true
      },
+     \\\"verify_incoming\\\": false,
+     \\\"verify_outgoing\\\": false,
+     \\\"verify_server_hostname\\\": false,
+     \\\"verify_incoming_rpc\\\": false,
      \\\"enable_syslog\\\": true,
      \\\"leave_on_terminate\\\": true,
      \\\"log_level\\\": \\\"WARN\\\",
@@ -215,16 +231,19 @@ case \$BOOTSTRAP in
      \\\"server\\\": true,
      \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
      \\\"bootstrap_expect\\\": \$BOOTSTRAP,
+     \\\"telemetry\\\": {
+       \\\"prometheus_retention_time\\\": \\\"24h\\\"
+     },
      \\\"service\\\": {
       \\\"address\\\": \\\"\$IP\\\",
       \\\"name\\\": \\\"node-exporter\\\",
       \\\"tags\\\": [\\\"_app=consul\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
       \\\"port\\\": 9100
-  }
-}\" > /usr/local/etc/consul.d/agent.json
+     }
+    }\" > /usr/local/etc/consul.d/agent.json
 
-     echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
-     ;;
+    echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
+    ;;
 
   3|5)
     echo \"{
@@ -236,6 +255,10 @@ case \$BOOTSTRAP in
        \\\"a_record_limit\\\": 3,
        \\\"enable_truncate\\\": true
      },
+     \\\"verify_incoming\\\": false,
+     \\\"verify_outgoing\\\": false,
+     \\\"verify_server_hostname\\\": false,
+     \\\"verify_incoming_rpc\\\": false,
      \\\"enable_syslog\\\": true,
      \\\"leave_on_terminate\\\": true,
      \\\"log_level\\\": \\\"WARN\\\",
@@ -247,16 +270,18 @@ case \$BOOTSTRAP in
      \\\"bootstrap_expect\\\": \$BOOTSTRAP,
      \\\"rejoin_after_leave\\\": true,
      \\\"start_join\\\": [\\\"\$IP\\\", \$PEERS],
+     \\\"telemetry\\\": {
+       \\\"prometheus_retention_time\\\": \\\"24h\\\"
+     },
      \\\"service\\\": {
       \\\"address\\\": \\\"\$IP\\\",
       \\\"name\\\": \\\"node-exporter\\\",
       \\\"tags\\\": [\\\"_app=consul\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
       \\\"port\\\": 9100
-  }
-}\" > /usr/local/etc/consul.d/agent.json
+   }
+  }\" > /usr/local/etc/consul.d/agent.json
 
-     echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
-
+    echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
     ;;
 
   *)
@@ -266,19 +291,47 @@ case \$BOOTSTRAP in
 
 esac
 
+## remote syslogs
+if [ \"\${REMOTELOG}\" != \"0\" ]; then
+    config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
+
+    # read in template conf file, update remote log IP address, and
+    # write to correct destination
+    < /root/syslog-ng.conf.in \
+      sed \"s|%%config_version%%|\$config_version|g\" | \
+      sed \"s|%%remotelogip%%|\$REMOTELOG|g\" > /usr/local/etc/syslog-ng.conf
+
+    # stop and disable syslogd
+    service syslogd onestop || true
+    service syslogd disable
+
+    # enable and start syslog-ng
+    service syslog-ng enable
+    sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
+    service syslog-ng start
+fi
+
 ## end consul setup
+if ! id -u \"nodeexport\" >/dev/null 2>&1; then
+  /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+fi
 
 # enable node_exporter service
-sysrc node_exporter_enable=\"YES\"
+#sysrc node_exporter_enable=\"YES\"
+service node_exporter enable
+sysrc node_exporter_args=\"--log.level=warn\"
+sysrc node_exporter_user=nodeexport
+sysrc node_exporter_group=nodeexport
 
-#
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 
 # start consul
-/usr/local/etc/rc.d/consul start
+service consul enable
+service consul start
 
 # start node_exporter
-/usr/local/etc/rc.d/node_exporter start
+#/usr/local/etc/rc.d/node_exporter start
+service node_exporter start
 
 #
 # Do not touch this:

@@ -1,3 +1,9 @@
+0.2.9
+
+* Version bump for layered images
+
+---
+
 0.2.8
 
 * Bugfix in consul agent policy

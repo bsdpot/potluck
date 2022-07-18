@@ -1,3 +1,15 @@
+0.0.6
+
+* Fixing goaccess conf parameter as not working. Using custom goaccess.conf now.
+
+---
+
+0.0.5
+
+* Adding syslog-ng and remote logging
+
+---
+
 0.0.4
 
 * Fixing goaccess.conf error as installs to /usr/local/etc instead of /usr/local/etc/goaccess

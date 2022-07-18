@@ -5,17 +5,20 @@
 #
 # EDIT THE FOLLOWING FOR NEW FLAVOUR:
 # 1. RUNS_IN_NOMAD - true or false
-# 2. Create a matching <flavour> file with this <flavour>.sh file that
+# 2. If RUNS_IN_NOMAD is false, can delete the <flavour>+4 file, else
+#    make sure pot create command doesn't include it
+# 3. Create a matching <flavour> file with this <flavour>.sh file that
 #    contains the copy-in commands for the config files from <flavour>.d/
-#    Remember that the package directories don't exist yet, so likely copy to /root
-# 3. Adjust package installation between BEGIN & END PACKAGE SETUP
-# 4. Check tarball extraction works for you between BEGIN & END EXTRACT TARBALL
+#    Remember that the package directories don't exist yet, so likely copy
+#    to /root
+# 4. Adjust package installation between BEGIN & END PACKAGE SETUP
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
-# Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
-# You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script
+# Set this to true if this jail flavour is to be created as a nomad
+# (i.e. blocking) jail.
+# You can then query it in the cook script generation below and the script
+# is installed appropriately at the end of this script
 RUNS_IN_NOMAD=false
 
 # set the cook log path/filename
@@ -77,23 +80,59 @@ sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 step "Disable sendmail"
 service sendmail onedisable
 
+step "Disable sshd"
+service sshd onedisable || true
+
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
-step "Install mariadb105-server"
-pkg install -y mariadb105-server
+# we need consul for consul agent
+step "Install package consul"
+pkg install -y consul
+
+step "Install package openssl"
+pkg install -y openssl
+
+step "Install package sudo"
+pkg install -y sudo
+
+step "Install package curl"
+pkg install -y curl
+
+step "Install package jq"
+pkg install -y jq
+
+step "Install package jo"
+pkg install -y jo
+
+step "Install package nano"
+pkg install -y nano
+
+step "Install package bash"
+pkg install -y bash
+
+step "Install package rsync"
+pkg install -y rsync
+
+step "Install packages mariadb105"
+pkg install -y mariadb105-server mariadb105-client
+
+step "Install package node_exporter"
+pkg install -y node_exporter
+
+step "Install package mysqld_exporter"
+pkg install -y mysqld_exporter
+
+step "Install package syslog-ng"
+pkg install -y syslog-ng
 
 step "Clean package installation"
 pkg clean -y
 
-step "Create /var/db/mysql to support pot mount-in"
+step "Create mysql directory"
 mkdir -p /var/db/mysql
 
 # -------------- END PACKAGE SETUP -------------
-
-#
-# Create configurations
-#
 
 #
 # Now generate the run command script "cook"
@@ -101,131 +140,19 @@ mkdir -p /var/db/mysql
 # On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
 #
 
-# clear any old cook runtime file
-step "Remove pre-existing cook script (if any)"
-rm -f /usr/local/bin/cook
-
 # this runs when image boots
 # ----------------- BEGIN COOK ------------------
 
-step "Create cook script"
-echo "#!/bin/sh
-RUNS_IN_NOMAD=$RUNS_IN_NOMAD
-# declare this again for the pot image, might work carrying variable through like
-# with above
-COOKLOG=/var/log/cook.log
-# No need to change this, just ensures configuration is done only once
-if [ -e /usr/local/etc/pot-is-seasoned ]
-then
-    # If this pot flavour is blocking (i.e. it should not return),
-    # we block indefinitely
-    if [ \"\$RUNS_IN_NOMAD\" = \"true\" ]
-    then
-        /bin/sh /etc/rc
-        tail -f /dev/null
-    fi
-    exit 0
-fi
+step "Clean cook artifacts"
+rm -rf /usr/local/bin/cook /usr/local/share/cook
 
-# ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/mysql-server stop
+step "Install pot local"
+tar -C /root/.pot_local -cf - . | tar -C /usr/local -xf -
+rm -rf /root/.pot_local
 
-# No need to adjust this:
-# If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
-# where pot is storing it in this case
-if [ -e /tmp/environment.sh ]
-then
-    . /tmp/environment.sh
-fi
-
-#
-# ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
-#
-# Convert parameters to variables if passed (overwrite environment)
-while getopts s:u:d: option
-do
-    case \"\${option}\"
-    in
-      s) DUMPSCHEDULE=\${OPTARG};;
-      u) DUMPUSER=\${OPTARG};;
-      d) DUMPFILE=\${OPTARG};;
-    esac
-done
-
-# Check config variables are set
-if [ -z \${DUMPSCHEDULE+x} ]; 
-then 
-    echo 'Note: DUMPSCHEDULE is unset - no regular database dumps will be created' >> /var/log/cook.log
-    echo 'Note: DUMPSCHEDULE is unset - no regular database dumps will be created'
-fi
-
-if [ -z \${DUMPUSER+x} ];
-then
-    echo 'DUMPUSER is unset - setting it to backupuser just in case' >> /var/log/cook.log
-    echo 'DUMPUSER is unset - setting it to backupuser just in case'
-    DUMPUSER=\"root\"
-fi
-
-if [ -z \${DUMPFILE+x} ];
-then
-    echo 'DUMPFILE is unset - setting it to /var/db/mysql/full_mariadb_backup.sql just in case' >> /var/log/cook.log
-    echo 'DUMPFILE is unset - setting it to /var/db/mysql/full_mariadb_backup.sql just in case'
-    DUMPFILE=\"/var/db/mysql/full_mariadb_backup.sql\"
-fi
-
-#
-# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-#
-sysrc mysql_enable=YES
-
-# Configure dump cronjob
-if [ ! -z \${DUMPSCHEDULE+x} ];
-then
-   echo \"\$DUMPSCHEDULE       root   /usr/bin/nice -n 20 /usr/local/bin/mysqldump -u \$DUMPUSER -v --all-databases --all-tablespaces --routines --events --triggers --single-transaction > \$DUMPFILE 2>/var/log/dump.log\" >> /etc/crontab
-fi
-
-# We do not know if the database that is mounted from outside has already been run
-# with this MariaDB release, so to be sure we upgrade it before we start the service
-if [ -e /var/db/mysql/mysql ]
-then
-	chown -R mysql /var/db/mysql
-	chgrp -R mysql /var/db/mysql
-	chmod -R ug+rw /var/db/mysql
-fi
-
-# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-
-# If we do not find a database, we will initialise one
-if [ ! -e /var/db/mysql/mysql ]
-then
-    /usr/local/etc/rc.d/mysql-server start
-cat <<EOF | /usr/local/bin/mysql_secure_installation
-y
-0
-y
-y
-y
-y
-y
-EOF
-else
-    /usr/local/etc/rc.d/mysql-server start
-    /usr/local/bin/mysql_upgrade
-fi
-
-
-#
-# Do not touch this:
-touch /usr/local/etc/pot-is-seasoned
-
-# If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh
-# created by pot and we now after configuration block indefinitely
-if [ \"\$RUNS_IN_NOMAD\" = \"true\" ]
-then
-    /bin/sh /etc/rc
-    tail -f /dev/null
-fi
-" > /usr/local/bin/cook
+step "Set file ownership on cook scripts"
+chown -R root:wheel /usr/local/bin/cook /usr/local/share/cook
+chmod 755 /usr/local/share/cook/bin/*
 
 # ----------------- END COOK ------------------
 
@@ -286,7 +213,8 @@ then
   step "Enable cook service"
   # This is a non-nomad (non-blocking) jail, so we need to make sure the script
   # gets started when the jail is started:
-  # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
+  # Otherwise, /usr/local/bin/cook will be set as start script by the pot
+  # flavour
   echo "enabling cook" | tee -a $COOKLOG
   service cook enable
 fi

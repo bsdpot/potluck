@@ -1,0 +1,54 @@
+worker_processes  1;
+error_log  /mnt/applog/consulmetricsproxy-error.log;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       /usr/local/etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /mnt/applog/consulmetricsproxy-access.log  main;
+
+    sendfile        off;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    resolver 127.0.0.1 valid=1s ipv6=off; # aggressive
+
+    server {
+        listen       127.0.0.1:8443;
+        server_name  localhost;
+
+        #ssl_protocols TLSv1.3 TLSv1.2;
+        # https://ssl-config.mozilla.org/#server=nginx&config=intermediate
+        #ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+        #ssl_prefer_server_ciphers off;
+
+        location / {
+          #proxy_pass https://$http_host$uri$is_args$args;
+          proxy_pass http://$http_host$uri$is_args$args;
+          #proxy_ssl_certificate /mnt/consulcerts/agent.crt;
+          #proxy_ssl_certificate_key /mnt/consulcerts/agent.key;
+          #proxy_ssl_verify on;
+          #proxy_ssl_trusted_certificate /mnt/consulcerts/ca_root.crt;
+          #proxy_ssl_server_name on;
+          proxy_set_header Host server.beast.consul;
+          #proxy_ssl_name server.beast.consul;
+        }
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/local/www/nginx-dist;
+        }
+    }
+}

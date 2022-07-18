@@ -1,3 +1,45 @@
+2.0.18
+
+* Switching to syslog-ng
+
+---
+
+2.0.17
+
+* Changing approach with setting up remote syslog as variable not working
+
+---
+
+2.0.16
+
+* Wrong fix, consul enable mixup with legacy sysrc entry
+
+---
+
+2.0.15
+
+* Fixed bad character in README
+
+---
+
+2.0.14
+
+* Rebuild due to workflow error
+
+---
+
+2.0.13
+
+* Typos and formatting fixes
+
+---
+
+2.0.12
+
+* Minor updates and rebuild for latest consul version
+
+---
+
 2.0.11
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

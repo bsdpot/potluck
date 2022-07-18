@@ -1,3 +1,33 @@
+1.2.9
+
+* Switch to syslog-ng. Include traefik logs in syslog-ng. Update to modern base script.
+
+---
+
+1.2.8
+
+* Changing method for remote syslog as variable wasn't expanding
+
+---
+
+1.2.7
+
+* Implementing prometheus metrics and other minor tweaks. Updating README.
+
+---
+
+1.2.6
+
+* traefik service not enabled, reverting earlier change
+
+---
+
+1.2.5
+
+* Rebuild for latest version and adding remotelogs
+
+---
+
 1.2.4
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

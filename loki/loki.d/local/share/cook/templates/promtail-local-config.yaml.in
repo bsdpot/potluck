@@ -18,6 +18,18 @@ scrape_configs:
     labels:
       job: varlogs
       __path__: /mnt/log/remote/*.log
+  pipeline_stages:
+  # whatever tags you can extract from your json logs
+    - json:
+        expressions:
+          timestamp: '"@timestamp"'
+          message: '"@message"'
+          level: '"@level"'
+    - labels:
+        level:
+    - timestamp:
+        source: timestamp
+        format: RFC3339Nano
 
 - job_name: syslog
   syslog:
@@ -26,6 +38,18 @@ scrape_configs:
     label_structured_data: yes
     labels:
       job: "syslog"
+  pipeline_stages:
+  # whatever tags you can extract from your json logs
+    - json:
+        expressions:
+          timestamp: '"@timestamp"'
+          message: '"@message"'
+          level: '"@level"'
+    - labels:
+        level:
+    - timestamp:
+        source: timestamp
+        format: RFC3339Nano
   relabel_configs:
     - source_labels: ['__syslog_message_hostname']
       target_label: 'host'

@@ -1,3 +1,9 @@
+1.0.19
+
+* Added syslog-ng and remote logging
+
+---
+
 1.0.18
 
 * Fixes to homeserver.yaml to remove well-known

@@ -1,0 +1,13 @@
+--- 1/S3ObjectTrait.php 2022-06-12 12:04:09.460410000 +0000
++++ 2/S3ObjectTrait.php 2022-06-12 12:03:45.516229000 +0000
+@@ -68,6 +68,10 @@
+                    'protocol_version' => $request->getProtocolVersion(),
+                    'header' => $headers,
+                ],
++               'ssl' => [
++                   'verify_peer' => false,
++                   'verify_peer_name' => false,
++               ],
+            ];
+ 
+            if ($this->getProxy()) {

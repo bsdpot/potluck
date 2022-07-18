@@ -1,5 +1,5 @@
 datacenter = "%%datacenter%%"
-node_name = "%%nodename%%"
+node_name = "%%nodename%%.%%datacenter%%.consul"
 data_dir =  "/var/db/consul"
 dns_config = {
   a_record_limit = 3

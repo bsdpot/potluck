@@ -1,0 +1,153 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - %%ip%%:9093
+
+# Load rules once and periodically evaluate them according
+# to the global 'evaluation_interval'.
+rule_files:
+  - '/mnt/prometheus/alerts/*.yml'
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  - job_name: 'consul_registered_services'
+    #tls_config:
+    #  insecure_skip_verify: false
+    #  ca_file: /mnt/metricscerts/ca_root.crt
+    #  cert_file: /mnt/metricscerts/metrics.crt
+    #  key_file: /mnt/metricscerts/metrics.key
+    metrics_path: '/metrics'
+    consul_sd_configs:
+    - server: '%%ip%%:8500'
+      services: ["node-exporter"]
+      datacenter: '%%datacenter%%'
+    relabel_configs:
+    #- source_labels: ['__meta_consul_service']
+    #  regex:         '(.*)'
+    #  target_label:  '__scheme__'
+    #  replacement:   'https'
+    - source_labels: ['__meta_consul_service']
+      regex:         '(.*)'
+      target_label:  'job'
+      replacement:   '$1'
+    - source_labels: ['__meta_consul_node']
+      regex:         '(.*)'
+      target_label:  'instance'
+      replacement:   '$1'
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_app=([^,]+),.*
+      replacement: ${1}
+      target_label: _app
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_service=([^,]+),.*
+      replacement: ${1}
+      target_label: _service
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_hostname=([^,]+),.*
+      replacement: ${1}
+      target_label: _hostname
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_datacenter=([^,]+),.*
+      replacement: ${1}
+      target_label: _datacenter
+  - job_name: 'consul-servers'
+    metrics_path: "/v1/agent/metrics"
+    params:
+      format: ['prometheus']
+    scheme: http
+    #proxy_url: http://%%ip%%:8443
+    static_configs:
+    - targets: [%%consulservers%%]
+  - job_name: 'nomad'
+    metrics_path: "/v1/metrics"
+    params:
+      format: ['prometheus']
+    scheme: http
+    #proxy_url: http://%%ip%%:8444
+    relabel_configs:
+    - source_labels: ['__meta_consul_service']
+      regex:         '(.*)'
+      target_label:  '__scheme__'
+      replacement:   'http'
+    - source_labels: ['__meta_consul_service']
+      regex:         '(.*)'
+      target_label:  'job'
+      replacement:   '$1'
+    - source_labels: ['__meta_consul_node']
+      regex:         '(.*)'
+      target_label:  'instance'
+      replacement:   '$1'
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_app=([^,]+),.*
+      replacement: ${1}
+      target_label: _app
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_service=([^,]+),.*
+      replacement: ${1}
+      target_label: _service
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_hostname=([^,]+),.*
+      replacement: ${1}
+      target_label: _hostname
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_datacenter=([^,]+),.*
+      replacement: ${1}
+      target_label: _datacenter
+    static_configs:
+    - targets: [%%nomadservers%%]
+  - job_name: 'traefik-consul'
+    static_configs:
+    - targets: [%%traefikserver%%]
+  - job_name: 'file-based-targets'
+    file_sd_configs:
+    - files:
+      - '/mnt/prometheus/targets.d/mytargets.yml'
+  - job_name: 'postgresql'
+    metrics_path: "/metrics"
+    params:
+      format: ['prometheus']
+    file_sd_configs:
+    - files:
+     - '/mnt/prometheus/targets.d/postgres.yml'
+    scheme: http
+    #tls_config:
+    #  insecure_skip_verify: false
+    #  ca_file: /mnt/metricscerts/ca_root.crt
+    #  cert_file: /mnt/metricscerts/metrics.crt
+    #  key_file: /mnt/metricscerts/metrics.key
+    relabel_configs:
+    #- source_labels: ['__meta_consul_service']
+    #  regex:         '(.*)'
+    #  target_label:  '__scheme__'
+    #  replacement:   'https'
+    - source_labels: ['__meta_consul_service']
+      regex:         '(.*)'
+      target_label:  'job'
+      replacement:   '$1'
+    - source_labels: ['__meta_consul_node']
+      regex:         '(.*)'
+      target_label:  'instance'
+      replacement:   '$1'
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_app=([^,]+),.*
+      replacement: ${1}
+      target_label: _app
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_service=([^,]+),.*
+      replacement: ${1}
+      target_label: _service
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_hostname=([^,]+),.*
+      replacement: ${1}
+      target_label: _hostname
+    - source_labels: [__meta_consul_tags]
+      regex: .*,_datacenter=([^,]+),.*
+      replacement: ${1}
+      target_label: _datacenter
+
