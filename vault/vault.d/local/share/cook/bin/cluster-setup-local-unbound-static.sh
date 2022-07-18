@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ $# -ne 1 ]; then
+  2>&1 echo "Usage $0 vault_ip"
+  exit 1
+fi
+
 # shellcheck disable=SC1091
 . /root/.env.cook
 
