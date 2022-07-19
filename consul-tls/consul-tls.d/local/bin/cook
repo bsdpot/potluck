@@ -67,6 +67,12 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
           sh -c 'while ! service consul-template status; do
             service consul-template start || true; sleep 3;
           done'
+
+        log "Seasoned: Start consul and wait for it to become stable"
+        timeout --foreground 120 \
+          sh -c 'while ! service consul status; do
+            service consul start || true; sleep 5;
+          done'
     fi
 
     pot_seasoned_exit
