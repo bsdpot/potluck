@@ -2,6 +2,11 @@
 RUNS_IN_NOMAD=false
 COOKLOG=/var/log/cook.log
 
+# Log fcuntion
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
 pot_seasoned_exit() {
     [ ! -e /usr/local/etc/pot-is-seasoned ] && \
       touch /usr/local/etc/pot-is-seasoned
@@ -35,10 +40,10 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
             . /tmp/environment.sh
         fi
 
-        log "Set up local_unbound using static vault ip"
+        log "Seasoned: Set up local_unbound using static vault ip"
         setup-local-unbound-static.sh "$VAULTSERVER"
 
-        log "Wait until we are able to resolve active vault instance"
+        log "Seasoned: Wait until we are able to resolve active vault instance"
         timeout --foreground 120 \
           sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
 
@@ -48,7 +53,13 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
         log "Seasoned: Unwrap consul credentials"
         unwrap-consul-credentials.sh
 
-        log "Configure consul-template"
+        log "Seasoned: Start vaultproxy"
+        timeout --foreground 120 \
+          sh -c 'while ! service nginx status vaultproxy; do
+            service nginx start vaultproxy || true; sleep 3;
+          done'
+
+        log "Seasoned: Configure consul-template"
         configure-consul-template.sh
 
         log "Seasoned: Start consul-template"
@@ -65,9 +76,6 @@ fi
 ## Functions and settings
 ########################################################################
 
-log() {
-    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
-}
 
 set -e
 export HOME=/root
