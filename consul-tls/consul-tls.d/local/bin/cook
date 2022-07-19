@@ -29,6 +29,12 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
     if [ /mnt/vaultcerts/unwrapped.token -ot \
          /mnt/vaultcerts/credentials.json ]; then
 
+        if [ -e /tmp/environment.sh ]
+        then
+            # shellcheck disable=SC1091
+            . /tmp/environment.sh
+        fi
+
         log "Set up local_unbound using static vault ip"
         setup-local-unbound-static.sh "$VAULTSERVER"
 
