@@ -20,8 +20,40 @@ pot_seasoned_exit() {
 service sshd stop || true
 service sshd disable || true
 
+# Make cook binaries accessible in PATH
+export PATH=/usr/local/share/cook/bin:$PATH
+
 # No need to change this, just ensures configuration is done only once
-[ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
+if [ -e /usr/local/etc/pot-is-seasoned ]; then
+    # shellcheck disable=SC3013
+    if [ /mnt/vaultcerts/unwrapped.token -ot \
+         /mnt/vaultcerts/credentials.json ]; then
+
+        log "Set up local_unbound using static vault ip"
+        setup-local-unbound-static.sh "$VAULTSERVER"
+
+        log "Wait until we are able to resolve active vault instance"
+        timeout --foreground 120 \
+          sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
+
+        log "Seasoned: Unwrap cluster credentials"
+        unwrap-cluster-credentials.sh
+
+        log "Seasoned: Unwrap consul credentials"
+        unwrap-consul-credentials.sh
+
+        log "Configure consul-template"
+        configure-consul-template.sh
+
+        log "Seasoned: Start consul-template"
+        timeout --foreground 20 \
+          sh -c 'while ! service consul-template status; do
+            service consul-template start || true; sleep 3;
+          done'
+    fi
+
+    pot_seasoned_exit
+fi
 
 ########################################################################
 ## Functions and settings
@@ -74,7 +106,6 @@ done
 ## Provision image
 ########################################################################
 
-export PATH=/usr/local/share/cook/bin:$PATH
 
 # setup directories
 mkdir -p /mnt/log

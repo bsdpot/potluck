@@ -6,7 +6,10 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
-if [ ! -s /mnt/vaultcerts/unwrapped.token ]; then
+# shellcheck disable=SC3013
+if [ ! -s /mnt/vaultcerts/unwrapped.token ] || \
+   [ /mnt/vaultcerts/unwrapped.token -ot \
+     /mnt/vaultcerts/credentials.json ]; then
     UNSEALTOKEN=$(< /mnt/vaultcerts/credentials.json \
       jq -re .wrapped_token)
     < /mnt/vaultcerts/credentials.json \
