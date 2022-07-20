@@ -1,3 +1,10 @@
+0.2.12
+
+* Update to Loki version 2.6.1, updates to loki-local-config.yaml
+* Update to Promtail version 2.6.1
+
+---
+
 0.2.11
 
 * Add support for json logs with pipeline_stages in promtail conf

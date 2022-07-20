@@ -20,13 +20,11 @@ scrape_configs:
       __path__: /mnt/log/remote/*.log
   pipeline_stages:
   # whatever tags you can extract from your json logs
+    - cri: {}
     - json:
         expressions:
-          timestamp: '"@timestamp"'
-          message: '"@message"'
-          level: '"@level"'
-    - labels:
-        level:
+          timestamp: tsNs
+          line: line
     - timestamp:
         source: timestamp
         format: RFC3339Nano
@@ -40,13 +38,11 @@ scrape_configs:
       job: "syslog"
   pipeline_stages:
   # whatever tags you can extract from your json logs
+    - cri: {}
     - json:
         expressions:
-          timestamp: '"@timestamp"'
-          message: '"@message"'
-          level: '"@level"'
-    - labels:
-        level:
+          timestamp: tsNs
+          line: line
     - timestamp:
         source: timestamp
         format: RFC3339Nano
