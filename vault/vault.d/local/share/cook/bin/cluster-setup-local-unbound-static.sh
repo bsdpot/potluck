@@ -19,5 +19,7 @@ echo "server:
         local-data: \"active.vault.service.consul A $1\"
 " >/etc/unbound/conf.d/vault-static.conf
 
+rm -f /etc/unbound/conf.d/consul.conf
+
 service local_unbound enable || true
 service local_unbound restart || true
