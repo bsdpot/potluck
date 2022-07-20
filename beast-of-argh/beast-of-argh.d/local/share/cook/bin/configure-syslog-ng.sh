@@ -27,6 +27,9 @@ config_version=$(/usr/local/sbin/syslog-ng --version | \
 # create remote log dir, redundant step
 mkdir -p /mnt/logs/remote
 
+# make the disk buffer directory
+mkdir -p /mnt/logs/syslog-ng-disk-buffer
+
 # stop and disable syslogd
 service syslogd onestop || true
 sysrc syslogd_enable="NO"

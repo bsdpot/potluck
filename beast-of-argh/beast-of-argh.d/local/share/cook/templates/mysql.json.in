@@ -1,25 +1,4 @@
 {
-  "__inputs": [],
-  "__requires": [
-    {
-      "id": "grafana",
-      "name": "Grafana",
-      "type": "grafana",
-      "version": "7.4.3"
-    },
-    {
-      "id": "graph",
-      "name": "Graph",
-      "type": "panel",
-      "version": ""
-    },
-    {
-      "id": "prometheus",
-      "name": "Prometheus",
-      "type": "datasource",
-      "version": "1.0.0"
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -37,8 +16,7 @@
   "editable": true,
   "gnetId": 14057,
   "graphTooltip": 1,
-  "id": 31,
-  "iteration": 1603186191702,
+  "iteration": 1653598730783,
   "links": [],
   "panels": [
     {
@@ -53,7 +31,6 @@
       "id": 382,
       "panels": [],
       "repeat": null,
-      "title": "",
       "type": "row"
     },
     {
@@ -62,10 +39,8 @@
       "description": "**Uptime**\n\nThe amount of time since the last restart of the MySQL server process.",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 1,
           "mappings": [],
-          "nullValueMode": "connected",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -113,9 +88,11 @@
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "text": {},
+        "textMode": "auto"
       },
-      "pluginVersion": "7.0.4",
+      "pluginVersion": "7.5.15",
       "targets": [
         {
           "calculatedInterval": "10m",
@@ -140,10 +117,8 @@
       "description": "**Current QPS**\n\nBased on the queries reported by MySQL's ``SHOW STATUS`` command, it is the number of statements executed by the server within the last second. This variable includes statements executed within stored programs, unlike the Questions variable. It does not count \n``COM_PING`` or ``COM_STATISTICS`` commands.",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 2,
           "mappings": [],
-          "nullValueMode": "connected",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -197,9 +172,11 @@
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "text": {},
+        "textMode": "auto"
       },
-      "pluginVersion": "7.0.4",
+      "pluginVersion": "7.5.15",
       "targets": [
         {
           "calculatedInterval": "10m",
@@ -224,10 +201,8 @@
       "description": "**InnoDB Buffer Pool Size**\n\nInnoDB maintains a storage area called the buffer pool for caching data and indexes in memory.  Knowing how the InnoDB buffer pool works, and taking advantage of it to keep frequently accessed data in memory, is one of the most important aspects of MySQL tuning. The goal is to keep the working set in memory. In most cases, this should be between 60%-90% of available memory on a dedicated database host, but depends on many factors.",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [],
-          "nullValueMode": "connected",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -281,9 +256,11 @@
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "text": {},
+        "textMode": "auto"
       },
-      "pluginVersion": "7.0.4",
+      "pluginVersion": "7.5.15",
       "targets": [
         {
           "calculatedInterval": "10m",
@@ -329,7 +306,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -368,9 +345,10 @@
       ],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -480,7 +458,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -513,9 +491,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -648,7 +627,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -687,9 +666,10 @@
       ],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -764,7 +744,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -802,9 +782,10 @@
       ],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -924,7 +905,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -957,9 +938,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1057,7 +1039,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1092,9 +1074,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1236,7 +1219,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1270,9 +1253,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1386,7 +1370,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1418,9 +1402,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1512,7 +1497,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1544,9 +1529,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1637,7 +1623,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1670,9 +1656,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1775,7 +1762,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1808,9 +1795,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1913,7 +1901,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1953,9 +1941,10 @@
       ],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2113,7 +2102,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2153,9 +2142,10 @@
       ],
       "nullPointMode": "null as zero",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2231,7 +2221,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2265,9 +2255,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2341,7 +2332,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2375,9 +2366,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2450,7 +2442,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2484,9 +2476,10 @@
       "links": [],
       "nullPointMode": "null as zero",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2560,7 +2553,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2594,9 +2587,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2685,7 +2679,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2718,9 +2712,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2808,7 +2803,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2842,9 +2837,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2985,7 +2981,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -3018,9 +3014,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3093,7 +3090,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -3126,9 +3123,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3237,7 +3235,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -3275,9 +3273,10 @@
       ],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3393,7 +3392,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -3431,9 +3430,10 @@
       ],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3536,7 +3536,7 @@
       "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -3574,9 +3574,10 @@
       ],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "7.5.15",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3668,7 +3669,7 @@
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 25,
+  "schemaVersion": 27,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -3676,9 +3677,11 @@
       {
         "current": {
           "selected": false,
-          "text": "prometheus",
-          "value": "prometheus"
+          "text": "Prometheus",
+          "value": "Prometheus"
         },
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -3695,20 +3698,28 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "hosted-grafana/cloudsql-proxy-mysql-exporter",
+          "tags": [],
+          "text": [
+            "mysql"
+          ],
           "value": [
-            "hosted-grafana/cloudsql-proxy-mysql-exporter"
+            "mysql"
           ]
         },
         "datasource": "$datasource",
         "definition": "label_values(mysql_up, job)",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
         "multi": true,
         "name": "job",
         "options": [],
-        "query": "label_values(mysql_up, job)",
+        "query": {
+          "query": "label_values(mysql_up, job)",
+          "refId": "Prometheus-job-Variable-Query"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -3723,21 +3734,27 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "tags": [],
-          "text": "All",
+          "text": [
+            "All"
+          ],
           "value": [
             "$__all"
           ]
         },
         "datasource": "$datasource",
         "definition": "label_values(mysql_up, instance)",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
         "multi": true,
         "name": "instance",
         "options": [],
-        "query": "label_values(mysql_up, instance)",
+        "query": {
+          "query": "label_values(mysql_up, instance)",
+          "refId": "Prometheus-instance-Variable-Query"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -3788,5 +3805,5 @@
   "timezone": "",
   "title": "MySQL Exporter Quickstart and Dashboard",
   "uid": "549c2bf8936f7767ea6ac47c47b00f2a",
-  "version": 1
+  "version": 5
 }
