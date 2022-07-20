@@ -1,3 +1,9 @@
+0.2.7
+
+* Adding customised version of all-in-one loki dashboard for syslogs job
+
+---
+
 0.2.6
 
 * Version bump for layered images
