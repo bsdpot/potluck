@@ -1,0 +1,527 @@
+## Dovecot configuration file
+
+ssl = yes
+ssl_cert = </usr/local/etc/postfix/keys/%%mailcertdomain%%.crt
+ssl_key = </usr/local/etc/postfix/keys/%%mailcertdomain%%.key
+ssl_verify_client_cert = no
+
+# If you're in a hurry, see http://wiki.dovecot.org/QuickConfiguration
+
+# "doveconf -n" command gives a clean output of the changed settings. Use it
+# instead of copy&pasting files when posting to the Dovecot mailing list.
+
+# '#' character and everything after it is treated as comments. Extra spaces
+# and tabs are ignored. If you want to use either of these explicitly, put the
+# value inside quotes, eg.: key = "# char and trailing whitespace  "
+
+# Default values are shown for each setting, it's not required to uncomment
+# those. These are exceptions to this though: No sections (e.g. namespace {})
+# or plugin settings are added by default, they're listed only as examples.
+# Paths are also just examples with the real defaults being based on configure
+# options. The paths listed here are for configure --prefix=/usr
+# --sysconfdir=/etc --localstatedir=/var
+
+# Protocols we want to be serving.
+#protocols = imap pop3 lmtp
+protocols = imap lmtp sieve
+mail_max_userip_connections = 20
+
+# A comma separated list of IPs or hosts where to listen in for connections. 
+# "*" listens in all IPv4 interfaces, "::" listens in all IPv6 interfaces.
+# If you want to specify non-default ports or anything more complex,
+# edit conf.d/master.conf.
+#listen = *, ::
+
+# Base directory where to store runtime data.
+#base_dir = /var/run/dovecot/
+
+# Greeting message for clients.
+#login_greeting = Dovecot ready.
+
+# Space separated list of trusted network ranges. Connections from these
+# IPs are allowed to override their IP addresses and ports (for logging and
+# for authentication checks). disable_plaintext_auth is also ignored for
+# these networks. Typically you'd specify your IMAP proxy servers here.
+#login_trusted_networks =
+
+# Sepace separated list of login access check sockets (e.g. tcpwrap)
+#login_access_sockets = 
+
+# Show more verbose process titles (in ps). Currently shows user name and
+# IP address. Useful for seeing who are actually using the IMAP processes
+# (eg. shared mailboxes or if same uid is used for multiple accounts).
+#verbose_proctitle = no
+
+# Should all processes be killed when Dovecot master process shuts down.
+# Setting this to "no" means that Dovecot can be upgraded without
+# forcing existing client connections to close (although that could also be
+# a problem if the upgrade is e.g. because of a security fix).
+#shutdown_clients = yes
+
+# If non-zero, run mail commands via this many connections to doveadm server,
+# instead of running them directly in the same process.
+#doveadm_worker_count = 0
+# UNIX socket or host:port used for connecting to doveadm server
+#doveadm_socket_path = doveadm-server
+
+##
+## Dictionary server settings
+##
+
+# Dictionary can be used to store key=value lists. This is used by several
+# plugins. The dictionary can be accessed either directly or though a
+# dictionary server. The following dict block maps dictionary names to URIs
+# when the server is used. These can then be referenced using URIs in format
+# "proxy::<name>".
+
+dict {
+  #quota = mysql:/usr/local/etc/dovecot/dovecot-dict-sql.conf.ext
+  #expire = sqlite:/etc/dovecot/dovecot-dict-sql.conf.ext
+}
+
+# Most of the actual configuration gets included below. The filenames are
+# first sorted by their ASCII value and parsed in that order. The 00-prefixes
+# in filenames are intended to make it easier to understand the ordering.
+!include conf.d/*.conf
+
+# A config file can also tried to be included without giving an error if
+# it's not found:
+#!include_try /etc/dovecot/local.conf
+mail_debug=yes
+
+#
+# from 10-auth.conf
+#
+
+disable_plaintext_auth = yes
+auth_mechanisms = plain login
+
+mail_uid = vhost
+mail_gid = vhost
+
+#
+# from 10-logging.conf
+#
+
+auth_verbose = yes
+auth_debug = yes
+
+#
+# from 10-master.conf
+#
+
+default_process_limit = 512
+default_client_limit = 2560
+service lmtp {
+ unix_listener /var/spool/postfix/private/dovecot-lmtp {
+   mode = 0600
+   user = postfix
+   group = postfix
+  }
+  # Create inet listener only if you can't use the above UNIX socket
+  #inet_listener lmtp {
+    # Avoid making LMTP visible for the entire internet
+    #address =
+    #port =
+  #}
+}
+service auth {
+  # auth_socket_path points to this userdb socket by default. It's typically
+  # used by dovecot-lda, doveadm, possibly imap process, etc. Its default
+  # permissions make it readable only by root, but you may need to relax these
+  # permissions. Users that have access to this socket are able to get a list
+  # of all usernames and get results of everyone's userdb lookups.
+  unix_listener /var/spool/postfix/private/auth {
+    mode = 0666
+    user = postfix
+    group = postfix
+  }
+
+  unix_listener auth-userdb {
+    mode = 0600
+    user = vhost
+    #group =
+  }
+
+  # Postfix smtp-auth
+  #unix_listener /var/spool/postfix/private/auth {
+  #  mode = 0666
+  #}
+
+  # Auth process is run as this user.
+  user = dovecot
+}
+service auth-worker {
+  # Auth worker process is run as root by default, so that it can access
+  # /etc/shadow. If this isn't necessary, the user should be changed to
+  # $default_internal_user.
+  #user = root
+  user = vhost
+}
+service dict {
+  # If dict proxy is used, mail processes should have access to its socket.
+  # For example: mode=0660, group=vmail and global mail_access_groups=vmail
+  unix_listener dict {
+    #mode = 0600
+    #user = 
+    #group = 
+    mode = 0600
+    user = vhost
+  }
+}
+service imap-login {
+  inet_listener imap {
+    address = %%ip%%
+    #port = 143
+  }
+  inet_listener imaps {
+    address = %%ip%%
+    #port = 993
+    #ssl = yes
+  }
+}
+
+service stats {
+  unix_listener stats-reader {
+    group = vhost 
+    mode = 0666
+  }
+  unix_listener stats-writer {
+    group = vhost 
+    mode = 0666
+  }
+}
+
+#
+# from 10-ssl.conf
+#
+
+ssl = yes
+
+#
+# from 10-mail.conf
+#
+
+mail_location = maildir:%%vhostdir%%/mail/%d/%n:LAYOUT=fs
+mail_home = %%vhostdir%%/mail/%d/%n
+mail_privileged_group = vhost
+mail_plugins = quota acl
+mbox_write_locks = fcntl
+namespace inbox {
+  # Namespace type: private, shared or public
+  type = private
+
+  # Hierarchy separator to use. You should use the same separator for all
+  # namespaces or some clients get confused. '/' is usually a good one.
+  # The default however depends on the underlying mail storage format.
+  separator = /
+
+  # Prefix required to access this namespace. This needs to be different for
+  # all namespaces. For example "Public/".
+  #prefix =
+
+  # Physical location of the mailbox. This is in same format as
+  # mail_location, which is also the default for it.
+  #location =
+
+  # There can be only one INBOX, and this setting defines which namespace
+  # has it.
+  inbox = yes
+
+  # If namespace is hidden, it's not advertised to clients via NAMESPACE
+  # extension. You'll most likely also want to set list=no. This is mostly
+  # useful when converting from another server with different namespaces which
+  # you want to deprecate but still keep working. For example you can create
+  # hidden namespaces with prefixes "~/mail/", "~%u/mail/" and "mail/".
+  #hidden = no
+
+  # Show the mailboxes under this namespace with LIST command. This makes the
+  # namespace visible for clients that don't support NAMESPACE extension.
+  # "children" value lists child mailboxes, but hides the namespace prefix.
+  list = yes
+
+  # Namespace handles its own subscriptions. If set to "no", the parent
+  # namespace handles them (empty prefix should always have this as "yes")
+  #subscriptions = yes
+}
+mail_shared_explicit_inbox = yes
+
+
+#
+# from 15-lda.conf
+#
+
+protocol lda {
+  # Space separated list of plugins to load (default is global mail_plugins).
+  mail_plugins = $mail_plugins sieve acl
+  postmaster_address = %%postmastermail%%
+}
+
+#
+# from 15-mailboxes.conf
+#
+
+namespace inbox {
+
+  #mailbox name {
+    # auto=create will automatically create this mailbox.
+    # auto=subscribe will both create and subscribe to the mailbox.
+    #auto = no
+
+    # Space separated list of IMAP SPECIAL-USE attributes as specified by
+    # RFC 6154: \All \Archive \Drafts \Flagged \Junk \Sent \Trash
+    #special_use =
+  #}
+
+  # These mailboxes are widely used and could perhaps be created automatically:
+  mailbox Drafts {
+    special_use = \Drafts
+    auto=subscribe
+  }
+  mailbox Junk {
+    special_use = \Junk
+    auto=subscribe
+  }
+
+  mailbox Trash {
+    special_use = \Trash
+    auto=subscribe
+  }
+
+  # For \Sent mailboxes there are two widely used names. We'll mark both of
+  # them as \Sent. User typically deletes one of them if duplicates are created.
+  mailbox Sent {
+    special_use = \Sent
+    auto=subscribe
+  }
+
+  #mailbox "Sent Messages" {
+  #  special_use = \Sent
+  #}
+
+  # If you have a virtual "All messages" mailbox:
+  #mailbox virtual/All {
+  #  special_use = \All
+  #}
+
+  # If you have a virtual "Flagged" mailbox:
+  #mailbox virtual/Flagged {
+  #  special_use = \Flagged
+  #}
+}
+
+namespace {
+  inbox = no
+  list = children
+  location = maildir:%%vhostdir%%/mail/%%d/%%n:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%d/%n/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%d/%n/shared/%%u
+  prefix = shared/%%d/%%n/
+  separator = /
+  subscriptions = no
+  type = shared
+}
+
+#
+# from 20-imap.conf
+#
+
+protocol imap {
+  # Maximum IMAP command line length. Some clients generate very long command
+  # lines with huge mailboxes, so you may need to raise this if you get
+  # "Too long argument" or "IMAP command line too large" errors often.
+  #imap_max_line_length = 64k
+
+  # Maximum number of IMAP connections allowed for a user from each IP address.
+  # NOTE: The username is compared case-sensitively.
+  #mail_max_userip_connections = 10
+
+  # Space separated list of plugins to load (default is global mail_plugins).
+  mail_plugins = $mail_plugins imap_quota imap_acl
+
+  # IMAP logout format string:
+  #  %i - total number of bytes read from client
+  #  %o - total number of bytes sent to client
+  #imap_logout_format = bytes=%i/%o
+
+  # Override the IMAP CAPABILITY response. If the value begins with '+',
+  # add the given capabilities on top of the defaults (e.g. +XFOO XBAR).
+  #imap_capability = 
+
+  # How long to wait between "OK Still here" notifications when client is
+  # IDLEing.
+  #imap_idle_notify_interval = 2 mins
+
+  # ID field names and values to send to clients. Using * as the value makes
+  # Dovecot use the default value. The following fields have default values
+  # currently: name, version, os, os-version, support-url, support-email.
+  #imap_id_send = 
+
+  # ID fields sent by client to log. * means everything.
+  #imap_id_log =
+
+  # Workarounds for various client bugs:
+  #   delay-newmail:
+  #     Send EXISTS/RECENT new mail notifications only when replying to NOOP
+  #     and CHECK commands. Some clients ignore them otherwise, for example OSX
+  #     Mail (<v2.1). Outlook Express breaks more badly though, without this it
+  #     may show user "Message no longer in server" errors. Note that OE6 still
+  #     breaks even with this workaround if synchronization is set to
+  #     "Headers Only".
+  #   tb-extra-mailbox-sep:
+  #     With mbox storage a mailbox can contain either mails or submailboxes,
+  #     but not both. Thunderbird separates these two by forcing server to
+  #     accept '/' suffix in mailbox names in subscriptions list.
+  # The list is space-separated.
+  imap_client_workarounds = tb-extra-mailbox-sep
+}
+
+
+#
+# from 20-lmtp.conf
+#
+
+protocol lmtp {
+  # Space separated list of plugins to load (default is global mail_plugins).
+  mail_plugins = $mail_plugins sieve
+}
+
+#
+# from 20-managesieve.conf
+#
+
+protocols = $protocols sieve
+
+# Service definitions
+
+service managesieve-login {
+  inet_listener sieve {
+    address = %%ip%%
+    port = 4190
+  }
+
+  #inet_listener sieve_deprecated {
+  #  port = 2000
+  #}
+
+  # Number of connections to handle before starting a new process. Typically
+  # the only useful values are 0 (unlimited) or 1. 1 is more secure, but 0
+  # is faster. <doc/wiki/LoginProcess.txt>
+  service_count = 1
+
+  # Number of processes to always keep waiting for more connections.
+  process_min_avail = 0
+
+  # If you set service_count=0, you probably need to grow this.
+  vsz_limit = 64M
+}
+
+service managesieve {
+  # Max. number of ManageSieve processes (connections)
+  #process_count = 1024
+}
+
+# Service configuration
+
+protocol sieve {
+  # Maximum ManageSieve command line length in bytes. ManageSieve usually does
+  # not involve overly long command lines, so this setting will not normally need
+  # adjustment 
+  #managesieve_max_line_length = 65536
+
+  # Maximum number of ManageSieve connections allowed for a user from each IP address.
+  # NOTE: The username is compared case-sensitively.
+  #mail_max_userip_connections = 10
+
+  # Space separated list of plugins to load (none known to be useful so far). Do NOT
+  # try to load IMAP plugins here.
+  #mail_plugins =
+
+  # MANAGESIEVE logout format string:
+  #  %i - total number of bytes read from client
+  #  %o - total number of bytes sent to client
+  #managesieve_logout_format = bytes=%i/%o
+
+  # To fool ManageSieve clients that are focused on CMU's timesieved you can specify
+  # the IMPLEMENTATION capability that the dovecot reports to clients.
+  # For example: 'Cyrus timsieved v2.2.13' 
+  #managesieve_implementation_string = Dovecot Pigeonhole
+
+  # Explicitly specify the SIEVE and NOTIFY capability reported by the server before
+  # login. If left unassigned these will be reported dynamically according to what
+  # the Sieve interpreter supports by default (after login this may differ depending
+  # on the user).
+  #managesieve_sieve_capability = 
+  #managesieve_notify_capability = 
+
+  # The maximum number of compile errors that are returned to the client upon script
+  # upload or script verification.
+  #managesieve_max_compile_errors = 5
+
+  # Refer to 90-sieve.conf for script quota configuration and configuration of 
+  # Sieve execution limits. 
+}
+
+#
+# from 90-sieve.conf
+#
+
+plugin {
+  # The path to the user's main active script. 
+  #sieve = ~/.dovecot.sieve
+  sieve = %%vhostdir%%/mail/%d/%n/.dovecot.sieve
+
+  # A path to a global sieve script file, which gets executed ONLY
+  # if user's private Sieve script doesn't exist. Be sure to 
+  # pre-compile this script manually using the sievec command line 
+  # tool.
+  #sieve_global_path = /var/lib/dovecot/sieve/default.sieve
+  sieve_global_path = %%vhostdir%%/sieve/%d/default.sieve
+
+  # Directory for :personal include scripts for the include extension. 
+  #sieve_dir = ~/sieve
+  sieve_dir = %%vhostdir%%/mail/%d/%n
+
+  # Directory for :global include scripts for the include extension. 
+  #sieve_global_dir =
+  sieve_global_dir = %%vhostdir%%/sieve/%d
+  sieve_before = %%vhostdir%%/sieve/before.d/
+
+  # Which Sieve language extensions are available to users. By default,
+  # all supported extensions are available, except for deprecated
+  # extensions or those that are still under development. Some system
+  # administrators may want to disable certain Sieve extensions or 
+  # enable those that are not available by default. This setting can 
+  # use '+' and '-' to specify differences relative to the default. 
+  # For example `sieve_extensions = +imapflags' will enable the 
+  # deprecated imapflags extension in addition to all extensions 
+  # enabled by default. 
+  #sieve_extensions = +notify +imapflags
+
+  # The separator that is expected between the :user and :detail 
+  # address parts introduced by the subaddress extension. This may 
+  # also be a sequence of characters (e.g. '--'). The current 
+  # implementation looks for the separator from the left of the 
+  # localpart and uses the first one encountered. The :user part is 
+  # left of the separator and the :detail part is right. This setting
+  # is also used by Dovecot's LMTP service.
+  #recipient_delimiter = +
+
+  # The maximum size of a Sieve script. The compiler will refuse to 
+  # compile any script larger than this limit.
+  #sieve_max_script_size = 1M
+
+  # The maximum number of actions that can be performed during a single
+  # script execution.
+  #sieve_max_actions = 32
+
+  # The maximum number of redirect actions that can be performed during
+  # a single script execution.
+  #sieve_max_redirects = 4
+
+  # The maximum number of personal Sieve scripts a single user can have.
+  # (Currently only relevant for ManageSieve)
+  #sieve_quota_max_scripts = 0
+
+  # The maximum amount of disk storage a single user's scripts may occupy.
+  # (Currently only relevant for ManageSieve) 
+  #sieve_quota_max_storage = 0
+}

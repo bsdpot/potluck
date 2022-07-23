@@ -1,0 +1,21 @@
+#!/usr/local/bin/bash
+
+mydomain="%%mailcertdomain%%"
+
+if [ -d /mnt/acme/"$mydomain" ]; then
+    service postfix onestop
+    sleep 5
+    mv /mnt/acme/"$mydomain" /mnt/acme/"$mydomain".old
+    /usr/local/sbin/acme.sh --issue -d "$mydomain" --home /mnt/acme --standalone
+    cd /mnt/acme/"$mydomain"/
+    cp * /usr/local/etc/postfix/keys/
+    cd /usr/local/etc/postfix/keys/
+    mv "$mydomain".cer "$mydomain".crt
+    cat ca.cer >> "$mydomain".crt
+    service postfix onerestart
+    service dovecot onerestart
+    exit 0
+else
+    echo "There is no /mnt/acme/$mydomain directory"
+    exit 1
+fi

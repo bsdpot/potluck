@@ -1,0 +1,158 @@
+#!/bin/sh
+RUNS_IN_NOMAD=false
+COOKLOG=/var/log/cook.log
+
+pot_seasoned_exit() {
+    [ ! -e /usr/local/etc/pot-is-seasoned ] && \
+      touch /usr/local/etc/pot-is-seasoned
+    # If this pot flavour is blocking (i.e. it should not return), there is
+    # no /tmp/environment.sh created by pot and we now after configuration
+    # block indefinitely
+    if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        /bin/sh /etc/rc
+        tail -f /dev/null
+    fi
+    exit 0
+}
+
+# always disable sshd, we don't need direct access
+# XXX: Do this when baking the image
+service sshd stop || true
+service sshd disable || true
+
+# No need to change this, just ensures configuration is done only once
+[ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
+
+########################################################################
+## Functions and settings
+########################################################################
+
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
+set -e
+export HOME=/root
+
+if [ -e /tmp/environment.sh ]
+then
+    # shellcheck disable=SC1091
+    . /tmp/environment.sh
+
+    # XXX: Remove some things from here later
+    cp -a /tmp/environment.sh /root/.env.cook
+fi
+
+
+########################################################################
+## Check config
+########################################################################
+
+required_args="NODENAME IP DATACENTER CONSULSERVERS"
+required_args="$required_args LDAPSERVER SEARCHBASE"
+required_args="$required_args POSTDATADIR POSTNETWORKS POSTDOMAINS MAILCERTDOMAIN"
+required_args="$required_args VHOSTDIR POSTMASTERADDRESS SIGNDOMAINS"
+required_args="$required_args MYSQLIP MYSQLDB MYSQLUSER MYSQLPASS"
+optional_args="REMOTELOG POSTSIZELIMIT"
+
+for var in $required_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "$var is unset - see documentation to configure this flavour."
+    exit 1
+  fi
+done
+
+for var in $optional_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "Optional $var is unset - see documentation to configure this flavour."
+  fi
+done
+
+########################################################################
+## Provision image
+########################################################################
+
+export PATH=/usr/local/share/cook/bin:$PATH
+
+# place individual scripts here
+
+if [ ! -z ${REMOTELOG} ]; then
+    log "Configure and start syslog-ng"
+    configure-syslog-ng.sh
+fi
+
+log "Setup node_exporter"
+configure-node-exporter.sh
+
+log "Configure consul"
+configure-consul.sh
+
+log "Start consul and wait for it to become stable"
+timeout --foreground 120 \
+  sh -c 'while ! service consul status; do
+    service consul start || true; sleep 5;
+  done'
+
+log "Start node_exporter"
+service node_exporter start
+
+# configure postfix before certificates due to directory creation
+log "Configure postfix"
+configure-postfix.sh
+
+# configure certificates
+log "Configure acme.sh"
+configure-acme.sh
+
+# configure spamassassin
+log "Configure spamassassin"
+configure-spamassassin.sh
+
+# configure opendkim
+log "Configure opendkim"
+configure-opendkim.sh
+
+# configure opendmarc
+log "Configure opendmarc"
+configure-opendmarc.sh
+
+# configure dovecot
+log "Configure dovecot"
+configure-dovecot.sh
+
+# configure claman
+log "Configure clamav"
+configure-clamav.sh
+
+### start services
+
+# start clamav
+log "Starting clamav"
+service clamav-clamd start
+service clamav-freshclam start
+service clamav-milter start
+
+# start spamassassin
+log "Starting spamassassin"
+service sa-spamd start
+
+# start opendkim
+log "Starting milter-opendkim"
+service milter-opendkim start
+
+# start opendmarc
+log "Starting opendmarc"
+service opendmarc start
+
+# start dovecot
+log "Starting dovecot"
+service dovecot start
+
+# start postfix
+log "Starting postfix"
+service postfix start
+
+# end script placement
+
+log "Exit seasoned"
+pot_seasoned_exit

@@ -1,0 +1,23 @@
+loadplugin Mail::SpamAssassin::Plugin::AWL
+loadplugin Mail::SpamAssassin::Plugin::DCC
+
+user_scores_dsn         DBI:mysql:%%dbname%%:%%dbip%%
+user_scores_sql_username    %%dbuser%%
+user_scores_sql_password    %%dbpassword%%
+user_scores_sql_custom_query    SELECT preference, value FROM _TABLE_ WHERE username = _USERNAME_ OR username = '$GLOBAL' OR username = CONCAT('%',_DOMAIN_) ORDER BY username ASC
+
+auto_whitelist_factory      Mail::SpamAssassin::SQLBasedAddrList
+user_awl_dsn                DBI:mysql:%%dbname%%:%%dbip%%
+user_awl_sql_username       %%dbuser%%
+user_awl_sql_password       %%dbpassword%%
+user_awl_sql_table          awl
+auto_whitelist_distinguish_signed   1
+
+bayes_store_module      Mail::SpamAssassin::BayesStore::MySQL
+bayes_sql_dsn           DBI:mysql:%%dbname%%:%%dbip%%
+bayes_sql_username      %%dbuser%%  
+bayes_sql_password      %%dbpassword%%
+
+# append whitelist_from from@domain here
+
+

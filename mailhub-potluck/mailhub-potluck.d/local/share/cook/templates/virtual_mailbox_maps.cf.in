@@ -1,0 +1,10 @@
+server_host      = %%ldapserver%%
+bind             = no
+start_tls        = no
+version          = 3
+search_base      = %%searchbase%%
+scope            = sub
+query_filter     = (&(cn=%s)(objectClass=inetOrgPerson))
+result_attribute = cn
+result_format    = %d/%u/
+debuglevel       = 0
