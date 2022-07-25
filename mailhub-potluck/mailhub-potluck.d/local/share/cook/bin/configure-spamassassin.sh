@@ -24,7 +24,7 @@ sep=$'\001'
   sed "s${sep}%%dbpassword%%${sep}$MYSQLPASS${sep}g" \
   > /usr/local/etc/mail/spamassassin/local.cf
 
-# append whitlist addresses
+# append whitelist addresses
 if [ -f /root/spamassassin_whitelist ]; then
     while read -r line; do
         whitelistaddress="$line"

@@ -14,13 +14,15 @@ This flavour is an application pot flavour with `postfix-ldap`, `dovecot`, `spam
 * Create your local jail from the image or the flavour files. 
 * Setup persistent storage
 * Clone the local jail
+* Mount in persistent storage to /mnt
 * Copy in local custom files
   ```
-  sudo pot copy-in ... src /root/postfix_access
-  sudo pot copy-in ... src /root/postfix_external_forwards
-  sudo pot copy-in ... src /root/postfix_external_forwards
-  sudo pot copy-in ... src /root/dkim_trusted_hosts
-  sudo pot copy-in ... src /root/dkim_my_domains
+  sudo pot copy-in -p <jailname> -s /path/to/postfix_access -d /root/postfix_access
+  sudo pot copy-in -p <jailname> -s /path/to/postfix_external_forwards -d /root/postfix_external_forwards
+  sudo pot copy-in -p <jailname> -s /path/to/postfix_sender_transport -d /root/postfix_sender_transport
+  sudo pot copy-in -p <jailname> -s /path/to/dkim_trusted_hosts -d /root/dkim_trusted_hosts
+  sudo pot copy-in -p <jailname> -s /path/to/dkim_my_domains -d /root/dkim_my_domains
+  sudo pot copy-in -p <jailname> -s /path/to/spamassassin_whitelist -d /root/spamassassin_whitelist
   ```
 * Adjust to your environment:    
   ```
@@ -30,6 +32,7 @@ This flavour is an application pot flavour with `postfix-ldap`, `dovecot`, `spam
     -E DATACENTER=<consul dc> \
     -E CONSULSERVERS=<IP address> \
     -E LDAPSERVER=<IP address> \
+    -E SEARCHBASE="<ldap config, see docs>" \
     -E POSTDATADIR=<directory of persistent storage> \
     -E POSTNETWORKS="<comma-deliminated list of IP/MASK>" \
     -E POSTDOMAINS="<comma-deliminated list of domains>" \
@@ -70,7 +73,7 @@ The SIGNDOMAINS parameter is a list of domains to sign and must match the domain
 
 The POSTMASTERADDRESS parameter is the postmaster address to use.
 
-The VHOSTDIR parameter is the location of the user mail files. For persistent storage this would be something like `/mnt/vhost`.
+The VHOSTDIR parameter is the location of the user mail files. For persistent storage this would be something like `/mnt/dovecot`.
 
 The MYSQLIP is the IP address or hostname of the mysql server to use with spamassassin.
 
@@ -121,6 +124,13 @@ newdomain.rocks
 ```
 
 Opendkim will be setup based on these entries.
+
+### Spamassasssin: Copy in whitelist entries
+Create the file `spamassassin_whitelist` in the following format and copy-in to `/root/spamassassin_whitelist`.
+```
+email@domain.com
+email2@network.rocks
+```
 
 ## MySQL setup for Spamassassin
 You can create an empty database for spamassassin using the following, be sure to set the correct IP address:

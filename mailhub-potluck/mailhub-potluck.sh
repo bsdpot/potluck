@@ -193,6 +193,9 @@ pkg install -y mail/py-spf-engine
 step "Install package openldap24-client"
 pkg install -y openldap24-client
 
+step "Install package node_exporter"
+pkg install -y node_exporter
+
 # ---------------- SETUP PORTS -----------------
 
 step "Install package git-lite"
