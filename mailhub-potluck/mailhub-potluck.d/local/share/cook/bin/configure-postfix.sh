@@ -117,13 +117,7 @@ if [ -f /usr/local/share/postfix/mailer.conf.postfix ]; then
     install -m 0644 /usr/local/share/postfix/mailer.conf.postfix /usr/local/etc/mail/mailer.conf
 fi
 
-# service sendmail onestop
-
-
-# /etc/rc.conf
-service sendmail onestop
-service sendmail disable
-#sysrc sendmail_enable="NO"
+# disable old mail services and enable postfix
 sysrc sendmail_submit_enable="NO"
 sysrc sendmail_outbound_enable="NO"
 sysrc sendmail_msp_queue_enable="NO"

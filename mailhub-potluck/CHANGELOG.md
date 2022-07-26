@@ -1,3 +1,10 @@
+0.0.4
+
+* Adding gossipkey to docs and parameter check
+* Fixing sendmail disable twice causing error, removed second instance
+
+---
+
 0.0.3
 
 * Adding missing package consul

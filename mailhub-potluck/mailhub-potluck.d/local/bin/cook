@@ -49,7 +49,7 @@ fi
 ########################################################################
 
 required_args="NODENAME IP DATACENTER CONSULSERVERS"
-required_args="$required_args LDAPSERVER SEARCHBASE"
+required_args="$required_args GOSSIPKEY LDAPSERVER SEARCHBASE"
 required_args="$required_args POSTDATADIR POSTNETWORKS POSTDOMAINS MAILCERTDOMAIN"
 required_args="$required_args VHOSTDIR POSTMASTERADDRESS SIGNDOMAINS"
 required_args="$required_args MYSQLIP MYSQLDB MYSQLUSER MYSQLPASS"

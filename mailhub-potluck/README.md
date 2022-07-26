@@ -31,6 +31,7 @@ This flavour is an application pot flavour with `postfix-ldap`, `dovecot`, `spam
     -E IP=<IP address of this system> \
     -E DATACENTER=<consul dc> \
     -E CONSULSERVERS=<IP address> \
+    -E GOSSIPKEY="<gossipkey>" \
     -E LDAPSERVER=<IP address> \
     -E SEARCHBASE="<ldap config, see docs>" \
     -E POSTDATADIR=<directory of persistent storage> \
@@ -56,6 +57,8 @@ The IP parameter is the IP address which will be used to access services.
 The DATACENTER parameter is the `consul` datacenter.
 
 The CONSULSERVERS parameter is a correctly formatted list of `consul` servers.
+
+The GOSSIPKEY parameter is the gossip key for the consul datacenter.
 
 The LDAPSERVER parameter is the IP address of the LDAP server to query.
 

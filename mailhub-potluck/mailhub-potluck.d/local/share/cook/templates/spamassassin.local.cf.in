@@ -20,4 +20,3 @@ bayes_sql_password      %%dbpassword%%
 
 # append whitelist_from from@domain here
 
-

@@ -7,3 +7,4 @@ scope            = sub
 query_filter     = (&(cn=*)(mail=%s)(objectClass=inetOrgPerson))
 result_attribute = cn 
 debuglevel       = 0
+
