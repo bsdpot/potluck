@@ -1,3 +1,9 @@
+0.0.11
+
+* Fix typo in previous commit
+
+---
+
 0.0.10
 
 * Set postfix ownership on /mnt/postfix to correct startup error
