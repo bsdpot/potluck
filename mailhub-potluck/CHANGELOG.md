@@ -1,3 +1,9 @@
+0.0.10
+
+* Set postfix ownership on /mnt/postfix to correct startup error
+
+---
+
 0.0.9
 
 * Set persistent storage as home directory for initial acme.sh account creation

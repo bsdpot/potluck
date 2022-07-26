@@ -16,6 +16,9 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 mkdir -p /usr/local/etc/postfix/keys
 mkdir -p /mnt/postfix
 
+# set ownership to postfix user
+chown -R postfix:postix /mnt/postfix
+
 # create missing /etc/mail/certs/dh.param
 # this is not relevant to postfix but used by sm-mta and causes error if not existing
 if [ -d /etc/mail/certs ] && [ ! -f /etc/mail/certs/dh.param ]; then
