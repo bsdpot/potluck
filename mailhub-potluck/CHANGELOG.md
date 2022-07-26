@@ -1,3 +1,9 @@
+0.0.3
+
+* Adding missing package consul
+
+---
+
 0.0.2
 
 * Adding missing items to README such as spamassassin whitelist copy-in
