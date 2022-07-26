@@ -1,3 +1,10 @@
+0.0.6
+
+* acme.sh changes to register account and use zerossl
+* updated renewal script
+
+---
+
 0.0.5
 
 * Fixing error with missing /etc/mail/certs/dh.param

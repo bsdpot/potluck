@@ -18,7 +18,8 @@ sep=$'\001'
 
 # copy over script for cronjob
 < "$TEMPLATEPATH/update-mail-certs.sh.in" \
-  sed "s${sep}%%mailcertdomain%%${sep}$MAILCERTDOMAIN${sep}g" \
+  sed "s${sep}%%mailcertdomain%%${sep}$MAILCERTDOMAIN${sep}g" | \
+  sed "s${sep}%%postmasteraddress%%${sep}$POSTMASTERADDRESS${sep}g" \
   > /root/bin/update-mail-certs.sh
 
 # set perms
@@ -27,6 +28,7 @@ chmod 750 /root/bin/update-mail-certs.sh
 # check if no existing $MAILCERTDOMAIN and create certificates if not
 if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
     service postfix onestop || true
+    /usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --server zerossl
     /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --home /mnt/acme --standalone
     cd /mnt/acme/"$MAILCERTDOMAIN"/
     if [ -d /usr/local/etc/postfix/keys/ ]; then
@@ -51,4 +53,3 @@ if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
 else
     echo "/mnt/acme/$MAILCERTDOMAIN exists, not creating certificates"
 fi
-
