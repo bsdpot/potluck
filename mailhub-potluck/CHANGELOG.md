@@ -1,3 +1,9 @@
+0.0.9
+
+* Set persistent storage as home directory for initial acme.sh account creation
+
+---
+
 0.0.8
 
 * Create missing directories in persistent storage

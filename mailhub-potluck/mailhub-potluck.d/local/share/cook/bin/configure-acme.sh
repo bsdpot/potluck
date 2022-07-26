@@ -31,7 +31,7 @@ chmod 750 /root/bin/update-mail-certs.sh
 # check if no existing $MAILCERTDOMAIN and create certificates if not
 if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
     service postfix onestop || true
-    /usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --server zerossl
+    /usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --home /mnt/acme --server zerossl
     /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --home /mnt/acme --standalone
     cd /mnt/acme/"$MAILCERTDOMAIN"/
     if [ -d /usr/local/etc/postfix/keys/ ]; then

@@ -7,7 +7,7 @@ if [ -d /mnt/acme/"$mydomain" ]; then
     service postfix onestop
     sleep 5
     mv /mnt/acme/"$mydomain" /mnt/acme/"$mydomain".old
-    /usr/local/sbin/acme.sh --register-account -m "$registermail" --server zerossl
+    /usr/local/sbin/acme.sh --register-account -m "$registermail" --home /mnt/acme --server zerossl
     /usr/local/sbin/acme.sh --issue -d "$mydomain" --home /mnt/acme --standalone
     cd /mnt/acme/"$mydomain"/
     cp * /usr/local/etc/postfix/keys/
