@@ -163,6 +163,11 @@ then
     echo 'DATACENTER is unset - see documentation how to configure this flavour'
     exit 1
 fi
+if [ -z \${REGION+x} ];
+then
+    echo 'REGION is unset - setting default of global - see documentation how to configure this flavour'
+    REGION=global
+fi
 if [ -z \${NODENAME+x} ];
 then
     echo 'NODENAME is unset - see documentation how to configure this flavour'
@@ -297,11 +302,17 @@ sysrc node_exporter_group=nodeexport
 
 # start nomad #
 
+# fix /var/tmp/nomad issue
+if [ -d /var/tmp/nomad ]; then
+    mv -f /var/tmp/nomad /var/tmp/oldnomad
+fi
+
 # Create nomad server config file
 echo \"
 bind_addr = \\\"\$IP\\\"
 plugin_dir = \\\"/usr/local/libexec/nomad/plugins\\\"
 datacenter = \\\"\$DATACENTER\\\"
+region = \\\"\$REGION\\\"
 advertise {
   # This should be the IP of THIS MACHINE and must be routable by every node
   # in your cluster
