@@ -86,7 +86,7 @@ AutoRestart       Yes
 ##  automatic restarts, the filter will give up and terminate.  A value of 0
 ##  implies no limit.
 
-AutoRestartCount  10/1h
+AutoRestartCount  0
 
 ##  AutoRestartRate n/t[u]
 ##      default (none)
@@ -95,6 +95,8 @@ AutoRestartCount  10/1h
 ##  man page for the format of this parameter.
 
 # AutoRestartRate   n/tu
+
+AutoRestartRate   10/1h
 
 ##  Background { yes | no }
 ##      default "yes"

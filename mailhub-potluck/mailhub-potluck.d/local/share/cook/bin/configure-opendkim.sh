@@ -49,13 +49,14 @@ fi
 
 # permissions
 if [ -d /mnt/opendkim ]; then
-    chown -R opendkim:opendkim /mnt/opendkim/
+    # user opendkim no longer exists
+    # chown -R opendkim:opendkim /mnt/opendkim/
     chmod 640 /mnt/opendkim/KeyTable
     chmod 640 /mnt/opendkim/SigningTable
     chmod 640 /mnt/opendkim/TrustedHosts
     chmod 750 /mnt/opendkim/keys
 fi
 
-# enable service
+# enable and start service
 service milter-opendkim enable
 service milter-opendkim start

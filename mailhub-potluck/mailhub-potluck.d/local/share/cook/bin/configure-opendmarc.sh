@@ -23,17 +23,19 @@ sep=$'\001'
 
 # copy in ignore.hosts, we'll use trusthosts from opendkim, your copied in file must include 127.0.0.0/8 and 10.0.0.0/8
 if [ -f /root/dkim_trusted_hosts ]; then
-    cp -f /root/dkim_trusted_hosts /mnt/opendmarc/ignore.hosts 
+    cp -f /root/dkim_trusted_hosts /mnt/opendmarc/ignore.hosts
 else
     echo "127.0.0.0/8" > /mnt/opendmarc/ignore.hosts
     echo "10.0.0.0/8" >> /mnt/opendmarc/ignore.hosts
 fi
 
 # permissions
-if [ -d /mnt/opendmarc ]; then
-    chown -R opendmarc:opendmarc /mnt/opendmarc/
-fi
+# disabled, user doesn't exist
+#if [ -d /mnt/opendmarc ]; then
+#    chown -R opendmarc:opendmarc /mnt/opendmarc/
+#fi
 
 # enable
 service opendmarc enable
-sysrc opendmarc_runas="opendmarc"
+# disabled, user doesn't exist
+#sysrc opendmarc_runas="opendmarc"

@@ -1,3 +1,11 @@
+0.0.7
+
+* Removed folder permissions change and users for opendkim and opendmarc as users don't exist
+* Tweaked opendkim.conf template to fix restart parameter error
+
+---
+
+
 0.0.6
 
 * acme.sh changes to register account and use zerossl
