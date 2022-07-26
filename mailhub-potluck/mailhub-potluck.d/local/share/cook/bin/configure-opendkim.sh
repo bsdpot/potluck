@@ -12,7 +12,7 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# make directories
+# make directories if not existing
 mkdir -p /mnt/opendkim/keys
 
 # shellcheck disable=SC3003

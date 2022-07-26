@@ -1,3 +1,9 @@
+0.0.8
+
+* Create missing directories in persistent storage
+
+---
+
 0.0.7
 
 * Removed folder permissions change and users for opendkim and opendmarc as users don't exist

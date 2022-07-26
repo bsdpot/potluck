@@ -12,11 +12,12 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# make directories
+# make directories if they don't exist
 mkdir -p /usr/local/etc/postfix/keys
+mkdir -p /mnt/postfix
 
 # create missing /etc/mail/certs/dh.param
-# this is not relevant to postfix but used by sm-mta
+# this is not relevant to postfix but used by sm-mta and causes error if not existing
 if [ -d /etc/mail/certs ] && [ ! -f /etc/mail/certs/dh.param ]; then
     /usr/bin/openssl dhparam -out /etc/mail/certs/dh.param 2048
 fi

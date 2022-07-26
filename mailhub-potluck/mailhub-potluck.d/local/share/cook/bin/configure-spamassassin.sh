@@ -12,6 +12,9 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
+# make directories if not exist
+mkdir -p /mnt/spamassassin
+
 # shellcheck disable=SC3003
 # safe(r) separator for sed
 sep=$'\001'
