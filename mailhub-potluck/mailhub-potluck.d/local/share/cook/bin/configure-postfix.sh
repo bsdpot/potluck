@@ -15,6 +15,12 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # make directories
 mkdir -p /usr/local/etc/postfix/keys
 
+# create missing /etc/mail/certs/dh.param
+# this is not relevant to postfix but used by sm-mta
+if [ -d /etc/mail/certs ] && [ ! -f /etc/mail/certs/dh.param ]; then
+    /usr/bin/openssl dhparam -out /etc/mail/certs/dh.param 2048
+fi
+
 # shellcheck disable=SC3003
 # safe(r) separator for sed
 sep=$'\001'
@@ -122,3 +128,12 @@ sysrc sendmail_submit_enable="NO"
 sysrc sendmail_outbound_enable="NO"
 sysrc sendmail_msp_queue_enable="NO"
 service postfix enable
+
+# enable rootmail alias
+if [ ! -z "$ROOTMAIL" ]; then
+    ROOTMAIL="$ROOTMAIL"
+    if [ -f /etc/aliases ]; then
+        echo "root: $ROOTMAIL" >> /etc/aliases
+        /usr/bin/newaliases
+    fi
+fi
