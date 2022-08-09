@@ -1,3 +1,9 @@
+0.0.13
+
+* Version bump for rebuild
+
+---
+
 0.0.12
 
 * Fix to POSTSIZELIMIT variable in README
