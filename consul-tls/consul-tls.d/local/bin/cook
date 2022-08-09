@@ -2,7 +2,9 @@
 RUNS_IN_NOMAD=false
 COOKLOG=/var/log/cook.log
 
-# Log fcuntion
+export HOME=/root
+
+# Log function
 log() {
     echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
 }
@@ -62,6 +64,9 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
         log "Seasoned: Configure consul-template"
         configure-consul-template.sh
 
+        log "Seasoned: Configure consul"
+        configure-consul.sh
+
         log "Seasoned: Start consul-template"
         timeout --foreground 20 \
           sh -c 'while ! service consul-template status; do
@@ -84,7 +89,6 @@ fi
 
 
 set -e
-export HOME=/root
 
 if [ -e /tmp/environment.sh ]
 then

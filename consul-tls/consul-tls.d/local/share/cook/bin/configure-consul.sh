@@ -49,7 +49,7 @@ echo "s${sep}%%gossipkey%%${sep}$GOSSIPKEY${sep}" | sed -i '' -f - \
 chown -R consul:wheel /usr/local/etc/consul.d/
 # Workaround for bug in rc.d/consul script:
 # enable consul
-service consul enable
+service consul enable || true
 sysrc consul_args="-advertise $IP"
 sysrc consul_syslog_output_enable=YES
 sysrc consul_syslog_output_priority=warn

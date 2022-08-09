@@ -15,8 +15,9 @@ if [ ! -s /mnt/vaultcerts/unwrapped.token ] || \
     < /mnt/vaultcerts/credentials.json \
       jq -re .cert >/mnt/vaultcerts/client.crt
     < /mnt/vaultcerts/credentials.json \
+      jq -re .ca >>/mnt/vaultcerts/client.crt
+    < /mnt/vaultcerts/credentials.json \
       jq -re .ca >/mnt/vaultcerts/ca.crt
-    cat /mnt/vaultcerts/ca.crt >>/mnt/vaultcerts/client.crt
     < /mnt/vaultcerts/credentials.json \
       jq -re .ca_root >/mnt/vaultcerts/ca_root.crt
     umask 177

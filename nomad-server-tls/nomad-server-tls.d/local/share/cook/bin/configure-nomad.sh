@@ -47,7 +47,7 @@ echo "s${sep}%%consultoken%%${sep}$NOMAD_SERVICE_TOKEN${sep}g" |
 chown -R nomad:wheel /usr/local/etc/nomad/
 
 # enable nomad
-service nomad enable
+service nomad enable || true
 
 # set load parameter for nomad config
 sysrc \

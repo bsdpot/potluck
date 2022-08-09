@@ -12,7 +12,10 @@ export PATH=/usr/local/bin:$PATH
 #SCRIPT=$(readlink -f "$0")
 #TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-if [ ! -s /mnt/consulcerts/gossip.key ]; then
+# shellcheck disable=SC3013
+if [ ! -s /mnt/consulcerts/gossip.key ] || \
+   [ /mnt/consulcerts/gossip.key -ot \
+     /mnt/consulcerts/credentials.json ]; then
     CREDENTIALS_TOKEN=$(< /mnt/consulcerts/credentials.json \
       jq -re .credentials_token)
 
