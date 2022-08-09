@@ -1,3 +1,9 @@
+0.0.12
+
+* Rebuild for latest versions
+
+---
+
 0.0.11
 
 * Adjustments to host key management for ssh
