@@ -1,3 +1,9 @@
+0.0.13
+
+* Version bump to diagnose and fix freebsd-13 build error
+
+---
+
 0.0.12
 
 * Rebuild for latest versions
