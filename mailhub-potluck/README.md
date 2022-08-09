@@ -45,7 +45,7 @@ This flavour is an application pot flavour with `postfix-ldap`, `dovecot`, `spam
     -E MYSQLDB=<spamassassin db name> \
     -E MYSQLUSER=<username> -E MYSQLPASS=<password> \
     [-E REMOTELOG=<IP address of syslog-ng server>]
-    [-E POSTSIZELIMITS=<size limit>] \
+    [-E POSTSIZELIMIT=<size limit>] \
     [-E ROOTMAIL=<email address to send root's mail>]
   ```
 * Start the jail
@@ -88,7 +88,7 @@ The MYSQLUSER and MYSQLPASS parameters are the user and password for accessing t
 ## Optional Parameters
 The REMOTELOG parameter is the IP address of a `syslog-ng` remote log service, such as via the `Beast of Argh` pot image.
 
-The POSTSIZELIMITS parameter is to set the size of accepted mail. The default is `536870912`.
+The POSTSIZELIMIT parameter is to set the size of accepted mail. The default is `536870912`.
 
 The ROOTMAIL parameter is an email address to use for redirecting root's mail.
 

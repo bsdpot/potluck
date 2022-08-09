@@ -1,3 +1,10 @@
+0.0.12
+
+* Fix to POSTSIZELIMIT variable in README
+* Changing how postfix starts to retry
+
+---
+
 0.0.11
 
 * Fix typo in previous commit

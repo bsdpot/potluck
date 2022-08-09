@@ -150,7 +150,11 @@ service dovecot start
 
 # start postfix
 log "Starting postfix"
-service postfix start
+#service postfix start
+timeout --foreground 120 \
+  sh -c 'while ! service postfix status; do
+    service postfix start || true; sleep 5;
+  done'
 
 # end script placement
 
