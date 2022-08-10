@@ -58,7 +58,7 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
           done'
 
         log "Seasoned: Reload vaultproxy"
-	service nginx reload vaultproxy
+        service nginx reload vaultproxy
 
         log "Seasoned: Unwrap consul credentials"
         unwrap-consul-credentials.sh
@@ -72,8 +72,8 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
         log "Seasoned: Configure consul"
         configure-consul.sh
 
-	log "Seasoned: Configure nomad"
-	configure-nomad.sh
+        log "Seasoned: Configure nomad"
+        configure-nomad.sh
 
         log "Seasoned: Start consul-template"
         timeout --foreground 20 \
@@ -93,7 +93,6 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
         log "Seasoned: Wait until we are able to resolve consul"
         timeout --foreground 120 \
           sh -c 'while ! host -ta consul.service.consul; do sleep 1; done'
-
 
         log "Start nomad and wait for it to become stable"
         timeout --foreground 120 \

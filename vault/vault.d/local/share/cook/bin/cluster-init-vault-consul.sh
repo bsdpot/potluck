@@ -13,7 +13,9 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPT")
 TEMPLATEPATH=$SCRIPTDIR/../templates
 
-if [ ! -s /mnt/consulcerts/unwrapped.token ]; then
+if [ ! -s /mnt/consulcerts/unwrapped.token ] || \
+   [ /mnt/consulcerts/unwrapped.token -ot \
+     /mnt/consulcerts/credentials.json ]; then
     WRAPPED_TOKEN=$(< /mnt/consulcerts/credentials.json \
       jq -re .wrapped_token)
     CREDENTIALS_TOKEN=$(< /mnt/consulcerts/credentials.json \
@@ -79,35 +81,35 @@ chmod 750 /var/db/consul
 cp -a /mnt/consulcerts/acl-tokens.json /var/db/consul/.
 chown -R consul:consul /var/db/consul
 
-if ! service consul-template-consul onestatus; then
-    echo "Writing consul-template-consul config"
-    mkdir -p /usr/local/etc/consul-template-consul.d
-    cp "$TEMPLATEPATH/cluster-consul-template-consul.hcl.in" \
-      /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
-    chmod 600 \
-      /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
-    echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
-      /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
+# Consul-template-consul config
+echo "Writing consul-template-consul config"
+mkdir -p /usr/local/etc/consul-template-consul.d
+cp "$TEMPLATEPATH/cluster-consul-template-consul.hcl.in" \
+  /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
+chmod 600 \
+  /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
+echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
+  /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
 
-    for name in consul metrics; do
-        < "$TEMPLATEPATH/cluster-$name.tpl.in" \
-          sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-          sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-          sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
-          > "/mnt/templates/$name.tpl"
-    done
+for name in consul metrics; do
+    < "$TEMPLATEPATH/cluster-$name.tpl.in" \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+      sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
+      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
+      > "/mnt/templates/$name.tpl"
+done
 
-    mkdir -p /mnt/metricscerts
+mkdir -p /mnt/metricscerts
 
-    echo "Enabling and starting consul-template"
-    sysrc consul_template_consul_syslog_output_enable=YES
-    service consul-template-consul enable
-    service consul-template-consul start
+echo "Enabling and starting consul-template"
+sysrc consul_template_consul_syslog_output_enable=YES
+service consul-template-consul enable
+service consul-template-consul start
 
-    timeout --foreground 60 \
-      sh -c 'while [ ! -e /mnt/consulcerts/agent.key ]; do sleep 3; done'
-fi
+timeout --foreground 60 \
+  sh -c 'while [ ! -e /mnt/consulcerts/agent.key ]; do sleep 3; done'
 
+# Vault config
 echo "s${sep}%%consultoken%%${sep}$VAULT_SERVICE_TOKEN${sep}g" |
   sed -i '' -f - /usr/local/etc/vault.hcl
 
@@ -116,7 +118,7 @@ timeout --foreground 120 \
     service nginx start nodemetricsproxy || true; sleep 3;
   done'
 
-# configure and start syslog-ng if necessary
+# configure and (re)start syslog-ng if necessary
 "$SCRIPTDIR"/cluster-configure-syslog-ng.sh
 
 service node_exporter restart || true

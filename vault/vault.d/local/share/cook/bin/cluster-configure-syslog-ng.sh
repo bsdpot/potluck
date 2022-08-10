@@ -36,7 +36,7 @@ if [ -n "$REMOTELOG" ] && [ "$REMOTELOG" != "null" ]; then
     service syslog-ng enable
     #sysrc syslog_ng_flags="-u daemon"
     sysrc syslog_ng_flags="-R /tmp/syslog-ng.persist"
-    service syslog-ng start
+    service syslog-ng restart || true
 else
     echo "REMOTELOG parameter is not set to an IP address. syslog-ng won't \
 operate."

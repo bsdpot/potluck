@@ -59,7 +59,7 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
           done'
 
         log "Seasoned: Reload vaultproxy"
-	service nginx reload vaultproxy
+        service nginx reload vaultproxy
 
         log "Seasoned: Unwrap consul credentials"
         unwrap-consul-credentials.sh
