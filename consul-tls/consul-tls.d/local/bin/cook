@@ -52,14 +52,17 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
         log "Seasoned: Unwrap cluster credentials"
         unwrap-cluster-credentials.sh
 
-        log "Seasoned: Unwrap consul credentials"
-        unwrap-consul-credentials.sh
-
         log "Seasoned: Start vaultproxy"
         timeout --foreground 120 \
           sh -c 'while ! service nginx status vaultproxy; do
             service nginx start vaultproxy || true; sleep 3;
           done'
+
+        log "Seasoned: Reload vaultproxy"
+	service nginx reload vaultproxy
+
+        log "Seasoned: Unwrap consul credentials"
+        unwrap-consul-credentials.sh
 
         log "Seasoned: Configure consul-template"
         configure-consul-template.sh
