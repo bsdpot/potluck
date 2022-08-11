@@ -17,6 +17,11 @@ LOCAL_VAULT="http://127.0.0.1:8200"
 echo "Set up local_unbound using static vault ip"
 "$SCRIPTDIR"/cluster-setup-local-unbound-static.sh "$IP"
 
+echo "Wait for local_unbound resolving to leader IP"
+timeout --foreground 120 \
+  sh -c 'while ! host -ta active.vault.service.consul |
+    grep -F -- "'"$IP"'"; do sleep 1; done'
+
 echo "Set vault-recovery.hcl as config"
 #Disables tls and tcp listener
 sysrc vault_config=/usr/local/etc/vault-recover.hcl
