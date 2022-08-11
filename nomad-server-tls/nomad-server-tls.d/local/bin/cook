@@ -152,8 +152,6 @@ done
 ## Provision image
 ########################################################################
 
-export PATH=/usr/local/share/cook/bin:$PATH
-
 # setup directories
 mkdir -p /mnt/log
 mkdir -p /mnt/templates
