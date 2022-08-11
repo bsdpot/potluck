@@ -49,7 +49,7 @@ timeout --foreground 120 \
 echo "Reconfigure vault pki"
 "$SCRIPTDIR"/cluster-setup-vault-pki.sh
 
-LOCAL_VAULT="http://127.0.0.1:8200"
+LOCAL_VAULT="https://127.0.0.1:8200"
 
 echo "Restarting vault proxy"
 service nginx restart vaultproxy
