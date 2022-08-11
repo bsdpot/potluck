@@ -104,7 +104,7 @@ mkdir -p /mnt/metricscerts
 echo "Enabling and starting consul-template"
 sysrc consul_template_consul_syslog_output_enable=YES
 service consul-template-consul enable
-service consul-template-consul start
+service consul-template-consul restart || true
 
 timeout --foreground 60 \
   sh -c 'while [ ! -e /mnt/consulcerts/agent.key ]; do sleep 3; done'
