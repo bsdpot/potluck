@@ -31,5 +31,5 @@ service_registration "consul" {
 }
 log_format = "standard"
 log_level = "Warn"
-api_addr = "https://%%ip%%:8200"
+api_addr = "http://127.0.0.1:8200"
 cluster_addr = "https://%%ip%%:8201"
