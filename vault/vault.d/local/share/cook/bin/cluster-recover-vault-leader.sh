@@ -49,7 +49,7 @@ echo "Wait for vault leader to become available"
 timeout --foreground 120 \
   sh -c 'while [ "$(
     VAULT_ADDR='"$LOCAL_VAULT"' vault status --format=json |
-      jq -r .leader_address)" != "https://'"$IP"':8200" ]; do sleep 1; done'
+      jq -r .leader_address)" != "'$LOCAL_VAULT'" ]; do sleep 1; done'
 
 echo "Reconfigure vault pki"
 "$SCRIPTDIR"/cluster-setup-vault-pki.sh
