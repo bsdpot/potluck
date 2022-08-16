@@ -71,8 +71,8 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
         configure-consul.sh
 
         log "Seasoned: Make sure consul-template is stopped"
-	service consul-template stop || true
-	service consul-template stop || true
+        service consul-template stop || true
+        service consul-template stop || true
 
         log "Seasoned: Start consul-template"
         timeout --foreground 20 \
