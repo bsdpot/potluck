@@ -40,7 +40,7 @@ echo "s${sep}%%gossipkey%%${sep}$GOSSIPKEY${sep}" | sed -i '' -f - \
 chown -R consul:wheel /usr/local/etc/consul.d/
 
 # enable consul
-service consul enable
+service consul enable || true
 
 # set load parameter for consul config
 sysrc consul_args="-config-file=/usr/local/etc/consul.d/agent.hcl"
