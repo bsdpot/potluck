@@ -91,6 +91,10 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
         log "Seasoned: Wait until we are able to resolve consul"
         timeout --foreground 120 \
           sh -c 'while ! host -ta consul.service.consul; do sleep 1; done'
+
+        log "Seasoned: Wait until we are able to resolve vault leader"
+        timeout --foreground 120 \a
+          sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
     fi
 
     pot_seasoned_exit
