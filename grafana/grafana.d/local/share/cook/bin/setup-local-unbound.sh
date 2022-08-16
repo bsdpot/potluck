@@ -13,4 +13,5 @@ stub-zone:
 ' >/etc/unbound/conf.d/consul.conf
 
 service local_unbound enable || true
+sysrc local_unbound_forwarders=none || true
 service local_unbound restart || true

@@ -15,4 +15,5 @@ stub-zone:
 rm -f /etc/unbound/conf.d/vault-static.conf
 
 service local_unbound enable
+sysrc local_unbound_forwarders=none || true
 service local_unbound restart
