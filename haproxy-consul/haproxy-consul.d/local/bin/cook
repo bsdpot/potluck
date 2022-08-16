@@ -2,6 +2,13 @@
 RUNS_IN_NOMAD=false
 COOKLOG=/var/log/cook.log
 
+export HOME=/root
+
+# log function
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
 pot_seasoned_exit() {
     [ ! -e /usr/local/etc/pot-is-seasoned ] && \
       touch /usr/local/etc/pot-is-seasoned
@@ -20,19 +27,86 @@ pot_seasoned_exit() {
 service sshd stop || true
 service sshd disable || true
 
+export PATH=/usr/local/share/cook/bin:$PATH
+
 # No need to change this, just ensures configuration is done only once
-[ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
+if [ -e /usr/local/etc/pot-is-seasoned ]; then
+    # shellcheck disable=SC3013
+    if [ /mnt/vaultcerts/unwrapped.token -ot \
+         /mnt/vaultcerts/credentials.json ]; then
+
+        if [ -e /tmp/environment.sh ]
+        then
+            # shellcheck disable=SC1091
+            . /tmp/environment.sh
+        fi
+
+        log "Seasoned: Set up local_unbound using cluster resolvers"
+        setup-local-unbound-provision.sh
+
+        log "Seasoned: Wait until we are able to resolve active vault instance"
+        timeout --foreground 120 \
+          sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
+
+        log "Seasoned: Unwrap cluster credentials"
+        unwrap-cluster-credentials.sh
+
+        log "Seasoned: Start vaultproxy"
+        timeout --foreground 120 \
+          sh -c 'while ! service nginx status vaultproxy; do
+            service nginx start vaultproxy || true; sleep 3;
+          done'
+
+        log "Seasoned: Reload vaultproxy"
+        service nginx reload vaultproxy
+
+        log "Seasoned: Unwrap consul credentials"
+        unwrap-consul-credentials.sh
+
+        log "Seasoned: Configure consul-template"
+        configure-consul-template.sh
+
+        log "Seasoned: Configure consul"
+        configure-consul.sh
+
+        log "Seasoned: Make sure consul-template is stopped"
+        service consul-template stop || true
+        service consul-template stop || true
+
+        log "Seasoned: Start consul-template"
+        timeout --foreground 20 \
+          sh -c 'while ! service consul-template status; do
+            service consul-template start || true; sleep 3;
+          done'
+
+        log "Seasoned: Start consul and wait for it to become stable"
+        timeout --foreground 120 \
+          sh -c 'while ! service consul status; do
+            service consul start || true; sleep 5;
+          done'
+
+        log "Seasoned: Set up local_unbound using local consul"
+        setup-local-unbound.sh
+
+        log "Seasoned: Wait until we are able to resolve consul"
+        timeout --foreground 120 \
+          sh -c 'while ! host -ta consul.service.consul; do sleep 1; done'
+
+        log "Seasoned: Wait until we are able to resolve vault leader"
+        timeout --foreground 120 \a
+          sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
+    fi
+
+    pot_seasoned_exit
+fi
+
 
 ########################################################################
 ## Functions and settings
 ########################################################################
 
-log() {
-    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
-}
 
 set -e
-export HOME=/root
 
 if [ -e /tmp/environment.sh ]
 then
@@ -77,8 +151,6 @@ log "Creating directories for persistent storage and certificate usage"
 mkdir -p /mnt/log
 mkdir -p /mnt/templates
 mkdir -p /mnt/vaultcerts
-
-export PATH=/usr/local/share/cook/bin:$PATH
 
 log "Set up local_unbound using cluster resolvers"
 setup-local-unbound-provision.sh
