@@ -30,19 +30,22 @@ service sshd disable || true
 # Make cook binaries accessible in PATH
 export PATH=/usr/local/share/cook/bin:$PATH
 
+# Read in pot environment
+if [ -e /tmp/environment.sh ]; then
+    set -e
+    # shellcheck disable=SC1091
+    . /tmp/environment.sh
+
+    # XXX: Remove some things from here later
+    cp -a /tmp/environment.sh /root/.env.cook
+    set +e
+fi
+
 # No need to change this, just ensures configuration is done only once
 if [ -e /usr/local/etc/pot-is-seasoned ]; then
     # shellcheck disable=SC3013
     if [ /mnt/vaultcerts/unwrapped.token -ot \
          /mnt/vaultcerts/credentials.json ]; then
-
-        if [ -e /tmp/environment.sh ]; then
-            # shellcheck disable=SC1091
-            . /tmp/environment.sh
-
-            # XXX: Remove some things from here later
-            cp -a /tmp/environment.sh /root/.env.cook
-        fi
 
         log "Seasoned: Set up local_unbound using static vault ip"
         setup-local-unbound-static.sh "$VAULTSERVER"
@@ -96,16 +99,7 @@ fi
 ## Functions and settings
 ########################################################################
 
-
 set -e
-
-if [ -e /tmp/environment.sh ]; then
-    # shellcheck disable=SC1091
-    . /tmp/environment.sh
-
-    # XXX: Remove some things from here later
-    cp -a /tmp/environment.sh /root/.env.cook
-fi
 
 # stop services
 service vault onestop || true
