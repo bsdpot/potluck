@@ -14,4 +14,5 @@ stub-zone:
 
 service local_unbound enable || true
 sysrc local_unbound_forwarders="${DNSFORWARDERS:-none}" || true
+service local_unbound setup || true
 service local_unbound restart || true
