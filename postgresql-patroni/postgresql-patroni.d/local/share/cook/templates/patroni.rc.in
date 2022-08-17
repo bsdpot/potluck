@@ -24,7 +24,7 @@ load_rc_config postgresql
 
 pidfile=${patroni_pid}
 
-procname="/usr/local/bin/python3.9"
+procname="$(sed -n '1s/^#!//p' "$patroni_cmd")"
 command="/usr/sbin/daemon"
 command_args="-f -c -S -u ${postgresql_user} -p ${patroni_pid} \
     -t ${name} -T ${name} ${patroni_cmd} ${patroni_config}"
