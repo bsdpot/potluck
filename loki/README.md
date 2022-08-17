@@ -26,7 +26,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
   -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
   -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
-  [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>]
+  [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E DNSFORWARDERS=<none|list of IPs>]
   ```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
@@ -36,6 +36,8 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 The VAULTSERVER parameter is the IP address of the ```vault``` server to authenticate to, and obtain certificates from.
 
 The VAULTTOKEN parameter is the issued token from the ```vault``` server.
+
+The DNSFORWARDERS parameter is a space delimited list of IPs to forward DNS requests to. If set to `none` or left out, no DNS forwarders are used.
 
 # Explanation
 

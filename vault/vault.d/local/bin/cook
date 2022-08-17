@@ -62,7 +62,7 @@ optional_args=""
 
 if [ "$VAULTTYPE" = "cluster" ]; then
     required_args="$required_args UNSEALIP CONSULSERVERS"
-    optional_args="REMOTELOG"
+    optional_args="REMOTELOG DNSFORWARDERS"
 fi
 
 for var in $required_args; do

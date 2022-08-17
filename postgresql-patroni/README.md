@@ -31,7 +31,7 @@ It is dependent on a `consul` server/cluster for the DCS store.
         -E NODENAME=<nodename> -E IP=<IP address of this node> \
         -E SERVICETAG=<master/replica/standby-leader> \
         -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
-        -E REMOTELOG=<IP of loki>
+        -E REMOTELOG=<IP of loki> [-E DNSFORWARDERS=<none|list of IPs>]
 
 The SERVICETAG parameter defines if this is `master`, `replica`, or
 standby-leader node in the cluster.
@@ -44,6 +44,9 @@ set as
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send
 logs to, such as for the `loki` flavour on this site.
+
+The DNSFORWARDERS parameter is a space delimited list of IPs to forward DNS
+requests to. If set to `none` or left out, no DNS forwarders are used.
 
 To be documented: Booting the image the first time requires placing
 various credentials in /mnt/postgrescerts.

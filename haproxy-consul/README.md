@@ -32,6 +32,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
   -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
   -E VAULTSERVER=<IP address vault server> -E VAULTTOKEN=<token> \
   -E SFTPUSER=certuser -E SFTPPASS=<password> -E GOSSIPKEY=<32 byte Base64 key from consul keygen>
+  [-E DNSFORWARDERS=<none|list of IPs>]
   ```
 
 The PUBLICIP parameter is the IP address to use as the front-end to ```haproxy```.
@@ -43,6 +44,8 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 The VAULTSERVER parameter is the IP address of the ```vault``` server to authenticate to, and obtain certificates from.
 
 The VAULTTOKEN parameter is the issued token from the ```vault``` server.
+
+The DNSFORWARDERS parameter is a space delimited list of IPs to forward DNS requests to. If set to `none` or left out, no DNS forwarders are used.
 
 The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 

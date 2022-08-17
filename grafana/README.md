@@ -35,7 +35,7 @@ on this site to run `consul`.
         -E LOKISOURCE="10.0.0.2[:3100]" -E LOKITLSNAME="myloki.example.org" \
         -E INFLUXDBSOURCE="10.0.0.3[:8086]" -E INFLUXDBNAME=<database name> \
         -E GRAFANAUSER=<username> -E GRAFANAPASSWORD=<password> \
-        [-E REMOTELOG=<remote syslog IP>]
+        [-E REMOTELOG=<remote syslog IP>] [-E DNSFORWARDERS=<none|list of IPs>]
 
 The CONSULSERVERS parameter defines the consul server instances, and must be
 set as
@@ -73,6 +73,9 @@ credentials for accessing Grafana.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send
 logs to, such as for the `loki` flavour on this site.
+
+The DNSFORWARDERS parameter is a space delimited list of IPs to forward DNS
+requests to. If set to `none` or left out, no DNS forwarders are used.
 
 # Usage
 

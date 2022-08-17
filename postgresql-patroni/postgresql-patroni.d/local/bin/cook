@@ -35,10 +35,12 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
     if [ /mnt/vaultcerts/unwrapped.token -ot \
          /mnt/vaultcerts/credentials.json ]; then
 
-        if [ -e /tmp/environment.sh ]
-        then
+        if [ -e /tmp/environment.sh ]; then
             # shellcheck disable=SC1091
             . /tmp/environment.sh
+
+            # XXX: Remove some things from here later
+            cp -a /tmp/environment.sh /root/.env.cook
         fi
 
         log "Seasoned: Set up local_unbound using cluster resolvers"
@@ -93,7 +95,7 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
           sh -c 'while ! host -ta consul.service.consul; do sleep 1; done'
 
         log "Seasoned: Wait until we are able to resolve vault leader"
-        timeout --foreground 120 \a
+        timeout --foreground 120 \
           sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
     fi
 
@@ -108,8 +110,7 @@ fi
 
 set -e
 
-if [ -e /tmp/environment.sh ]
-then
+if [ -e /tmp/environment.sh ]; then
     # shellcheck disable=SC1091
     . /tmp/environment.sh
 
@@ -123,7 +124,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS SERVICETAG"
-optional_args="REMOTELOG"
+optional_args="REMOTELOG DNSFORWARDERS"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then

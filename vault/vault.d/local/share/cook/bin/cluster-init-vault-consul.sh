@@ -13,6 +13,7 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPT")
 TEMPLATEPATH=$SCRIPTDIR/../templates
 
+# shellcheck disable=SC3013
 if [ ! -s /mnt/consulcerts/unwrapped.token ] || \
    [ /mnt/consulcerts/unwrapped.token -ot \
      /mnt/consulcerts/credentials.json ]; then

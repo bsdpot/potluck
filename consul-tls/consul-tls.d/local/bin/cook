@@ -36,10 +36,12 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
     if [ /mnt/vaultcerts/unwrapped.token -ot \
          /mnt/vaultcerts/credentials.json ]; then
 
-        if [ -e /tmp/environment.sh ]
-        then
+        if [ -e /tmp/environment.sh ]; then
             # shellcheck disable=SC1091
             . /tmp/environment.sh
+
+            # XXX: Remove some things from here later
+            cp -a /tmp/environment.sh /root/.env.cook
         fi
 
         log "Seasoned: Set up local_unbound using static vault ip"
@@ -97,8 +99,7 @@ fi
 
 set -e
 
-if [ -e /tmp/environment.sh ]
-then
+if [ -e /tmp/environment.sh ]; then
     # shellcheck disable=SC1091
     . /tmp/environment.sh
 
@@ -118,7 +119,7 @@ killall -9 consul || true
 ########################################################################
 
 required_args="DATACENTER IP NODENAME VAULTSERVER PEERS BOOTSTRAP"
-optional_args="REMOTELOG"
+optional_args="REMOTELOG DNSFORWARDERS"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then

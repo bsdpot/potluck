@@ -28,7 +28,8 @@ Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-serve
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<consul-nodename> -E IP=<IP address of this consul node> \
   -E BOOTSTRAP=<1|3|5> -E VAULTSERVER=<IP address of a vault server> -E VAULTTOKEN=<pki token> \
    -E SFTPUSER=<user> -E SFTPPASS=<password> \
-   -E GOSSIPKEY=<32 byte Base64 consul keygen key> -E REMOTELOG=<remote syslog IP>```
+   -E GOSSIPKEY=<32 byte Base64 consul keygen key> [-E REMOTELOG=<remote syslog IP>]
+   [-E DNSFORWARDERS=<none|list of IPs>]```
 
 The BOOTSTRAP parameter defines the expected number of ```consul``` cluster nodes, it defaults to 1 (no cluster) if it is not set.
 
@@ -42,6 +43,8 @@ The VAULTTOKEN parameter is for an issued token with permissions to obtain certi
 The GOSSIPKEY parameter is to enable custom gossip encryption and defaults to a standard key. Do not use this key in production.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
+
+The DNSFORWARDERS parameter is a space delimited list of IPs to forward DNS requests to. If set to `none` or left out, no DNS forwarders are used.
 
 The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 
