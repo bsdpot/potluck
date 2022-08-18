@@ -1,3 +1,10 @@
+0.0.14
+
+* Cleanup opendkim permissions causing script failure
+* Cleanup old comments
+
+---
+
 0.0.13
 
 * Version bump for rebuild

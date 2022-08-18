@@ -42,4 +42,3 @@ sed -i .bak \
 # enable dovecot
 service dovecot enable
 sysrc dovecot_config="/usr/local/etc/dovecot/dovecot.conf"
-

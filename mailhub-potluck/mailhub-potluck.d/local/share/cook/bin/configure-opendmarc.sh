@@ -32,13 +32,5 @@ else
     echo "10.0.0.0/8" >> /mnt/opendmarc/ignore.hosts
 fi
 
-# permissions
-# disabled, user doesn't exist
-#if [ -d /mnt/opendmarc ]; then
-#    chown -R opendmarc:opendmarc /mnt/opendmarc/
-#fi
-
 # enable
 service opendmarc enable
-# disabled, user doesn't exist
-#sysrc opendmarc_runas="opendmarc"

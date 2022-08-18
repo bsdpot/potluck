@@ -49,12 +49,18 @@ fi
 
 # permissions
 if [ -d /mnt/opendkim ]; then
-    # user opendkim no longer exists
-    # chown -R opendkim:opendkim /mnt/opendkim/
-    chmod 640 /mnt/opendkim/KeyTable
-    chmod 640 /mnt/opendkim/SigningTable
-    chmod 640 /mnt/opendkim/TrustedHosts
-    chmod 750 /mnt/opendkim/keys
+    if [ -f /mnt/opendkim/KeyTable ]; then
+        chmod 640 /mnt/opendkim/KeyTable
+    fi
+    if [ -f /mnt/opendkim/SigningTable ]; then
+        chmod 640 /mnt/opendkim/SigningTable
+    fi
+    if [ -f /mnt/opendkim/TrustedHosts ]; then
+        chmod 640 /mnt/opendkim/TrustedHosts
+    fi
+    if [ -d /mnt/opendkim/keys ]; then
+        chmod 750 /mnt/opendkim/keys
+    fi
 fi
 
 # enable and start service
