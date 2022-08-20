@@ -65,4 +65,4 @@ fi
 
 # enable and start service
 service milter-opendkim enable
-service milter-opendkim start
+#service milter-opendkim start

@@ -1,3 +1,11 @@
+0.0.18
+
+* change to onedisable for ssh disable to remove error
+* remove double start for opendkim-milter causing error code
+* create /var/run/clamav and set owner clamav
+
+---
+
 0.0.17
 
 * freshclam needs full path
