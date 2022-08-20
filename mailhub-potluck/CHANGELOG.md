@@ -1,3 +1,10 @@
+0.0.19
+
+* chmod -> chown typo fix again
+* remove ssh onedisable entirely, already disabled
+
+---
+
 0.0.18
 
 * change to onedisable for ssh disable to remove error
