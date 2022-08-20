@@ -24,7 +24,7 @@ pw useradd -n vhost -u 3000 -g vhost -d /mnt/dovecot -s /usr/sbin/nologin -h - -
 pw usermod dovecot -G vhost
 
 # change permissions
-chmod -R vhost:vhost /mnt/dovecot
+chown -R vhost:vhost /mnt/dovecot
 
 # shellcheck disable=SC3003
 # safe(r) separator for sed

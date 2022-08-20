@@ -1,3 +1,9 @@
+0.0.16
+
+* chmod -> chown typo fix
+
+---
+
 0.0.15
 
 * Adding vhost user for dovecot
