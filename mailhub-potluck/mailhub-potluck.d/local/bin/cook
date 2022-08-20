@@ -129,7 +129,7 @@ configure-clamav.sh
 # start freshclam and update
 log "Starting freshclam"
 service clamav-freshclam start
-freshclam
+/usr/local/bin/freshclam || true
 
 # start clamav
 log "Starting clamav"

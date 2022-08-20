@@ -1,3 +1,9 @@
+0.0.17
+
+* freshclam needs full path
+
+---
+
 0.0.16
 
 * chmod -> chown typo fix
