@@ -126,11 +126,24 @@ configure-clamav.sh
 
 ### start services
 
+# start freshclam and update
+log "Starting freshclam"
+service clamav-freshclam start
+freshclam
+
 # start clamav
 log "Starting clamav"
-service clamav-clamd start
-service clamav-freshclam start
-service clamav-milter start
+timeout --foreground 120 \
+  sh -c 'while ! service clamav-clamd status; do
+    service clamav-clamd start || true; sleep 5;
+  done'
+
+# start milter
+log "Starting clamav-milter"
+timeout --foreground 120 \
+  sh -c 'while ! service clamav-milter status; do
+    service clamav-milter start || true; sleep 5;
+  done'
 
 # start spamassassin
 log "Starting spamassassin"

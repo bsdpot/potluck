@@ -13,7 +13,18 @@ SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # make directories if not exist
-mkdir -p /mnt/dovecot
+mkdir -p /mnt/dovecot/mail
+
+# create vhost user and group
+# create Dovecot Virtual Mail User
+pw groupadd -n vhost -g 3000
+pw useradd -n vhost -u 3000 -g vhost -d /mnt/dovecot -s /usr/sbin/nologin -h - -c "Dovecot Virtual Mail User"
+
+# add dovecot user to vhost group
+pw usermod dovecot -G vhost
+
+# change permissions
+chmod -R vhost:vhost /mnt/dovecot
 
 # shellcheck disable=SC3003
 # safe(r) separator for sed

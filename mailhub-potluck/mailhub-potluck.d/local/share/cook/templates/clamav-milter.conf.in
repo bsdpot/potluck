@@ -17,7 +17,7 @@
 # inet6:port@[hostname|ip-address] - to specify an ipv6 socket
 #
 # Default: no default
-MilterSocket /var/run/clamav/clmilter.sock
+MilterSocket unix:/var/run/clamav/clmilter.sock
 #MilterSocket inet:7357
 
 # Define the group ownership for the (unix) milter socket.
