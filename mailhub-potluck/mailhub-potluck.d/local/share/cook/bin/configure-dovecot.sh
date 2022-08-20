@@ -38,6 +38,12 @@ sep=$'\001'
   sed "s${sep}%%postmastermail%%${sep}$POSTMASTERADDRESS${sep}g" \
   > /usr/local/etc/dovecot/dovecot.conf
 
+# setup dovecot-ldap.conf.ext with ldap servers and base
+< "$TEMPLATEPATH/dovecot-ldap.conf.ext.in" \
+  sed "s${sep}%%ldapserver%%${sep}$LDAPSERVER${sep}g" | \
+  sed "s${sep}%%searchbase%%${sep}$SEARCHBASE${sep}g" \
+  > /usr/local/etc/dovecot/dovecot-ldap.conf.ext
+
 # unset ssl settings
 sed -i .bak \
     -e "s${sep}ssl_cert =${sep}#ssl_cert =${sep}g" \

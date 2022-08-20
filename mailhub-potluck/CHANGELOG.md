@@ -1,3 +1,10 @@
+0.0.21
+
+* Still says "Support not compiled in for passdb driver 'ldap'"
+* Added dovecot-ldap.conf.ext customisations
+
+---
+
 0.0.20
 
 * Step by step build process for compiled ports to test fix:
