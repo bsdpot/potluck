@@ -282,12 +282,16 @@ git pull --depth=1 origin 2022Q3
 #   make: /usr/ports/Mk/Uses/ssl.mk line 95: You are using an unsupported SSL provider openssl
 step "Port build dovecot"
 cd /usr/ports/mail/dovecot/
-make install clean LDAP=on BATCH=1
+make clean
+make LDAP=on BATCH=1
+make install LDAP=on BATCH=1
 cp -R /usr/local/etc/dovecot/example-config/* /usr/local/etc/dovecot
 
 step "Port build dovecot-pigeonhole"
 cd /usr/ports/mail/dovecot-pigeonhole/
-make install clean LDAP=on BATCH=1
+make clean
+make LDAP=on BATCH=1
+make install LDAP=on BATCH=1
 
 step "Port build spamassassin"
 cd /usr/ports/mail/spamassassin/

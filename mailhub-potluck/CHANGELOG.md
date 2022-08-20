@@ -1,3 +1,10 @@
+0.0.20
+
+* Step by step build process for compiled ports to test fix:
+* dovecot error "auth: Fatal: Support not compiled in for passdb driver 'ldap'"
+
+---
+
 0.0.19
 
 * chmod -> chown typo fix again
