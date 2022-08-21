@@ -1,3 +1,10 @@
+0.0.22
+
+* Need to postmap copied in config files
+* adjusting make command with all parameters set or unset for compiled ports
+
+---
+
 0.0.21
 
 * Still says "Support not compiled in for passdb driver 'ldap'"

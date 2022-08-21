@@ -100,6 +100,7 @@ fi
 #
 if [ -f /root/postfix_access ]; then
     cp -f /root/postfix_access /usr/local/etc/postfix/access
+    /usr/local/sbin/postmap /usr/local/etc/postfix/access
 fi
 
 # configure /usr/local/etc/postfix/external_forwards by copying over the copied-in file
@@ -108,6 +109,7 @@ fi
 #
 if [ -f /root/postfix_external_forwards ]; then
     cp -f /root/postfix_external_forwards /usr/local/etc/postfix/external_forwards
+    /usr/local/sbin/postmap /usr/local/etc/postfix/external_forwards
 fi
 
 # configure /usr/local/etc/postfix/sender_transport
@@ -116,6 +118,7 @@ fi
 #
 if [ -f /root/postfix_sender_transport ]; then
     cp -f /root/postfix_sender_transport /usr/local/etc/postfix/sender_transport
+    /usr/local/sbin/postmap /usr/local/etc/postfix/sender_transport
 fi
 
 # other mailer configuration
