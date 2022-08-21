@@ -39,8 +39,8 @@ http {
           proxy_ssl_verify on;
           proxy_ssl_trusted_certificate /mnt/consulcerts/ca_root.crt;
           proxy_ssl_server_name on;
-          proxy_set_header Host server.nuke-staging.consul;
-          proxy_ssl_name server.nuke-staging.consul;
+          proxy_set_header Host server.%%datacenter%%.consul;
+          proxy_ssl_name server.%%datacenter%%.consul;
         }
 
         # redirect server error pages to the static page /50x.html
