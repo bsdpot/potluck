@@ -230,12 +230,14 @@ git sparse-checkout set GIDs UIDs \
   Keywords/ \
   lang/perl5.32/ \
   security/openssl/ \
+  archivers/zstd \
   mail/dovecot/ \
   mail/dovecot-pigeonhole/ \
   mail/spamassassin/ \
   lang/python39/ \
   ports-mgmt/pkg/ \
   converters/p5-Encode-Detect/ \
+  converters/libiconv/ \
   www/p5-HTML-Parser/ \
   www/p5-HTTP-Date/ \
   dns/p5-Net-DNS/ \
@@ -245,6 +247,7 @@ git sparse-checkout set GIDs UIDs \
   dns/p5-Net-LibIDN/ \
   net/p5-URI/ \
   devel/re2c/ \
+  devel/pkgconf \
   security/p5-IO-Socket-SSL/ \
   mail/p5-Mail-DKIM/ \
   security/p5-Crypt-OpenSSL-RSA/ \
@@ -258,6 +261,8 @@ git sparse-checkout set GIDs UIDs \
   security/p5-Digest-SHA1/ \
   net/p5-GeoIP2/ \
   net/p5-IP-Country/ \
+  net/openldap24-client \
+  net/openldap24-server \
   devel/p5-BSD-Resource/
 
 # checkout quarterly branch instead
@@ -283,19 +288,18 @@ git pull --depth=1 origin 2022Q3
 step "Port build dovecot"
 cd /usr/ports/mail/dovecot/
 make clean
-make LIBWRAP=on CDB=on LDAP=on GSSAPI_NONE=on BATCH=1
-make install
+make install LIBWRAP=on LDAP=on GSSAPI_NONE=on BATCH=1
 cp -R /usr/local/etc/dovecot/example-config/* /usr/local/etc/dovecot
 
 step "Port build dovecot-pigeonhole"
 cd /usr/ports/mail/dovecot-pigeonhole/
 make clean
-make LDAP=on MANAGESIEVE=on GSSAPI_NONE=on BATCH=1
-make install
+make install LDAP=on MANAGESIEVE=on GSSAPI_NONE=on BATCH=1
 
 step "Port build spamassassin"
 cd /usr/ports/mail/spamassassin/
-make reinstall clean MYSQL=on RAZOR=on BATCH=1
+make clean
+make reinstall MYSQL=on RAZOR=on BATCH=1
 
 step "Change directory to /root"
 cd /root

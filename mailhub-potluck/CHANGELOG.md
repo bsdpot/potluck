@@ -1,3 +1,9 @@
+0.0.23
+
+* Adding some packages to ports tree git checkout to make dovecot-ldap work
+
+---
+
 0.0.22
 
 * Need to postmap copied in config files
