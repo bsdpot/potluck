@@ -1,3 +1,9 @@
+0.0.24
+
+* Adjusting build process, works manually, not via automation
+
+---
+
 0.0.23
 
 * Adding some packages to ports tree git checkout to make dovecot-ldap work

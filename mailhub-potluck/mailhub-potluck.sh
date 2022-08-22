@@ -288,13 +288,15 @@ git pull --depth=1 origin 2022Q3
 step "Port build dovecot"
 cd /usr/ports/mail/dovecot/
 make clean
-make install LIBWRAP=on LDAP=on GSSAPI_NONE=on BATCH=1
+make LDAP=on BATCH=1
+make install
 cp -R /usr/local/etc/dovecot/example-config/* /usr/local/etc/dovecot
 
 step "Port build dovecot-pigeonhole"
 cd /usr/ports/mail/dovecot-pigeonhole/
 make clean
-make install LDAP=on MANAGESIEVE=on GSSAPI_NONE=on BATCH=1
+make LDAP=on BATCH=1
+make install
 
 step "Port build spamassassin"
 cd /usr/ports/mail/spamassassin/
