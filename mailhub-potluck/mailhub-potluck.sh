@@ -207,8 +207,12 @@ pkg install -y git-lite
 step "Install package go"
 pkg install -y go
 
-step "Add openssl to make.conf"
+step "Add openssl and ldap settings to make.conf"
+echo "BATCH=yes" > /etc/make.conf
 echo "DEFAULT_VERSIONS+=ssl=openssl" >> /etc/make.conf
+echo "OPTIONS_SET+=GSSAPI_NONE" >> /etc/make.conf
+echo "OPTIONS_SET+=MYSQL" >> /etc/make.conf
+echo "OPTIONS_SET+=RAZOR" >> /etc/make.conf
 
 step "Make directory /usr/ports"
 mkdir -p /usr/ports
@@ -287,21 +291,16 @@ git pull --depth=1 origin 2022Q3
 #   make: /usr/ports/Mk/Uses/ssl.mk line 95: You are using an unsupported SSL provider openssl
 step "Port build dovecot"
 cd /usr/ports/mail/dovecot/
-make clean
-make LDAP=on BATCH=1
-make install
+make install clean LDAP=ON BATCH=YES
 cp -R /usr/local/etc/dovecot/example-config/* /usr/local/etc/dovecot
 
 step "Port build dovecot-pigeonhole"
 cd /usr/ports/mail/dovecot-pigeonhole/
-make clean
-make LDAP=on BATCH=1
-make install
+make install clean LDAP=ON BATCH=YES
 
 step "Port build spamassassin"
 cd /usr/ports/mail/spamassassin/
-make clean
-make reinstall MYSQL=on RAZOR=on BATCH=1
+make reinstall MYSQL=ON RAZOR=ON BATCH=YES
 
 step "Change directory to /root"
 cd /root
