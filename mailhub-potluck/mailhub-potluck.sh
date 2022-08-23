@@ -210,9 +210,7 @@ pkg install -y go
 step "Add openssl and ldap settings to make.conf"
 echo "BATCH=yes" > /etc/make.conf
 echo "DEFAULT_VERSIONS+=ssl=openssl" >> /etc/make.conf
-echo "OPTIONS_SET+=GSSAPI_NONE" >> /etc/make.conf
-echo "OPTIONS_SET+=MYSQL" >> /etc/make.conf
-echo "OPTIONS_SET+=RAZOR" >> /etc/make.conf
+echo "OPTIONS_SET+= GSSAPI_NONE LDAP MYSQL RAZOR" >> /etc/make.conf
 
 step "Make directory /usr/ports"
 mkdir -p /usr/ports

@@ -1,3 +1,9 @@
+0.0.26
+
+* Left out LDAP option, adjusting format for make.conf
+
+---
+
 0.0.25
 
 * Test with option-sets for ports building configured in make.conf
