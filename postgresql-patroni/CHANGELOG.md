@@ -1,3 +1,11 @@
+2.2.11
+
+* Add new parameter DNSFORWARDERS to allow controlling how unbound is configured
+* Add reseason support to allow restarting grafana with fresh credentials
+* Make patroni rc script adapt to the python version used (helps in development)
+
+---
+
 2.2.10
 
 * Updating for python39

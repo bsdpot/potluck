@@ -1,3 +1,10 @@
+0.2.8
+
+* Add new parameter DNSFORWARDERS to allow controlling how unbound is configured
+* Add reseason support to allow restarting grafana with fresh credentials
+
+---
+
 0.2.7
 
 * Adding customised version of all-in-one loki dashboard for syslogs job
