@@ -48,6 +48,7 @@ Start ```vault``` cluster with the IP addresses of ```consul``` servers, which a
   -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> \
   -E SFTPUSER=<username> -E SFTPNETWORK="<list of comma-space separated IP addresses>" \
   -E GOSSIPKEY=<32 byte Base64 key from consul keygen> [-E REMOTELOG=<remote syslog IP>]
+  [-E DNSFORWARDERS=<none|list of IPs>]
   ```    
 
 The SFTPUSER parameter is used to create a user with SSH private keys, where you will need to export the private key to the host systems for follower nodes.
@@ -59,6 +60,8 @@ The CONSULSERVERS parameter defines the consul server instances, and must be set
 The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
+
+The DNSFORWARDERS parameter is a space delimited list of IPs to forward DNS requests to. If set to `none` or left out, no DNS forwarders are used.
 
 Important: the leader boot can take a while with certificate generation. Let it complete before adding followers. 
 

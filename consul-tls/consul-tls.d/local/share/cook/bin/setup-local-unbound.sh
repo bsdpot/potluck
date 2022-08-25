@@ -1,6 +1,13 @@
 #!/bin/sh
 
+# shellcheck disable=SC1091
+. /root/.env.cook
+
 set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+export PATH=/usr/local/bin:$PATH
 
 echo 'server:
   do-not-query-localhost: no
@@ -15,4 +22,6 @@ stub-zone:
 rm -f /etc/unbound/conf.d/vault-static.conf
 
 service local_unbound enable
+sysrc local_unbound_forwarders="${DNSFORWARDERS:-none}" || true
+service local_unbound setup || true
 service local_unbound restart

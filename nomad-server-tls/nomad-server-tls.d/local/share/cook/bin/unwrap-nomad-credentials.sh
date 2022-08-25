@@ -15,7 +15,10 @@ export PATH=/usr/local/bin:$PATH
 # everything we write matters
 umask 177
 
-if [ ! -s /mnt/nomadcerts/unwrapped.token ]; then
+# shellcheck disable=SC3013
+if [ ! -s /mnt/nomadcerts/unwrapped.token ] || \
+   [ /mnt/nomadcerts/unwrapped.token -ot \
+     /mnt/nomadcerts/credentials.json ]; then
     WRAPPED_TOKEN=$(< /mnt/nomadcerts/credentials.json \
       jq -re .wrapped_token)
 
@@ -29,7 +32,10 @@ if [ ! -s /mnt/nomadcerts/unwrapped.token ]; then
       jq -r '.auth.client_token' > /mnt/nomadcerts/unwrapped.token
 fi
 
-if [ ! -s /mnt/nomadcerts/gossip.key ]; then
+# shellcheck disable=SC3013
+if [ ! -s /mnt/nomadcerts/gossip.key ] || \
+   [ /mnt/nomadcerts/gossip.key -ot \
+     /mnt/nomadcerts/credentials.json ]; then
     CREDENTIALS_TOKEN=$(< /mnt/nomadcerts/credentials.json \
       jq -re .credentials_token)
 

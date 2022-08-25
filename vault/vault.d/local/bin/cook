@@ -2,6 +2,13 @@
 RUNS_IN_NOMAD=false
 COOKLOG=/var/log/cook.log
 
+export HOME=/root
+
+# log function
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
 pot_seasoned_exit() {
     [ ! -e /usr/local/etc/pot-is-seasoned ] && \
       touch /usr/local/etc/pot-is-seasoned
@@ -20,6 +27,20 @@ pot_seasoned_exit() {
 service sshd stop || true
 service sshd disable || true
 
+# Make cook binaries accessible in PATH
+export PATH=/usr/local/share/cook/bin:$PATH
+
+# Read in pot environment
+if [ -e /tmp/environment.sh ]; then
+    set -e
+    # shellcheck disable=SC1091
+    . /tmp/environment.sh
+
+    # XXX: Remove some things from here later
+    cp -a /tmp/environment.sh /root/.env.cook
+    set +e
+fi
+
 # No need to change this, just ensures configuration is done only once
 [ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
 
@@ -27,21 +48,7 @@ service sshd disable || true
 ## Functions and settings
 ########################################################################
 
-log() {
-    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
-}
-
 set -e
-export HOME=/root
-
-if [ -e /tmp/environment.sh ]
-then
-    # shellcheck disable=SC1091
-    . /tmp/environment.sh
-
-    # XXX: Remove some things from here later
-    cp -a /tmp/environment.sh /root/.env.cook
-fi
 
 ########################################################################
 ## Check config
@@ -62,7 +69,7 @@ optional_args=""
 
 if [ "$VAULTTYPE" = "cluster" ]; then
     required_args="$required_args UNSEALIP CONSULSERVERS"
-    optional_args="REMOTELOG"
+    optional_args="REMOTELOG DNSFORWARDERS"
 fi
 
 for var in $required_args; do

@@ -37,6 +37,7 @@ Please note that a specific network configuration is suggested (see Installation
   -E SFTPUSER=<user> -E SFTPPASS=<password> \
   [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY=<32 byte Base64 key from consul keygen>] [-E NOMADKEY=<16 byte or 32 byte key from nomad operator keygen>] \
   -E VAULTSERVER=<IP of Vault> -E VAULTTOKEN=<token-issued-by-vault> [-E REMOTELOG=<remote syslog IP>]
+  [-E DNSFORWARDERS=<none|list of IPs>]
   ```
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
@@ -52,6 +53,8 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 The NOMADKEY parameter is the gossip encryption key for nomad. We're re-using the default key from consul as nomad supports 32 byte Base64 keys, but the common one is a 16 byte Bas64 key from ```nomad operator keygen```
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to, such as for the ```loki``` flavour on this site.
+
+The DNSFORWARDERS parameter is a space delimited list of IPs to forward DNS requests to. If set to `none` or left out, no DNS forwarders are used.
 
 The SFTPUSER and SFTPPASS parameters are for the user on the ```vault``` leader in the VAULTSERVER parameter. You need to copy in the id_rsa from there to the host of this image.
 

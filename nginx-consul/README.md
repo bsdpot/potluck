@@ -36,7 +36,7 @@ manually.
   -E IP=<IP address of this system> \
   -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
   -E VAULTSERVER=<IP address vault server> -E SERVERNAME=server_name
-
+  [-E DNSFORWARDERS=<none|list of IPs>]
 
 The CONSULSERVERS parameter defines the consul server instances, and must be
 set as
@@ -48,6 +48,9 @@ The VAULTSERVER parameter is the IP address of the `vault` server to
 authenticate to, and obtain certificates from.
 
 SERVERNAME is used in the server certificates SubjectAltName.
+
+The DNSFORWARDERS parameter is a space delimited list of IPs to forward DNS
+requests to. If set to `none` or left out, no DNS forwarders are used.
 
 # Usage
 

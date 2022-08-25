@@ -36,7 +36,7 @@ site to run `consul`.
         -E SMTPHOSTPORT="smtp.host.com:25" -E SMTPFROM="alertmanager@example.com" \
         -E ALERTADDRESS="<email address to notify>" \
         [-E SMTPUSER=<smtp auth user> -E SMTPPASS=<smtp auth password>] \
-        [-E REMOTELOG=<remote syslog IP>]
+        [-E REMOTELOG=<remote syslog IP>] [-E DNSFORWARDERS=<none|list of IPs>]
 
 The CONSULSERVERS parameter defines the consul server instances, and must be
 set as
@@ -56,6 +56,9 @@ prometheus.yml.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send
 logs to, such as for the `loki` flavour on this site.
+
+The DNSFORWARDERS parameter is a space delimited list of IPs to forward DNS
+requests to. If set to `none` or left out, no DNS forwarders are used.
 
 The SMTPHOSTPORT parameter is for `alertmanager` and must be entered in as
 `smtphostname:port`.

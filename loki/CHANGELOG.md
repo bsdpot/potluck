@@ -1,3 +1,10 @@
+0.2.13
+
+* Add new parameter DNSFORWARDERS to allow controlling how unbound is configured
+* Add reseason support to allow restarting grafana with fresh credentials
+
+---
+
 0.2.12
 
 * Update to Loki version 2.6.1, updates to loki-local-config.yaml

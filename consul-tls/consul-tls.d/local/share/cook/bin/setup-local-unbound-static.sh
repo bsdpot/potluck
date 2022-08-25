@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ $# -ne 1 ]; then
+  2>&1 echo "Usage $0 vault_ip"
+  exit 1
+fi
+
 # shellcheck disable=SC1091
 . /root/.env.cook
 
@@ -14,5 +19,9 @@ echo "server:
         local-data: \"active.vault.service.consul A $1\"
 " >/etc/unbound/conf.d/vault-static.conf
 
+rm -f /etc/unbound/conf.d/consul.conf
+
 service local_unbound enable || true
+sysrc local_unbound_forwarders="${DNSFORWARDERS:-none}" || true
+service local_unbound setup || true
 service local_unbound restart || true

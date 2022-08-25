@@ -1,3 +1,11 @@
+2.2.13
+
+* Add new parameter DNSFORWARDERS to allow controlling how unbound is configured
+* Add scripts to support recovering a vault cluster
+* Improve image resiliance
+
+---
+
 2.2.12
 
 * Version bump for layered images

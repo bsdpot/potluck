@@ -1,3 +1,10 @@
+0.1.7
+
+* Add new parameter DNSFORWARDERS to allow controlling how unbound is configured
+* Add reseason support to allow restarting grafana with fresh credentials
+
+---
+
 0.1.6
 
 * Version bump for layered images

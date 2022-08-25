@@ -2,6 +2,13 @@
 RUNS_IN_NOMAD=false
 COOKLOG=/var/log/cook.log
 
+export HOME=/root
+
+# Log function
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
 pot_seasoned_exit() {
     [ ! -e /usr/local/etc/pot-is-seasoned ] && \
       touch /usr/local/etc/pot-is-seasoned
@@ -20,28 +27,79 @@ pot_seasoned_exit() {
 service sshd stop || true
 service sshd disable || true
 
-# No need to change this, just ensures configuration is done only once
-[ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
+# Make cook binaries accessible in PATH
+export PATH=/usr/local/share/cook/bin:$PATH
 
-########################################################################
-## Functions and settings
-########################################################################
-
-log() {
-    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
-}
-
-set -e
-export HOME=/root
-
-if [ -e /tmp/environment.sh ]
-then
+# Read in pot environment
+if [ -e /tmp/environment.sh ]; then
+    set -e
     # shellcheck disable=SC1091
     . /tmp/environment.sh
 
     # XXX: Remove some things from here later
     cp -a /tmp/environment.sh /root/.env.cook
+    set +e
 fi
+
+# No need to change this, just ensures configuration is done only once
+if [ -e /usr/local/etc/pot-is-seasoned ]; then
+    # shellcheck disable=SC3013
+    if [ /mnt/vaultcerts/unwrapped.token -ot \
+         /mnt/vaultcerts/credentials.json ]; then
+
+        log "Seasoned: Set up local_unbound using static vault ip"
+        setup-local-unbound-static.sh "$VAULTSERVER"
+
+        log "Seasoned: Wait until we are able to resolve active vault instance"
+        timeout --foreground 120 \
+          sh -c 'while ! host -ta active.vault.service.consul; do sleep 1; done'
+
+        log "Seasoned: Unwrap cluster credentials"
+        unwrap-cluster-credentials.sh
+
+        log "Seasoned: Start vaultproxy"
+        timeout --foreground 120 \
+          sh -c 'while ! service nginx status vaultproxy; do
+            service nginx start vaultproxy || true; sleep 3;
+          done'
+
+        log "Seasoned: Reload vaultproxy"
+        service nginx reload vaultproxy
+
+        log "Seasoned: Unwrap consul credentials"
+        unwrap-consul-credentials.sh
+
+        log "Seasoned: Configure consul-template"
+        configure-consul-template.sh
+
+        log "Seasoned: Configure consul"
+        configure-consul.sh
+
+        log "Seasoned: Make sure consul-template is stopped"
+        service consul-template stop || true
+        service consul-template stop || true
+
+        log "Seasoned: Start consul-template"
+        timeout --foreground 20 \
+          sh -c 'while ! service consul-template status; do
+            service consul-template start || true; sleep 3;
+          done'
+
+        log "Seasoned: Start consul and wait for it to become stable"
+        timeout --foreground 120 \
+          sh -c 'while ! service consul status; do
+            service consul start || true; sleep 5;
+          done'
+    fi
+
+    pot_seasoned_exit
+fi
+
+########################################################################
+## Functions and settings
+########################################################################
+
+set -e
 
 # stop services
 service vault onestop || true
@@ -55,7 +113,7 @@ killall -9 consul || true
 ########################################################################
 
 required_args="DATACENTER IP NODENAME VAULTSERVER PEERS BOOTSTRAP"
-optional_args="REMOTELOG"
+optional_args="REMOTELOG DNSFORWARDERS"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -74,7 +132,6 @@ done
 ## Provision image
 ########################################################################
 
-export PATH=/usr/local/share/cook/bin:$PATH
 
 # setup directories
 mkdir -p /mnt/log
