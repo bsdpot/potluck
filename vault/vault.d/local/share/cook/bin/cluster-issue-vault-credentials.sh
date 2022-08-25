@@ -16,7 +16,7 @@ usage() {
 	    issued.
 
 	    -e can be used to add a suffix to the entity name to
-	    avoid re-using entity names 
+	    avoid re-using entity names
 
 	    -a, -g, -i, -p can be specified multiple times
 	    multiple comma separated entries work there too.

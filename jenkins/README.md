@@ -1,7 +1,7 @@
 ---
 author: "Bretton Vine"
-title: Jenkins 
-summary: Jenkins is a tool used for Continuous Integration (CI) and testing 
+title: Jenkins
+summary: Jenkins is a tool used for Continuous Integration (CI) and testing
 tags: ["CI", "testing", "automated builds", "jenkins"]
 ---
 
@@ -17,21 +17,21 @@ You can adjust this flavour and rebuild your own pot image if you have other req
 
 * Create a ZFS data set on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/jenkins zroot/jenkinsdata```
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created:
   ```pot mount-in -p <jailname> -d /mnt/jenkins -m /mnt/```
-* Optionally copy in SSH private key:    
+* Optionally copy in SSH private key:
   ```pot copy-in -p <jailname> -s /path/to/jenkins/id_rsa -d /root/jenkins.key```
-* Optionally copy in SSH public key:    
+* Optionally copy in SSH public key:
   ```pot copy-in -p <jailname> -s /path/to/jenkins/id_rsa.pub -d /root/jenkins.pub```
-* Optionally export the ports after creating the jail:     
+* Optionally export the ports after creating the jail:
   ```pot export-ports -p <jailname> -e 8080:8080```
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> -E RUNTYPE=<nostore|setupstore|activestore> \
   -E BUILDHOST=<IP of potbuilder VM> \
-  [ -E IMPORTKEYS=<1|0 default> -E REMOTELOG=<IP of syslog-ng server> ] 
+  [ -E IMPORTKEYS=<1|0 default> -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 
 RUNTYPE is one of:
@@ -63,12 +63,12 @@ On first usage plugins will need to be setup and this takes a little time too, a
 
 ## Persistent storage
 
-To use persistent storage and launch repeatedly without setting up again, configure mount-in storage, and run once with RUNTYPE set to `setupstore`, shut down, then run thereafter with RUNTYPE 
+To use persistent storage and launch repeatedly without setting up again, configure mount-in storage, and run once with RUNTYPE set to `setupstore`, shut down, then run thereafter with RUNTYPE
 set to `activestore`.
 
 Setup takes a little while the first time, and you will need console access to the ```jenkins``` pot image to run:
 
-```     
+```
 cat /mnt/jenkins/secrets/initialAdminPassword
 ```
 

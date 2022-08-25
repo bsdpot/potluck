@@ -25,7 +25,7 @@ job "example" {
   type        = "service"
 
   group "group1" {
-    count = 1 
+    count = 1
 
     task "www1" {
       driver = "pot"

@@ -44,13 +44,13 @@
 
 2.2.4
 
-* Dummy entry, missing version increment 
+* Dummy entry, missing version increment
 
 ---
 
 2.2.3
 
-* Dummy entry, missing version increment 
+* Dummy entry, missing version increment
 
 ---
 

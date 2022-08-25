@@ -9,10 +9,10 @@ tags: ["backuppc", "backup", "nomad"]
 
 This is a BackupPC jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
 
-The storage directory is in ```/var/db/BackupPC```.    
+The storage directory is in ```/var/db/BackupPC```.
 It is suggested that this directory is mounted from outside the jail when it is run as a ```nomad``` task so that it is persistent (see example below).
 
-The admin interface can be accessed via web browser through port 80. 
+The admin interface can be accessed via web browser through port 80.
 
 For more details about ```nomad```images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
@@ -26,7 +26,7 @@ The jail exposes these parameters that can either be set via the environment or 
 
 # Nomad Job Description Example
 
-It is suggested to mount the jail directories ```/var/db/BackupPC``` and ```/usr/local/etc/backuppc/pc``` from outside as these contain the backup database and the host specific settings which both probably should be persistent. 
+It is suggested to mount the jail directories ```/var/db/BackupPC``` and ```/usr/local/etc/backuppc/pc``` from outside as these contain the backup database and the host specific settings which both probably should be persistent.
 
 Also, it is suggested to copy in the BackupPC ```hosts``` file (as this will otherwise be recreated on each job scheduling, so also edit this file by hand outside of the jail and *not* via the admin GUI as the changes otherwise will be lost when the jail is rescheduled by ```nomad```). The main BackupPC configuration will be recreated as well, so store configuration in your per host settings that are stored in the mounted in directory ```/usr/local/etc/backuppc/pc```.
 
@@ -38,7 +38,7 @@ job "backuppc" {
   type        = "service"
 
   group "group1" {
-    count = 1 
+    count = 1
 
     task "www1" {
       driver = "pot"

@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine"
-title: Traumadrill 
+title: Traumadrill
 summary: Traumadrill is a single pot image with multiple benchmarking tools and stress generators for generating artificial system load.
 tags: ["monitoring", "alerting", "benchmarking", "stress", "alertmanager", "testing"]
 ---
@@ -15,9 +15,9 @@ The flavour includes a local ```consul``` agent instance to be available that it
 
 # Installation
 
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> \
     -E DATACENTER=<datacentername> \
@@ -30,7 +30,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
 * Start the jail
 
 ## Required Paramaters
-The DATACENTER parameter defines a common datacenter. 
+The DATACENTER parameter defines a common datacenter.
 
 The NODENAME parameter defines the name of this node.
 

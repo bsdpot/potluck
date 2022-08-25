@@ -12,19 +12,20 @@
 
 # Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
 # You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script 
+# appropriately at the end of this script
 RUNS_IN_NOMAD=true
 
 # -------- BEGIN PACKAGE & MOUNTPOINT SETUP -------------
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
 service sendmail onedisable
+# shellcheck disable=SC2015
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
 # Wordpress package at the moment is installed with php74, so we use that as base
 # Also we (pre-)install all the packages that wordpress lists as dependencies
-pkg install -y nginx mariadb105-client postgresql13-client 
+pkg install -y nginx mariadb105-client postgresql13-client
 pkg install -y php74 php74-extensions php74-openssl
 pkg install -y ImageMagick6-nox11 avahi-app bash bash-completion cups dbus dbus-glib expat fftw3 fontconfig freetype2 fribidi gdbm ghostscript9-agpl-base giflib glib gmp gnome_subr gnutls graphite2 gsfonts harfbuzz jbig2dec jbigkit jpeg-turbo lcms2 libICE libSM libX11 libXau libXdmcp libdaemon libevent libffi libgd libidn libidn2 liblqr-1 libltdl libpaper libpthread-stubs libraqm libraw libtasn1 libunistring libwmf-nox11 libxcb libzip nettle openjpeg p11-kit perl5 php74-curl php74-exif php74-fileinfo php74-ftp php74-gd php74-mysqli php74-pecl-imagick php74-zip php74-zlib pkgconf png poppler-data python37 tiff tpm-emulator trousers webp xorgproto
 
@@ -43,22 +44,22 @@ mkdir /.snapshots
 
 #
 # Now generate the run command script "cook"
-# It configures the system on the first run by creating the config file(s) 
-# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits 
+# It configures the system on the first run by creating the config file(s)
+# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
 #
 
-# ----------------- BEGIN COOK ------------------ 
+# ----------------- BEGIN COOK ------------------
 echo "#!/bin/sh
 RUNS_IN_NOMAD=$RUNS_IN_NOMAD
 # No need to change this, just ensures configuration is done only once
 if [ -e /usr/local/etc/pot-is-seasoned ]
 then
-    # If this pot flavour is blocking (i.e. it should not return), 
+    # If this pot flavour is blocking (i.e. it should not return),
     # we block indefinitely
     if [ \$RUNS_IN_NOMAD ]
     then
         /bin/sh /etc/rc
-        tail -f /dev/null 
+        tail -f /dev/null
     fi
     exit 0
 fi
@@ -77,7 +78,7 @@ fi
 
 #
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
-# 
+#
 
 # Convert parameters to variables if passed (overwrite environment)
 #while getopts a: option
@@ -89,8 +90,8 @@ fi
 #done
 
 # Check config variables are set
-#if [ -z \${ALPHA+x} ]; 
-#then 
+#if [ -z \${ALPHA+x} ];
+#then
 #    echo 'ALPHA is unset - see documentation how to configure this flavour' >> /var/log/cook.log
 #    echo 'ALPHA is unset - see documentation how to configure this flavour'
 #    exit 1
@@ -105,11 +106,11 @@ fi
 # from within the Wordpress web gui..
 if [ ! -e /usr/local/www/wordpress/wp-login.php ]
 then
-    pkg install -y wordpress 
+    pkg install -y wordpress
 fi
 
 # Configure PHP FPM
-sed -i '' \"s&\\listen = 127.0.0.1:9000&listen = /var/run/php72-fpm.sock&\" /usr/local/etc/php-fpm.d/www.conf 
+sed -i '' \"s&\\listen = 127.0.0.1:9000&listen = /var/run/php72-fpm.sock&\" /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.owner = www\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.group = www\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf
@@ -123,7 +124,7 @@ pw addgroup -n newwww -g 1001
 pw moduser www -u 1001 -G 80,0,1001
 
 # Configure NGINX
-cp /root/nginx.conf /usr/local/etc/nginx/nginx.conf 
+cp /root/nginx.conf /usr/local/etc/nginx/nginx.conf
 
 # ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
 killall nginx
@@ -156,25 +157,26 @@ chmod u+x /usr/local/bin/cook
 # the "cook" script generated above each time, for the "Nomad" mode, the cook
 # script is started by pot (configuration through flavour file), therefore
 # we do not need to do anything here.
-# 
+#
 
 # Create rc.d script for "normal" mode:
-echo "#!/bin/sh
+# shellcheck disable=SC2016
+echo '#!/bin/sh
 #
-# PROVIDE: cook 
+# PROVIDE: cook
 # REQUIRE: LOGIN
 # KEYWORD: shutdown
 #
 . /etc/rc.subr
-name=cook
-rcvar=cook_enable
+name="cook"
+rcvar="cook_enable"
 load_rc_config $name
-: ${cook_enable:=\"NO\"}
-: ${cook_env:=\"\"}
-command=\"/usr/local/bin/cook\"
-command_args=\"\"
-run_rc_command \"\$1\"
-" > /usr/local/etc/rc.d/cook
+: ${cook_enable:="NO"}
+: ${cook_env:=""}
+command="/usr/local/bin/cook"
+command_args=""
+run_rc_command "$1"
+' > /usr/local/etc/rc.d/cook
 
 chmod u+x /usr/local/etc/rc.d/cook
 

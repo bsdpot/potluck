@@ -24,7 +24,7 @@ job "minio-example" {
   type        = "service"
 
   group "group1" {
-    count = 1 
+    count = 1
 
     task "task1" {
       driver = "pot"

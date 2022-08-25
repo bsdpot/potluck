@@ -274,22 +274,22 @@ step "Create rc.d script to start cook"
 echo "creating rc.d script to start cook" | tee -a $COOKLOG
 
 # shellcheck disable=SC2016
-echo "#!/bin/sh
+echo '#!/bin/sh
 #
 # PROVIDE: cook
 # REQUIRE: LOGIN
 # KEYWORD: shutdown
 #
 . /etc/rc.subr
-name=\"cook\"
-rcvar=\"cook_enable\"
-load_rc_config \$name
-: \${cook_enable:=\"NO\"}
-: \${cook_env:=\"\"}
-command=\"/usr/local/bin/cook\"
-command_args=\"\"
-run_rc_command \"\$1\"
-" > /usr/local/etc/rc.d/cook
+name="cook"
+rcvar="cook_enable"
+load_rc_config $name
+: ${cook_enable:="NO"}
+: ${cook_env:=""}
+command="/usr/local/bin/cook"
+command_args=""
+run_rc_command "$1"
+' > /usr/local/etc/rc.d/cook
 
 step "Make rc.d script to start cook executable"
 if [ -e /usr/local/etc/rc.d/cook ]

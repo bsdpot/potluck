@@ -77,7 +77,7 @@ vault policy write issue-vault-computenode-cert - <<-EOF
 ENTITY_NAME="$NODENAME-vault"
 entity_id=$(create_id_entity "$ENTITY_NAME" "$NODENAME")
 
-# Create entity-alias mapping to the entity that was just created 
+# Create entity-alias mapping to the entity that was just created
 create_id_entity_alias "$ENTITY_NAME" "$entity_id" "token" \
   'desc="'"$ENTITY_NAME"' alias"' >/dev/null
 

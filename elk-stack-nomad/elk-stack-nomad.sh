@@ -12,17 +12,18 @@
 
 # Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
 # You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script 
+# appropriately at the end of this script
 RUNS_IN_NOMAD=true
 
 # -------- BEGIN PACKAGE & MOUNTPOINT SETUP -------------
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
 service sendmail onedisable
+# shellcheck disable=SC2015
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
-pkg install -y elasticsearch7 logstash7 kibana7 
+pkg install -y elasticsearch7 logstash7 kibana7
 pkg clean -y
 
 # Create mountpoints
@@ -36,22 +37,22 @@ chmod ugo+rw /var/db/elasticsearch/
 
 #
 # Now generate the run command script "cook"
-# It configures the system on the first run by creating the config file(s) 
-# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits 
+# It configures the system on the first run by creating the config file(s)
+# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
 #
 
-# ----------------- BEGIN COOK ------------------ 
+# ----------------- BEGIN COOK ------------------
 echo "#!/bin/sh
 RUNS_IN_NOMAD=$RUNS_IN_NOMAD
 # No need to change this, just ensures configuration is done only once
 if [ -e /usr/local/etc/pot-is-seasoned ]
 then
-    # If this pot flavour is blocking (i.e. it should not return), 
+    # If this pot flavour is blocking (i.e. it should not return),
     # we block indefinitely
     if [ \$RUNS_IN_NOMAD ]
     then
         /bin/sh /etc/rc
-        tail -f /dev/null 
+        tail -f /dev/null
     fi
     exit 0
 fi
@@ -69,7 +70,7 @@ fi
 
 #
 # ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
-# 
+#
 
 # ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE ADJUSTED & COPIED:
 hostip=\$(ifconfig | sed -n '/.inet /{s///;s/ .*//;p;}' | sed -r 's/^127.0.0.1//' | tr -d '\\n')
@@ -114,25 +115,26 @@ chmod u+x /usr/local/bin/cook
 # the "cook" script generated above each time, for the "Nomad" mode, the cook
 # script is started by pot (configuration through flavour file), therefore
 # we do not need to do anything here.
-# 
+#
 
 # Create rc.d script for "normal" mode:
-echo "#!/bin/sh
+# shellcheck disable=SC2016
+echo '#!/bin/sh
 #
-# PROVIDE: cook 
+# PROVIDE: cook
 # REQUIRE: LOGIN
 # KEYWORD: shutdown
 #
 . /etc/rc.subr
-name=cook
-rcvar=cook_enable
+name="cook"
+rcvar="cook_enable"
 load_rc_config $name
-: ${cook_enable:=\"NO\"}
-: ${cook_env:=\"\"}
-command=\"/usr/local/bin/cook\"
-command_args=\"\"
-run_rc_command \"\$1\"
-" > /usr/local/etc/rc.d/cook
+: ${cook_enable:="NO"}
+: ${cook_env:=""}
+command="/usr/local/bin/cook"
+command_args=""
+run_rc_command "$1"
+' > /usr/local/etc/rc.d/cook
 
 chmod u+x /usr/local/etc/rc.d/cook
 

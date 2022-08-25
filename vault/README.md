@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine"
-title: Vault 
+title: Vault
 summary: Vault is a tool for securely accessing secrets, such as API keys, passwords, or certificates.
 tags: ["micro-services", "vault", "nomad", "secrets", "certificates"]
 ---
@@ -21,26 +21,26 @@ Start ```vault``` cluster with the IP addresses of ```consul``` servers, which a
 
 ## Unseal node
 
-* [unseal node] Create a ZFS data set on the parent system beforehand:    
+* [unseal node] Create a ZFS data set on the parent system beforehand:
   ```zfs create -o mountpoint=/mnt/vaultunseal zroot/vaultunseal```
-* Create your local jail from the image or the flavour files. 
-* Mount in the ZFS data set you created:    
+* Create your local jail from the image or the flavour files.
+* Mount in the ZFS data set you created:
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/vaultunseal```
-* Optionally export the ports after creating the jail:     
-  ```pot export-ports -p <jailname> -e 8200:8200```   
-* Adjust to your environment:    
-  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E IP=<IP address of this vault node> -E VAULTTYPE=unseal```    
+* Optionally export the ports after creating the jail:
+  ```pot export-ports -p <jailname> -e 8200:8200```
+* Adjust to your environment:
+  ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> -E IP=<IP address of this vault node> -E VAULTTYPE=unseal```
 
 ## Vault leader
 
-* [cluster node] Create a ZFS data set on the parent system beforehand:    
+* [cluster node] Create a ZFS data set on the parent system beforehand:
   ```zfs create -o mountpoint=/mnt/vaultdata zroot/vaultdata```
-* Create your local jail from the image or the flavour files. 
-* Mount in the ZFS data set you created:    
+* Create your local jail from the image or the flavour files.
+* Mount in the ZFS data set you created:
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/vaultdata```
-* Optionally export the ports after creating the jail:     
-  ```pot export-ports -p <jailname> -e 8200:8200```   
-* Adjust to your environment:    
+* Optionally export the ports after creating the jail:
+  ```pot export-ports -p <jailname> -e 8200:8200```
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
   -E IP=<IP address of this vault node> -E VAULTTYPE=leader \
@@ -49,7 +49,7 @@ Start ```vault``` cluster with the IP addresses of ```consul``` servers, which a
   -E SFTPUSER=<username> -E SFTPNETWORK="<list of comma-space separated IP addresses>" \
   -E GOSSIPKEY=<32 byte Base64 key from consul keygen> [-E REMOTELOG=<remote syslog IP>]
   [-E DNSFORWARDERS=<none|list of IPs>]
-  ```    
+  ```
 
 The SFTPUSER parameter is used to create a user with SSH private keys, where you will need to export the private key to the host systems for follower nodes.
 
@@ -63,7 +63,7 @@ The REMOTELOG parameter is the IP address of a remote syslog server to send logs
 
 The DNSFORWARDERS parameter is a space delimited list of IPs to forward DNS requests to. If set to `none` or left out, no DNS forwarders are used.
 
-Important: the leader boot can take a while with certificate generation. Let it complete before adding followers. 
+Important: the leader boot can take a while with certificate generation. Let it complete before adding followers.
 
 Once booted you will need to run ```./cli-vault-auto-login.sh``` for a login token to use on follower nodes, and export ```/home/certuser/.ssh/id_rsa``` to a file to import to follower nodes and other types of pot images.
 
@@ -75,16 +75,16 @@ You will need to generate new temporary certificates if two hours have passed si
 
 ## Vault follower
 
-* [cluster node] Create a ZFS data set on the parent system beforehand:    
+* [cluster node] Create a ZFS data set on the parent system beforehand:
   ```zfs create -o mountpoint=/mnt/vaultdata zroot/vaultdata```
-* Create your local jail from the image or the flavour files. 
-* Mount in the ZFS data set you created:    
+* Create your local jail from the image or the flavour files.
+* Mount in the ZFS data set you created:
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/vaultdata```
-* Copy in the SSH private key for the user on the Vault leader:    
+* Copy in the SSH private key for the user on the Vault leader:
   ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
-* Optionally export the ports after creating the jail:     
-  ```pot export-ports -p <jailname> -e 8200:8200```   
-* Adjust to your environment:    
+* Optionally export the ports after creating the jail:
+  ```pot export-ports -p <jailname> -e 8200:8200```
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
   -E IP=<IP address of this vault node> -E VAULTTYPE=follower \
@@ -214,7 +214,7 @@ vault operator raft autopilot state -address=https://10.0.0.3:8200 -client-cert=
 ```
 
 ## Default cluster usage
-This cluster will generate, issue, renew certificates. 
+This cluster will generate, issue, renew certificates.
 
 ## Other example cluster usage
 This cluster can be used as a kv store.

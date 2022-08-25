@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine"
-title: FreeBSD-Potluck 
+title: FreeBSD-Potluck
 summary: FreeBSD-Potluck is a single pot base image for building layered images.
 tags: ["base image", "layers", "testing"]
 ---
@@ -11,9 +11,9 @@ This flavour is a bare base pot image. Just FreeBSD-13.0.
 
 # Installation
 
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> \
     -E NODENAME=<nodename> \

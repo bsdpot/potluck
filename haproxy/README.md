@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine"
-title: HAProxy 
+title: HAProxy
 summary: HAProxy is a load-balancing proxy for network traffic
 tags: ["load-balance", "proxy", "haproxy"]
 ---
@@ -15,15 +15,15 @@ The flavour includes a local ```consul``` agent instance to be available that it
 
 * Create a ZFS data set on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/haproxydata zroot/haproxydata```
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/haproxydata```
-* Copy in the SSH private key for the user on the Vault leader:    
+* Copy in the SSH private key for the user on the Vault leader:
   ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
-* Copy in YOUR haproxy.conf file, and do not change the destination path:    
+* Copy in YOUR haproxy.conf file, and do not change the destination path:
   ```pot copy-in -p <jailname> -s /root/haproxy.conf -d /root/haproxy.conf```
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
   -E IP=<IP address of this system> -E PUBLICIP=<Public IP for HAProxy frontend> \

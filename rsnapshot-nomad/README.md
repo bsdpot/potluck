@@ -27,7 +27,7 @@ The frequency is given in the standard cron entry format, e.g. "0 */4 * * *" or 
 
 It is suggested to mount the jail directory ```/.snapshots``` from outside as it contains the backups (or any other backup directory that you define in your configuration below).
 
-Also, you should copy in the ```rsnapshot.conf``` file to ```/usr/local/etc``` with your configuration settings. 
+Also, you should copy in the ```rsnapshot.conf``` file to ```/usr/local/etc``` with your configuration settings.
 
 Last not least, since you probably will use ssh to access clients, you also want to copy your private/public key pair to ```/root/.ssh``` so the BackupPC server can access your clients.
 
@@ -41,7 +41,7 @@ job "rsnapshot" {
   type        = "service"
 
   group "group1" {
-    count = 1 
+    count = 1
 
     task "backupmx1" {
       driver = "pot"

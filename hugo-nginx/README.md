@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine"
-title: Hugo-Nginx 
+title: Hugo-Nginx
 summary: Hugo is a general-purpose website framework and static site generator
 tags: ["www", "website generator", "static site", "automated builds", "hugo", "nginx"]
 ---
@@ -23,17 +23,17 @@ It is advised to run this image behind a proxy. The directory permissions on the
 
 * Create a ZFS data set on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/<sitename> zroot/jaildata_hugo```
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created:
   ```pot mount-in -p <jailname> -d /mnt/<sitename> -m /mnt```
-* Optionally copy in jenkins user SSH public key:    
+* Optionally copy in jenkins user SSH public key:
   ```pot copy-in -p <jailname> -s /path/to/jenkins/id_rsa.pub -d /root/jenkins.pub```
-* Optionally copy in customfile.tgz:    
+* Optionally copy in customfile.tgz:
   ```pot copy-in -p <jailname> -s /path/to/customfile.tgz -d /root/customfile.tgz```
-* Optionally export the ports after creating the jail:     
+* Optionally export the ports after creating the jail:
   ```pot export-ports -p <jailname> -e 80:80```
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> -E SERVERNAME=<fqdn> \
   -E IP=<IP of potbuilder VM> -E SITENAME=<site name> \
@@ -87,8 +87,8 @@ If you wish to include a custom setup for hugo, you can create a file ```customf
 ./content/micro/about.md
 ```
 
-Make sure to copy-in to /root/customfile.tgz and set ```-E CUSTOMFILE=1``` in the parameters. 
+Make sure to copy-in to /root/customfile.tgz and set ```-E CUSTOMFILE=1``` in the parameters.
 
 # Persistent storage
 
-To use persistent storage make sure to mount-in a pre-configured data set to /mnt/<sitename>. 
+To use persistent storage make sure to mount-in a pre-configured data set to /mnt/<sitename>.

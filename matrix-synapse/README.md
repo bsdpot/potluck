@@ -11,25 +11,25 @@ This is a Matrix-Synapse jail that can be started with ```pot```.
 
 This instance uses `sqlite` instead of `postgres` and may not be suitable for busy servers.
 
-The jail exposes parameters that can either be set via the environment or by setting the ```cook```parameters (the 
+The jail exposes parameters that can either be set via the environment or by setting the ```cook```parameters (the
 latter either via ```nomad```, see example below, or by editing the downloaded jails ```pot.conf``` file):
 
 For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
 # Setup
-You must run your matrix instance from a top level domain such as example.com, not matrix.example.com. 
+You must run your matrix instance from a top level domain such as example.com, not matrix.example.com.
 
-This is a quirk of using .well-known/matrix/server with the server's details. 
+This is a quirk of using .well-known/matrix/server with the server's details.
 
 ## Installation
 
-* Create a ZFS data set on the parent system beforehand    
+* Create a ZFS data set on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/matrixdata zroot/matrixdata```
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
-* Mount in the ZFS data set you created    
+* Mount in the ZFS data set you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/matrixdata```
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> \
    -E DOMAIN=<domain name> -E IP=<IP address> \
@@ -53,7 +53,7 @@ REGISTRATIONENABLE defaults to ```false``` but if set to ```true``` will allow r
 
 MYSHAREDSECRET is a shared secret key for registrations.
 
-SMTPHOST is the mail server domain name or IP address. 
+SMTPHOST is the mail server domain name or IP address.
 
 SMTPPORT defaults to 25 but can be set to 465 or 587 manually.
 
@@ -78,9 +78,9 @@ You will need to setup an admin account via cli using ```register_new_matrix_use
 For example:
 ```
 register_new_matrix_user -u adminusername -k "Ex4mpl3sH4r3dk3y"
-Password: 
-Confirm password: 
-Make admin [yes]: 
+Password:
+Confirm password:
+Make admin [yes]:
 Sending registration request...
 Success!
 ```

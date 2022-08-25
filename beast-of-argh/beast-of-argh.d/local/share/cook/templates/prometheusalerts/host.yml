@@ -170,7 +170,7 @@ groups:
     annotations:
       summary: Host swap is filling up (instance {{ $labels.instance }})
       description: "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-  ## INVALID FOR FREEBSD 
+  ## INVALID FOR FREEBSD
   # Host physical component too hot
   #- alert: HostPhysicalComponentTooHot
   #  expr: node_hwmon_temp_celsius > 75
@@ -182,7 +182,7 @@ groups:
   #    description: "Physical hardware component too hot\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   #
   # Host node over temperature alarm
-  ## INVALID FOR FREEBSD 
+  ## INVALID FOR FREEBSD
   #- alert: HostNodeOvertemperatureAlarm
   #  expr: node_hwmon_temp_crit_alarm_celsius == 1
   #  for: 0m
@@ -192,7 +192,7 @@ groups:
   #    summary: Host node overtemperature alarm (instance {{ $labels.instance }})
   #    description: "Physical node temperature alarm triggered\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   ##
-  ## INVALID FOR FREEBSD 
+  ## INVALID FOR FREEBSD
   # Host OOM kill detected
   #- alert: HostOomKillDetected
   #  expr: increase(node_vmstat_oom_kill[1m]) > 0
@@ -202,7 +202,7 @@ groups:
   #  annotations:
   #    summary: Host OOM kill detected (instance {{ $labels.instance }})
   #    description: "OOM kill detected\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-  ## INVALID FOR FREEBSD 
+  ## INVALID FOR FREEBSD
   # Host EDAC correctable errors detected
   #- alert: HostEdacCorrectableErrorsDetected
   #  expr: increase(node_edac_correctable_errors_total[1m]) > 0
@@ -212,7 +212,7 @@ groups:
   #  annotations:
   #    summary: Host EDAC Correctable Errors detected (instance {{ $labels.instance }})
   #    description: "Host {{ $labels.instance }} has had {{ printf \"%.0f\" $value }} correctable memory errors reported by EDAC in the last 5 minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-  ## INVALID FOR FREEBSD 
+  ## INVALID FOR FREEBSD
   # Host EDAC uncorrectable errors detected
   #- alert: HostEdacUncorrectableErrorsDetected
   #  expr: node_edac_uncorrectable_errors_total > 0
@@ -253,7 +253,7 @@ groups:
     annotations:
       summary: Host Network Interface Saturated (instance {{ $labels.instance }})
       description: "The network interface \"{{ $labels.device }}\" on \"{{ $labels.instance }}\" is getting overloaded.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-  ## INVALID FOR FREEBSD 
+  ## INVALID FOR FREEBSD
   # Host connection track limit
   #- alert: HostConntrackLimit
   #  expr: node_nf_conntrack_entries / node_nf_conntrack_entries_limit > 0.8
@@ -264,7 +264,7 @@ groups:
   #    summary: Host conntrack limit (instance {{ $labels.instance }})
   #    description: "The number of conntrack is approaching limit\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   ##
-  ## INVALID FOR FREEBSD 
+  ## INVALID FOR FREEBSD
   # host clock skew
   #- alert: HostClockSkew
   #  expr: (node_timex_offset_seconds > 0.05 and deriv(node_timex_offset_seconds[5m]) >= 0) or (node_timex_offset_seconds < -0.05 and deriv(node_timex_offset_seconds[5m]) <= 0)
@@ -274,7 +274,7 @@ groups:
   #  annotations:
   #    summary: Host clock skew (instance {{ $labels.instance }})
   #    description: "Clock skew detected. Clock is out of sync. Ensure NTP is configured correctly on this host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-  ## INVALID FOR FREEBSD 
+  ## INVALID FOR FREEBSD
   # host clock not synchronising
   #- alert: HostClockNotSynchronising
   #  expr: min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16
@@ -285,7 +285,7 @@ groups:
   #    summary: Host clock not synchronising (instance {{ $labels.instance }})
   #    description: "Clock not synchronising. Ensure NTP is configured on this host.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   # host requires reboot
-  ## INVALID FOR FREEBSD 
+  ## INVALID FOR FREEBSD
   #- alert: HostRequiresReboot
   #  expr: node_reboot_required > 0
   #  for: 4h

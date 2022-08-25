@@ -13,21 +13,21 @@ rm -rf /usr/sbin/pkg
 rm -rf /usr/local/sbin/pkg
 
 for d in $dirs ; do
-	rm -rf ${d}
+	rm -rf "$d"
 done
 (
-	cd /usr/bin
+	cd /usr/bin || exit 1
 	for f in $usr_bin ; do
-		rm -f $f
+		rm -f "$f"
 	done
 	for g in $usr_bin_glob ; do
-		rm -rf ${g}*
+		rm -rf "$g"*
 	done
 )
 (
-	cd /usr/sbin
+	cd /usr/sbin || exit 1
 	for g in $usr_sbin_glob ; do
-		rm -rf ${g}*
+		rm -rf "$g"*
 	done
 	rm -f $usr_sbin
 )

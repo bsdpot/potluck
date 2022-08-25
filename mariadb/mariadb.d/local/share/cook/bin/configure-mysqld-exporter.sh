@@ -22,7 +22,7 @@ sep=$'\001'
   > /usr/local/etc/mysqld_exporter.cnf
 
 # if no exporter user exists, create it
-if [ $(echo "SELECT COUNT(*) FROM mysql.user WHERE user = 'exporter'" | /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" | tail -n1) -gt 0 ]
+if [ "$(echo "SELECT COUNT(*) FROM mysql.user WHERE user = 'exporter'" | /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" | tail -n1)" -gt 0 ]
 then
     echo "Not creating exporter user as already exists"
 else

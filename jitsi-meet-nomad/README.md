@@ -24,7 +24,7 @@ Deploying the image or flavour should be quite straight forward and not take mor
   * &lt;yourpublicip&gt; is the public IP address associated with the server behind this domain name
   * &lt;yourpotip&gt; is the IP address that has been created by '''pot''' when importing/creating the jail (see the output of ```pot import``` or ```pot create```, e.g. 10.192.0.3.
 * Forward the needed ports: ```pot export-ports -p <yourjailname> -e 80:80 -e 443:443 -e 10000:10000 -e 4443:4443``` with &lt;yourjailname&gt; again being the name of your newly created/imported jail.
-* Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.  
+* Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.
   If it would not be for the following one workaround step, you could now use your video conference platform.
 
 **Workaround for missing UDP port forwarding:**

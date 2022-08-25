@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine"
-title: Saltstack 
+title: Saltstack
 summary: SaltStack, also known as Salt, is a configuration management and orchestration tool.
 tags: ["saltstack", "configuration management" ]
 ---
@@ -13,17 +13,17 @@ The flavour expects a local ```consul``` agent instance to be available that it 
 
 # Installation
 
-* [cluster node] Create a ZFS data set on the parent system beforehand:    
+* [cluster node] Create a ZFS data set on the parent system beforehand:
   ```zfs create -o mountpoint=/mnt/saltdata zroot/saltdata```
-* Create your local jail from the image or the flavour files. 
-* Mount in the ZFS data set you created:    
+* Create your local jail from the image or the flavour files.
+* Mount in the ZFS data set you created:
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/saltdata```
-* [optional] Copy in the primary keys from an existing master:     
+* [optional] Copy in the primary keys from an existing master:
   ```
   pot copy-in -p <jailname> -s /path/to/master.pem -d /root/master.pem
   pot copy-in -p <jailname> -s /path/to/master.pub -d /root/master.pub
   ```
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
   -E IP=<IP address of this node> -E PKIPATH="/mnt/salt/pki/master" -E STATEPATH="/mnt/salt/state" \
@@ -31,7 +31,7 @@ The flavour expects a local ```consul``` agent instance to be available that it 
   [ -E ENABLECONSUL=1 -E CONSULSERVERS=<correctly-quoted-array-consul-IPs> ] \
   [ -E GOSSIPKEY="<32 byte Base64 key from consul keygen>" ] \
   [ -E REMOTELOG=<remote syslog IP> ]
-  ```    
+  ```
 
 The PKIPATH parameter is the location of the mounted-in persistent storage, ideally ```/mnt/salt/pki/master/```. Please quote the path.
 
@@ -56,7 +56,7 @@ REMOTELOG is an optional parameter for a remote syslog service, such as via the 
 SSH to host and run ```salt``` commands:
 ```
 • salt-key -L                                       :: List minions
-• salt-key -A -y                                    :: Register new minions after the minion service has been started 
+• salt-key -A -y                                    :: Register new minions after the minion service has been started
 • salt '*' test.ping                                :: Test all minions
 • salt 'minion.intra.domain.org' cmd.run 'uname -r' :: Run command on a minion
 • salt '*' state.highstate                          :: Apply high state to all minions

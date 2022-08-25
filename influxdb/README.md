@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine"
-title: InfluxDB 
+title: InfluxDB
 summary: InfluxDB is a time-series database
 tags: ["time series", "influxdb", "grafana"]
 ---
@@ -15,15 +15,15 @@ The flavour includes a local ```consul``` agent instance to be available that it
 
 * Create a ZFS dataset on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/influxdbdata zroot/influxdbdata```
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS dataset you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/influxdbdata```
-* Copy in the SSH private key for the user on the Vault leader:    
+* Copy in the SSH private key for the user on the Vault leader:
   ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
-* Optionally export the ports after creating the jail:     
+* Optionally export the ports after creating the jail:
   ```pot export-ports -p <jailname> -e XX:XX```
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
   -E IP=<IP address of this system> -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \

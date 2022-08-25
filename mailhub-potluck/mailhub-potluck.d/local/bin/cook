@@ -76,7 +76,7 @@ export PATH=/usr/local/share/cook/bin:$PATH
 
 # place individual scripts here
 
-if [ ! -z ${REMOTELOG} ]; then
+if [ -n "${REMOTELOG}" ]; then
     log "Configure and start syslog-ng"
     configure-syslog-ng.sh
 fi
