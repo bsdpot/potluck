@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine"
-title: Mailhub-Potluck 
+title: Mailhub-Potluck
 summary: Mailhub-Potluck is a bespoke pot flavour with postfix-ldap, dovecot and related tools.
 tags: ["email", "mail server", "postfix", "dovecot", "spamassassin"]
 ---
@@ -11,7 +11,7 @@ This flavour is an application pot flavour with `postfix-ldap`, `dovecot`, `spam
 
 # Installation
 
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Setup persistent storage
 * Clone the local jail
 * Mount in persistent storage to /mnt
@@ -24,7 +24,7 @@ This flavour is an application pot flavour with `postfix-ldap`, `dovecot`, `spam
   sudo pot copy-in -p <jailname> -s /path/to/dkim_my_domains -d /root/dkim_my_domains
   sudo pot copy-in -p <jailname> -s /path/to/spamassassin_whitelist -d /root/spamassassin_whitelist
   ```
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> \
     -E NODENAME=<nodename> \
@@ -81,7 +81,7 @@ The VHOSTDIR parameter is the location of the user mail files. For persistent st
 
 The MYSQLIP is the IP address or hostname of the mysql server to use with spamassassin.
 
-The MYSQLDB is the name of the database to use with spamassassin. This must be pre-configured. 
+The MYSQLDB is the name of the database to use with spamassassin. This must be pre-configured.
 
 The MYSQLUSER and MYSQLPASS parameters are the user and password for accessing the mysql database.
 

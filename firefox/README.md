@@ -7,7 +7,7 @@ tags: ["firefox", "browser", "safe browsing"]
 
 # Overview
 
-This pot image contains a Firefox browser that is running within a jail. 
+This pot image contains a Firefox browser that is running within a jail.
 
 You can use it to ensure that Firefox does not have access to other data on your system, additionally you can easily recreate the jail when you want to completely reset the browser session.
 

@@ -36,8 +36,8 @@ date >> $COOKLOG
 
 STEPCOUNT=0
 step() {
-  STEPCOUNT=$(expr "$STEPCOUNT" + 1)
-  STEP="$@"
+  STEPCOUNT=$(("$STEPCOUNT" + 1))
+  STEP="$*"
   echo "Step $STEPCOUNT: $STEP" | tee -a $COOKLOG
 }
 
@@ -48,7 +48,7 @@ exit_ok() {
 
 FAILED=" failed"
 exit_error() {
-  STEP="$@"
+  STEP="$*"
   FAILED=""
   exit 1
 }
@@ -72,6 +72,7 @@ touch /etc/rc.conf
 # this is important, otherwise running /etc/rc from cook will
 # overwrite the IP address set in tinirc
 step "Remove ifconfig_epair0b from config"
+# shellcheck disable=SC2015
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 step "Disable sendmail"
@@ -357,22 +358,23 @@ fi
 step "Create rc.d script to start cook"
 echo "creating rc.d script to start cook" | tee -a $COOKLOG
 
-echo "#!/bin/sh
+# shellcheck disable=SC2016
+echo '#!/bin/sh
 #
 # PROVIDE: cook
 # REQUIRE: LOGIN
 # KEYWORD: shutdown
 #
 . /etc/rc.subr
-name=\"cook\"
-rcvar=\"cook_enable\"
-load_rc_config \$name
-: \${cook_enable:=\"NO\"}
-: \${cook_env:=\"\"}
-command=\"/usr/local/bin/cook\"
-command_args=\"\"
-run_rc_command \"\$1\"
-" > /usr/local/etc/rc.d/cook
+name="cook"
+rcvar="cook_enable"
+load_rc_config $name
+: ${cook_enable:="NO"}
+: ${cook_env:=""}
+command="/usr/local/bin/cook"
+command_args=""
+run_rc_command "$1"
+' > /usr/local/etc/rc.d/cook
 
 step "Make rc.d script to start cook executable"
 if [ -e /usr/local/etc/rc.d/cook ]

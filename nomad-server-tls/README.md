@@ -18,19 +18,19 @@ Together with [consul](https://potluck.honeyguide.net/blog/consul/) and the [tra
 Please note that a specific network configuration is suggested (see Installation-chapter) as this jail does not work behind the NAT of a public-bridge.
 
 # Installation
-* [Optional] Create a ZFS dataset on the parent system beforehand:    
+* [Optional] Create a ZFS dataset on the parent system beforehand:
   ```zfs create -o mountpoint=/mnt/nomad zroot/nomad```
-* Create your local jail from the image or the flavour files. 
-* [Optional] Mount in the ZFS dataset you created:    
+* Create your local jail from the image or the flavour files.
+* [Optional] Mount in the ZFS dataset you created:
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/nomad```
-* Copy in the SSH private key for the user on the Vault leader:    
+* Copy in the SSH private key for the user on the Vault leader:
   ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
-* Create your local jail from the image or the flavour files. 
-* This jail does not work with a public bridge, so clone it to use an IP address directly on your host:     
-  ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```   
+* Create your local jail from the image or the flavour files.
+* This jail does not work with a public bridge, so clone it to use an IP address directly on your host:
+  ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```
   e.g.
-  ```sudo pot clone -P nomad-server-amd64-13_2_0_2 -p my-nomad-server -N alias -i "em0|10.10.10.11"```   
-* Adjust to your environment:    
+  ```sudo pot clone -P nomad-server-amd64-13_2_0_2 -p my-nomad-server -N alias -i "em0|10.10.10.11"```
+* Adjust to your environment:
   ```
   sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> \
   -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> \

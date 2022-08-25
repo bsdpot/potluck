@@ -78,7 +78,7 @@ mkdir -p /mnt/stress
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
-if [ ! -z ${REMOTELOG} ]; then
+if [ -n "${REMOTELOG}" ]; then
     log "Configure and start syslog-ng"
     configure-syslog-ng.sh
 fi

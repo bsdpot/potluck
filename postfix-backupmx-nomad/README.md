@@ -33,7 +33,7 @@ job "backupmx" {
   type        = "service"
 
   group "group1" {
-    count = 1 
+    count = 1
 
     task "backupmx1" {
       driver = "pot"
@@ -50,7 +50,7 @@ job "backupmx" {
             timeout  = "30s"
           }
       }
-      
+
       config {
         image = "https://potluck.honeyguide.net/postfix-backupmx-nomad"
         pot = "postfix-backupmx-nomad-amd64-12_1"
@@ -90,7 +90,7 @@ job "backupmx" {
   type        = "service"
 
   group "group1" {
-    count = 1 
+    count = 1
 
     task "backupmx1" {
       driver = "pot"
@@ -107,7 +107,7 @@ job "backupmx" {
             timeout  = "30s"
           }
       }
-      
+
       env {
         MYNETWORKS = "10.10.10.10/32"
         RELAYDOMAINS = "'example1.com, example2.com, example.de'"

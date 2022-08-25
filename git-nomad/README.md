@@ -9,7 +9,7 @@ tags: ["git", "nomad"]
 
 This is a Git jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
 
-The git user home directory is in ```/var/db/git``` where also a directory ```.ssh``` for authorized key access resides.    
+The git user home directory is in ```/var/db/git``` where also a directory ```.ssh``` for authorized key access resides.
 It is suggested that this directory is mounted from outside the jail when it is run as a ```nomad``` task so that it is persistent (see example below).
 
 Since some ```fusefs``` filesystems (e.g. ```s3fs```) make setting up correct permissions for mounts impossible at the moment due to bugs, ```sshd``` is run with ```StrictModes no``` in ```/etc/ssh/sshd_config```.
@@ -30,7 +30,7 @@ job "examplegit" {
   type        = "service"
 
   group "group1" {
-    count = 1 
+    count = 1
 
     task "www1" {
       driver = "pot"

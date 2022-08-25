@@ -19,13 +19,13 @@ To ensure that software and database file versions match, ```mysql_upgrade``` is
 
 * Create a ZFS data set on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/mysqldata zroot/mysqldata```
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created
   ```pot mount-in -p <jailname> -m /var/db/mysql -d /mnt/mysqldata```
-* Optionally export the ports after creating the jail:     
+* Optionally export the ports after creating the jail:
   ```pot export-ports -p <jailname> -e 3306:3306 -e 9104:9104```
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> \
     -E DATACENTER=<datacentername> \
@@ -45,7 +45,7 @@ To ensure that software and database file versions match, ```mysql_upgrade``` is
 
 ## Required Paramaters
 
-DATACENTER defines a common datacenter. 
+DATACENTER defines a common datacenter.
 
 NODENAME defines the name of this node.
 
@@ -69,6 +69,6 @@ REMOTELOG is the IP address of a destination ```syslog-ng``` server, such as wit
 
 # Usage
 
-You can connect to the database server with a ```mariadb``` client according to the configuration you have copied in (or the default ```mariadb``` configuration). 
+You can connect to the database server with a ```mariadb``` client according to the configuration you have copied in (or the default ```mariadb``` configuration).
 
 

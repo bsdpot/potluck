@@ -7,17 +7,18 @@ sysrc jitsi_videobridge_enable="YES"
 sysrc jitsi_videobridge_flags="--apis=rest,xmpp"
 sysrc prosody_enable="YES"
 sysrc jicofo_enable="YES"
+# shellcheck disable=SC2015
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
-pkg install -y acme.sh nginx prosody jicofo jitsi-meet jitsi-videobridge 
+pkg install -y acme.sh nginx prosody jicofo jitsi-meet jitsi-videobridge
 pkg clean -y
 
 #
 # Now generate the run command script
 # It configures the system on the first run and then starts nginx as process
 # On subsequent runs, it only starts nginx
-# 
+#
 echo "
 #/bin/sh
 if [ -e /usr/local/etc/pot-is-configured ]
@@ -35,14 +36,14 @@ fi
 # PUBLICIP needs to contain the public IP address used to reach the service (for NAT traversal)
 #
 
-if [ -z \${DOMAINNAME+x} ]; 
-then 
+if [ -z \${DOMAINNAME+x} ];
+then
     echo 'DOMAINNAME is unset'
     exit 1
 fi
 
-if [ -z \${PUBLICIP+x} ]; 
-then 
+if [ -z \${PUBLICIP+x} ];
+then
     echo 'PUBLICIP is unset'
     exit 1
 fi
@@ -130,7 +131,7 @@ authentication = \\\"internal_hashed\\\"
 archive_expires_after = \\\"1w\\\" -- Remove archived messages after 1 week
 
 log = {
-        info = \\\"prosody.log\\\"; 
+        info = \\\"prosody.log\\\";
         error = \\\"prosody.err\\\";
         -- \\\"*syslog\\\"; -- Uncomment this for logging to syslog
         -- \\\"*console\\\"; -- Log to the console, useful for debugging with daemonize=false
@@ -167,9 +168,9 @@ Component \\\"focus.\$DOMAINNAME\\\"
     component_secret = \\\"\$KEYPASSWORD\\\"
 \" > /usr/local/etc/prosody/prosody.cfg.lua
 
-echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate \$DOMAINNAME 
-echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth.\$DOMAINNAME 
-prosodyctl register focus auth.\$DOMAINNAME \$KEYPASSWORD 
+echo -ne '\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n' | prosodyctl cert generate \$DOMAINNAME
+echo -ne '\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n\\n' | prosodyctl cert generate auth.\$DOMAINNAME
+prosodyctl register focus auth.\$DOMAINNAME \$KEYPASSWORD
 
 # Set up nginx
 echo \"
@@ -495,7 +496,7 @@ var config = {
     // Whether or not some features are checked based on token.
     // enableFeaturesBasedOnToken: false,
 
-   
+
     // and microsoftApiApplicationClientID
     // enableCalendarIntegration: false,
 

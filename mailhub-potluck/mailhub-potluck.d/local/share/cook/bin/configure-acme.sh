@@ -35,7 +35,7 @@ if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
     /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --home /mnt/acme --standalone
     cd /mnt/acme/"$MAILCERTDOMAIN"/
     if [ -d /usr/local/etc/postfix/keys/ ]; then
-        cp * /usr/local/etc/postfix/keys/
+        cp ./* /usr/local/etc/postfix/keys/
         cd /usr/local/etc/postfix/keys/
         if [ -f "$MAILCERTDOMAIN".cer ]; then
             mv "$MAILCERTDOMAIN".cer "$MAILCERTDOMAIN".crt

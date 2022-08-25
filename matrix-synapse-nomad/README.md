@@ -16,13 +16,13 @@ This is a Matrix Synapse jail that can be started with ```pot``` but it can also
 For more details about ```nomad```images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
 # Setup
-You must run your matrix instance from a top level domain such as example.com, not matrix.example.com. 
+You must run your matrix instance from a top level domain such as example.com, not matrix.example.com.
 
-This is a quirk of using .well-known/matrix/server with the server's details. 
+This is a quirk of using .well-known/matrix/server with the server's details.
 
 ## Installation
 
-* Create a ZFS data set on the parent system beforehand    
+* Create a ZFS data set on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/matrixdata zroot/matrixdata```
 * Add an adjusted nomad job file to nomad to run
 
@@ -69,7 +69,7 @@ job "example" {
   type        = "service"
 
   group "group1" {
-    count = 1 
+    count = 1
 
     task "www1" {
       driver = "pot"

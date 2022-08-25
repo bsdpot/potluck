@@ -198,7 +198,7 @@ listeners:
   # will also need to give Synapse a TLS key and certificate: see the TLS section
   # below.)
   #
-#  - port: 8448 
+#  - port: 8448
 #    type: http
 #    tls: true
 #    bind_addresses: ['10.27.0.5']

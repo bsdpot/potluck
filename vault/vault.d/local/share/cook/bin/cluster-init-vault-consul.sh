@@ -23,7 +23,7 @@ if [ ! -s /mnt/consulcerts/unwrapped.token ] || \
       jq -re .credentials_token)
 
     umask 177
-    
+
     HOME=/var/empty \
     vault unwrap -address="https://active.vault.service.consul:8200" \
       -tls-server-name=active.vault.service.consul \

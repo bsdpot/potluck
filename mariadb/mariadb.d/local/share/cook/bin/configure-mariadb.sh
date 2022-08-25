@@ -26,7 +26,7 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 cp -f "$TEMPLATEPATH/server.cnf.in" /usr/local/etc/mysql/conf.d/server.cnf
 
 # Configure dump cronjob
-if [ ! -z "${DUMPSCHEDULE+x}" ];
+if [ -n "${DUMPSCHEDULE+x}" ];
 then
    echo "${DUMPSCHEDULE}       root   /usr/bin/nice -n 20 /usr/local/bin/mysqldump -u ${DUMPUSER} -v --all-databases --all-tablespaces --routines --events --triggers --single-transaction > ${DUMPFILE} 2>/var/log/dump.log" >> /etc/crontab
 fi

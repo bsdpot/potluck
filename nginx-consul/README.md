@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine, Michael Gmelin"
-title: nginx-Consul 
+title: nginx-Consul
 summary: nginx-consul is a consul-integrated web server
 tags: ["web", "proxy", "nginx", "consul"]
 ---
@@ -25,12 +25,12 @@ manually.
 
 * Create a ZFS data set on the parent system beforehand
   `zfs create -o mountpoint=/mnt/nginxdata zroot/nginxdata`
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created
   `pot mount-in -p <jailname> -m /mnt -d /mnt/nginxdata`
 * Place your nginx.conf.in in that path
-* Adjust to your environment:    
+* Adjust to your environment:
 
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
   -E IP=<IP address of this system> \

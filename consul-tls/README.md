@@ -13,17 +13,17 @@ Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-serve
 
 # Installation
 
-* [Optional] Create a ZFS dataset on the parent system beforehand:    
+* [Optional] Create a ZFS dataset on the parent system beforehand:
   ```zfs create -o mountpoint=/mnt/consul zroot/consul```
-* Create your local jail from the image or the flavour files. 
-* [Optional] Mount in the ZFS dataset you created:    
+* Create your local jail from the image or the flavour files.
+* [Optional] Mount in the ZFS dataset you created:
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/consul```
-* Copy in the SSH private key for the user on the Vault leader:    
+* Copy in the SSH private key for the user on the Vault leader:
   ```pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey```
-* Export the ports after creating the jail:     
-  ```pot export-ports -p <jailname> -e 8500:8500```   
+* Export the ports after creating the jail:
+  ```pot export-ports -p <jailname> -e 8500:8500```
   Note: If you want to use the ```consul``` DNS service, you either need to expose the DNS UDP port like for the [Jitsi Meet Nomad potluck image](https://potluck.honeyguide.net/blog/jitsi-meet-nomad/) or you need to clone the jail and assign a host IP address (like for the [Nomad Server image](https://potluck.honeyguide.net/blog/nomad-server/)).
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<consul-nodename> -E IP=<IP address of this consul node> \
   -E BOOTSTRAP=<1|3|5> -E VAULTSERVER=<IP address of a vault server> -E VAULTTOKEN=<pki token> \

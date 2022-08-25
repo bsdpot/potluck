@@ -36,8 +36,8 @@ date >> $COOKLOG
 
 STEPCOUNT=0
 step() {
-  STEPCOUNT=$(expr "$STEPCOUNT" + 1)
-  STEP="$@"
+  STEPCOUNT=$(("$STEPCOUNT" + 1))
+  STEP="$*"
   echo "Step $STEPCOUNT: $STEP" | tee -a $COOKLOG
 }
 
@@ -48,7 +48,7 @@ exit_ok() {
 
 FAILED=" failed"
 exit_error() {
-  STEP="$@"
+  STEP="$*"
   FAILED=""
   exit 1
 }
@@ -300,7 +300,7 @@ echo \"From DOMAIN of \${DOMAIN} we get MYSUFFIX of \${MYSUFFIX} and MYTLD of \$
 # multi-master setup for slapd.conf
 # if we have a value for remoteip and a value for server id, set a server id and append the multimaster setup
 # to slapd.conf
-if [ ! -z \${REMOTEIP+x} ]; then
+if [ -n \${REMOTEIP+x} ]; then
     # set server id
     /usr/bin/sed -i .orig \"s|# serverID SETSERVERID|serverID \${SERVERID}|g\" /root/slapd.conf
     # set root dn
@@ -634,22 +634,23 @@ fi
 step "Create rc.d script to start cook"
 echo "creating rc.d script to start cook" | tee -a $COOKLOG
 
-echo "#!/bin/sh
+# shellcheck disable=SC2016
+echo '#!/bin/sh
 #
 # PROVIDE: cook
 # REQUIRE: LOGIN
 # KEYWORD: shutdown
 #
 . /etc/rc.subr
-name=\"cook\"
-rcvar=\"cook_enable\"
-load_rc_config \$name
-: \${cook_enable:=\"NO\"}
-: \${cook_env:=\"\"}
-command=\"/usr/local/bin/cook\"
-command_args=\"\"
-run_rc_command \"\$1\"
-" > /usr/local/etc/rc.d/cook
+name="cook"
+rcvar="cook_enable"
+load_rc_config $name
+: ${cook_enable:="NO"}
+: ${cook_env:=""}
+command="/usr/local/bin/cook"
+command_args=""
+run_rc_command "$1"
+' > /usr/local/etc/rc.d/cook
 
 step "Make rc.d script to start cook executable"
 if [ -e /usr/local/etc/rc.d/cook ]

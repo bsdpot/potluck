@@ -9,8 +9,8 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
-SCRIPT=$(readlink -f "$0")
-TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+#SCRIPT=$(readlink -f "$0")
+#TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # shellcheck disable=SC3003
 # safe(r) separator for sed

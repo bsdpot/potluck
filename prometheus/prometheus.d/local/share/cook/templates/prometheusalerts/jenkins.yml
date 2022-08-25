@@ -1,4 +1,4 @@
-# Jenkins rules, requires use of 
+# Jenkins rules, requires use of
 # https://plugins.jenkins.io/prometheus/
 groups:
 - name: jenkins-alerts

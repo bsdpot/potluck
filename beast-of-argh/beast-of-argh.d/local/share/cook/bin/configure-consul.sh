@@ -24,7 +24,6 @@ sep=$'\001'
 
 #GOSSIPKEY="$(cat /mnt/consulcerts/gossip.key)"
 # GOSSIPKEY is passed in as a variable
-GOSSIPKEY="${GOSSIPKEY}"
 
 < "$TEMPLATEPATH/consul-agent.hcl.in" \
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \

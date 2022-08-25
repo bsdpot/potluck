@@ -1,6 +1,6 @@
 ---
 author: "Stephan Lichtenauer, Bretton Vine, Michael Gmelin"
-title: Prometheus 
+title: Prometheus
 summary: Prometheus is a tool for capturing time series data, specifically system metrics.
 tags: ["metrics", "time-series", "prometheus", "grafana"]
 ---
@@ -19,13 +19,13 @@ site to run `consul`.
 
 * Create a ZFS data set on the parent system beforehand
   `zfs create -o mountpoint=/mnt/prometheusdata zroot/prometheusdata`
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created
   `pot mount-in -p <jailname> -m /mnt -d /mnt/prometheusdata`
-* Optionally export the ports after creating the jail:     
+* Optionally export the ports after creating the jail:
   `pot export-ports -p <jailname> -e 9090:9090 -e 9100:9100 -e 3000:3000`
-* Adjust to your environment:    
+* Adjust to your environment:
 
       sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> \
         -E NODENAME=<nodename> -E IP=<IP address of this system> \

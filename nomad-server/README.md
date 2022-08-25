@@ -19,14 +19,14 @@ Please note that a specific network configuration is suggested (see Installation
 
 # Installation
 
-* Create your local jail from the image or the flavour files. 
-* This jail does not work with a public bridge, so clone it to use an IP address directly on your host:     
-  ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```   
+* Create your local jail from the image or the flavour files.
+* This jail does not work with a public bridge, so clone it to use an IP address directly on your host:
+  ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```
   e.g.
-  ```sudo pot clone -P nomad-server-amd64-13_2_0_2 -p my-nomad-server -N alias -i "em0|10.10.10.11"```   
+  ```sudo pot clone -P nomad-server-amd64-13_2_0_2 -p my-nomad-server -N alias -i "em0|10.10.10.11"```
 * Optionally copy-in job files in `jobname.nomad` filenaming convention to /root/nomadjobs, repeat for multiple files
   ```sudo pot -p <clonejailname> copy-in -s /root/nomadjobs/jobname.nomad -d /root/nomadjobs/jobname.nomad```
-* Adjust to your environment:    
+* Adjust to your environment:
   ```sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E REGION=<identifier like east, west, global> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY="<32 byte Base64 key from consul keygen>"] [-E NOMADKEY="<16 byte or 32 byte key from nomad operator keygen>"] [ -E REMOTELOG="<IP syslog-ng server>" -E IMPORTJOBS=1 ]```
 
 The DATACENTER parameter is the name of the datacenter. The REGION parameter is to set "east" or "west" or "global" (default).

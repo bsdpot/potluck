@@ -32,8 +32,6 @@ sep=$'\001'
 # set optional parameter for message size limits
 if [ -z "$POSTSIZELIMIT" ]; then
   POSTSIZELIMIT=536870912
-else
-  POSTSIZELIMIT="$POSTSIZELIMIT"
 fi
 
 # %%datadirectory%%
@@ -137,8 +135,7 @@ sysrc sendmail_msp_queue_enable="NO"
 service postfix enable
 
 # enable rootmail alias
-if [ ! -z "$ROOTMAIL" ]; then
-    ROOTMAIL="$ROOTMAIL"
+if [ -n "$ROOTMAIL" ]; then
     if [ -f /etc/aliases ]; then
         echo "root: $ROOTMAIL" >> /etc/aliases
         /usr/bin/newaliases

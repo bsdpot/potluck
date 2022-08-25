@@ -34,7 +34,7 @@ When you first run the image you'll need to setup Nextcloud via the web interfac
 
 Make sure to specify `/mnt/filestore` or similar for DATADIR parameter (-d) in the web interface for Nextcloud setup too by clicking the dropdown for database and storage.
 
-If you have S3 object storage with a self-signed certificate, set the SELFSIGNHOST parameter to ```ip:port``` or pass with with ```-s ip:port```. 
+If you have S3 object storage with a self-signed certificate, set the SELFSIGNHOST parameter to ```ip:port``` or pass with with ```-s ip:port```.
 
 ## Custom Nextcloud config.php
 If you wish to make use of object storage for file backing you will need to copy-in a custom `nextcloud` config.php to `/root/nc-config.php`. A sample would look like the following, however please pull your source file from a working instance and include the relevant S3 parameters:
@@ -42,15 +42,15 @@ If you wish to make use of object storage for file backing you will need to copy
 ```
 <?php
 $CONFIG = array (
-  'apps_paths' => 
+  'apps_paths' =>
   array (
-    0 => 
+    0 =>
     array (
       'path' => '/usr/local/www/nextcloud/apps',
       'url' => '/apps',
       'writable' => true,
     ),
-    1 => 
+    1 =>
     array (
       'path' => '/usr/local/www/nextcloud/apps-pkg',
       'url' => '/apps-pkg',
@@ -62,7 +62,7 @@ $CONFIG = array (
   'instanceid' => 'REDACTED',
   'passwordsalt' => '+REDACTED',
   'secret' => 'REDACTED',
-  'trusted_domains' => 
+  'trusted_domains' =>
   array (
     0 => '10.0.0.2:20900',
     1 => 'my.host.name',
@@ -113,7 +113,7 @@ job "nextcloud" {
   type        = "service"
 
   group "group1" {
-    count = 1 
+    count = 1
 
     network {
       port "http" {
@@ -124,9 +124,9 @@ job "nextcloud" {
     task "nextcloud1" {
       driver = "pot"
 
-      restart {      
-        attempts = 3      
-        delay    = "30s"    
+      restart {
+        attempts = 3
+        delay    = "30s"
       }
 
       service {

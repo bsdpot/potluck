@@ -1,6 +1,6 @@
 ---
 author: "Bretton Vine"
-title: Beast of Argh 
+title: Beast of Argh
 summary: Beast of Argh is a single pot image with Prometheus, Alertmanager, Loki, Promtail, Grafana and dashboards, plus syslog server, for monitoring and alerting of small environments.
 tags: ["monitoring", "alerting", "logs", "syslog", "prometheus", "alertmanager", "loki", "promtail", "grafana"]
 ---
@@ -17,13 +17,13 @@ The flavour includes a local ```consul``` agent instance to be available that it
 
 * Create a ZFS data set on the parent system beforehand
   ```zfs create -o mountpoint=/mnt/beastdata zroot/beastdata```
-* Create your local jail from the image or the flavour files. 
+* Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/beastdata```
-* Optionally export the ports after creating the jail:     
+* Optionally export the ports after creating the jail:
   ```pot export-ports -p <jailname> -e 3100:3100 -e 3000:3000```
-* Adjust to your environment:    
+* Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> \
     -E DATACENTER=<datacentername> \
@@ -43,7 +43,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
   ```
 
 ## Required Paramaters
-The DATACENTER parameter defines a common datacenter. 
+The DATACENTER parameter defines a common datacenter.
 
 The NODENAME parameter defines the name of this node.
 
@@ -69,7 +69,7 @@ The ALERTADDRESS parameter is the destination address for alerts.
 
 ## Optional Parameters
 
-The SMTPUSER and SMTPPASS parameters are credentials for smtp auth. 
+The SMTPUSER and SMTPPASS parameters are credentials for smtp auth.
 
 # Loki Explanation
 
@@ -93,7 +93,7 @@ This is a very broad and blunt approach, where ```syslog-ng``` may be a preferre
 
 ## 4. Grafana with "search logs" dashboard
 
-```grafana``` is a viewer for the data in the ```loki``` data source. A separate ```grafana``` flavour must be configured with ```loki``` as a data source to view captured logs. 
+```grafana``` is a viewer for the data in the ```loki``` data source. A separate ```grafana``` flavour must be configured with ```loki``` as a data source to view captured logs.
 
 # Usage
 

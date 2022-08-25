@@ -19,6 +19,7 @@ RUNS_IN_NOMAD=true
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 touch /etc/rc.conf
 service sendmail onedisable
+# shellcheck disable=SC2015
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
@@ -156,22 +157,23 @@ chmod u+x /usr/local/bin/cook
 # we do not need to do anything here.
 
 # Create rc.d script for "normal" mode:
-echo "#!/bin/sh
+# shellcheck disable=SC2016
+echo '#!/bin/sh
 #
 # PROVIDE: cook
 # REQUIRE: LOGIN
 # KEYWORD: shutdown
 #
 . /etc/rc.subr
-name=cook
-rcvar=cook_enable
+name="cook"
+rcvar="cook_enable"
 load_rc_config $name
-: ${cook_enable:=\"NO\"}
-: ${cook_env:=\"\"}
-command=\"/usr/local/bin/cook\"
-command_args=\"\"
-run_rc_command \"\$1\"
-" > /usr/local/etc/rc.d/cook
+: ${cook_enable:="NO"}
+: ${cook_env:=""}
+command="/usr/local/bin/cook"
+command_args=""
+run_rc_command "$1"
+' > /usr/local/etc/rc.d/cook
 
 chmod u+x /usr/local/etc/rc.d/cook
 

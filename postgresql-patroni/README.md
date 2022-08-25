@@ -25,7 +25,7 @@ It is dependent on a `consul` server/cluster for the DCS store.
   `pot copy-in -p <jailname> -s /root/sshkey -d /root/sshkey`
 * Optionally export the ports after creating the jail:
   `pot export-ports -p <jailname> -e 5432:5432`
-* Adjust to your environment:    
+* Adjust to your environment:
 
       sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> \
         -E NODENAME=<nodename> -E IP=<IP address of this node> \
