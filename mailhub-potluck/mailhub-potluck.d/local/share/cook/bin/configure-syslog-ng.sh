@@ -21,14 +21,8 @@ config_version=$(/usr/local/sbin/syslog-ng --version | \
   grep "^Config version:" | awk -F: '{ print $2 }' | xargs)
 < "$TEMPLATEPATH/syslog-ng.conf.in" \
   sed "s${sep}%%config_version%%${sep}$config_version${sep}g" | \
-  sed "s${sep}%%myip%%${sep}$IP${sep}g" \
+  sed "s${sep}%%remotelogip%%${sep}$REMOTELOG${sep}g" \
   > /usr/local/etc/syslog-ng.conf
-
-# create remote log dir, redundant step
-mkdir -p /mnt/logs/remote
-
-# make the disk buffer directory
-mkdir -p /mnt/logs/syslog-ng-disk-buffer
 
 # stop and disable syslogd
 service syslogd onestop || true

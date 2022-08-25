@@ -1,4 +1,5 @@
-@version: %%config_version%%
+# this file left as sample
+@version: "%%config_version%%"
 @include "scl.conf"
 
 # options
@@ -10,7 +11,7 @@ options {
  keep_hostname(no);
  flush_lines(0);
  threaded(yes);
- log-fifo-size(40000);
+ log-fifo-size(2000);
  stats_freq(0);
  time_reopen(120);
  ts_format(iso);
@@ -20,22 +21,6 @@ options {
 source src {
  system();
  internal();
-};
-
-# network sources
-# for every 100 max connections, add 10000 log-fifo-size to destination,
-# plus 10000 for local # so 300 max connections is (30000+10000) or
-# log-fifo-size of 40000
-# https://www.syslog-ng.com/technical-documents/doc/\
-# syslog-ng-open-source-edition/3.19/administration-guide/53
-source mynetwork {
- tcp(
-  ip(0.0.0.0)
-  port(514)
-  max-connections(300)
-  log-iw-size(30000)
-  so_keepalive(yes)
- );
 };
 
 # destinations
@@ -52,25 +37,22 @@ destination all { file("/var/log/all.log"); };
 destination newscrit { file("/var/log/news/news.crit"); };
 destination newserr { file("/var/log/news/news.err"); };
 destination newsnotice { file("/var/log/news/news.notice"); };
+destination slip { file("/var/log/slip.log"); };
 destination ppp { file("/var/log/ppp.log"); };
 #destination console { file("/dev/console"); };
 destination allusers { usertty("*"); };
 # pot settings
-destination lokilogs { file("/mnt/logs/remote/$HOST.log"); };
 destination loghost {
-  tcp("%%myip%%" port(514)
- );
-};
-
-destination lokisyslog {
-  syslog("127.0.0.1" transport("tcp") port(1514)
+  tcp(
+    "%%remotelogip%%"
+    port(514)
     disk-buffer(
-      mem-buf-size(536870912)    # 512MiB
-      disk-buf-size(10737418240) # 10GiB
+      mem-buf-size(134217728)   # 128MiB
+      disk-buf-size(2147483648) # 2GiB
       reliable(yes)
-      dir("/mnt/logs/syslog-ng-disk-buffer")
+      dir("/var/log/syslog-ng-disk-buffer")
     )
- );
+  );
 };
 
 # log facility filters
@@ -161,8 +143,13 @@ log { source(src); filter(f_is_debug); destination(debuglog); };
 # *.emerg                       *
 log { source(src); filter(f_emerg); destination(allusers); };
 
+# !ppp
+# *.*                           /var/log/ppp.log
+log { source(src); filter(f_ppp); destination(ppp); };
+
 # uncomment this to enable logging to a remote loghost named loghost
 # *.*                           @loghost
+# turning flow control off
 #log {
 # source(src);
 # filter(f_all);
@@ -170,11 +157,3 @@ log { source(src); filter(f_emerg); destination(allusers); };
 # flags(flow-control);
 #};
 log { source(src); filter(f_all); destination(loghost); };
-
-# !ppp
-# *.*                           /var/log/ppp.log
-log { source(src); filter(f_ppp); destination(ppp); };
-
-# pot config
-# log network logs to lokilogs
-log { source(mynetwork); destination(lokilogs); destination(lokisyslog); };

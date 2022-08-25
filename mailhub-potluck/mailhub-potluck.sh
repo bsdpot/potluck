@@ -86,23 +86,6 @@ service sshd onedisable || true
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
-# we need consul for consul agent
-step "Install package consul"
-pkg install -y consul
-
-step "Install package consul-template"
-pkg install -y consul-template
-
-step "Patching consul-template rc scripts"
-sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
-'extra_commands=reload/'  /usr/local/etc/rc.d/consul-template || true
-
-step "Install package openssl"
-pkg install -y openssl
-
-step "Install package node_exporter"
-pkg install -y node_exporter
-
 step "Install package sudo"
 pkg install -y sudo
 
@@ -115,44 +98,235 @@ pkg install -y jq
 step "Install package jo"
 pkg install -y jo
 
-step "Install package nginx"
-pkg install -y nginx
+step "Install package nano"
+pkg install -y nano
 
-step "Install package vault"
-pkg install -y vault
+step "Install package bash"
+pkg install -y bash
+
+step "Install package rsync"
+pkg install -y rsync
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
+# ------------- MAILHUB PACKAGES ---------------
+
+step "Install package perl5"
+pkg install -y perl5
+
+step "Install package p5-Encode-Detect"
+pkg install -y p5-Encode-Detect
+
+step "Install package p5-HTML-Parser"
+pkg install -y p5-HTML-Parser
+
+step "Install package p5-HTTP-Date"
+pkg install -y p5-HTTP-Date
+
+step "Install package p5-Net-DNS"
+pkg install -y p5-Net-DNS
+
+step "Install package p5-NetAddr-IP"
+pkg install -y p5-NetAddr-IP
+
+step "Install package p5-Net-CIDR-Lite"
+pkg install -y p5-Net-CIDR-Lite
+
+step "Install package p5-Net-IDN-Encode"
+pkg install -y p5-Net-IDN-Encode
+
+step "Install package p5-Net-LibIDN"
+pkg install -y p5-Net-LibIDN
+
+step "Install package p5-URI"
+pkg install -y p5-URI
+
+step "Install package p5-IO-Socket-SSL"
+pkg install -y p5-IO-Socket-SSL
+
+step "Install package p5-Mail-DKIM"
+pkg install -y p5-Mail-DKIM
+
+step "Install package p5-Crypt-OpenSSL-RSA"
+pkg install -y p5-Crypt-OpenSSL-RSA
+
+step "Install package p5-Mail-SPF"
+pkg install -y p5-Mail-SPF
+
+step "Install package p5-IO-Socket-SSL"
+pkg install -y p5-IO-Socket-SSL
+
+step "Install package re2c"
+pkg install -y re2c
+
+step "Install package gnupg1"
+pkg install -y gnupg1
+
+step "Install package postfix-ldap"
+pkg install -y postfix-ldap
+
+step "Install package pkgconf"
+pkg install -y pkgconf
+
+step "Install package zstd"
+pkg install -y zstd
+
+step "Install package python39"
+pkg install -y python39
+
+step "Install package acme.sh"
+pkg install -y acme.sh
+
+step "Install package clamav"
+pkg install -y clamav
+
+step "Install package opendkim"
+pkg install -y opendkim
+
+step "Install package opendmarc"
+pkg install -y opendmarc
+
+step "Install package mail/py-spf-engine"
+pkg install -y mail/py-spf-engine
+
+step "Install package openldap24-client"
+pkg install -y openldap24-client
+
+step "Install package consul"
+pkg install -y consul
+
+step "Install package node_exporter"
+pkg install -y node_exporter
+
+# ---------------- SETUP PORTS -----------------
+
+step "Install package git-lite"
+pkg install -y git-lite
+
+step "Install package go"
+pkg install -y go
+
+step "Add openssl and ldap settings to make.conf"
+echo "BATCH=yes" > /etc/make.conf
+echo "DEFAULT_VERSIONS+=ssl=openssl" >> /etc/make.conf
+echo "OPTIONS_SET+= GSSAPI_NONE LDAP MYSQL RAZOR" >> /etc/make.conf
+
+step "Make directory /usr/ports"
+mkdir -p /usr/ports
+
+step "Init packages git branch main"
+cd /usr/ports
+git init -b main
+
+step "Add packages remote origin"
+git remote add origin https://git.freebsd.org/ports.git
+
+step "Git sparse checkout init"
+git sparse-checkout init
+
+step "Checkout ports and supporting files"
+git sparse-checkout set GIDs UIDs \
+  Mk/ \
+  Templates/ \
+  Keywords/ \
+  lang/perl5.32/ \
+  security/openssl/ \
+  archivers/zstd \
+  mail/dovecot/ \
+  mail/dovecot-pigeonhole/ \
+  mail/spamassassin/ \
+  lang/python39/ \
+  ports-mgmt/pkg/ \
+  converters/p5-Encode-Detect/ \
+  converters/libiconv/ \
+  www/p5-HTML-Parser/ \
+  www/p5-HTTP-Date/ \
+  dns/p5-Net-DNS/ \
+  net-mgmt/p5-NetAddr-IP/ \
+  net/p5-Net-CIDR-Lite/ \
+  textproc/p5-Net-IDN-Encode/ \
+  dns/p5-Net-LibIDN/ \
+  net/p5-URI/ \
+  devel/re2c/ \
+  devel/pkgconf \
+  security/p5-IO-Socket-SSL/ \
+  mail/p5-Mail-DKIM/ \
+  security/p5-Crypt-OpenSSL-RSA/ \
+  security/gnupg1/ \
+  mail/p5-Mail-SPF/ \
+  mail/dcc-dccd/ \
+  databases/p5-DBD-mysql/ \
+  databases/p5-DBD-Pg/ \
+  mail/pyzor/ \
+  mail/razor-agents/ \
+  security/p5-Digest-SHA1/ \
+  net/p5-GeoIP2/ \
+  net/p5-IP-Country/ \
+  net/openldap24-client \
+  net/openldap24-server \
+  devel/p5-BSD-Resource/
+
+# checkout quarterly branch instead
+# https://wiki.freebsd.org/Ports/QuarterlyBranch
+#  "Branches are named according to the year (YYYY)
+#   and quarter (Q1-4) they are created in.
+#   For example, the quarterly branch created in
+#   January 2016, is named 2016Q1."
+# Quarterly in July 2022 is 2022Q3
+step "Pull files"
+#git pull --depth=1 origin main
+git pull --depth=1 origin 2022Q3
+
+#step "Port build openssl, remove existing, replace with this port"
+##required for latest / main branch
+#cd /usr/ports/security/openssl/
+#make clean BATCH=1
+#make deinstall BATCH=1
+#make reinstall BATCH=1
+
+# If openssl port installed, then can build dovecot without giving the error:
+#   make: /usr/ports/Mk/Uses/ssl.mk line 95: You are using an unsupported SSL provider openssl
+step "Port build dovecot"
+cd /usr/ports/mail/dovecot/
+make install clean LDAP=ON BATCH=YES
+cp -R /usr/local/etc/dovecot/example-config/* /usr/local/etc/dovecot
+
+step "Port build dovecot-pigeonhole"
+cd /usr/ports/mail/dovecot-pigeonhole/
+make install clean LDAP=ON BATCH=YES
+
+step "Port build spamassassin"
+cd /usr/ports/mail/spamassassin/
+make reinstall MYSQL=ON RAZOR=ON BATCH=YES
+
+step "Change directory to /root"
+cd /root
+
+step "Remove /usr/ports"
+rm -rf /usr/ports
+
+# --------------- CLEAN PACKAGES ---------------
+
+step "Package autoremove"
+pkg autoremove -y
+
 step "Clean package installation"
 pkg clean -y
 
-# last updated 2022-07-20
-step "Download loki release from github"
-fetch -qo - https://github.com/grafana/loki/releases/download/\
-v2.6.1/loki-freebsd-amd64.zip | unzip -p - loki-freebsd-amd64 \
-  >/usr/local/bin/loki
-chmod 755 /usr/local/bin/loki
-
-if [ "$(sha256 -q /usr/local/bin/loki)" != \
-  "ece8b6d91fcf9a3b0cae6f828988c23cb077e17662fff4e5e0066570d29aa3d5" ]; then
-  exit_error "/usr/local/bin/loki checksum mismatch!"
-fi
-
-# last updated 2022-07-20
-step "Download promtail release from github"
-fetch -qo - https://github.com/grafana/loki/releases/download/\
-v2.6.1/promtail-freebsd-amd64.zip | unzip -p - promtail-freebsd-amd64 \
-  >/usr/local/bin/promtail
-chmod 755 /usr/local/bin/promtail
-
-if [ "$(sha256 -q /usr/local/bin/promtail)" != \
-  "7aa244fb3d0f8dba8b9edff7536fa55be2300bee7c63b0b003ac1a8f7d99ab9d" ]; then
-  exit_error "/usr/local/bin/promtail checksum mismatch!"
-fi
-
 # -------------- END PACKAGE SETUP -------------
 
+
+# ------------- DIRECTORY CREATION -------------
+
+# make necessary directories
+mkdir -p /mnt/postfix
+mkdir -p /mnt/acme
+mkdir -p /mnt/spamassassin
+mkdir -p /mnt/dovecot
+mkdir -p /mnt/opendkim
+mkdir -p /mnt/opendmarc
+mkdir -p /root/bin
 
 #
 # Now generate the run command script "cook"
@@ -162,7 +336,6 @@ fi
 
 # this runs when image boots
 # ----------------- BEGIN COOK ------------------
-
 
 step "Clean cook artifacts"
 rm -rf /usr/local/bin/cook /usr/local/share/cook

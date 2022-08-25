@@ -1,3 +1,18 @@
+0.0.19
+
+* Add support for json logs, nginx, others
+* Create /var/log/syslog-ng-disk-buffer/
+* loki and promtail upgrade from 2.2.1 to 2.6.1 with adjusted config files
+* Added a better all-in-one loki logs dashboard
+
+---
+
+0.0.18
+
+* Added updated mysql dashboard to grafana default dashboards
+
+---
+
 0.0.17
 
 * Added mysql dashboard to grafana default dashboards

@@ -68,6 +68,8 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
       /mnt/grafana/provisioning/dashboards/home.json
     cp "$TEMPLATEPATH/homelogs.json.in" \
       /mnt/grafana/provisioning/dashboards/homelogs.json
+    cp "$TEMPLATEPATH/newhomelogs.json.in" \
+      /mnt/grafana/provisioning/dashboards/newhomelogs.json
     cp "$TEMPLATEPATH/vault.json.in" \
       /mnt/grafana/provisioning/dashboards/vault.json
     cp "$TEMPLATEPATH/nomadcluster.json.in" \
@@ -121,6 +123,8 @@ else
       /mnt/grafana/provisioning/dashboards/home.json
     cp "$TEMPLATEPATH/homelogs.json.in" \
       /mnt/grafana/provisioning/dashboards/homelogs.json
+    cp "$TEMPLATEPATH/newhomelogs.json.in" \
+      /mnt/grafana/provisioning/dashboards/newhomelogs.json
     cp "$TEMPLATEPATH/vault.json.in" \
       /mnt/grafana/provisioning/dashboards/vault.json
     cp "$TEMPLATEPATH/nomadcluster.json.in" \

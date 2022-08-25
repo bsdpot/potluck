@@ -99,10 +99,6 @@ pkg install -y git
 step "Install package openjdk8"
 pkg install -y openjdk11
 
-# not known if needed yet
-#step "Install package tomcat9"
-#pkg install -y tomcat9
-
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
