@@ -1,3 +1,10 @@
+0.0.12
+
+* Version bump to test 13.1 layered images
+* php74(-*) becomes php82(-*)
+
+---
+
 0.0.11
 
 * Version bump
