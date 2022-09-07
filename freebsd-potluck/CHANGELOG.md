@@ -1,3 +1,9 @@
+0.0.2
+
+* Update for FreeBSD-13.1 base image
+
+---
+
 0.0.1
 
 * This is a bare image intended to be used as a base image for layered pot images
