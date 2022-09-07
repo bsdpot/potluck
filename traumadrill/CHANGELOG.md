@@ -1,3 +1,9 @@
+0.0.13
+
+* php-json is now part of core php so removing broken pkg
+
+---
+
 0.0.12
 
 * Version bump to test 13.1 layered images

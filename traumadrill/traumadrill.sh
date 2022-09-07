@@ -121,7 +121,7 @@ step "Install package nginx"
 pkg install -y nginx
 
 step "Install package php82 and related"
-pkg install -y php82 php82-mbstring php82-zlib php82-curl php82-gd php82-json
+pkg install -y php82 php82-mbstring php82-zlib php82-curl php82-gd
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng
