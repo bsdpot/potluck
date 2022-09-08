@@ -110,11 +110,11 @@ pkg install -y openssl
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
-step "Install package py38-salt"
-pkg install -y py38-salt
+step "Install package py39-salt"
+pkg install -y py39-salt
 
-step "Install py38-pip"
-pkg install -y py38-pip
+step "Install py39-pip"
+pkg install -y py39-pip
 
 step "Install package git-lite"
 pkg install -y git-lite
