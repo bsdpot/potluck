@@ -1,3 +1,9 @@
+2.0.19
+
+* Version bump for FreeBSD-13.1
+
+---
+
 2.0.18
 
 * Switching to syslog-ng
