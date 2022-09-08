@@ -121,8 +121,8 @@ step "Enable apache24 in /etc/rc.conf"
 #sysrc apache24_enable="yes"
 service apache24 enable
 
-step "Install package php74"
-pkg install -y mod_php74
+step "Install package mod_php82"
+pkg install -y mod_php82
 
 step "Clean package installation"
 pkg clean -y

@@ -1,3 +1,9 @@
+1.2.6
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 1.2.5
 
 * Added syslog-ng and remote logging
