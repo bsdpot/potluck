@@ -1,10 +1,15 @@
+2.0.15
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 2.0.14
 
 * Fix /var/tmp/nomad issue
 * Add parameter to set regions
 
 ---
-
 
 2.0.13
 
