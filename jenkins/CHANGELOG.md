@@ -1,3 +1,9 @@
+0.0.15
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 0.0.14
 
 * Version bump to rebuild
