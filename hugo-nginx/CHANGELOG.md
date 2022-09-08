@@ -1,3 +1,9 @@
+0.0.19
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 0.0.18
 
 * Adding customdir to gitignore and other tweaks
