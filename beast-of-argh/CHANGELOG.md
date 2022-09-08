@@ -1,3 +1,10 @@
+0.0.20
+
+* Version bump to build for FreeBSD-13.1
+* Various formatting adjustments in earlier git PR but not version-bumped
+
+---
+
 0.0.19
 
 * Add support for json logs, nginx, others
