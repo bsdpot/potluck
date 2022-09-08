@@ -1,3 +1,9 @@
+2.0.5
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 2.0.4
 
 * Need additional permissions for exporter user of mysqld_exporter to avoid errors filling up logs
