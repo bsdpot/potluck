@@ -1,3 +1,9 @@
+0.0.27
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 0.0.26
 
 * Left out LDAP option, adjusting format for make.conf
