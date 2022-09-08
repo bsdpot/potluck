@@ -1,3 +1,9 @@
+1.3.0
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 1.2.9
 
 * Switch to syslog-ng. Include traefik logs in syslog-ng. Update to modern base script.
