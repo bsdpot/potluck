@@ -1,3 +1,13 @@
+0.25
+
+* Version bump for FreeBSD-13.1 image
+* php74-* to php82-*
+* no more php82-openssl, possibly in php core
+* no more php82-json, in php core
+* ImageMagick7-nox11 instead of ImageMagick6-nox11
+
+---
+
 0.24
 
 * Replacing package ImageMagick7 with ImageMagick6-nox11

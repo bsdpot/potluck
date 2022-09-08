@@ -153,125 +153,123 @@ pkg install -y webp
 step "Install package pkgconf"
 pkg install -y pkgconf
 
-step "Install package php74"
-pkg install -y php74
+step "Install package php82"
+pkg install -y php82
 
-step "Install package php74-extensions"
-pkg install -y php74-extensions
+step "Install package php82-extensions"
+pkg install -y php82-extensions
 
-step "Install package php74-bcmath"
-pkg install -y php74-bcmath
+step "Install package php82-bcmath"
+pkg install -y php82-bcmath
 
-step "Install package php74-bz2"
-pkg install -y php74-bz2
+step "Install package php82-bz2"
+pkg install -y php82-bz2
 
-step "Install package php74-ctype"
-pkg install -y php74-ctype
+step "Install package php82-ctype"
+pkg install -y php82-ctype
 
-step "Install package php74-curl"
-pkg install -y php74-curl
+step "Install package php82-curl"
+pkg install -y php82-curl
 
-step "Install package php74-dom"
-pkg install -y php74-dom
+step "Install package php82-dom"
+pkg install -y php82-dom
 
-step "Install package php74-exif"
-pkg install -y php74-exif
+step "Install package php82-exif"
+pkg install -y php82-exif
 
-step "Install package php74-fileinfo"
-pkg install -y php74-fileinfo
+step "Install package php82-fileinfo"
+pkg install -y php82-fileinfo
 
-step "Install package php74-filter"
-pkg install -y php74-filter
+step "Install package php82-filter"
+pkg install -y php82-filter
 
-step "Install package php74-ftp"
-pkg install -y php74-ftp
+step "Install package php82-ftp"
+pkg install -y php82-ftp
 
-step "Install package php74-gd"
-pkg install -y php74-gd
+step "Install package php82-gd"
+pkg install -y php82-gd
 
-step "Install package php74-gmp"
-pkg install -y php74-gmp
+step "Install package php82-gmp"
+pkg install -y php82-gmp
 
-step "Install package php74-iconv"
-pkg install -y php74-iconv
+step "Install package php82-iconv"
+pkg install -y php82-iconv
 
-step "Install package php74-imap"
-pkg install -y php74-imap
+step "Install package php82-imap"
+pkg install -y php82-imap
 
-step "Install package php74-intl"
-pkg install -y php74-intl
+step "Install package php82-intl"
+pkg install -y php82-intl
 
-step "Install package php74-json"
-pkg install -y php74-json
+step "Install package php82-ldap"
+pkg install -y php82-ldap
 
-step "Install package php74-ldap"
-pkg install -y php74-ldap
+step "Install package php82-mysqli"
+pkg install -y php82-mysqli
 
-step "Install package php74-mysqli"
-pkg install -y php74-mysqli
+step "Install package php82-mbstring"
+pkg install -y php82-mbstring
 
-step "Install package php74-mbstring"
-pkg install -y php74-mbstring
+step "Install package php82-opcache"
+pkg install -y php82-opcache
 
-step "Install package php74-opcache"
-pkg install -y php74-opcache
+# doesn't exist, ssl may be integrated in core
+#step "Install package php82-openssl"
+#pkg install -y php82-openssl
 
-step "Install package php74-openssl"
-pkg install -y php74-openssl
+step "Install package php82-pcntl"
+pkg install -y php82-pcntl
 
-step "Install package php74-pcntl"
-pkg install -y php74-pcntl
+step "Install package php82-pdo"
+pkg install -y php82-pdo
 
-step "Install package php74-pdo"
-pkg install -y php74-pdo
+step "Install package php82-pdo_mysql"
+pkg install -y php82-pdo_mysql
 
-step "Install package php74-pdo_mysql"
-pkg install -y php74-pdo_mysql
+step "Install package php82-pecl-APCu"
+pkg install -y php82-pecl-APCu
 
-step "Install package php74-pecl-APCu"
-pkg install -y php74-pecl-APCu
+step "Install package php82-pecl-memcached"
+pkg install -y php82-pecl-memcached
 
-step "Install package php74-pecl-memcached"
-pkg install -y php74-pecl-memcached
+step "Install package php82-pecl-redis"
+pkg install -y php82-pecl-redis
 
-step "Install package php74-pecl-redis"
-pkg install -y php74-pecl-redis
+step "Install package php82-pecl-imagick"
+pkg install -y php82-pecl-imagick
 
-step "Install package php74-pecl-imagick"
-pkg install -y php74-pecl-imagick
+step "Install package php82-phar"
+pkg install -y php82-phar
 
-step "Install package php74-phar"
-pkg install -y php74-phar
+step "Install package php82-posix"
+pkg install -y php82-posix
 
-step "Install package php74-posix"
-pkg install -y php74-posix
+step "Install package php82-session"
+pkg install -y php82-session
 
-step "Install package php74-session"
-pkg install -y php74-session
+step "Install package php82-simplexml"
+pkg install -y php82-simplexml
 
-step "Install package php74-simplexml"
-pkg install -y php74-simplexml
+step "Install package php82-xml"
+pkg install -y php82-xml
 
-step "Install package php74-xml"
-pkg install -y php74-xml
+step "Install package php82-xmlreader"
+pkg install -y php82-xmlreader
 
-step "Install package php74-xmlreader"
-pkg install -y php74-xmlreader
+step "Install package php82-xmlwriter"
+pkg install -y php82-xmlwriter
 
-step "Install package php74-xmlwriter"
-pkg install -y php74-xmlwriter
+step "Install package php82-xsl"
+pkg install -y php82-xsl
 
-step "Install package php74-xsl"
-pkg install -y php74-xsl
+step "Install package php82-zip"
+pkg install -y php82-zip
 
-step "Install package php74-zip"
-pkg install -y php74-zip
+step "Install package php82-zlib"
+pkg install -y php82-zlib
 
-step "Install package php74-zlib"
-pkg install -y php74-zlib
-
-step "Install package ImageMagick6-nox11"
-pkg install -y ImageMagick6-nox11
+step "Install package ImageMagick7-nox11"
+pkg install -y ImageMagick7-nox11
 
 step "Install package libheif"
 pkg install -y libheif
@@ -386,11 +384,11 @@ fi
 # we do not install/overwrite anything as we assume that updates/modifications are happening
 # from within Nextcloud.
 if [ ! -e /usr/local/www/nextcloud/status.php ]; then
-    pkg install -y nextcloud-php74 nextcloud-twofactor_totp-php74 nextcloud-deck-php74 nextcloud-mail-php74 nextcloud-contacts-php74 nextcloud-calendar-php74 nextcloud-end_to_end_encryption-php74
+    pkg install -y nextcloud-php82 nextcloud-twofactor_totp-php82 nextcloud-deck-php82 nextcloud-mail-php82 nextcloud-contacts-php82 nextcloud-calendar-php82 nextcloud-end_to_end_encryption-php82
 fi
 
 # Configure PHP FPM
-sed -i .orig 's|listen = 127.0.0.1:9000|listen = /var/run/php74-fpm.sock|g' /usr/local/etc/php-fpm.d/www.conf
+sed -i .orig 's|listen = 127.0.0.1:9000|listen = /var/run/php82-fpm.sock|g' /usr/local/etc/php-fpm.d/www.conf
 sed -i .orig 's|pm.max_children = 5|pm.max_children = 10|g' /usr/local/etc/php-fpm.d/www.conf
 echo \";Nomad Nextcloud settings...\" >> /usr/local/etc/php-fpm.d/www.conf
 echo \"listen.owner = www\" >> /usr/local/etc/php-fpm.d/www.conf
