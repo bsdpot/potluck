@@ -97,10 +97,10 @@ step "Install package curl"
 pkg install -y curl
 
 step "Install package matrix server"
-pkg install -y py38-matrix-synapse
+pkg install -y py39-matrix-synapse
 
 step "Install package matrix ldap support"
-pkg install -y py38-matrix-synapse-ldap3
+pkg install -y py39-matrix-synapse-ldap3
 
 step "Install package acme.sh"
 pkg install -y acme.sh
@@ -289,7 +289,7 @@ if [ -f /root/my.log.config ]; then
 fi
 
 # generate basic setup
-/usr/local/bin/python3.8 -B -m synapse.app.homeserver -c /usr/local/etc/matrix-synapse/homeserver.yaml --generate-config -H \${DOMAIN} --report-stats no
+/usr/local/bin/python3.9 -B -m synapse.app.homeserver -c /usr/local/etc/matrix-synapse/homeserver.yaml --generate-config -H \${DOMAIN} --report-stats no
 
 mv /usr/local/etc/matrix-synapse/homeserver.yaml /usr/local/etc/matrix-synapse/homeserver.yaml.generated
 

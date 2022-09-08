@@ -1,3 +1,10 @@
+1.0.20
+
+* Version bump for FreeBSD-13.1 image
+* python38-* to python39-*
+
+---
+
 1.0.19
 
 * Added syslog-ng and remote logging
