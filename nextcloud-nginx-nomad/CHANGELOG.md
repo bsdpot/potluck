@@ -1,3 +1,10 @@
+0.26
+
+* Setting cron job to every 15mins because no checks if existing job running
+* revert to ImageMagick6-nox11 for testing
+
+---
+
 0.25
 
 * Version bump for FreeBSD-13.1 image

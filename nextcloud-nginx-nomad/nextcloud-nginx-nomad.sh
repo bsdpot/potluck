@@ -268,8 +268,8 @@ pkg install -y php82-zip
 step "Install package php82-zlib"
 pkg install -y php82-zlib
 
-step "Install package ImageMagick7-nox11"
-pkg install -y ImageMagick7-nox11
+step "Install package ImageMagick6-nox11"
+pkg install -y ImageMagick6-nox11
 
 step "Install package libheif"
 pkg install -y libheif
@@ -486,7 +486,7 @@ timeout --foreground 120 \
   done'
 
 # setup cronjob
-echo \"*/5  *  *  *  *  www  /usr/local/bin/php -f /usr/local/www/nextcloud/cron.php\" >> /etc/crontab
+echo \"*/15  *  *  *  *  www  /usr/local/bin/php -f /usr/local/www/nextcloud/cron.php\" >> /etc/crontab
 
 # Do not touch this:
 touch /usr/local/etc/pot-is-seasoned
