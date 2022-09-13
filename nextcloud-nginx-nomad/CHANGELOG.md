@@ -1,7 +1,16 @@
+0.28
+
+* Missing 'then' in if statement
+* Fixed CHANGELOG versioning
+
+---
+
 0.27
 
 * Revert to php74-* and next update do the php82 change
 * Remove syslogd, replace with syslog-ng
+
+---
 
 0.26
 

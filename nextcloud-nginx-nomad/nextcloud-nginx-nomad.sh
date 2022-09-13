@@ -391,7 +391,7 @@ fi
 # setup syslog-ng if remotelog var exists and isn't none
 # this needs some attention when moving to new image format, version 3.37 is hardcoded here
 if [ -n \"\${REMOTELOG}\" ]; then
-    if [ -f /root/syslog-ng.conf ];
+    if [ -f /root/syslog-ng.conf ]; then
         < /root/syslog-ng.conf \
            sed \"s|%%config_version%%|3.37|g\" | \
            sed \"s|%%remotelogip%%|\$REMOTELOG|g\" \
