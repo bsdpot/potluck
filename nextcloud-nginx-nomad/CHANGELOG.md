@@ -1,3 +1,8 @@
+0.27
+
+* Revert to php74-* and next update do the php82 change
+* Remove syslogd, replace with syslog-ng
+
 0.26
 
 * Setting cron job to every 15mins because no checks if existing job running
