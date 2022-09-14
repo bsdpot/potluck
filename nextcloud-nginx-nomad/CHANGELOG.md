@@ -1,3 +1,10 @@
+0.30
+
+* Nginx improvements for proxy and fastcgi timeouts
+* Adjust php-fpm and nginx start again, restart loops with failure for nginx
+
+---
+
 0.29
 
 * Trial with php80

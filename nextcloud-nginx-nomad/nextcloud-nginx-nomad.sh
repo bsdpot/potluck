@@ -499,19 +499,20 @@ killall -9 nginx || true
 # trying pkill instead
 pkill nginx || true
 #kill -9 \$(/bin/pgrep nginx)
+pkill php-fpm || true
 
 # restart services
 
-#service php-fpm restart
+#start php-fpm
 timeout --foreground 120 \
   sh -c 'while ! service php-fpm status; do
-    service php-fpm restart || true; sleep 5;
+    service php-fpm start || true; sleep 5;
   done'
 
-#service nginx restart
+#start nginx
 timeout --foreground 120 \
   sh -c 'while ! service nginx status; do
-    service nginx restart || true; sleep 5;
+    service nginx start || true; sleep 5;
   done'
 
 # setup cronjob
