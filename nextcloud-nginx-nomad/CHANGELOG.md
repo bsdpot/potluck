@@ -1,3 +1,12 @@
+0.29
+
+* Trial with php80
+* Fixed README for job file version and FreeBSD version
+* Using pkill to stop nginx and replace a kill pgrep pipe
+* Adjusting start process for php-fpm and nginx to use restart
+
+---
+
 0.28
 
 * Missing 'then' in if statement
