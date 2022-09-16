@@ -1,3 +1,9 @@
+0.31
+
+* Version bump to build a non-layered image
+
+---
+
 0.30
 
 * Nginx improvements for proxy and fastcgi timeouts
