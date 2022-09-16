@@ -6,9 +6,10 @@ pot_seasoned_exit() {
     [ ! -e /usr/local/etc/pot-is-seasoned ] && \
       touch /usr/local/etc/pot-is-seasoned
     # If this pot flavour is blocking (i.e. it should not return), there is
-    # no /tmp/environment.sh created by pot and we now after configuration
+    # no /tmp/environment.sh created by pot and we now alter configuration
     # block indefinitely
     if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        service cook disable || true
         /bin/sh /etc/rc
         tail -f /dev/null
     fi
@@ -48,7 +49,9 @@ fi
 ## Check config
 ########################################################################
 
-required_args="NODENAME IP"
+# these only needed for application image
+#required_args="NODENAME IP"
+required_args=""
 optional_args=""
 
 for var in $required_args; do

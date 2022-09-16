@@ -1,3 +1,10 @@
+0.0.3
+
+* Disable cook service where applicable
+* Remove required_args values in base image
+
+---
+
 0.0.2
 
 * Update for FreeBSD-13.1 base image
