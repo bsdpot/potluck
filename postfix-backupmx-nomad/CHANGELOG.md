@@ -1,3 +1,9 @@
+1.0.7
+
+* Version bump for non-layered image round 2
+
+---
+
 1.0.6
 
 * Version bump for non-layered image
