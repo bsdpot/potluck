@@ -1,3 +1,9 @@
+1.0.6
+
+* Version bump for non-layered image
+
+---
+
 1.0.5
 
 * Version bump for FreeBSD-13.1 image
