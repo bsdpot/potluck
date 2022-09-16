@@ -1,3 +1,4 @@
+# this file left as sample
 @version: "%%config_version%%"
 @include "scl.conf"
 

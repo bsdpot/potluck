@@ -1,3 +1,10 @@
+0.32
+
+* Update image to use newer cook format
+* Rebuild for layered images again
+
+---
+
 0.31
 
 * Version bump to build a non-layered image
