@@ -1,3 +1,11 @@
+0.33
+
+* Version bump for rebuild
+* Correct README added back from previous cook format image
+* README update for version in job file
+
+---
+
 0.32
 
 * Update image to use newer cook format
