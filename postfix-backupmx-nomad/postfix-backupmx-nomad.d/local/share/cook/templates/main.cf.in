@@ -27,7 +27,8 @@
 #
 # The level below is what should be used with new (not upgrade) installs.
 #
-compatibility_level = 2
+#compatibility_level = 2
+compatibility_level = 3.6
 
 # SOFT BOUNCE
 #
@@ -92,7 +93,7 @@ mail_owner = postfix
 # other configuration parameters.
 #
 #myhostname = host.domain.tld
-myhostname = $HOSTNAME
+myhostname = %%myhostname%%
 
 # The mydomain parameter specifies the local internet domain name.
 # The default is to use $myhostname minus the first component.
@@ -279,8 +280,7 @@ mynetworks_style = host
 #mynetworks = 168.100.189.0/28, 127.0.0.0/8
 #mynetworks = $config_directory/mynetworks
 #mynetworks = hash:$config_directory/network_table
-mynetworks = 127.0.0.0/8, $MYNETWORKS 
-
+mynetworks = 127.0.0.0/8, %%mynetworks%%
 
 # The relay_domains parameter restricts what destinations this system will
 # relay mail to.  See the smtpd_recipient_restrictions description in
@@ -310,7 +310,7 @@ mynetworks = 127.0.0.0/8, $MYNETWORKS
 # list this system as their primary or backup MX host. See the
 # permit_mx_backup restriction description in postconf(5).
 #
-relay_domains = $mydestination, $RELAYDOMAINS 
+relay_domains = $mydestination, %%relaydomains%%
 smtpd_recipient_restrictions = permit_sasl_authenticated, permit_mynetworks, reject_unauth_destination
 message_size_limit = 536870912 
 mailbox_size_limit = 1000000000
@@ -574,8 +574,8 @@ maximal_queue_lifetime = 12w
 # You MUST specify $myhostname at the start of the text. That is an
 # RFC requirement. Postfix itself does not care.
 #
-smtpd_banner = $SMTPDBANNER 
 #smtpd_banner = $myhostname ESMTP $mail_name ($mail_version)
+smtpd_banner = %%smtpbanner%%
 
 # PARALLEL DELIVERY TO THE SAME DESTINATION
 #

@@ -1,3 +1,11 @@
+1.0.8
+
+* New format cook formula
+* Syslog-ng instead of syslogd
+* Mandatory paramaters
+
+---
+
 1.0.7
 
 * Version bump for non-layered image round 2

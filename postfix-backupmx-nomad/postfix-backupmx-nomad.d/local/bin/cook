@@ -1,0 +1,103 @@
+#!/bin/sh
+RUNS_IN_NOMAD=true
+COOKLOG=/var/log/cook.log
+
+pot_seasoned_exit() {
+    [ ! -e /usr/local/etc/pot-is-seasoned ] && \
+      touch /usr/local/etc/pot-is-seasoned
+    # If this pot flavour is blocking (i.e. it should not return), there is
+    # no /tmp/environment.sh created by pot and we now alter configuration
+    # block indefinitely
+    if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        service cook disable || true
+        /bin/sh /etc/rc
+        tail -f /dev/null
+    fi
+    exit 0
+}
+
+# stop postfix if running
+service postfix onestop || true
+
+# No need to change this, just ensures configuration is done only once
+[ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
+
+########################################################################
+## Functions and settings
+########################################################################
+
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
+set -e
+export HOME=/root
+
+if [ -e /tmp/environment.sh ]
+then
+    # shellcheck disable=SC1091
+    . /tmp/environment.sh
+
+    # XXX: Remove some things from here later
+    cp -a /tmp/environment.sh /root/.env.cook
+fi
+
+########################################################################
+## Get passed in options
+########################################################################
+
+while getopts h:n:d:b:r: option
+do
+    case "${option}"
+    in
+      h) export HOSTNAME=${OPTARG};;
+      n) export MYNETWORKS=${OPTARG};;
+      d) export RELAYDOMAINS=${OPTARG};;
+      b) export SMTPDBANNER=${OPTARG};;
+      r) export REMOTELOG=${OPTARG};;
+    esac
+done
+
+
+########################################################################
+## Check config
+########################################################################
+
+required_args="HOSTNAME MYNETWORKS RELAYDOMAINS SMTPDBANNER"
+optional_args="REMOTELOG"
+
+for var in $required_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "$var is unset - see documentation to configure this flavour."
+    exit 1
+  fi
+done
+
+for var in $optional_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "Optional $var is unset - see documentation to configure this flavour."
+  fi
+done
+
+########################################################################
+## Provision image
+########################################################################
+
+export PATH=/usr/local/share/cook/bin:$PATH
+
+if [ -n "${REMOTELOG}" ]; then
+    log "Configure and start syslog-ng"
+    configure-syslog-ng.sh
+fi
+
+log "Configure postfix"
+configure-postfix.sh
+
+# start postfix
+log "Start Postfix"
+service postfix restart
+
+# end script placement
+
+log "Exit seasoned"
+pot_seasoned_exit
