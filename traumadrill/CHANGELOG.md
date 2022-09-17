@@ -1,3 +1,9 @@
+0.0.15
+
+* Version bump to rebuild, bugfixing base image issues
+
+---
+
 0.0.14
 
 * Version bump to rebuild for latest base image
