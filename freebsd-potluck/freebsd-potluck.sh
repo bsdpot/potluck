@@ -78,10 +78,11 @@ step "Remove ifconfig_epair0b from config"
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 step "Disable sendmail"
-service sendmail onedisable
+service sendmail onedisable || true
 
-#step "Disable sshd"
-#service sshd onedisable || true
+step "Disable sshd"
+service sshd onestop || true
+service sshd onedisable || true
 
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d

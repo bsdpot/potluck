@@ -1,3 +1,9 @@
+0.0.4
+
+* Disabling sshd from the start, removing disable bit in cook script
+
+---
+
 0.0.3
 
 * Disable cook service where applicable
