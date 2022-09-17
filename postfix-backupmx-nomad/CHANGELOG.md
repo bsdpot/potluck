@@ -1,3 +1,9 @@
+1.0.9
+
+* Fixing documentation for remotelog flag
+
+---
+
 1.0.8
 
 * New format cook formula

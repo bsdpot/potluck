@@ -19,7 +19,7 @@ The jail exposes these parameters that can either be set via the environment or 
 | MYNETWORKS       | -n                 | ```mynetworks``` in ```main.cf``` (private network addresses that are permitted to send outbound) |
 | RELAYDOMAINS       | -d                 | ```relay_domains``` in ```main.cf``` (domains this server feels responsible for) |
 | SMTPDBANNER       | -b               | ```smtpd_banner``` in ```main.cf``` |
-| REMOTELOG       | -b               | Optional: IP address of remote syslog-ng server |
+| REMOTELOG       | -r               | Optional: IP address of remote syslog-ng server |
 
 *Note: If you schedule this jail via ```nomad``` **and you do not mount in the spool directory from persistent storage like in the example below** and the job gets restarted for whatever reason, mails that are still in the queue and not forwarded will not be part of the newly scheduled instance and will be lost because a completely new jail is created in that case.*
 
