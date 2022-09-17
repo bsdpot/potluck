@@ -1,3 +1,11 @@
+1.0.10
+
+* Version bump for rebuild
+* Update nomad job image versions and freebsd version
+* Tweaks to sendmail disable
+
+---
+
 1.0.9
 
 * Fixing documentation for remotelog flag
