@@ -1,3 +1,10 @@
+0.34
+
+* Setting runs in nomad correctly all over
+* Increment version in README nomad job
+
+---
+
 0.33
 
 * Version bump for rebuild

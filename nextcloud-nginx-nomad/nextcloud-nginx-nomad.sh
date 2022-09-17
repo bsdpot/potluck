@@ -19,7 +19,7 @@
 # (i.e. blocking) jail.
 # You can then query it in the cook script generation below and the script
 # is installed appropriately at the end of this script
-RUNS_IN_NOMAD=false
+RUNS_IN_NOMAD=true
 
 # set the cook log path/filename
 COOKLOG=/var/log/cook.log
