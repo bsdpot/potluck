@@ -1,3 +1,9 @@
+1.0.11
+
+* Version bump for rebuild, fixing workflow processes for layered image updates
+
+---
+
 1.0.10
 
 * Version bump for rebuild
