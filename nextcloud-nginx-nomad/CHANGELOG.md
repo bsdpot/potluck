@@ -1,3 +1,9 @@
+0.35
+
+* fixing copy-in to reflect nextcloud-nginx-nomad flavour not freebsd-potluck
+
+---
+
 0.34
 
 * Setting runs in nomad correctly all over

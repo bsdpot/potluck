@@ -9,7 +9,7 @@ pot_seasoned_exit() {
     # no /tmp/environment.sh created by pot and we now alter configuration
     # block indefinitely
     if [ "$RUNS_IN_NOMAD" = "true" ]; then
-        service cook disable || true
+        service cook onedisable || true
         /bin/sh /etc/rc
         tail -f /dev/null
     fi
