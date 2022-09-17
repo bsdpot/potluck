@@ -1,3 +1,9 @@
+1.0.16
+
+* fixing copy-in to reflect postfix-backupmx-nomad flavour not freebsd-potluck
+
+---
+
 1.0.15
 
 * Version bump for rebuild
