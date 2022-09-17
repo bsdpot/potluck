@@ -1,3 +1,9 @@
+0.0.5
+
+* Simplifying base image to remove unnecessary stuff
+
+---
+
 0.0.4
 
 * Disabling sshd from the start, removing disable bit in cook script
