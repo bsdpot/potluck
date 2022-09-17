@@ -1,3 +1,10 @@
+0.0.14
+
+* Version bump to rebuild for latest base image
+
+---
+
+
 0.0.13
 
 * php-json is now part of core php so removing broken pkg
