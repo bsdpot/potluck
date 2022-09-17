@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# This artifact is left here as sample
-
 # shellcheck disable=SC1091
 . /root/.env.cook
 

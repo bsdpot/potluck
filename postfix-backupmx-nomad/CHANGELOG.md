@@ -1,3 +1,10 @@
+1.0.15
+
+* Version bump for rebuild
+* Minor changes, onedisbale for cook service
+
+---
+
 1.0.14
 
 * Version bump for rebuild

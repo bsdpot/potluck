@@ -9,7 +9,7 @@ pot_seasoned_exit() {
     # no /tmp/environment.sh created by pot and we now alter configuration
     # block indefinitely
     if [ "$RUNS_IN_NOMAD" = "true" ]; then
-        service cook disable || true
+        service cook onedisable || true
         /bin/sh /etc/rc
         tail -f /dev/null
     fi
@@ -50,11 +50,11 @@ while getopts h:n:d:b:r: option
 do
     case "${option}"
     in
-      h) export HOSTNAME=${OPTARG};;
-      n) export MYNETWORKS=${OPTARG};;
-      d) export RELAYDOMAINS=${OPTARG};;
-      b) export SMTPDBANNER=${OPTARG};;
-      r) export REMOTELOG=${OPTARG};;
+      h) HOSTNAME=${OPTARG};;
+      n) MYNETWORKS=${OPTARG};;
+      d) RELAYDOMAINS=${OPTARG};;
+      b) SMTPDBANNER=${OPTARG};;
+      r) REMOTELOG=${OPTARG};;
     esac
 done
 
