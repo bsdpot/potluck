@@ -1,3 +1,9 @@
+1.0.13
+
+* Version bump for rebuild
+
+---
+
 1.0.12
 
 * Version bump for rebuild, new simple base image
