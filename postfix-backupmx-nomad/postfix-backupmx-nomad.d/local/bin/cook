@@ -52,10 +52,18 @@ while getopts "h:n:d:b:" option
 do
     case "${option}"
     in
-      h) HOSTNAME=${OPTARG};;
-      n) MYNETWORKS=${OPTARG};;
-      d) RELAYDOMAINS=${OPTARG};;
-      b) SMTPDBANNER=${OPTARG};;
+      h) HOSTNAME=${OPTARG}
+         export HOSTNAME
+         ;;
+      n) MYNETWORKS=${OPTARG}
+         export MYNETWORKS
+         ;;
+      d) RELAYDOMAINS=${OPTARG}
+         export RELAYDOMAINS
+         ;;
+      b) SMTPDBANNER=${OPTARG}
+         export SMTPDBANNER
+         ;;
     esac
 done
 shift "$((OPTIND-1))"

@@ -1,3 +1,9 @@
+1.0.24
+
+* Exporting getopts vars, not working otherwise, nor passing in ENV values in nomad job
+
+---
+
 1.0.23
 
 * Removing syslog-ng entirely, not working with nomad pots
