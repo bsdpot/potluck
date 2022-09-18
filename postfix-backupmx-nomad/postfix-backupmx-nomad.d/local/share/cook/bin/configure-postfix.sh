@@ -28,7 +28,7 @@ sep=$'\001'
   sed "s${sep}%%myhostname%%${sep}$HOSTNAME${sep}g" | \
   sed "s${sep}%%mynetworks%%${sep}$MYNETWORKS${sep}g" | \
   sed "s${sep}%%relaydomains%%${sep}$RELAYDOMAINS${sep}g" | \
-  sed "s${sep}%%smtpbanner%%${sep}$SMTPBANNER${sep}g" \
+  sed "s${sep}%%smtpdbanner%%${sep}$SMTPDBANNER${sep}g" \
   > /usr/local/etc/postfix/main.cf
 
 # setup mailer.conf from template

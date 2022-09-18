@@ -575,7 +575,7 @@ maximal_queue_lifetime = 12w
 # RFC requirement. Postfix itself does not care.
 #
 #smtpd_banner = $myhostname ESMTP $mail_name ($mail_version)
-smtpd_banner = %%smtpbanner%%
+smtpd_banner = %%smtpdbanner%%
 
 # PARALLEL DELIVERY TO THE SAME DESTINATION
 #

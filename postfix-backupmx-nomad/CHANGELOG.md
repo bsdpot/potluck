@@ -1,3 +1,9 @@
+1.0.25
+
+* Fix smtpdbanner variable expansion
+
+---
+
 1.0.24
 
 * Exporting getopts vars, not working otherwise, nor passing in ENV values in nomad job
