@@ -1,3 +1,10 @@
+1.0.19
+
+* Version bump for rebuild
+* Minor changes to avoid errors, like check for /root/.env.cook before sourcing it
+
+---
+
 1.0.18
 
 * Add OPTIND around getopts

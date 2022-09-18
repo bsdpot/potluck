@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # shellcheck disable=SC1091
-. /root/.env.cook
+if [ -e /root/.env.cook ]
+    . /root/.env.cook
+fi
 
 set -e
 # shellcheck disable=SC3040
@@ -16,9 +18,11 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 sep=$'\001'
 
-# copy in syslog-ng.conf
+# get syslog-ng version
 config_version=$(/usr/local/sbin/syslog-ng --version | \
   grep "^Config version:" | awk -F: '{ print $2 }' | xargs)
+
+# copy in syslog-ng.conf
 < "$TEMPLATEPATH/syslog-ng.conf.in" \
   sed "s${sep}%%config_version%%${sep}$config_version${sep}g" | \
   sed "s${sep}%%remotelogip%%${sep}$REMOTELOG${sep}g" \
