@@ -1,3 +1,10 @@
+1.0.23
+
+* Removing syslog-ng entirely, not working with nomad pots
+* syslog-ng[12345]: Destination reliable queue full, dropping message; filename='/var/log/syslog-ng-disk-buffer/syslog-ng-00000.rqf', queue_len='0', mem_buf_size='134217728', disk_buf_size='2147483648', persist_name='afsocket_dd_qfile(stream,1.2.3.4:514)'
+
+---
+
 1.0.22
 
 * Postfix wants aliases setup

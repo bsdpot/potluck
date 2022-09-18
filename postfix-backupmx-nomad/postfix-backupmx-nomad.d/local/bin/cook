@@ -48,7 +48,7 @@ fi
 ########################################################################
 
 OPTIND=1
-while getopts "h:n:d:b:r:" option
+while getopts "h:n:d:b:" option
 do
     case "${option}"
     in
@@ -56,7 +56,6 @@ do
       n) MYNETWORKS=${OPTARG};;
       d) RELAYDOMAINS=${OPTARG};;
       b) SMTPDBANNER=${OPTARG};;
-      r) REMOTELOG=${OPTARG};;
     esac
 done
 shift "$((OPTIND-1))"
@@ -66,7 +65,7 @@ shift "$((OPTIND-1))"
 ########################################################################
 
 required_args="HOSTNAME MYNETWORKS RELAYDOMAINS SMTPDBANNER"
-optional_args="REMOTELOG"
+optional_args=""
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -86,11 +85,6 @@ done
 ########################################################################
 
 export PATH=/usr/local/share/cook/bin:$PATH
-
-if [ -n "${REMOTELOG}" ]; then
-    log "Configure and start syslog-ng"
-    configure-syslog-ng.sh
-fi
 
 log "Configure postfix"
 configure-postfix.sh
