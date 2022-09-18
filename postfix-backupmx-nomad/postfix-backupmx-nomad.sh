@@ -86,6 +86,9 @@ mkdir -p /usr/local/etc/rc.d
 step "Install package postfix"
 pkg install -y postfix
 
+step "Install syslog-ng"
+pkg install -y syslog-ng
+
 step "Clean package installation"
 pkg clean -y
 
