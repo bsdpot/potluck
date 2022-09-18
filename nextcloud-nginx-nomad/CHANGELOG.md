@@ -1,3 +1,12 @@
+0.36
+
+* Version bump for rebuild
+* Adding OPTIND to getopts
+* Fixing .env.cook with if statement
+* Remove ssh disable as done in base
+
+---
+
 0.35
 
 * fixing copy-in to reflect nextcloud-nginx-nomad flavour not freebsd-potluck

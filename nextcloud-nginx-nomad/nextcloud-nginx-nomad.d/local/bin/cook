@@ -9,6 +9,7 @@ pot_seasoned_exit() {
     # no /tmp/environment.sh created by pot and we now alter configuration
     # block indefinitely
     if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        service cook onestop || true
         service cook onedisable || true
         /bin/sh /etc/rc
         tail -f /dev/null
@@ -43,6 +44,7 @@ fi
 ## Get command line flag options used for nomad images
 ## Convert parameters to variables if passed (overwrite environment)
 ########################################################################
+OPTIND=1
 while getopts d:s:r: option
 do
     case "${option}"
@@ -58,6 +60,7 @@ do
          ;;
     esac
 done
+shift "$((OPTIND-1))"
 
 ########################################################################
 ## Check config
