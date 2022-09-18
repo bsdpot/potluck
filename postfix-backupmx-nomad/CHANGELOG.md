@@ -1,3 +1,8 @@
+1.0.20
+
+* Fixing if statement from previous commit changes
+
+---
 1.0.19
 
 * Version bump for rebuild
