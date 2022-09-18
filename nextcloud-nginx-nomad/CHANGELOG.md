@@ -1,3 +1,10 @@
+0.37
+
+* Completely remove syslog-ng as not working with nomad pots
+* fix nc-config.php setup, needs manual copy-in
+
+---
+
 0.36
 
 * Version bump for rebuild

@@ -281,9 +281,6 @@ pkg install -y nano
 step "Install package sudo"
 pkg install -y sudo
 
-step "Install package syslog-ng"
-pkg install -y syslog-ng
-
 step "Clean package installation"
 pkg clean -y
 
