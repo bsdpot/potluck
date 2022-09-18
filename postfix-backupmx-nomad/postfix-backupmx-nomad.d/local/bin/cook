@@ -46,7 +46,8 @@ fi
 ## Get passed in options
 ########################################################################
 
-while getopts h:n:d:b:r: option
+OPTIND=1
+while getopts "h:n:d:b:r:" option
 do
     case "${option}"
     in
@@ -57,7 +58,7 @@ do
       r) REMOTELOG=${OPTARG};;
     esac
 done
-
+shift "$((OPTIND-1))"
 
 ########################################################################
 ## Check config

@@ -1,3 +1,10 @@
+1.0.18
+
+* Add OPTIND around getopts
+* Temp remove some recommended actions to disable sendmail actions (bug-chasing)
+
+---
+
 1.0.17
 
 * Version bump for rebuild. Non-nomad image works.

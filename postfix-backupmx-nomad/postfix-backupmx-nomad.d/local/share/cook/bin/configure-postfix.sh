@@ -33,10 +33,10 @@ sep=$'\001'
 install -m 0644 /usr/local/share/postfix/mailer.conf.postfix /usr/local/etc/mail/mailer.conf
 
 # remove sendmail tasks from periodic.conf
-sysrc -f /etc/periodic.conf daily_clean_hoststat_enable="NO"
-sysrc -f /etc/periodic.conf daily_status_mail_rejects_enable="NO"
-sysrc -f /etc/periodic.conf daily_status_include_submit_mailq="NO"
-sysrc -f /etc/periodic.conf daily_submit_queuerun="NO"
+#sysrc -f /etc/periodic.conf daily_clean_hoststat_enable="NO"
+#sysrc -f /etc/periodic.conf daily_status_mail_rejects_enable="NO"
+#sysrc -f /etc/periodic.conf daily_status_include_submit_mailq="NO"
+#sysrc -f /etc/periodic.conf daily_submit_queuerun="NO"
 
 # enable service?
 sysrc sendmail_enable="NONE"

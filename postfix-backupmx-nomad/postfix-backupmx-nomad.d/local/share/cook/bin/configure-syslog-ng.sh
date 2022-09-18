@@ -26,7 +26,7 @@ config_version=$(/usr/local/sbin/syslog-ng --version | \
 
 # stop and disable syslogd
 service syslogd onestop || true
-sysrc syslogd_enable="NO"
+service syslogd onedisable || true
 
 # enable and start syslog-ng
 service syslog-ng enable
