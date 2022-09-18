@@ -43,3 +43,7 @@ install -m 0644 /usr/local/share/postfix/mailer.conf.postfix /usr/local/etc/mail
 # enable service?
 sysrc sendmail_enable="NONE"
 service postfix enable
+
+# run newaliases
+#newliases
+postalias /etc/aliases

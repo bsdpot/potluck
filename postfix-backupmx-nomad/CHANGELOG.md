@@ -1,3 +1,10 @@
+1.0.22
+
+* Postfix wants aliases setup
+* Using postalias as test
+
+---
+
 1.0.21
 
 * Syslog-ng needs to be installed
