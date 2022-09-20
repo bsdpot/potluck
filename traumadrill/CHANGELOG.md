@@ -1,3 +1,10 @@
+0.0.17
+
+* Version bump for new base image
+* Adjustments to cook for disabling in nomad and .env.cook
+
+---
+
 0.0.16
 
 * Version bump to rebuild
