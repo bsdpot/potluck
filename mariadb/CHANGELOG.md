@@ -1,3 +1,11 @@
+2.0.6
+
+* Version bump for new base image
+* Adjustments to cook for disabling in nomad and .env.cook
+* Remove ssh disable, done in base image
+
+---
+
 2.0.5
 
 * Version bump for FreeBSD-13.1 image

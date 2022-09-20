@@ -9,16 +9,13 @@ pot_seasoned_exit() {
     # no /tmp/environment.sh created by pot and we now after configuration
     # block indefinitely
     if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        service cook onestop || true
+        service cook onedisable || true
         /bin/sh /etc/rc
         tail -f /dev/null
     fi
     exit 0
 }
-
-# always disable sshd, we don't need direct access
-# XXX: Do this when baking the image
-service sshd onestop || true
-service sshd disable || true
 
 # No need to change this, just ensures configuration is done only once
 [ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
