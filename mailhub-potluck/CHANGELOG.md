@@ -1,3 +1,10 @@
+0.0.28
+
+* Version bump for rebuild on new base image
+* Adjustments to cook for disabling in nomad and .env.cook
+
+---
+
 0.0.27
 
 * Version bump for FreeBSD-13.1 image
