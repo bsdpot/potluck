@@ -1,3 +1,10 @@
+0.0.22
+
+* Updated to match cook changes and check for .env.cook
+* Removed artifacts from combining several images into Beast
+
+---
+
 0.0.21
 
 * Version bump for rebuild with new base image
