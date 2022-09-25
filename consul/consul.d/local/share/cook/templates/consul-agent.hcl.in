@@ -7,8 +7,8 @@ dns_config = {
   enable_truncate =  true
 }
 ports = {
-  http = -1
-  https = 8500
+  http = 8500
+  https = -1
 }
 verify_incoming = false
 verify_outgoing = false

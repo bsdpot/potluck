@@ -1,3 +1,9 @@
+2.0.21
+
+* Consul is using http not https (see consul-tls for https)
+
+---
+
 2.0.20
 
 * Version bump for new image and cook script
