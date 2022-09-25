@@ -20,6 +20,10 @@ Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-serve
 * Adjust to your environment:
 ```sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<consul-nodename> -E IP=<IP address of this consul node> [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY="<32 byte Base64 consul keygen key>"] [-E REMOTELOG=<ip address remote syslog server> ]```
 
+The NODENAME parameter defines the name of the node.
+
+The DATACENTER parameter is the datacenter name to use.
+
 The BOOTSTRAP parameter defines the expected number of cluster nodes, it defaults to 1 (no cluster) if it is not set.
 
 For 3 and 5 node clusters the other peers must be passed in via the PEERS variable in the following format.

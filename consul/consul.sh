@@ -15,9 +15,10 @@
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
-# Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
-# You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script
+# Set this to true if this jail flavour is to be created as a nomad
+# (i.e. blocking) jail.
+# You can then query it in the cook script generation below and the script
+# is installed appropriately at the end of this script
 RUNS_IN_NOMAD=false
 
 # set the cook log path/filename
@@ -82,20 +83,15 @@ service sendmail onedisable
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
-step "Install package sudo"
-pkg install -y sudo
-
+# we need consul for consul agent
 step "Install package consul"
 pkg install -y consul
 
-step "Enable consul startup"
-sysrc consul_enable="YES"
+step "Install package node_exporter"
+pkg install -y node_exporter
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng
-
-step "Install package node_exporter"
-pkg install -y node_exporter
 
 step "Clean package installation"
 pkg clean -y
@@ -103,248 +99,24 @@ pkg clean -y
 # -------------- END PACKAGE SETUP -------------
 
 #
-# Create configurations
-#
-
-#
 # Now generate the run command script "cook"
 # It configures the system on the first run by creating the config file(s)
 # On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
 #
 
-# clear any old cook runtime file
-step "Remove pre-existing cook script (if any)"
-rm -f /usr/local/bin/cook
-
 # this runs when image boots
 # ----------------- BEGIN COOK ------------------
 
-step "Create cook script"
-echo "#!/bin/sh
-RUNS_IN_NOMAD=$RUNS_IN_NOMAD
-# declare this again for the pot image, might work carrying variable through like
-# with above
-COOKLOG=/var/log/cook.log
-# No need to change this, just ensures configuration is done only once
-if [ -e /usr/local/etc/pot-is-seasoned ]
-then
-    # If this pot flavour is blocking (i.e. it should not return),
-    # we block indefinitely
-    if [ \"\$RUNS_IN_NOMAD\" = \"true\" ]
-    then
-        /bin/sh /etc/rc
-        tail -f /dev/null
-    fi
-    exit 0
-fi
+step "Clean cook artifacts"
+rm -rf /usr/local/bin/cook /usr/local/share/cook
 
-# ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-#/usr/local/etc/rc.d/consul stop  || true
-service consul onestop || true
+step "Install pot local"
+tar -C /root/.pot_local -cf - . | tar -C /usr/local -xf -
+rm -rf /root/.pot_local
 
-# No need to adjust this:
-# If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
-# where pot is storing it in this case
-if [ -e /tmp/environment.sh ]
-then
-    . /tmp/environment.sh
-fi
-
-#
-# ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
-# Check config variables are set
-#
-if [ -z \${DATACENTER+x} ];
-then
-    echo 'DATACENTER is unset - see documentation how to configure this flavour'
-    exit 1
-fi
-if [ -z \${NODENAME+x} ];
-then
-    echo 'NODENAME is unset - see documentation how to configure this flavour'
-    exit 1
-fi
-if [ -z \${IP+x} ];
-then
-    echo 'IP is unset - see documentation how to configure this flavour'
-    exit 1
-fi
-if [ -z \${PEERS+x} ];
-then
-    echo 'PEERS is unset - see documentation how to configure this flavour, defaulting to null'
-    PEERS='\"\"'
-fi
-if [ -z \${BOOTSTRAP+x} ];
-then
-    echo 'BOOTSTRAP is unset - see documentation how to configure this flavour, defaulting to 1'
-    BOOTSTRAP=1
-fi
-# GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen
-# you must generate this key on a live consul server
-if [ -z \${GOSSIPKEY+x} ];
-then
-    echo 'GOSSIPKEY is unset - see documentation how to configure this flavour, defaulting to preset encrypt key. Do not use this in production!'
-    GOSSIPKEY='BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw='
-fi
-# Remotelog is a remote syslog server, need to pass in IP
-if [ -z \${REMOTELOG+x} ];
-then
-    echo 'REMOTELOG is unset - see documentation how to configure this flavour'
-    REMOTELOG=0
-fi
-
-# ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
-# Don't forget to double(!)-escape quotes and dollar signs in the config files
-
-# Create consul server config file, set the bootstrap_expect value to number
-# of servers in the cluster, 3 or 5
-mkdir -p /usr/local/etc/consul.d
-chown consul /usr/local/etc/consul.d
-chmod 750 /usr/local/etc/consul.d
-
-# There are two different configs whether consul is a single server or 3 or 5
-# The BOOTSTRAP parameter MUST be set, and the PEERS variable MUST be in the
-# correct format
-
-case \$BOOTSTRAP in
-
-  1)
-    echo \"{
-     \\\"bind_addr\\\": \\\"0.0.0.0\\\",
-     \\\"client_addr\\\": \\\"0.0.0.0\\\",
-     \\\"datacenter\\\": \\\"\$DATACENTER\\\",
-     \\\"data_dir\\\":  \\\"/var/db/consul\\\",
-     \\\"dns_config\\\": {
-       \\\"a_record_limit\\\": 3,
-       \\\"enable_truncate\\\": true
-     },
-     \\\"verify_incoming\\\": false,
-     \\\"verify_outgoing\\\": false,
-     \\\"verify_server_hostname\\\": false,
-     \\\"verify_incoming_rpc\\\": false,
-     \\\"enable_syslog\\\": true,
-     \\\"leave_on_terminate\\\": true,
-     \\\"log_level\\\": \\\"WARN\\\",
-     \\\"node_name\\\": \\\"\$NODENAME\\\",
-     \\\"translate_wan_addrs\\\": true,
-     \\\"ui\\\": true,
-     \\\"server\\\": true,
-     \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
-     \\\"bootstrap_expect\\\": \$BOOTSTRAP,
-     \\\"telemetry\\\": {
-       \\\"prometheus_retention_time\\\": \\\"24h\\\"
-     },
-     \\\"service\\\": {
-      \\\"address\\\": \\\"\$IP\\\",
-      \\\"name\\\": \\\"node-exporter\\\",
-      \\\"tags\\\": [\\\"_app=consul\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
-      \\\"port\\\": 9100
-     }
-    }\" > /usr/local/etc/consul.d/agent.json
-
-    echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
-    ;;
-
-  3|5)
-    echo \"{
-     \\\"bind_addr\\\": \\\"0.0.0.0\\\",
-     \\\"client_addr\\\": \\\"0.0.0.0\\\",
-     \\\"datacenter\\\": \\\"\$DATACENTER\\\",
-     \\\"data_dir\\\":  \\\"/var/db/consul\\\",
-     \\\"dns_config\\\": {
-       \\\"a_record_limit\\\": 3,
-       \\\"enable_truncate\\\": true
-     },
-     \\\"verify_incoming\\\": false,
-     \\\"verify_outgoing\\\": false,
-     \\\"verify_server_hostname\\\": false,
-     \\\"verify_incoming_rpc\\\": false,
-     \\\"enable_syslog\\\": true,
-     \\\"leave_on_terminate\\\": true,
-     \\\"log_level\\\": \\\"WARN\\\",
-     \\\"node_name\\\": \\\"\$NODENAME\\\",
-     \\\"translate_wan_addrs\\\": true,
-     \\\"ui\\\": true,
-     \\\"server\\\": true,
-     \\\"encrypt\\\": \\\"\$GOSSIPKEY\\\",
-     \\\"bootstrap_expect\\\": \$BOOTSTRAP,
-     \\\"rejoin_after_leave\\\": true,
-     \\\"start_join\\\": [\\\"\$IP\\\", \$PEERS],
-     \\\"telemetry\\\": {
-       \\\"prometheus_retention_time\\\": \\\"24h\\\"
-     },
-     \\\"service\\\": {
-      \\\"address\\\": \\\"\$IP\\\",
-      \\\"name\\\": \\\"node-exporter\\\",
-      \\\"tags\\\": [\\\"_app=consul\\\", \\\"_service=node-exporter\\\", \\\"_hostname=\$NODENAME\\\", \\\"_datacenter=\$DATACENTER\\\"],
-      \\\"port\\\": 9100
-   }
-  }\" > /usr/local/etc/consul.d/agent.json
-
-    echo \"consul_args=\\\"-advertise \$IP\\\"\" >> /etc/rc.conf
-    ;;
-
-  *)
-    echo \"there is a problem with the BOOTSTRAP VARIABLE\"
-    exit 1
-    ;;
-
-esac
-
-## remote syslogs
-if [ \"\${REMOTELOG}\" != \"0\" ]; then
-    config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
-
-    # read in template conf file, update remote log IP address, and
-    # write to correct destination
-    < /root/syslog-ng.conf.in \
-      sed \"s|%%config_version%%|\$config_version|g\" | \
-      sed \"s|%%remotelogip%%|\$REMOTELOG|g\" > /usr/local/etc/syslog-ng.conf
-
-    # stop and disable syslogd
-    service syslogd onestop || true
-    service syslogd disable
-
-    # enable and start syslog-ng
-    service syslog-ng enable
-    sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
-    service syslog-ng start
-fi
-
-## end consul setup
-if ! id -u \"nodeexport\" >/dev/null 2>&1; then
-  /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
-fi
-
-# enable node_exporter service
-#sysrc node_exporter_enable=\"YES\"
-service node_exporter enable
-sysrc node_exporter_args=\"--log.level=warn\"
-sysrc node_exporter_user=nodeexport
-sysrc node_exporter_group=nodeexport
-
-# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-
-# start consul
-service consul enable
-service consul start
-
-# start node_exporter
-#/usr/local/etc/rc.d/node_exporter start
-service node_exporter start
-
-#
-# Do not touch this:
-touch /usr/local/etc/pot-is-seasoned
-
-# If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh
-# created by pot and we now after configuration block indefinitely
-if [ \"\$RUNS_IN_NOMAD\" = \"true\" ]
-then
-    /bin/sh /etc/rc
-    tail -f /dev/null
-fi
-" > /usr/local/bin/cook
+step "Set file ownership on cook scripts"
+chown -R root:wheel /usr/local/bin/cook /usr/local/share/cook
+chmod 755 /usr/local/share/cook/bin/*
 
 # ----------------- END COOK ------------------
 
@@ -406,7 +178,8 @@ then
   step "Enable cook service"
   # This is a non-nomad (non-blocking) jail, so we need to make sure the script
   # gets started when the jail is started:
-  # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
+  # Otherwise, /usr/local/bin/cook will be set as start script by the pot
+  # flavour
   echo "enabling cook" | tee -a $COOKLOG
   service cook enable
 fi

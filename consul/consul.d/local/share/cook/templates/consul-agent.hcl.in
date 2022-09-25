@@ -1,0 +1,39 @@
+bind_addr = "0.0.0.0"
+client_addr = "0.0.0.0"
+datacenter = "%%datacenter%%"
+data_dir =  "/var/db/consul"
+dns_config = {
+  a_record_limit = 3,
+  enable_truncate =  true
+}
+ports = {
+  http = -1
+  https = 8500
+}
+verify_incoming = false
+verify_outgoing = false
+verify_server_hostname = false
+verify_incoming_rpc = false
+enable_syslog = true
+leave_on_terminate = true
+log_level = "WARN"
+node_name = "%%nodename%%"
+translate_wan_addrs = true
+ui_config = {
+  enabled= true
+}
+server = true
+encrypt = "%%gossipkey%%"
+bootstrap_expect = %%bootstrap%%
+%%forcluster%%rejoin_after_leave = true
+%%forcluster%%start_join = ["%%ip%%", %%peers%%]
+telemetry = {
+  disable_hostname = true
+  prometheus_retention_time = "24h"
+}
+service = {
+  name = "node-exporter"
+  tags = ["_app=consul", "_service=node-exporter",
+          "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 9100
+}
