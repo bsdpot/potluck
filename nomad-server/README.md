@@ -27,7 +27,9 @@ Please note that a specific network configuration is suggested (see Installation
 * Optionally copy-in job files in `jobname.nomad` filenaming convention to /root/nomadjobs, repeat for multiple files
   ```sudo pot -p <clonejailname> copy-in -s /root/nomadjobs/jobname.nomad -d /root/nomadjobs/jobname.nomad```
 * Adjust to your environment:
-  ```sudo pot set-env -p <clonejailname> -E DATACENTER=<datacentername> -E REGION=<identifier like east, west, global> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY="<32 byte Base64 key from consul keygen>"] [-E NOMADKEY="<16 byte or 32 byte key from nomad operator keygen>"] [ -E REMOTELOG="<IP syslog-ng server>" -E IMPORTJOBS=1 ]```
+  ```sudo pot set-env -p <clonejailname> -E NODENAME=<name> -E DATACENTER=<datacentername> -E REGION=<identifier like east, west, global> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY="<32 byte Base64 key from consul keygen>"] [ -E REMOTELOG="<IP syslog-ng server>" -E IMPORTJOBS=1 ]```
+
+The NODENAME parameter is the name of the node.
 
 The DATACENTER parameter is the name of the datacenter. The REGION parameter is to set "east" or "west" or "global" (default).
 
@@ -35,9 +37,9 @@ The CONSULSERVERS parameter defines the consul server instances, and must be set
 
 The BOOTSTRAP parameter defines the expected number of cluster nodes, it defaults to 1 (no cluster) if it is not set. You MUST still pass in a consul IP under CONSULSERVERS.
 
-The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if the parameter is not set, do not use the default key for production encryption, instead provide your own.
+The REGION parameter sets the region, or defaults to 'global' if not set.
 
-The NOMADKEY parameter is the gossip encryption key for nomad. We're re-using the default key from consul as nomad supports 32 byte Base64 keys, but the common one is a 16 byte Bas64 key from ```nomad operator keygen```
+The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if the parameter is not set, do not use the default key for production encryption, instead provide your own. This key is also used as Nomad's gossipkey. 
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to.
 

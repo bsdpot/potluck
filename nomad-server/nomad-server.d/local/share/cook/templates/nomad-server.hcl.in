@@ -1,0 +1,38 @@
+bind_addr = "%%ip%%"
+plugin_dir = "/usr/local/libexec/nomad/plugins"
+datacenter = "%%datacenter%%"
+region = "%%region%%"
+advertise {
+  # This should be the IP of THIS MACHINE and must be routable by every node
+  # in your cluster
+  http = "%%ip%%"
+  rpc = "%%ip%%"
+}
+server {
+  enabled = true
+  # set this to 3 or 5 for cluster setup
+  bootstrap_expect = "%%bootstrap%%"
+  # Encrypt gossip communication
+  encrypt = "%%nomadgossipkey%%"
+  heartbeat_grace = "10s"
+  rejoin_after_leave = true
+}
+consul {
+  # The address to the local Consul agent.
+  address = "http://%%ip%%:8500"
+  # The service name to register the server and client with Consul.
+  server_service_name = "nomad"
+  # Enables automatically registering the services.
+  auto_advertise = true
+  # Enabling the server and client to bootstrap using Consul.
+  server_auto_join = true
+}
+telemetry {
+  publish_allocation_metrics = true
+  publish_node_metrics = true
+  prometheus_metrics = true
+  disable_hostname = true
+}
+enable_syslog=true
+log_level="WARN"
+syslog_facility="LOCAL5"
