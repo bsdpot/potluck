@@ -22,8 +22,11 @@ source src {
  internal();
 };
 
-source s_traefik {
+source traefik {
  file("/var/log/traefik/traefik.log");
+};
+
+source traefik_access {
  file("/var/log/traefik/traefik-access.log");
 };
 
@@ -161,4 +164,5 @@ log { source(src); filter(f_ppp); destination(ppp); };
 # flags(flow-control);
 #};
 log { source(src); filter(f_all); destination(loghost); };
-log { source(s_traefik); destination(loghost); };
+log { source(traefik); filter(f_all); destination(loghost); };
+log { source(traefik_access); filter(f_all); destination(loghost); };
