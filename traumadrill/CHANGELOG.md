@@ -1,3 +1,11 @@
+0.0.18
+
+* Version bump for rebuild
+* Trimming unnecessary items commented out
+* INFO log level for consul
+
+---
+
 0.0.17
 
 * Version bump for new base image
