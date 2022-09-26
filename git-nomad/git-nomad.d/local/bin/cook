@@ -70,7 +70,7 @@ log "Configure git user and ssh"
 configure-ssh.sh
 
 log "Starting SSH"
-service ssh onestart || true
+service sshd onestart || true
 
 # end script placement
 log "Exit seasoned"

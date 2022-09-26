@@ -31,5 +31,5 @@ echo "StrictModes no" >> /etc/ssh/sshd_config
 /usr/bin/ssh-keygen -A
 
 # enable ssh service
-service ssh enable || true
+service sshd enable || true
 

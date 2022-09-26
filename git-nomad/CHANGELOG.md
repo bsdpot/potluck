@@ -1,3 +1,9 @@
+1.0.7
+
+* typo with ssh instead of sshd
+
+---
+
 1.0.6
 
 * Version bump for rebuild on new image, new cook script
