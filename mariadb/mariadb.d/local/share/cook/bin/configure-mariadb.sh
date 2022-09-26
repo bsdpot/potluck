@@ -37,7 +37,7 @@ fi
 #sysrc mysql_dbdir="/var/db/mysql"
 
 # enable the service
-service mysql-server enable
+service mysql-server enable || true
 
 # We do not know if the database that is mounted from outside has already been run
 # with this MariaDB release, so to be sure we upgrade it before we start the service

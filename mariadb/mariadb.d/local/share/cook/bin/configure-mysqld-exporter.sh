@@ -38,7 +38,7 @@ else
 fi
 
 # enable mysql_exporter service
-service mysqld_exporter enable
+service mysqld_exporter enable || true
 sysrc mysqld_exporter_conffile="/usr/local/etc/mysqld_exporter.cnf"
 sysrc mysqld_exporter_args="--log.level=warn"
 echo "mysqld_exporter_listen_address=\"$IP:9104\"" >> /etc/rc.conf

@@ -14,7 +14,7 @@ if ! id -u "nodeexport" >/dev/null 2>&1; then
 fi
 
 # enable node_exporter service
-service node_exporter enable
+service node_exporter enable || true
 sysrc node_exporter_args="--log.level=warn"
 sysrc node_exporter_user=nodeexport
 sysrc node_exporter_group=nodeexport
