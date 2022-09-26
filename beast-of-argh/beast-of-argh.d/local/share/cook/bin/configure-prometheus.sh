@@ -37,7 +37,7 @@ if [ ! -f /mnt/prometheus/targets.d/mysql.yml ]; then
 fi
 chown -R prometheus:prometheus /mnt/prometheus/targets.d
 
-# shellcheck disable=SC3003
+# shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 
@@ -51,7 +51,7 @@ sep=$'\001'
   > /usr/local/etc/prometheus.yml
 
 # enable prometheus service
-service prometheus enable
+service prometheus enable || true
 sysrc prometheus_data_dir="/mnt/prometheus"
 sysrc prometheus_syslog_output_enable="YES"
 echo "prometheus_args=\"--web.listen-address=$IP:9090\"" >> /etc/rc.conf
@@ -69,7 +69,7 @@ echo "prometheus_args=\"--web.listen-address=$IP:9090\"" >> /etc/rc.conf
   sed "s${sep}%%alertaddress%%${sep}$ALERTADDRESS${sep}g" \
   > /usr/local/etc/alertmanager/alertmanager.yml
 
-service alertmanager enable
+service alertmanager enable || true
 sysrc alertmanager_data_dir="/mnt/alertmanager"
 echo "alertmanager_args=\"--web.listen-address=$IP:9093 --cluster.listen-address=''\"" >> /etc/rc.conf
 

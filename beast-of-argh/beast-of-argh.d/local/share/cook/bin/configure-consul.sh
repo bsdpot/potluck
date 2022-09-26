@@ -20,7 +20,7 @@ mkdir -p /usr/local/etc/consul.d
 chown consul /usr/local/etc/consul.d
 chmod 750 /usr/local/etc/consul.d
 
-# shellcheck disable=SC3003
+# shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 
@@ -43,7 +43,7 @@ echo "s${sep}%%gossipkey%%${sep}$GOSSIPKEY${sep}" | sed -i '' -f - \
 chown -R consul:wheel /usr/local/etc/consul.d/
 
 # enable consul
-service consul enable
+service consul enable || true
 
 # set load parameter for consul config
 sysrc consul_args="-config-file=/usr/local/etc/consul.d/agent.hcl"

@@ -1,3 +1,9 @@
+0.0.23
+
+* Version bump for rebuild
+
+---
+
 0.0.22
 
 * Updated to match cook changes and check for .env.cook
