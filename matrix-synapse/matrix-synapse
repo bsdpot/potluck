@@ -1,6 +1,1 @@
-copy-in -s /usr/local/etc/pot/flavours/matrix-synapse.d/nginx.conf -d /root/nginx.conf
-copy-in -s /usr/local/etc/pot/flavours/matrix-synapse.d/nginx.nossl.conf -d /root/nginx.nossl.conf
-copy-in -s /usr/local/etc/pot/flavours/matrix-synapse.d/homeserver.yaml -d /root/homeserver.yaml
-copy-in -s /usr/local/etc/pot/flavours/matrix-synapse.d/my.log.config -d /root/my.log.config
-copy-in -s /usr/local/etc/pot/flavours/matrix-synapse.d/certrenew.sh -d /root/certrenew.sh
-copy-in -s /usr/local/etc/pot/flavours/matrix-synapse.d/syslog-ng.conf.in -d /root/syslog-ng.conf.in
+copy-in -s /usr/local/etc/pot/flavours/matrix-synapse.d/local -d /root/.pot_local

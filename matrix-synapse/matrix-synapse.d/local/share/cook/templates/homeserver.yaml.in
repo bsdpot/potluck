@@ -13,7 +13,7 @@
 # e.g. matrix.org, localhost:8080, etc.
 # This is also the last part of your UserID.
 #
-server_name: "%%DOMAIN%%"
+server_name: "%%domain%%"
 
 # When running as a daemon, the file to store the pid in
 #
@@ -30,7 +30,7 @@ pid_file: /var/run/matrix-synapse/homeserver.pid
 # use synapse with a reverse proxy, this should be the URL to reach
 # synapse via the proxy.
 #
-public_baseurl: https://%%DOMAIN%%/
+public_baseurl: https://%%domain%%/
 
 # Set the soft limit on the number of file descriptors synapse can use
 # Zero is used to indicate synapse should set the soft limit to the
@@ -240,7 +240,7 @@ listeners:
 
 # How to reach the server admin, used in ResourceLimitError
 #
-admin_contact: 'mailto:%%ALERTEMAIL%%'
+admin_contact: 'mailto:%%alertemail%%'
 
 # Global blocking
 #
@@ -866,7 +866,7 @@ media_store_path: "/mnt/matrixdata/media_store"
 
 # Enable registration for new users.
 #
-enable_registration: %%REGISTRATIONENABLE%%
+enable_registration: %%registrationenable%%
 
 # Optional account validity configuration. This allows for accounts to be denied
 # any request after a given period.
@@ -971,7 +971,7 @@ account_validity:
 # If set, allows registration of standard or admin accounts by anyone who
 # has the shared secret, even if registration is otherwise disabled.
 #
-registration_shared_secret: "%%MYSHAREDSECRET%%"
+registration_shared_secret: "%%mysharedsecret%%"
 
 # Set the number of bcrypt rounds used to generate password hash.
 # Larger numbers increase the work factor needed to generate the hash.
@@ -1117,19 +1117,19 @@ report_stats: false
 # the registration_shared_secret is used, if one is given; otherwise,
 # a secret key is derived from the signing key.
 #
-macaroon_secret_key: "%%MYMACAROON%%"
+macaroon_secret_key: "%%mymacaroon%%"
 
 # a secret which is used to calculate HMACs for form values, to stop
 # falsification of values. Must be specified for the User Consent
 # forms to work.
 #
-form_secret: "%%MYFORMKEY%%"
+form_secret: "%%myformkey%%"
 
 ## Signing Keys ##
 
 # Path to the signing key to sign messages with
 #
-signing_key_path: "/usr/local/etc/matrix-synapse/%%DOMAIN%%.signing.key"
+signing_key_path: "/usr/local/etc/matrix-synapse/%%domain%%.signing.key"
 
 # The keys that the server used to sign messages with but won't use
 # to sign new messages.
@@ -1439,17 +1439,17 @@ password_config:
 email:
   # The hostname of the outgoing SMTP server to use. Defaults to 'localhost'.
   #
-  smtp_host: %%SMTPHOST%%
+  smtp_host: %%smtphost%%
 
   # The port on the mail server for outgoing SMTP. Defaults to 25.
   #
-  smtp_port: %%SMTPPORT%%
+  smtp_port: %%smtpport%%
 
   # Username/password for authentication to the SMTP server. By default, no
   # authentication is attempted.
   #
-  smtp_user: "%%SMTPUSER%%"
-  smtp_pass: "%%SMTPPASS%%"
+  smtp_user: "%%smtpuser%%"
+  smtp_pass: "%%smtppass%%"
 
   # Uncomment the following to require TLS transport security for SMTP.
   # By default, Synapse will connect over plain text, and will then switch to
@@ -1468,7 +1468,7 @@ email:
   # Note that the placeholder must be written '%(app)s', including the
   # trailing 's'.
   #
-  notif_from: "Your Friendly %(app)s homeserver <%%SMTPFROM%%>"
+  notif_from: "Your Friendly %(app)s homeserver <%%smtpfrom%%>"
 
   # app_name defines the default value for '%(app)s' in notif_from. It
   # defaults to 'Matrix'.
@@ -1545,15 +1545,15 @@ password_providers:
       config:
         enabled: true
         mode: "search"
-        uri: "ldap://%%LDAPSERVER%%:389"
+        uri: "ldap://%%ldapserver%%:389"
         start_tls: true
-        base: "ou=People,dc=%%MYSUFFIX%%,dc=%%MYTLD%%"
+        base: "ou=People,dc=%%mysuffix%%,dc=%%mytld%%"
         attributes:
            uid: "uid"
            mail: "email"
            name: "givenName"
-        bind_dn: "cn=Manager,dc=%%MYSUFFIX%%,dc=%%MYTLD%%"
-        bind_password: "%%LDAPPASSWORD%%"
+        bind_dn: "cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%"
+        bind_password: "%%ldappassword%%"
         filter: "(objectClass=posixAccount)"
 
 # Clients requesting push notifications can either have the body of

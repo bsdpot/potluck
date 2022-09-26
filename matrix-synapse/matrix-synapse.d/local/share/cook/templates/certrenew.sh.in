@@ -1,0 +1,8 @@
+#!/bin/sh
+cd /
+service nginx stop
+/usr/local/sbin/acme.sh --register-account -m "%%sslemail%%" --server zerossl
+/usr/local/sbin/acme.sh --force --issue -d %%domain%% --standalone
+cp -f /.acme.sh/%%domain%%/* /usr/local/etc/ssl/
+service nginx start
+service synapse restart
