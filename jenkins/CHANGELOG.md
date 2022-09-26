@@ -1,3 +1,9 @@
+0.0.16
+
+* Version bump for new image, cook script
+
+---
+
 0.0.15
 
 * Version bump for FreeBSD-13.1 image

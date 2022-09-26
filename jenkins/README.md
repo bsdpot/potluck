@@ -29,10 +29,27 @@ You can adjust this flavour and rebuild your own pot image if you have other req
   ```pot export-ports -p <jailname> -e 8080:8080```
 * Adjust to your environment:
   ```
-  sudo pot set-env -p <jailname> -E RUNTYPE=<nostore|setupstore|activestore> \
-  -E BUILDHOST=<IP of potbuilder VM> \
-  [ -E IMPORTKEYS=<1|0 default> -E REMOTELOG=<IP of syslog-ng server> ]
+  sudo pot set-env -p <jailname> \
+    -E DATACENTER=<datacentername> \
+    -E NODENAME=<nodename> \
+    -E IP=<IP address of this system> \
+    -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
+    -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+    -E RUNTYPE=<nostore|setupstore|activestore> \
+    -E BUILDHOST=<IP of potbuilder VM> \
+    [ -E IMPORTKEYS=<1|0 default> ] \
+    [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
+
+The DATACENTER parameter defines a common datacenter.
+
+The NODENAME parameter defines the name of this node.
+
+The IP parameter is the IP address which will be used to access services.
+
+The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+
+The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
 
 RUNTYPE is one of:
 * ```nostore```, no persistent storage. anything you setup will be lost on reboot
