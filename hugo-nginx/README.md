@@ -35,42 +35,56 @@ It is advised to run this image behind a proxy. The directory permissions on the
   ```pot export-ports -p <jailname> -e 80:80```
 * Adjust to your environment:
   ```
-  sudo pot set-env -p <jailname> -E SERVERNAME=<fqdn> \
-  -E IP=<IP of potbuilder VM> -E SITENAME=<site name> \
-  -E GITEMAIL=<git user email> -E GITUSER=<git username> \
-  [-E CUSTOMDIR=<custom dir inside huge sitename> \
-   -E CUSTOMFILE=<1|0 default> -E IMPORTKEYS=<1|0 default> \
-   -E THEMEADJUST=<1|0> \
-   -E REMOTELOG=<IP syslog-ng server> ]
+  sudo pot set-env -p <jailname> \
+  -E NODENAME=name \
+  -E DATACENTER=datacenter \
+  -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> \
+  -E SERVERNAME=<fqdn> \
+  -E IP=<IP of potbuilder VM> \
+  -E SITENAME=<site name> \
+  -E GITEMAIL=<git user email> \
+  -E GITUSER=<git username> \
+  [ -E CUSTOMDIR=<custom dir inside huge sitename> ] \
+  [ -E CUSTOMFILE=1 -E IMPORTKEYS=1 ] \
+  [ -E THEMEADJUST=1 ] \
+  [ -E REMOTELOG=<IP syslog-ng server> ]
   ```
 
-SERVERNAME is the fully qualified domain name to configure nginx with.
+The NODENAME parameter is the name of the node.
 
-SITENAME is the name of the hugo site and affects directory naming.
+The DATACENTER parameter is the name of the datacenter. The REGION parameter is to set "east" or "west" or "global" (default).
 
-GITEMAIL is the email address to use for a git username.
+The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
-GITUSER is the git username associated with the email address.
+The IP parameter is the IP address of the pot image.
 
-CUSTOMDIR is a custom directory to create inside the hugo installation in SITENAME.
+The SERVERNAME parameter is the fully qualified domain name to configure nginx with.
 
-CUSTOMFILE defaults to 0. Set to 1 and copy in your own customfile.tgz which will be extracted to ```/mnt/{SITENAME}/```. This would be a custom config.toml, static microblog posts or about.md pages and images for static dir.
+The SITENAME parameter is the name of the hugo site and affects directory naming.
 
-IMPORTKEYS defaults to 0. Set to 1 to add the copied in pubkey to authenticated_keys.
+The GITEMAIL parameter is the email address to use for a git username.
+
+The GITUSER parameter is the git username associated with the email address.
+
+The CUSTOMDIR parameter is a custom directory to create inside the hugo installation in SITENAME.
+
+The CUSTOMFILE parameter, if set to 1, will copy in your own customfile.tgz which will be extracted to ```/mnt/{SITENAME}/```. This would be a custom config.toml, static microblog posts or about.md pages and images for static dir.
+
+The IMPORTKEYS parameter, if set to 1, will add the copied in pubkey to authenticated_keys.
 Copy in the applicable id_rsa.pub as part of the pot setup and start process.
 
-THEMEADJUST defaults to 0 and makes no changes to the ```kiss-em``` theme in use. If set to 1 will make changes specific to http://potluck.honeyguide.net.
+The THEMEADJUST parameter, if set to 1, will make changes specific to http://potluck.honeyguide.net.
 
 REMOTELOG is an optional parameter for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
 # Usage
 Start hugo manually (not necessary):
 ```
-cd /mnt/<sitename> && hugo
+cd /mnt/sitename && hugo
 ```
 
 To access ```hugo```:
-* http://<hugo-host>
+* http://hugo-host-name
 
 The default site is blank.
 
@@ -91,4 +105,4 @@ Make sure to copy-in to /root/customfile.tgz and set ```-E CUSTOMFILE=1``` in th
 
 # Persistent storage
 
-To use persistent storage make sure to mount-in a pre-configured data set to /mnt/<sitename>.
+To use persistent storage make sure to mount-in a pre-configured data set to /mnt/(your-sitename).

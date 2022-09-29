@@ -12,10 +12,10 @@ http {
     keepalive_timeout  65;
 
     server {
-        listen %%IP%%:80 default_server;
-        server_name %%SERVERNAME%%;
+        listen %%ip%%:80 default_server;
+        server_name %%servername%%;
         # set the root
-        root /usr/local/www/%%SITENAME%%;
+        root /usr/local/www/%%sitename%%;
         index index.html;
         location ~ ^/([a-zA-Z0-9=\?]+)$ {
             rewrite ^/(.*)$ / break;

@@ -1,8 +1,1 @@
-copy-in -s /usr/local/etc/pot/flavours/hugo-nginx.d/nginx.conf -d /root/nginx.conf
-copy-in -s /usr/local/etc/pot/flavours/hugo-nginx.d/goaccess.conf.in -d /root/goaccess.conf.in
-copy-in -s /usr/local/etc/pot/flavours/hugo-nginx.d/custom_theme_default_list.html -d /root/custom_theme_default_list.html
-copy-in -s /usr/local/etc/pot/flavours/hugo-nginx.d/custom_theme_blog_list.html -d /root/custom_theme_blog_list.html
-copy-in -s /usr/local/etc/pot/flavours/hugo-nginx.d/custom_theme_partial_article.html -d /root/custom_theme_partial_article.html
-copy-in -s /usr/local/etc/pot/flavours/hugo-nginx.d/custom_theme_partial_footer.html -d /root/custom_theme_partial_footer.html
-copy-in -s /usr/local/etc/pot/flavours/hugo-nginx.d/custom_theme_taxonomy_tag.html -d /root/custom_theme_taxonomy_tag.html
-copy-in -s /usr/local/etc/pot/flavours/hugo-nginx.d/syslog-ng.conf.in -d /root/syslog-ng.conf.in
+copy-in -s /usr/local/etc/pot/flavours/hugo-nginx.d/local -d /root/.pot_local
