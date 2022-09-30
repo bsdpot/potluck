@@ -47,7 +47,7 @@
 
 # Directory used to store public key data:
 #pki_dir: /usr/local/etc/salt/pki/master
-pki_dir: PKIPATH
+pki_dir: %%pkipath%%
 
 # Key cache. Increases master speed for large numbers of accepted
 # keys. Available options: 'sched'. (Updates on a fixed schedule.)
@@ -663,7 +663,7 @@ pki_dir: PKIPATH
 # Example:
 file_roots:
   base:
-    - STATEPATH
+    - %%statepath%%
 #   dev:
 #     - /usr/local/etc/salt/states/dev/services
 #     - /usr/local/etc/salt/states/dev/states
@@ -845,7 +845,7 @@ file_roots:
 # highstate format, and is generally just key/value pairs.
 pillar_roots:
   base:
-    - PILLARPATH
+    - %%pillarpath%%
 #
 #ext_pillar:
 #  - hiera: /etc/hiera.yaml
