@@ -1,0 +1,4 @@
+#!/bin/sh
+if [ -f /root/data.ldif ]; then
+    /usr/local/sbin/slapadd -c -n 1 -F /usr/local/etc/openldap/slapd.d/ -l /root/data.ldif
+fi

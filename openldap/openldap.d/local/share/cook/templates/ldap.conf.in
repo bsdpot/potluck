@@ -1,0 +1,7 @@
+BASE    dc=%%mysuffix%%,dc=%%mytld%%
+URI     ldap://%%ip%% ldaps://%%ip%%
+SIZELIMIT       0
+TIMELIMIT       15
+DEREF          never
+TLS_CACERT /usr/local/etc/openldap/ca.crt
+TLS_CIPHER_SUITE HIGH:MEDIUM:+SSLv3

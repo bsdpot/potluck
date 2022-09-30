@@ -27,7 +27,7 @@ moduleload    lastmod
 # moduleload    back_ldap
 
 # this will be automatically updated if cluster
-# serverID SETSERVERID
+serverID %%serverid%%
 
 # added from https://loga.us/2014/08/16/openldap-and-multi-master-replication-in-freebsd-part-1/
 allow bind_v2
@@ -65,8 +65,8 @@ allow bind_v2
 
 database    mdb
 maxsize     1073741824
-suffix      "dc=MYSUFFIX,dc=MYTLD"
-rootdn      "cn=Manager,dc=MYSUFFIX,dc=MYTLD"
+suffix      "dc=%%mysuffix%%,dc=%%mytld%%"
+rootdn      "cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%"
 # Cleartext passwords, especially for the rootdn, should
 # be avoid.  See slappasswd(8) and slapd.conf(5) for details.
 # Use of strong authentication encouraged.
@@ -77,5 +77,45 @@ rootpw      ofcsecret
 directory   /mnt/openldap-data
 # Indices to maintain
 index   objectClass eq
-
 #
+syncrepl rid=000
+provider=ldap://%%remoteip%%
+type=refreshAndPersist
+retry="5 5 300 +"
+searchbase="dc=%%mysuffix%%,dc=%%mytld%%"
+attrs="*,+"
+bindmethod=simple
+binddn="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%"
+credentials=ofcsecret
+
+# Indices to maintain
+index default pres,eq
+index uid,memberUid,gidNumber
+
+# Create indexes for attribute cn (commonname) and givenName
+# EQUALITY, SUBSTR searches and provides optimization
+# for sc=a* type searches
+index cn,givenName eq,sub,subinitial
+
+# Create indexes for sn (surname) on EQUALITY and SUBSTR searches
+index sn eq,sub
+
+# Creates indexes for attribute mail on presence, EQUALITY and SUBSTR
+index mail pres,eq,sub
+
+# Optimises searches of form objectclass=person
+# index objectclass eq
+# already added
+
+# Syncprov indexes
+index entryCSN eq
+index entryUUID eq
+# Mirror mode essential to allow writes and must appear after all syncrepl directives
+mirrormode TRUE
+
+# Define the provider to use the syncprov overlay (last directives in database section)
+overlay syncprov
+
+# contextCSN saved to database every 100 updates or 10 mins.
+syncprov-checkpoint 100 10
+syncprov-sessionlog 100

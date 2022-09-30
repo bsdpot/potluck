@@ -22,10 +22,9 @@ source src {
  internal();
 };
 
-#source s_otherlogs {
-# file("/var/log/service/service.log");
-# file("/var/log/otherserver/access.log");
-#};
+source s_slapd {
+ file("/var/log/slapd.log");
+};
 
 # destinations
 destination messages { file("/var/log/messages"); };
@@ -161,5 +160,4 @@ log { source(src); filter(f_ppp); destination(ppp); };
 # flags(flow-control);
 #};
 log { source(src); filter(f_all); destination(loghost); };
-# enable otherlogs
-#log { source(s_otherlogs); destination(loghost); };
+log { source(s_slapd); destination(loghost); };

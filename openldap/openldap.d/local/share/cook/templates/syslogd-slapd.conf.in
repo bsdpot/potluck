@@ -1,0 +1,3 @@
+# openldap pot image additions
+!slapd
+*.*                                                           /var/log/slapd.log
