@@ -68,7 +68,7 @@ chown ldap:ldap /usr/local/etc/openldap/ldap.conf
 chmod 644 /usr/local/etc/openldap/ldap.conf
 
 # remove any old config
-rm -r /usr/local/etc/openldap/slapd.d/*
+rm -r /usr/local/etc/openldap/slapd.d/* || true
 
 # set permissions so that ldap user owns /usr/local/etc/openldap/slapd.d/
 # this is critical to making the below work

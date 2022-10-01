@@ -1,3 +1,9 @@
+1.3.1
+
+* Adding 'or true' to removing old files for slapd to avoid error out
+
+---
+
 1.3.0
 
 * Fixing up openssl script with full paths

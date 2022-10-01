@@ -107,7 +107,7 @@ timeout --foreground 120 \
   done'
 
 log "Start node_exporter"
-service node_exporter start
+service node_exporter start || true
 
 log "Configure ssl"
 configure-ssl.sh
@@ -125,10 +125,7 @@ timeout --foreground 120 \
   done'
 
 log "Start apache24"
-timeout --foreground 120 \
-  sh -c 'while ! service apache24 status; do
-    service apache24 start || true; sleep 5;
-  done'
+service apache24 start || true
 
 log "Exit seasoned"
 pot_seasoned_exit
