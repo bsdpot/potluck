@@ -111,6 +111,12 @@ pkg install -y nano
 step "Install package bash"
 pkg install -y bash
 
+step "Install package go"
+pkg install -y go
+
+step "Install package node_exporter"
+pkg install -y node_exporter
+
 # openldap25 has missing slap* binaries and other files
 # openldap26 may be useful but openldap24 still default dependency for many packages
 step "Install package openldap24-server"
@@ -138,6 +144,14 @@ pkg install -y syslog-ng
 step "Clean package installation"
 pkg autoremove -y
 pkg clean -y
+
+# TODO
+# git clone https://github.com/tomcz/openldap_exporter
+# (done) pkg install -y go
+# cd openldap_exporter
+# make build
+# then setup rc scripts like with other exporters as nothing for bsd yet
+###
 
 # -------------- END PACKAGE SETUP -------------
 

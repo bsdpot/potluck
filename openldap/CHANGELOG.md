@@ -1,3 +1,10 @@
+1.2.8
+
+* Fix missing node_exporter install
+* Add todo for openldap_exporter
+
+---
+
 1.2.7
 
 * Version bump for new base image, cook script
