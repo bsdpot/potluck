@@ -1,3 +1,9 @@
+0.0.20
+
+* More bugfixing for ssh host key changes
+
+---
+
 0.0.19
 
 * Bugfixing, can't remove ssh keys if known_hosts doesn't exist

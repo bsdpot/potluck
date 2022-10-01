@@ -41,7 +41,9 @@ case "$RUNTYPE" in
 			chmod 600 /usr/local/jenkins/.ssh/id_rsa
 		fi
 		# enable quick access to remote pot builder host
-		su - jenkins -c "ssh-keygen -R $BUILDHOST"
+		if [ -f /usr/local/jenkins/.ssh/known_hosts ]; then
+			su - jenkins -c "ssh-keygen -R $BUILDHOST || true"
+		fi
 		su - jenkins -c "ssh-keyscan -H $BUILDHOST >> /usr/local/jenkins/.ssh/known_hosts"
 		# add jenkins user to www group
 		/usr/sbin/pw usermod jenkins -G www
@@ -88,13 +90,13 @@ case "$RUNTYPE" in
 		# enable quick access to remote pot builder host
 		echo "Adding extra host $BUILDHOST keys"
 		if [ -f /mnt/jenkins/.ssh/known_hosts ]; then
-			su - jenkins -c "ssh-keygen -R $BUILDHOST"
+			su - jenkins -c "ssh-keygen -R $BUILDHOST || true"
 		fi
 		su - jenkins -c "ssh-keyscan -H $BUILDHOST >> /mnt/jenkins/.ssh/known_hosts"
 		# if an extra host been provided, enable quick ssh access to that host
 		if [ -n "$EXTRAHOST" ]; then
 			echo "Adding extra host $EXTRAHOST keys"
-			su - jenkins -c "ssh-keygen -R $EXTRAHOST"
+			su - jenkins -c "ssh-keygen -R $EXTRAHOST || true"
 			su - jenkins -c "ssh-keyscan -H $EXTRAHOST >> /mnt/jenkins/.ssh/known_hosts"
 		fi
 		# set the jenkins home directory to persistent storage at /mnt/jenkins
@@ -139,13 +141,13 @@ case "$RUNTYPE" in
 		# enable quick access to remote builder host
 		echo "Adding extra host $BUILDHOST keys"
 		if [ -f /mnt/jenkins/.ssh/known_hosts ]; then
-			su - jenkins -c "ssh-keygen -R $BUILDHOST"
+			su - jenkins -c "ssh-keygen -R $BUILDHOST || true"
 		fi
 		su - jenkins -c "ssh-keyscan -H $BUILDHOST >> /mnt/jenkins/.ssh/known_hosts"
 		# if an extra host been provided, enable quick ssh access to that host
 		if [ -n "$EXTRAHOST" ]; then
 			echo "Adding extra host $EXTRAHOST keys"
-			su - jenkins -c "ssh-keygen -R $EXTRAHOST"
+			su - jenkins -c "ssh-keygen -R $EXTRAHOST || true"
 			su - jenkins -c "ssh-keyscan -H $EXTRAHOST >> /mnt/jenkins/.ssh/known_hosts"
 		fi
 		# set the jenkins home directory to persistent storage at /mnt/jenkins
