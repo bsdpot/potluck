@@ -1,3 +1,9 @@
+0.0.17
+
+* Bug-fixing, removing statements that fail and interfere with cook
+
+---
+
 0.0.16
 
 * Version bump for new image, cook script

@@ -90,7 +90,7 @@ timeout --foreground 120 \
   done'
 
 log "Start node_exporter"
-service node_exporter start
+service node_exporter start || true
 
 log "Configure jenkins"
 configure-jenkins.sh
