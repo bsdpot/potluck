@@ -1,3 +1,10 @@
+1.3.4
+
+* Add optional parameter to import custom ldap data at end of cook script
+* This is a repeat, yet seems necessary to avoid doing it manually on login
+
+---
+
 1.3.3
 
 * Bug-fixing slapd config script

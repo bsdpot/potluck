@@ -47,7 +47,7 @@ fi
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args DOMAIN MYCREDS HOSTNAME SERVERID"
-optional_args="REMOTEIP REMOTELOG"
+optional_args="REMOTEIP IMPORTCUSTOM REMOTELOG"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -123,6 +123,11 @@ timeout --foreground 120 \
   sh -c 'while ! service slapd status; do
     service slapd start || true; sleep 5;
   done'
+
+if [ -n "$IMPORTCUSTOM" ]; then
+	log "Import custom ldap data"
+	import-custom.sh
+fi
 
 log "Start apache24"
 service apache24 start || true
