@@ -22,7 +22,7 @@ case "$RUNTYPE" in
 			chmod 700 /usr/local/jenkins/.ssh
 			# cp /root/keys to dest /usr/local/jenkins
 			cp -f /root/jenkins.key /usr/local/jenkins/.ssh/id_rsa
-			if [ -f /usr/local/jenkins/.ssh/id_rsa ] then
+			if [ -f /usr/local/jenkins/.ssh/id_rsa ]; then
 				chmod 600 /usr/local/jenkins/.ssh/id_rsa
 			fi
 			cp -f /root/jenkins.pub /usr/local/jenkins/.ssh/id_rsa.pub

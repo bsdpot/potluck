@@ -1,3 +1,9 @@
+0.0.18
+
+* Fixing typo in if statement
+
+---
+
 0.0.17
 
 * Bug-fixing, removing statements that fail and interfere with cook
