@@ -1,3 +1,9 @@
+1.3.0
+
+* Fixing up openssl script with full paths
+
+---
+
 1.2.9
 
 * Remove go install
