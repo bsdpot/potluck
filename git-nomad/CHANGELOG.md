@@ -1,3 +1,10 @@
+1.0.8
+
+* Add getopts for NODENAME
+* make NODENAME optional
+
+---
+
 1.0.7
 
 * typo with ssh instead of sshd

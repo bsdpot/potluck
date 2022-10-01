@@ -41,11 +41,27 @@ then
 fi
 
 ########################################################################
+## Get command line flag options used for nomad images
+## Convert parameters to variables if passed (overwrite environment)
+########################################################################
+OPTIND=1
+while getopts n: option
+do
+    case "${option}"
+    in
+      d) NODENAME=${OPTARG}
+         export NODENAME
+         ;;
+    esac
+done
+shift "$((OPTIND-1))"
+
+########################################################################
 ## Check config
 ########################################################################
 
-required_args="NODENAME"
-optional_args=""
+required_args=""
+optional_args="NODENAME"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
