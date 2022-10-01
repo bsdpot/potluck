@@ -1,3 +1,9 @@
+1.1.7
+
+* Version bump for rebuild on new base, no update to cook setup yet
+
+---
+
 1.1.6
 
 * Version bump for FreeBSD-13.1 image
