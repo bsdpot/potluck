@@ -1,3 +1,10 @@
+1.2.9
+
+* Remove go install
+* Add note about failure of openldap_exporter to build on freebsd
+
+---
+
 1.2.8
 
 * Fix missing node_exporter install

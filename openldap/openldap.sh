@@ -111,8 +111,9 @@ pkg install -y nano
 step "Install package bash"
 pkg install -y bash
 
-step "Install package go"
-pkg install -y go
+# not including, openldap_exporter doesn't work on freebsd
+#step "Install package go"
+#pkg install -y go
 
 step "Install package node_exporter"
 pkg install -y node_exporter
@@ -151,6 +152,8 @@ pkg clean -y
 # cd openldap_exporter
 # make build
 # then setup rc scripts like with other exporters as nothing for bsd yet
+###
+# Update: build not currently working 2022-10-01, not suited for freebsd
 ###
 
 # -------------- END PACKAGE SETUP -------------
