@@ -77,10 +77,10 @@ chown -R ldap:ldap /usr/local/etc/openldap/slapd.d/
 # build a basic config from the included slapd.CONF file (capitalised for emphasis)
 # -f read from config file, -F write to config dir
 # slapcat -b cn=config -f /usr/local/etc/openldap/slapd.conf -F /usr/local/etc/openldap/slapd.d/
-/usr/local/sbin/slapcat -n 0 -f /usr/local/etc/openldap/slapd.conf -F /usr/local/etc/openldap/slapd.d/
+/usr/local/sbin/slapcat -n 0 -f /usr/local/etc/openldap/slapd.conf -F /usr/local/etc/openldap/slapd.d/ || true
 
 # import configuration ldif file, uses -c to continue on error, database 0
-/usr/local/sbin/slapadd -c -n 0 -F /usr/local/etc/openldap/slapd.d/ -l /usr/local/etc/openldap/slapd.ldif
+/usr/local/sbin/slapadd -c -n 0 -F /usr/local/etc/openldap/slapd.d/ -l /usr/local/etc/openldap/slapd.ldif || true
 
 # create import scripts
 cp -f "$TEMPLATEPATH/importldapconfig.sh.in" /root/importldapconfig.sh

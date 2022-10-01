@@ -1,3 +1,9 @@
+1.3.3
+
+* Bug-fixing slapd config script
+
+---
+
 1.3.2
 
 * Fixing up formatting issues with multisite slapd.conf
