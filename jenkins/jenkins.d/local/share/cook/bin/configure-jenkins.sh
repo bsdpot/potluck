@@ -87,7 +87,9 @@ case "$RUNTYPE" in
 		fi
 		# enable quick access to remote pot builder host
 		echo "Adding extra host $BUILDHOST keys"
-		su - jenkins -c "ssh-keygen -R $BUILDHOST"
+		if [ -f /mnt/jenkins/.ssh/known_hosts ]; then
+			su - jenkins -c "ssh-keygen -R $BUILDHOST"
+		fi
 		su - jenkins -c "ssh-keyscan -H $BUILDHOST >> /mnt/jenkins/.ssh/known_hosts"
 		# if an extra host been provided, enable quick ssh access to that host
 		if [ -n "$EXTRAHOST" ]; then
@@ -136,7 +138,9 @@ case "$RUNTYPE" in
 		fi
 		# enable quick access to remote builder host
 		echo "Adding extra host $BUILDHOST keys"
-		su - jenkins -c "ssh-keygen -R $BUILDHOST"
+		if [ -f /mnt/jenkins/.ssh/known_hosts ]; then
+			su - jenkins -c "ssh-keygen -R $BUILDHOST"
+		fi
 		su - jenkins -c "ssh-keyscan -H $BUILDHOST >> /mnt/jenkins/.ssh/known_hosts"
 		# if an extra host been provided, enable quick ssh access to that host
 		if [ -n "$EXTRAHOST" ]; then

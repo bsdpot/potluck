@@ -1,3 +1,9 @@
+0.0.19
+
+* Bugfixing, can't remove ssh keys if known_hosts doesn't exist
+
+---
+
 0.0.18
 
 * Fixing typo in if statement
