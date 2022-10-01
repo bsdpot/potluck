@@ -1,3 +1,9 @@
+1.3.2
+
+* Fixing up formatting issues with multisite slapd.conf
+
+---
+
 1.3.1
 
 * Adding 'or true' to removing old files for slapd to avoid error out
