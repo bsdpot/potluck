@@ -1,3 +1,9 @@
+2.0.22
+
+* Make PEERS optional
+
+---
+
 2.0.21
 
 * Consul is using http not https (see consul-tls for https)

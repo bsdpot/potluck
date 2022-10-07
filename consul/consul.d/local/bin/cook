@@ -45,8 +45,8 @@ fi
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME PEERS BOOTSTRAP"
-optional_args="GOSSIPKEY REMOTELOG"
+required_args="DATACENTER IP NODENAME BOOTSTRAP"
+optional_args="PEERS GOSSIPKEY REMOTELOG"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
