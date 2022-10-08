@@ -1,3 +1,9 @@
+2.0.23
+
+* Update consul agent.hcl for new setup tls options
+
+---
+
 2.0.22
 
 * Make PEERS optional

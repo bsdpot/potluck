@@ -10,10 +10,15 @@ ports = {
   http = 8500
   https = -1
 }
-verify_incoming = false
-verify_outgoing = false
-verify_server_hostname = false
-verify_incoming_rpc = false
+tls {
+  defaults {
+    verify_incoming = false
+    verify_outgoing = false
+  }
+  internal_rpc {
+    verify_server_hostname = false
+  }
+}
 enable_syslog = true
 leave_on_terminate = true
 log_level = "WARN"
