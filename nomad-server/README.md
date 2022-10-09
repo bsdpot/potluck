@@ -43,7 +43,7 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to.
 
-The IMPORTJOBS parameter is a binary flag to turn on automatic job imports. You must include steps to copy-in `jobname.nomad` to `/root/nomadsjobs/` and set this parameter to value of `1` to enable the import and running of copied-in nomad jobs.
+The IMPORTJOBS parameter is a binary flag to turn on automatic job imports. You must include steps to copy-in `jobname.nomad` to `/root/nomadjobs/` and set this parameter to value of `1` to enable the import and running of copied-in nomad jobs.
 
 # Usage
 

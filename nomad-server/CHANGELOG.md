@@ -1,3 +1,10 @@
+2.0.17
+
+* Fixing README for nomad jobs
+* Update consul hcl for new format tls settings
+
+---
+
 2.0.16
 
 * Version bump for new image and cook format

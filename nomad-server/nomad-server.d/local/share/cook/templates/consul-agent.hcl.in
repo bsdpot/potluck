@@ -5,10 +5,15 @@ dns_config = {
   a_record_limit = 3
   enable_truncate = true
 }
-verify_incoming = false
-verify_outgoing = false
-verify_server_hostname = false
-verify_incoming_rpc = false
+tls {
+  defaults {
+    verify_incoming = false
+    verify_outgoing = false
+  }
+  internal_rpc {
+    verify_server_hostname = false
+  }
+}
 log_file = "/var/log/consul/consul.log"
 log_level = "INFO"
 encrypt = "%%gossipkey%%"
