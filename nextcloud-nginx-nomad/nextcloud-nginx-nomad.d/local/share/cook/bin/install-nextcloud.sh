@@ -17,5 +17,6 @@ export PATH=/usr/local/bin:$PATH
 # we do not install/overwrite anything as we assume that updates/modifications are happening
 # from within Nextcloud.
 if [ ! -e /usr/local/www/nextcloud/status.php ]; then
+	pkg update -qf
     pkg install -y nextcloud-php80 nextcloud-twofactor_totp-php80 nextcloud-deck-php80 nextcloud-mail-php80 nextcloud-contacts-php80 nextcloud-calendar-php80 nextcloud-end_to_end_encryption-php80
 fi

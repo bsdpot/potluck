@@ -294,9 +294,6 @@ service nginx enable
 step "Enable php-fpm"
 service php-fpm enable
 
-
-
-
 # -------------- END PACKAGE SETUP -------------
 
 #

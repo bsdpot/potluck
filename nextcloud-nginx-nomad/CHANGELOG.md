@@ -1,3 +1,9 @@
+0.38
+
+* For fresh installs, force pkg update before installing nextcloud
+
+---
+
 0.37
 
 * Completely remove syslog-ng as not working with nomad pots
