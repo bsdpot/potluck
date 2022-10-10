@@ -1,3 +1,9 @@
+0.39
+
+* Pkg fetch nextcloud packages early on, include as local in package cache
+
+---
+
 0.38
 
 * For fresh installs, force pkg update before installing nextcloud

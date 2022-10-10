@@ -284,6 +284,9 @@ pkg install -y sudo
 step "Clean package installation"
 pkg clean -y
 
+step "Fetch nextcloud packages"
+pkg fetch -y nextcloud-php80 nextcloud-twofactor_totp-php80 nextcloud-deck-php80 nextcloud-mail-php80 nextcloud-contacts-php80 nextcloud-calendar-php80 nextcloud-end_to_end_encryption-php80
+
 step "Create necessary directories if they don't exist"
 # Create mountpoints
 mkdir /.snapshots
