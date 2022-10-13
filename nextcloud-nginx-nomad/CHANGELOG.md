@@ -1,3 +1,9 @@
+0.40
+
+* Undo pkg fetch, make sure to run pkg update
+
+---
+
 0.39
 
 * Pkg fetch nextcloud packages early on, include as local in package cache
