@@ -1,3 +1,9 @@
+0.41
+
+* Openssl s_client expects (no)servername flag
+
+---
+
 0.40
 
 * Undo pkg fetch, make sure to run pkg update

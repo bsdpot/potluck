@@ -44,7 +44,7 @@ chown -R www:www "${DATADIR}"
 # configure self-signed certificates for libcurl, mostly used for minio with self-signed certificates
 # nextcloud source needs patching to work with self-signed certificates too
 if [ -n "${SELFSIGNHOST}" ]; then
-    echo "" |/usr/bin/openssl s_client -showcerts -connect "${SELFSIGNHOST}" |/usr/bin/openssl x509 -outform PEM > /tmp/cert.pem
+    echo "" |/usr/bin/openssl s_client -showcerts -noservername -connect "${SELFSIGNHOST}" |/usr/bin/openssl x509 -outform PEM > /tmp/cert.pem
     if [ -f /tmp/cert.pem ]; then
         cat /tmp/cert.pem >> /usr/local/share/certs/ca-root-nss.crt
         echo "openssl.cafile=/usr/local/share/certs/ca-root-nss.crt" >> /usr/local/etc/php/99-custom.ini
