@@ -29,7 +29,6 @@ This is a flavour containing the ```traefik``` reverse proxy and load balancer p
   ```
 * Start jail with ```pot start <jailname>```
 
-
 ## Required Paramaters
 The DATACENTER parameter defines a common datacenter.
 

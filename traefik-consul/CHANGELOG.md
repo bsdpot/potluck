@@ -1,3 +1,10 @@
+1.3.2
+
+* Version bump for rebuild
+* Added checklist
+
+---
+
 1.3.1
 
 * Version bump for new base image and new cook script format
