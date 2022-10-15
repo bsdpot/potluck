@@ -1,3 +1,9 @@
+0.0.25
+
+* Add minio.json to dashboards
+
+---
+
 0.0.24
 
 * Version bump for rebuild and new version syslog-ng

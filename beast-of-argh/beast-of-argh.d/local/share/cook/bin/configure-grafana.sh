@@ -84,6 +84,8 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
       /mnt/grafana/provisioning/dashboards/postgres.json
     cp "$TEMPLATEPATH/mysql.json.in" \
       /mnt/grafana/provisioning/dashboards/mysql.json
+    cp "$TEMPLATEPATH/minio.json.in" \
+      /mnt/grafana/provisioning/dashboards/minio.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/
@@ -139,6 +141,8 @@ else
       /mnt/grafana/provisioning/dashboards/postgres.json
     cp "$TEMPLATEPATH/mysql.json.in" \
       /mnt/grafana/provisioning/dashboards/mysql.json
+    cp "$TEMPLATEPATH/minio.json.in" \
+      /mnt/grafana/provisioning/dashboards/minio.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/
