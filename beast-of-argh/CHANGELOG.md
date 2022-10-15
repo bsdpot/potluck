@@ -1,3 +1,10 @@
+0.0.24
+
+* Version bump for rebuild and new version syslog-ng
+* Added checklist
+
+---
+
 0.0.23
 
 * Version bump for rebuild
