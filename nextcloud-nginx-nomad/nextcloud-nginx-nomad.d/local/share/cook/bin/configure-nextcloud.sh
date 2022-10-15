@@ -44,12 +44,20 @@ chown -R www:www "${DATADIR}"
 # configure self-signed certificates for libcurl, mostly used for minio with self-signed certificates
 # nextcloud source needs patching to work with self-signed certificates too
 if [ -n "${SELFSIGNHOST}" ]; then
-    echo "" |/usr/bin/openssl s_client -showcerts -noservername -connect "${SELFSIGNHOST}" |/usr/bin/openssl x509 -outform PEM > /tmp/cert.pem
-    if [ -f /tmp/cert.pem ]; then
-        cat /tmp/cert.pem >> /usr/local/share/certs/ca-root-nss.crt
+    # append the copied in rootca file to necessary files
+    if [ -f /root/rootca.crt ]; then
+        cat /root/rootca.crt >> /usr/local/share/certs/ca-root-nss.crt
         echo "openssl.cafile=/usr/local/share/certs/ca-root-nss.crt" >> /usr/local/etc/php/99-custom.ini
-        cat /tmp/cert.pem >> /usr/local/www/nextcloud/resources/config/ca-bundle.crt
+        cat /root/rootca.crt >> /usr/local/www/nextcloud/resources/config/ca-bundle.crt
     fi
+    # the following fails on some setups so a different approach copying in rootCA is required, as above
+    #echo "" |/usr/bin/openssl s_client -showcerts -noservername -connect "${SELFSIGNHOST}" |/usr/bin/openssl x509 -outform PEM > /tmp/cert.pem
+    #if [ -f /tmp/cert.pem ]; then
+    #    cat /tmp/cert.pem >> /usr/local/share/certs/ca-root-nss.crt
+    #    echo "openssl.cafile=/usr/local/share/certs/ca-root-nss.crt" >> /usr/local/etc/php/99-custom.ini
+    #    cat /tmp/cert.pem >> /usr/local/www/nextcloud/resources/config/ca-bundle.crt
+    #fi
+
     # Patch nextcloud source for self-signed certificates with S3
     if [ -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php ] && [ -f "$TEMPLATEPATH/S3ObjectTrait.patch" ]; then
         # make sure we haven't already applied the patch

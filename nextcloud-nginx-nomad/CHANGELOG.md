@@ -1,3 +1,10 @@
+0.42
+
+* Trying different approach copying in self-signed rootCA file
+* If you generated self-signed certs, you'll have the file to copy in
+
+---
+
 0.41
 
 * Openssl s_client expects (no)servername flag
