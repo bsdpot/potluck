@@ -1,3 +1,10 @@
+2.0.24
+
+* Version bump for new consul version
+* Checklist added
+
+---
+
 2.0.23
 
 * Update consul agent.hcl for new setup tls options
