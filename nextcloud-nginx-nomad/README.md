@@ -140,12 +140,12 @@ job "nextcloud" {
          check {
             type     = "tcp"
             name     = "tcp"
-            interval = "60s"
+            interval = "300s"
             timeout  = "30s"
           }
           check_restart {
             limit = 0
-            grace = "600s"
+            grace = "60s"
             ignore_warnings = false
           }
       }
@@ -153,7 +153,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-13_1"
-        tag = "0.42"
+        tag = "0.43"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [

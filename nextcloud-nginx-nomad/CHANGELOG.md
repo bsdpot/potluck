@@ -1,3 +1,11 @@
+0.43
+
+* Reorder items
+* Add checklist for changes
+* First-time runs of image may bomb out when nomad restarts it, but pkg install still happening
+
+---
+
 0.42
 
 * Trying different approach copying in self-signed rootCA file

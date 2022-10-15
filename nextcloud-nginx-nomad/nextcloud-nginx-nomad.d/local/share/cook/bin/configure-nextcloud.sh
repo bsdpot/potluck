@@ -79,3 +79,5 @@ cp -f "$TEMPLATEPATH/nginx.conf" /usr/local/etc/nginx/nginx.conf
 
 # setup cronjob
 echo "*/15  *  *  *  *  www  /usr/local/bin/php -f /usr/local/www/nextcloud/cron.php" >> /etc/crontab
+
+# done
