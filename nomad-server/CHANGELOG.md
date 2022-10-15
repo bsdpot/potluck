@@ -1,3 +1,10 @@
+2.0.18
+
+* Update for new nomad version
+* Added checklist
+
+---
+
 2.0.17
 
 * Fixing README for nomad jobs
