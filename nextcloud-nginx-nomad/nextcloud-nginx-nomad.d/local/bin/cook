@@ -85,11 +85,11 @@ done
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
-log "kill nginx if around"
+log "stop nginx service, kill nginx if around"
 service nginx onestop || true
 pkill nginx || true
 
-log "kill php-fpm if around"
+log "stop php-fpm service, kill php-fpm if around"
 service php-fpm onestop || true
 pkill php-fpm || true
 
@@ -103,16 +103,19 @@ log "Configure nextcloud"
 configure-nextcloud.sh
 
 log "Start php-fpm"
-timeout --foreground 120 \
-  sh -c 'while ! service php-fpm status; do
-    service php-fpm start || true; sleep 5;
-  done'
+service php-fpm start || true
+sleep 3
+#timeout --foreground 120 \
+#  sh -c 'while ! service php-fpm status; do
+#    service php-fpm start || true; sleep 5;
+#  done'
 
 log "Start nginx"
-timeout --foreground 120 \
-  sh -c 'while ! service nginx status; do
-    service nginx start || true; sleep 5;
-  done'
+service nginx start || true
+#timeout --foreground 120 \
+#  sh -c 'while ! service nginx status; do
+#    service nginx start || true; sleep 5;
+#  done'
 
 # end script placement
 log "Exit seasoned"

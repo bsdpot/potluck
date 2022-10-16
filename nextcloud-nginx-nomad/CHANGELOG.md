@@ -1,3 +1,9 @@
+0.44
+
+* Simplify start of php-fpm and nginx due to crash error
+
+---
+
 0.43
 
 * Reorder items
