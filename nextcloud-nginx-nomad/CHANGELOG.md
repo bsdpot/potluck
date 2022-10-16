@@ -1,3 +1,9 @@
+0.45
+
+* Need a check for group existing
+
+---
+
 0.44
 
 * Simplify start of php-fpm and nginx due to crash error

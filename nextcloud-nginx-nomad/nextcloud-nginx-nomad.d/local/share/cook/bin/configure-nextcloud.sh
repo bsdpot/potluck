@@ -15,8 +15,11 @@ SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # Fix www group memberships so it works with fuse mounted directories
-pw addgroup -n newwww -g 1001
-pw moduser www -u 1001 -G 80,0,1001
+groupcheck=$(grep -c newwww /etc/group)
+if [ "$groupcheck" -eq "0" ]; then
+    pw addgroup -n newwww -g 1001
+    pw moduser www -u 1001 -G 80,0,1001
+fi
 
 # set perms on /usr/local/www/nextcloud/*
 chown -R www:www /usr/local/www/nextcloud
