@@ -1,3 +1,10 @@
+1.1.8
+
+* Update job file in README
+* Add checklist
+
+---
+
 1.1.7
 
 * Version bump for rebuild on new base, no update to cook setup yet
