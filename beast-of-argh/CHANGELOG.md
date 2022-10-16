@@ -1,3 +1,10 @@
+0.0.26
+
+* Adjusting minio dashboard in grafana to better working one
+* Minio-supplied one is out of date
+
+---
+
 0.0.25
 
 * Add minio.json to dashboards
