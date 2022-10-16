@@ -1,3 +1,9 @@
+0.46
+
+* Unquote "0" for group check
+
+---
+
 0.45
 
 * Need a check for group existing
