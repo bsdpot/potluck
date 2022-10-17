@@ -1,3 +1,10 @@
+0.47
+
+* Comment out newwww group changes, not using fusemounts
+* Split configure-nextcloud.sh into multiple mini-scripts to isolate problems
+
+---
+
 0.46
 
 * Unquote "0" for group check

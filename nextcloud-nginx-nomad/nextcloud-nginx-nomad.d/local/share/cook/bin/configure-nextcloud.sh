@@ -14,12 +14,13 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
+## commenting out, seems to be breaking stuff, and fuse mounts not in use ##
 # Fix www group memberships so it works with fuse mounted directories
-groupcheck=$(grep -c newwww /etc/group)
-if [ "${groupcheck}" -eq 0 ]; then
-    pw addgroup -n newwww -g 1001
-    pw moduser www -u 1001 -G 80,0,1001
-fi
+#groupcheck=$(grep -c newwww /etc/group)
+#if [ "${groupcheck}" -eq 0 ]; then
+#    pw addgroup -n newwww -g 1001
+#    pw moduser www -u 1001 -G 80,0,1001
+#fi
 
 # set perms on /usr/local/www/nextcloud/*
 chown -R www:www /usr/local/www/nextcloud
@@ -77,10 +78,4 @@ if [ -n "${SELFSIGNHOST}" ]; then
     fi
 fi
 
-# Configure NGINX
-cp -f "$TEMPLATEPATH/nginx.conf" /usr/local/etc/nginx/nginx.conf
-
-# setup cronjob
-echo "*/15  *  *  *  *  www  /usr/local/bin/php -f /usr/local/www/nextcloud/cron.php" >> /etc/crontab
-
-# done
+log "Nextcloud config complete"
