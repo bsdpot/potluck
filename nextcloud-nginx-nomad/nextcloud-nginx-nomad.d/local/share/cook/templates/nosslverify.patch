@@ -1,3 +1,3 @@
-                                        'cafile' => $bundle,
-                                        'verify_peer' => false,
-                                        'verify_peer_name' => false
+					'cafile' => $bundle,
+					'verify_peer' => false,
+					'verify_peer_name' => false

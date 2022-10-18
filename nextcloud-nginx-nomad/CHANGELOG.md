@@ -1,3 +1,9 @@
+0.51
+
+* Tabs and newline in new patch file for no-ssl-verify
+
+---
+
 0.50
 
 * Remove erroneous log statement
