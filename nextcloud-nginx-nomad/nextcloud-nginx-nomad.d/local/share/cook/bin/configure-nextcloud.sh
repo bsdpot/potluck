@@ -69,7 +69,7 @@ if [ -n "${SELFSIGNHOST}" ]; then
         if [ "${checknotapplied}" -eq 0 ]; then
             # check the patch will apply cleanly
             # shellcheck disable=SC2008
-            testpatch=$(patch --check -i /root/S3ObjectTrait.patch /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php | echo "$?")
+            testpatch=$(patch --check -i "$TEMPLATEPATH/S3ObjectTrait.patch" /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php | echo "$?")
             if [ "${testpatch}" -eq 0 ]; then
                 # apply the patch
                 patch -i "$TEMPLATEPATH/S3ObjectTrait.patch" /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php

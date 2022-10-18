@@ -1,3 +1,9 @@
+0.48
+
+* Patch file path fix
+
+---
+
 0.47
 
 * Comment out newwww group changes, not using fusemounts
