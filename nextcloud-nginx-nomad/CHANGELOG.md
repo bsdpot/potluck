@@ -1,3 +1,10 @@
+0.49
+
+* Make patching nextcloud a specific option
+* Set non-verify parameters in new fashion
+
+---
+
 0.48
 
 * Patch file path fix

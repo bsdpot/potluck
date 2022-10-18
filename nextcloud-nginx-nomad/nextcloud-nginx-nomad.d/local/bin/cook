@@ -45,7 +45,7 @@ fi
 ## Convert parameters to variables if passed (overwrite environment)
 ########################################################################
 OPTIND=1
-while getopts d:s: option
+while getopts d:s:x: option
 do
     case "${option}"
     in
@@ -54,6 +54,9 @@ do
          ;;
       s) SELFSIGNHOST=${OPTARG}
          export SELFSIGNHOST
+         ;;
+      x) SPECIALPATCH=${OPTARG}
+         export SPECIALPATCH
          ;;
     esac
 done
@@ -64,7 +67,7 @@ shift "$((OPTIND-1))"
 ########################################################################
 
 required_args=""
-optional_args="DATADIR SELFSIGNHOST"
+optional_args="DATADIR SELFSIGNHOST SPECIALPATCH"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
