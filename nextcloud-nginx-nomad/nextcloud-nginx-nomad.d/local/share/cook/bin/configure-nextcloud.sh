@@ -88,5 +88,3 @@ if [ -n "${SELFSIGNHOST}" ]; then
         fi
     fi
 fi
-
-log "Nextcloud config complete"

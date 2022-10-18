@@ -1,3 +1,9 @@
+0.50
+
+* Remove erroneous log statement
+
+---
+
 0.49
 
 * Make patching nextcloud a specific option
