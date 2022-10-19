@@ -1,3 +1,9 @@
+0.52
+
+* Formatting in new patch file, add comma
+
+---
+
 0.51
 
 * Tabs and newline in new patch file for no-ssl-verify
