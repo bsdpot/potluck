@@ -28,7 +28,7 @@ service loki enable
 sysrc loki_syslog_output_enable="YES"
 
 # copy in loki config file
-if [ -f /mnt/loki/loki-local-config.yaml ]; then
+if [ -f /mnt/loki/loki-local-config.yaml.in ]; then
 	cp /mnt/loki/loki-local-config.yaml.in \
 	  /usr/local/etc/loki-local-config.yaml
 else
@@ -52,7 +52,7 @@ service promtail enable
 sysrc promtail_syslog_output_enable="YES"
 
 # copy in the promtail config file
-if [ -f /mnt/loki/promtail-local-config.yaml ]; then
+if [ -f /mnt/loki/promtail-local-config.yaml.in ]; then
 	cp /mnt/loki/promtail-local-config.yaml.in \
 	  /usr/local/etc/promtail-local-config.yaml
 else
