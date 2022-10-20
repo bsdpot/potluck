@@ -1,3 +1,28 @@
+1.0.8
+
+* Add getopts for NODENAME
+* make NODENAME optional
+
+---
+
+1.0.7
+
+* typo with ssh instead of sshd
+
+---
+
+1.0.6
+
+* Version bump for rebuild on new image, new cook script
+
+---
+
+1.0.5
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 1.0.4
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

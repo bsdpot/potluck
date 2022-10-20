@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # shellcheck disable=SC1091
-. /root/.env.cook
+if [ -e /root/.env.cook ]; then
+    . /root/.env.cook
+fi
 
 set -e
 # shellcheck disable=SC3040
@@ -12,7 +14,7 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# shellcheck disable=SC3003
+# shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 
@@ -82,6 +84,8 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
       /mnt/grafana/provisioning/dashboards/postgres.json
     cp "$TEMPLATEPATH/mysql.json.in" \
       /mnt/grafana/provisioning/dashboards/mysql.json
+    cp "$TEMPLATEPATH/minio.json.in" \
+      /mnt/grafana/provisioning/dashboards/minio.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/
@@ -137,6 +141,8 @@ else
       /mnt/grafana/provisioning/dashboards/postgres.json
     cp "$TEMPLATEPATH/mysql.json.in" \
       /mnt/grafana/provisioning/dashboards/mysql.json
+    cp "$TEMPLATEPATH/minio.json.in" \
+      /mnt/grafana/provisioning/dashboards/minio.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/

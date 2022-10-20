@@ -1,0 +1,12 @@
+Port 22
+PermitRootLogin prohibit-password
+PubkeyAuthentication yes
+AuthorizedKeysFile       .ssh/authorized_keys
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+StrictModes no
+UseDNS no
+Banner none
+LogLevel DEBUG
+AllowAgentForwarding yes
+PermitTTY yes

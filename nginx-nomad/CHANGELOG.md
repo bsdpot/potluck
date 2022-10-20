@@ -1,3 +1,22 @@
+1.1.8
+
+* Update job file in README
+* Add checklist
+
+---
+
+1.1.7
+
+* Version bump for rebuild on new base, no update to cook setup yet
+
+---
+
+1.1.6
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 1.1.5
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

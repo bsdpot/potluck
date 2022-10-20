@@ -1,3 +1,49 @@
+0.0.26
+
+* Adjusting minio dashboard in grafana to better working one
+* Minio-supplied one is out of date
+
+---
+
+0.0.25
+
+* Add minio.json to dashboards
+
+---
+
+0.0.24
+
+* Version bump for rebuild and new version syslog-ng
+* Added checklist
+
+---
+
+0.0.23
+
+* Version bump for rebuild
+
+---
+
+0.0.22
+
+* Updated to match cook changes and check for .env.cook
+* Removed artifacts from combining several images into Beast
+
+---
+
+0.0.21
+
+* Version bump for rebuild with new base image
+
+---
+
+0.0.20
+
+* Version bump to build for FreeBSD-13.1
+* Various formatting adjustments in earlier git PR but not version-bumped
+
+---
+
 0.0.19
 
 * Add support for json logs, nginx, others

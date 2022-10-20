@@ -1,0 +1,63 @@
+# This file should NOT be world readable.
+dn: cn=config
+objectClass: olcGlobal
+cn: config
+olcArgsFile: /var/db/run/slapd.args
+olcPidFile: /var/db/run/slapd.pid
+#olcSecurity: ssf=1 update_ssf=112 simple_bind=64
+# enable 128 bit TLS
+olcSecurity: ssf=128
+olcTLSCACertificatePath: /usr/local/etc/openldap/
+olcTLSCertificateFile: /usr/local/etc/openldap/server.crt
+olcTLSCertificateKeyFile: /usr/local/etc/openldap/private/server.key
+olcTLSCACertificateFile: /usr/local/etc/openldap/ca.crt
+olcTLSCipherSuite: HIGH:MEDIUM:+SSLv3
+olcTLSProtocolMin: 3.1
+olcTLSVerifyClient: never
+structuralObjectClass: olcGlobal
+
+dn: cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: schema
+
+include: file:///usr/local/etc/openldap/schema/core.ldif
+include: file:///usr/local/etc/openldap/schema/cosine.ldif
+include: file:///usr/local/etc/openldap/schema/inetorgperson.ldif
+include: file:///usr/local/etc/openldap/schema/nis.ldif
+
+dn: cn=module,cn=config
+objectClass: olcModuleList
+cn: module
+olcModulepath: /usr/local/libexec/openldap
+olcModuleload: back_mdb.la
+
+dn: olcDatabase=frontend,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcFrontendConfig
+olcDatabase: frontend
+olcAccess: to * by * read
+
+dn: olcDatabase=config,cn=config
+objectClass: olcDatabaseConfig
+olcDatabase: config
+olcRootDN: cn=Manager,cn=config
+# generate a password by running slappasswd
+# sample pass is password, set a new password with slappasswd
+# and replace text here
+olcRootPW: %%setslappass%%
+olcMonitoring: FALSE
+olcAccess: to * by * none
+
+# LMDB database definitions
+dn: olcDatabase=mdb,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcMdbConfig
+olcDatabase: mdb
+olcSuffix: dc=%%mysuffix%%,dc=%%mytld%%
+olcRootDN: cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%
+# generate a password by running slappasswd
+# sample pass is password, set a new password with slappasswd
+# and replace text here
+olcRootPW: %%setslappass%%
+olcDbDirectory: /mnt/openldap-data
+olcDbIndex: objectClass eq

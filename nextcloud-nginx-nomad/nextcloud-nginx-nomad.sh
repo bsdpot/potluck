@@ -15,9 +15,10 @@
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
-# Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
-# You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script
+# Set this to true if this jail flavour is to be created as a nomad
+# (i.e. blocking) jail.
+# You can then query it in the cook script generation below and the script
+# is installed appropriately at the end of this script
 RUNS_IN_NOMAD=true
 
 # set the cook log path/filename
@@ -57,12 +58,14 @@ set -e
 trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 # -------------- BEGIN PACKAGE SETUP -------------
+
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
+# only modify repo if not already done in base image
 # shellcheck disable=SC2016
-#echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
-  >/usr/local/etc/pkg/repos/FreeBSD.conf
+test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
 step "Touch /etc/rc.conf"
@@ -75,11 +78,7 @@ step "Remove ifconfig_epair0b from config"
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 step "Disable sendmail"
-service sendmail onedisable
-
-# optionally disable ssh access
-step "Disable sshd"
-service sshd onedisable || true
+service sendmail onedisable || true
 
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
@@ -153,122 +152,116 @@ pkg install -y webp
 step "Install package pkgconf"
 pkg install -y pkgconf
 
-step "Install package php74"
-pkg install -y php74
+step "Install package php80"
+pkg install -y php80
 
-step "Install package php74-extensions"
-pkg install -y php74-extensions
+step "Install package php80-extensions"
+pkg install -y php80-extensions
 
-step "Install package php74-bcmath"
-pkg install -y php74-bcmath
+step "Install package php80-bcmath"
+pkg install -y php80-bcmath
 
-step "Install package php74-bz2"
-pkg install -y php74-bz2
+step "Install package php80-bz2"
+pkg install -y php80-bz2
 
-step "Install package php74-ctype"
-pkg install -y php74-ctype
+step "Install package php80-ctype"
+pkg install -y php80-ctype
 
-step "Install package php74-curl"
-pkg install -y php74-curl
+step "Install package php80-curl"
+pkg install -y php80-curl
 
-step "Install package php74-dom"
-pkg install -y php74-dom
+step "Install package php80-dom"
+pkg install -y php80-dom
 
-step "Install package php74-exif"
-pkg install -y php74-exif
+step "Install package php80-exif"
+pkg install -y php80-exif
 
-step "Install package php74-fileinfo"
-pkg install -y php74-fileinfo
+step "Install package php80-fileinfo"
+pkg install -y php80-fileinfo
 
-step "Install package php74-filter"
-pkg install -y php74-filter
+step "Install package php80-filter"
+pkg install -y php80-filter
 
-step "Install package php74-ftp"
-pkg install -y php74-ftp
+step "Install package php80-ftp"
+pkg install -y php80-ftp
 
-step "Install package php74-gd"
-pkg install -y php74-gd
+step "Install package php80-gd"
+pkg install -y php80-gd
 
-step "Install package php74-gmp"
-pkg install -y php74-gmp
+step "Install package php80-gmp"
+pkg install -y php80-gmp
 
-step "Install package php74-iconv"
-pkg install -y php74-iconv
+step "Install package php80-iconv"
+pkg install -y php80-iconv
 
-step "Install package php74-imap"
-pkg install -y php74-imap
+step "Install package php80-imap"
+pkg install -y php80-imap
 
-step "Install package php74-intl"
-pkg install -y php74-intl
+step "Install package php80-intl"
+pkg install -y php80-intl
 
-step "Install package php74-json"
-pkg install -y php74-json
+step "Install package php80-ldap"
+pkg install -y php80-ldap
 
-step "Install package php74-ldap"
-pkg install -y php74-ldap
+step "Install package php80-mysqli"
+pkg install -y php80-mysqli
 
-step "Install package php74-mysqli"
-pkg install -y php74-mysqli
+step "Install package php80-mbstring"
+pkg install -y php80-mbstring
 
-step "Install package php74-mbstring"
-pkg install -y php74-mbstring
+step "Install package php80-opcache"
+pkg install -y php80-opcache
 
-step "Install package php74-opcache"
-pkg install -y php74-opcache
+step "Install package php80-pcntl"
+pkg install -y php80-pcntl
 
-step "Install package php74-openssl"
-pkg install -y php74-openssl
+step "Install package php80-pdo"
+pkg install -y php80-pdo
 
-step "Install package php74-pcntl"
-pkg install -y php74-pcntl
+step "Install package php80-pdo_mysql"
+pkg install -y php80-pdo_mysql
 
-step "Install package php74-pdo"
-pkg install -y php74-pdo
+step "Install package php80-pecl-APCu"
+pkg install -y php80-pecl-APCu
 
-step "Install package php74-pdo_mysql"
-pkg install -y php74-pdo_mysql
+step "Install package php80-pecl-memcached"
+pkg install -y php80-pecl-memcached
 
-step "Install package php74-pecl-APCu"
-pkg install -y php74-pecl-APCu
+step "Install package php80-pecl-redis"
+pkg install -y php80-pecl-redis
 
-step "Install package php74-pecl-memcached"
-pkg install -y php74-pecl-memcached
+step "Install package php80-pecl-imagick"
+pkg install -y php80-pecl-imagick
 
-step "Install package php74-pecl-redis"
-pkg install -y php74-pecl-redis
+step "Install package php80-phar"
+pkg install -y php80-phar
 
-step "Install package php74-pecl-imagick"
-pkg install -y php74-pecl-imagick
+step "Install package php80-posix"
+pkg install -y php80-posix
 
-step "Install package php74-phar"
-pkg install -y php74-phar
+step "Install package php80-session"
+pkg install -y php80-session
 
-step "Install package php74-posix"
-pkg install -y php74-posix
+step "Install package php80-simplexml"
+pkg install -y php80-simplexml
 
-step "Install package php74-session"
-pkg install -y php74-session
+step "Install package php80-xml"
+pkg install -y php80-xml
 
-step "Install package php74-simplexml"
-pkg install -y php74-simplexml
+step "Install package php80-xmlreader"
+pkg install -y php80-xmlreader
 
-step "Install package php74-xml"
-pkg install -y php74-xml
+step "Install package php80-xmlwriter"
+pkg install -y php80-xmlwriter
 
-step "Install package php74-xmlreader"
-pkg install -y php74-xmlreader
+step "Install package php80-xsl"
+pkg install -y php80-xsl
 
-step "Install package php74-xmlwriter"
-pkg install -y php74-xmlwriter
+step "Install package php80-zip"
+pkg install -y php80-zip
 
-step "Install package php74-xsl"
-pkg install -y php74-xsl
-
-step "Install package php74-zip"
-pkg install -y php74-zip
-
-step "Install package php74-zlib"
-pkg install -y php74-zlib
+step "Install package php80-zlib"
+pkg install -y php80-zlib
 
 step "Install package ImageMagick6-nox11"
 pkg install -y ImageMagick6-nox11
@@ -288,6 +281,7 @@ pkg install -y nano
 step "Install package sudo"
 pkg install -y sudo
 
+step "Clean package installation"
 pkg clean -y
 
 step "Create necessary directories if they don't exist"
@@ -298,14 +292,9 @@ step "Enable nginx"
 service nginx enable
 
 step "Enable php-fpm"
-#sysrc php_fpm_enable="YES"
 service php-fpm enable
 
-# ---------- END PACKAGE & MOUNTPOINT SETUP -------------
-
-#
-# Create configurations
-#
+# -------------- END PACKAGE SETUP -------------
 
 #
 # Now generate the run command script "cook"
@@ -313,195 +302,19 @@ service php-fpm enable
 # On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
 #
 
-# clear any old cook runtime file
-step "Clean cook artifacts"
-rm -rf /usr/local/bin/cook
-
+# this runs when image boots
 # ----------------- BEGIN COOK ------------------
-step "Create cook script"
-echo "#!/bin/sh
-RUNS_IN_NOMAD=$RUNS_IN_NOMAD
-# declare this again for the pot image, might work carrying variable through like
-# with above
-COOKLOG=/var/log/cook.log
 
-# No need to change this, just ensures configuration is done only once
-if [ -e /usr/local/etc/pot-is-seasoned ]
-then
-    # If this pot flavour is blocking (i.e. it should not return),
-    # we block indefinitely
-    if [ \"\$RUNS_IN_NOMAD\" = \"true\" ]
-    then
-        /bin/sh /etc/rc
-        tail -f /dev/null
-    fi
-    exit 0
-fi
+step "Clean cook artifacts"
+rm -rf /usr/local/bin/cook /usr/local/share/cook
 
-# ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-service nginx onestop || true
-service php-fpm onestop || true
+step "Install pot local"
+tar -C /root/.pot_local -cf - . | tar -C /usr/local -xf -
+rm -rf /root/.pot_local
 
-# No need to adjust this:
-# If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
-# where pot is storing it in this case
-if [ -e /tmp/environment.sh ]
-then
-    . /tmp/environment.sh
-fi
-
-#
-# ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
-#
-
-# Convert parameters to variables if passed (overwrite environment)
-while getopts d:s: option
-do
-    case \"\${option}\"
-    in
-      d) DATADIR=\${OPTARG};;
-      s) SELFSIGNHOST=\${OPTARG};;
-    esac
-done
-
-# Check config variables are set
-if [ -z \${DATADIR+x} ];
-then
-    echo 'DATADIR is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-    echo 'DATADIR is unset - see documentation how to configure this flavour'
-    DATADIR=\"/usr/local/www/nextcloud/data\"
-fi
-if [ -z \${SELFSIGNHOST+x} ];
-then
-    echo 'SELFSIGNHOST is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-    echo 'SELFSIGNHOST is unset - see documentation how to configure this flavour'
-    SELFSIGNHOST=\"none\"
-fi
-
-# ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE ADJUSTED & COPIED:
-
-# If we do not find a Nextcloud installation, we install it. If we do find something though,
-# we do not install/overwrite anything as we assume that updates/modifications are happening
-# from within the Nextcloud installation, we install it. If we do find something though,
-# we do not install/overwrite anything as we assume that updates/modifications are happening
-# from within Nextcloud.
-if [ ! -e /usr/local/www/nextcloud/status.php ]; then
-    pkg install -y nextcloud-php74 nextcloud-twofactor_totp-php74 nextcloud-deck-php74 nextcloud-mail-php74 nextcloud-contacts-php74 nextcloud-calendar-php74 nextcloud-end_to_end_encryption-php74
-fi
-
-# Configure PHP FPM
-sed -i .orig 's|listen = 127.0.0.1:9000|listen = /var/run/php74-fpm.sock|g' /usr/local/etc/php-fpm.d/www.conf
-sed -i .orig 's|pm.max_children = 5|pm.max_children = 10|g' /usr/local/etc/php-fpm.d/www.conf
-echo \";Nomad Nextcloud settings...\" >> /usr/local/etc/php-fpm.d/www.conf
-echo \"listen.owner = www\" >> /usr/local/etc/php-fpm.d/www.conf
-echo \"listen.group = www\" >> /usr/local/etc/php-fpm.d/www.conf
-echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf
-echo \"env[PATH] = /usr/local/bin:/usr/bin:/bin\" >> /usr/local/etc/php-fpm.d/www.conf
-echo \"env[TMP] = /tmp\" >> /usr/local/etc/php-fpm.d/www.conf
-echo \"env[TMPDIR] = /tmp\" >> /usr/local/etc/php-fpm.d/www.conf
-echo \"env[TEMP] = /tmp\" >> /usr/local/etc/php-fpm.d/www.conf
-
-# Configure PHP
-cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
-cp -f /root/99-custom.ini /usr/local/etc/php/99-custom.ini
-
-# check for presence of copied-in /root/nc-config.php and copy over any existing (with backup)
-if [ -s /root/nc-config.php ]; then
-    if [ -s /usr/local/www/nextcloud/config/config.php ]; then
-        cp -f /usr/local/www/nextcloud/config/config.php /usr/local/www/nextcloud/config/config.php.old
-    fi
-    cp -f /root/nc-config.php /usr/local/www/nextcloud/config/config.php
-fi
-
-# Fix www group memberships so it works with fuse mounted directories
-pw addgroup -n newwww -g 1001
-pw moduser www -u 1001 -G 80,0,1001
-
-# set perms on /usr/local/www/nextcloud/*
-chown -R www:www /usr/local/www/nextcloud
-
-# create a nextcloud log file
-# this needs to be configured in nextcloud config.php in copy-in file
-touch /var/log/nginx/nextcloud.log
-chown www:www /var/log/nginx/nextcloud.log
-
-# manually create php log and set owner
-touch /var/log/nginx/php.scripts.log
-chown www:www /var/log/nginx/php.scripts.log
-
-# check for .ocdata in DATADIR
-# if using S3 with no mount-in this should set it up in the default DATADIR
-# /usr/local/nginx/nextcloud/data
-if [ ! -f \"\${DATADIR}\"/.ocdata ]; then
-   touch\"\${DATADIR}\"/.ocdata
-   chown www:www \"\${DATADIR}\"/.ocdata
-fi
-
-# set perms on DATADIR
-chown -R www:www \"\${DATADIR}\"
-
-# configure self-signed certificates for libcurl, mostly used for minio with self-signed certificates
-# nextcloud source needs patching to work with self-signed certificates too
-if [ \"\${SELFSIGNHOST}\" != \"none\" ]; then
-    echo \"\" | /usr/bin/openssl s_client -showcerts -connect \"\${SELFSIGNHOST}\" |/usr/bin/openssl x509 -outform PEM > /tmp/cert.pem
-    if [ -f /tmp/cert.pem ]; then
-        cat /tmp/cert.pem >> /usr/local/share/certs/ca-root-nss.crt
-        echo \"openssl.cafile=/usr/local/share/certs/ca-root-nss.crt\" >> /usr/local/etc/php/99-custom.ini
-        cat /tmp/cert.pem >> /usr/local/www/nextcloud/resources/config/ca-bundle.crt
-    fi
-    # Patch nextcloud source for self-signed certificates with S3
-    if [ -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php ] && [ -f /root/S3ObjectTrait.patch ]; then
-        # make sure we haven't already applied the patch
-        checknotapplied=\$(grep -c verify_peer_name /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php)
-        if [ \"\${checknotapplied}\" -eq 0 ]; then
-            # check the patch will apply cleanly
-            testpatch=\$(patch --check -i /root/S3ObjectTrait.patch /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php | echo \"\$?\")
-            if [ \"\${testpatch}\" -eq 0 ]; then
-                # apply the patch
-                patch -i /root/S3ObjectTrait.patch /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php
-            fi
-        fi
-    fi
-fi
-
-# Configure NGINX
-cp -f /root/nginx.conf /usr/local/etc/nginx/nginx.conf
-
-# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-
-# we need to kill nginx then start it
-killall -9 nginx
-kill -9 \$(/bin/pgrep nginx)
-
-# restart services
-
-#service php-fpm restart
-timeout --foreground 120 \
-  sh -c 'while ! service php-fpm status; do
-    service php-fpm start || true; sleep 5;
-  done'
-
-#service nginx restart
-timeout --foreground 120 \
-  sh -c 'while ! service nginx status; do
-    service nginx start || true; sleep 5;
-  done'
-
-# setup cronjob
-echo \"*/5  *  *  *  *  www  /usr/local/bin/php -f /usr/local/www/nextcloud/cron.php\" >> /etc/crontab
-
-# Do not touch this:
-touch /usr/local/etc/pot-is-seasoned
-
-# If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh
-# created by pot and we now after configuration block indefinitely
-if [ \"\$RUNS_IN_NOMAD\" = \"true\" ]
-then
-    /bin/sh /etc/rc
-    tail -f /dev/null
-fi
-" > /usr/local/bin/cook
-
+step "Set file ownership on cook scripts"
+chown -R root:wheel /usr/local/bin/cook /usr/local/share/cook
+chmod 755 /usr/local/share/cook/bin/*
 
 # ----------------- END COOK ------------------
 
@@ -563,7 +376,8 @@ then
   step "Enable cook service"
   # This is a non-nomad (non-blocking) jail, so we need to make sure the script
   # gets started when the jail is started:
-  # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
+  # Otherwise, /usr/local/bin/cook will be set as start script by the pot
+  # flavour
   echo "enabling cook" | tee -a $COOKLOG
   service cook enable
 fi

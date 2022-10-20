@@ -80,9 +80,6 @@ sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 step "Disable sendmail"
 service sendmail onedisable
 
-#step "Disable sshd"
-#service sshd onedisable || true
-
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
@@ -120,8 +117,8 @@ pkg install -y node_exporter
 step "Install package nginx"
 pkg install -y nginx
 
-step "Install package php74 and related"
-pkg install -y php74 php74-mbstring php74-zlib php74-curl php74-gd php74-json
+step "Install package php82 and related"
+pkg install -y php82 php82-mbstring php82-zlib php82-curl php82-gd
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng

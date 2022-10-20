@@ -1,10 +1,35 @@
+2.0.18
+
+* Update for new nomad version
+* Added checklist
+
+---
+
+2.0.17
+
+* Fixing README for nomad jobs
+* Update consul hcl for new format tls settings
+
+---
+
+2.0.16
+
+* Version bump for new image and cook format
+
+---
+
+2.0.15
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 2.0.14
 
 * Fix /var/tmp/nomad issue
 * Add parameter to set regions
 
 ---
-
 
 2.0.13
 

@@ -1,6 +1,14 @@
+1.0.6
+
+* Version bump for FreeBSD-13.1
+* Switch from samba412 to samba413
+
+---
+
 1.0.5
 
 * Fixing broken package samba
+
 ---
 
 1.0.4

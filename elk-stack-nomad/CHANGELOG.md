@@ -1,3 +1,9 @@
+1.0.7
+
+* Version bump for FreeBSD-13.1
+
+---
+
 1.0.6
 
 * Setting procfs parameters

@@ -26,6 +26,12 @@ job "example" {
   group "group1" {
     count = 1
 
+    network {
+      port "http" {
+        static = 12000
+      }
+    }
+
     task "www1" {
       driver = "pot"
 
@@ -44,8 +50,8 @@ job "example" {
 
       config {
         image = "https://potluck.honeyguide.net/nginx-nomad"
-        pot = "nginx-nomad-amd64-12_1"
-        tag = "1.1.2"
+        pot = "nginx-nomad-amd64-13_1"
+        tag = "1.1.8"
         command = "nginx"
         args = ["-g","'daemon off;'"]
 
@@ -63,11 +69,6 @@ job "example" {
       resources {
         cpu = 200
         memory = 64
-
-        network {
-          mbits = 10
-          port "http" {}
-        }
       }
     }
   }

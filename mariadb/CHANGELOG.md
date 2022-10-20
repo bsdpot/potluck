@@ -1,3 +1,23 @@
+2.0.7
+
+* Version bump for rebuild
+
+---
+
+2.0.6
+
+* Version bump for new base image
+* Adjustments to cook for disabling in nomad and .env.cook
+* Remove ssh disable, done in base image
+
+---
+
+2.0.5
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 2.0.4
 
 * Need additional permissions for exporter user of mysqld_exporter to avoid errors filling up logs

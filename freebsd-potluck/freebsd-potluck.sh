@@ -15,12 +15,6 @@
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
-# Set this to true if this jail flavour is to be created as a nomad
-# (i.e. blocking) jail.
-# You can then query it in the cook script generation below and the script
-# is installed appropriately at the end of this script
-RUNS_IN_NOMAD=false
-
 # set the cook log path/filename
 COOKLOG=/var/log/cook.log
 
@@ -78,10 +72,11 @@ step "Remove ifconfig_epair0b from config"
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 step "Disable sendmail"
-service sendmail onedisable
+service sendmail onedisable || true
 
-#step "Disable sshd"
-#service sshd onedisable || true
+step "Disable sshd"
+service sshd onestop || true
+service sshd onedisable || true
 
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
@@ -115,91 +110,7 @@ pkg clean -y
 
 # -------------- END PACKAGE SETUP -------------
 
-#
-# Now generate the run command script "cook"
-# It configures the system on the first run by creating the config file(s)
-# On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
-#
+step "Remove pre-existing cook script (if any)"
+rm -rf /usr/local/bin/cook
 
-# this runs when image boots
-# ----------------- BEGIN COOK ------------------
-
-step "Clean cook artifacts"
-rm -rf /usr/local/bin/cook /usr/local/share/cook
-
-step "Install pot local"
-tar -C /root/.pot_local -cf - . | tar -C /usr/local -xf -
-rm -rf /root/.pot_local
-
-step "Set file ownership on cook scripts"
-chown -R root:wheel /usr/local/bin/cook /usr/local/share/cook
-chmod 755 /usr/local/share/cook/bin/*
-
-# ----------------- END COOK ------------------
-
-
-# ---------- NO NEED TO EDIT BELOW ------------
-
-step "Make cook script executable"
-if [ -e /usr/local/bin/cook ]
-then
-    echo "setting executable bit on /usr/local/bin/cook" | tee -a $COOKLOG
-    chmod u+x /usr/local/bin/cook
-else
-    exit_error "there is no /usr/local/bin/cook to make executable"
-fi
-
-#
-# There are two ways of running a pot jail: "Normal", non-blocking mode and
-# "Nomad", i.e. blocking mode (the pot start command does not return until
-# the jail is stopped).
-# For the normal mode, we create a /usr/local/etc/rc.d script that starts
-# the "cook" script generated above each time, for the "Nomad" mode, the cook
-# script is started by pot (configuration through flavour file), therefore
-# we do not need to do anything here.
-#
-
-# Create rc.d script for "normal" mode:
-step "Create rc.d script to start cook"
-echo "creating rc.d script to start cook" | tee -a $COOKLOG
-
-# shellcheck disable=SC2016
-echo '#!/bin/sh
-#
-# PROVIDE: cook
-# REQUIRE: LOGIN
-# KEYWORD: shutdown
-#
-. /etc/rc.subr
-name="cook"
-rcvar="cook_enable"
-load_rc_config $name
-: ${cook_enable:="NO"}
-: ${cook_env:=""}
-command="/usr/local/bin/cook"
-command_args=""
-run_rc_command "$1"
-' > /usr/local/etc/rc.d/cook
-
-step "Make rc.d script to start cook executable"
-if [ -e /usr/local/etc/rc.d/cook ]
-then
-  echo "Setting executable bit on cook rc file" | tee -a $COOKLOG
-  chmod u+x /usr/local/etc/rc.d/cook
-else
-  exit_error "/usr/local/etc/rc.d/cook does not exist"
-fi
-
-if [ "$RUNS_IN_NOMAD" != "true" ]
-then
-  step "Enable cook service"
-  # This is a non-nomad (non-blocking) jail, so we need to make sure the script
-  # gets started when the jail is started:
-  # Otherwise, /usr/local/bin/cook will be set as start script by the pot
-  # flavour
-  echo "enabling cook" | tee -a $COOKLOG
-  service cook enable
-fi
-
-# -------------------- DONE ---------------
 exit_ok

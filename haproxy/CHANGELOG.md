@@ -1,8 +1,15 @@
+0.0.11
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 0.0.10
 
 * Merged PR 26 and incrementing version in changelog and ini
 
 ---
+
 0.0.9
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

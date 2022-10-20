@@ -20,14 +20,15 @@ Since the service is expected to be published via ```consul``` and a web proxy l
 # ZFS datasets
 Make sure to create the ZFS datasets beforehand, adapt to your data set naming convention:
 ```
-zfs create data/pot
-zfs create data/pot/jaildata_nextcloud
-zfs create data/pot/jaildata_nextcloud_files
+zfs create data
+zfs create data/jaildata
+zfs create data/jaildata/nextcloud_basic
+zfs create data/jaildata/nextcloud_files
 ```
 
-`jaildata_nextcloud` is where the nextcloud files are installed and is mounted to `/usr/local/www/nextcloud/` inside the image.
+`nextcloud_basic` is where the nextcloud files are installed and is mounted to `/usr/local/www/nextcloud/` inside the image.
 
-`jaildata_nextcloud_files` is where the files will be kept, and is mounted to `/mnt/filestore` or similar inside the image.
+`nextcloud_files` is where the files will be kept, and is mounted to `/mnt/filestore` or similar inside the image.
 
 # Installation
 When you first run the image you'll need to setup Nextcloud via the web interface.
@@ -35,6 +36,8 @@ When you first run the image you'll need to setup Nextcloud via the web interfac
 Make sure to specify `/mnt/filestore` or similar for DATADIR parameter (-d) in the web interface for Nextcloud setup too by clicking the dropdown for database and storage.
 
 If you have S3 object storage with a self-signed certificate, set the SELFSIGNHOST parameter to ```ip:port``` or pass with with ```-s ip:port```.
+
+You must also copy-in the `rootca.crt` certificate from the setup of self-signed certificates for S3.
 
 ## Custom Nextcloud config.php
 If you wish to make use of object storage for file backing you will need to copy-in a custom `nextcloud` config.php to `/root/nc-config.php`. A sample would look like the following, however please pull your source file from a working instance and include the relevant S3 parameters:
@@ -137,28 +140,29 @@ job "nextcloud" {
          check {
             type     = "tcp"
             name     = "tcp"
-            interval = "60s"
+            interval = "300s"
             timeout  = "30s"
           }
           check_restart {
             limit = 0
-            grace = "120s"
+            grace = "60s"
             ignore_warnings = false
           }
       }
 
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
-        pot = "nextcloud-nginx-nomad-amd64-13_0"
-        tag = "0.24"
+        pot = "nextcloud-nginx-nomad-amd64-13_1"
+        tag = "0.52"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
           "/path/to/custom/config.php:/root/nc-config.php",
+          "/path/to/rootca.crt:/root/rootca.crt",
         ]
         mount = [
-         "/mnt/data/pot/jaildata_nextcloud/www:/usr/local/www/nextcloud",
-         "/mnt/data/pot/jaildata_nextcloud/files:/mnt/filestore",
+         "/mnt/data/jaildata/nextcloud_basic:/usr/local/www/nextcloud",
+         "/mnt/data/jaildata/nextcloud_files:/mnt/filestore",
         ]
         port_map = {
           http = "80"
@@ -183,6 +187,8 @@ The image boots with https enabled in nginx. You will need a frontend proxy like
 ## Self-signed SSL for Object storage
 
 Pass in a ```ip:port``` paramater for ```SELFSIGNHOST``` or ```-s ip:port```. If you don't specify a port 443 will be used.
+
+You also need to copy-in the `rootca.crt` file created as part of setting up self-signed certificates. Make sure to copy-in to `/root/rootca.crt` as the script expecting this file name.
 
 # Useful CLI admin commands
 

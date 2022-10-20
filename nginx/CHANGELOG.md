@@ -1,3 +1,9 @@
+1.0.4
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 1.0.3
 
 * Rebuild for FreeBSD 12_3 and 13 & pot 13

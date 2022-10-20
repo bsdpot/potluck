@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # shellcheck disable=SC1091
-. /root/.env.cook
+if [ -e /root/.env.cook ]; then
+    . /root/.env.cook
+fi
 
 set -e
 # shellcheck disable=SC3040
@@ -15,7 +17,7 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # setup directories for loki
 mkdir -p /mnt/loki/rules-temp
 
-# shellcheck disable=SC3003
+# shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 
@@ -24,7 +26,7 @@ sep=$'\001'
 # copy in loki rc
 cp "$TEMPLATEPATH/loki.rc.in" /usr/local/etc/rc.d/loki
 chmod +x /usr/local/etc/rc.d/loki
-service loki enable
+service loki enable || true
 sysrc loki_syslog_output_enable="YES"
 
 # copy in loki config file
@@ -43,7 +45,7 @@ chown -R loki:loki /mnt/loki
 # copy in the promtail rc file
 cp "$TEMPLATEPATH/promtail.rc.in" /usr/local/etc/rc.d/promtail
 chmod +x /usr/local/etc/rc.d/promtail
-service promtail enable
+service promtail enable || true
 sysrc promtail_syslog_output_enable="YES"
 
 # copy in the promtail config file

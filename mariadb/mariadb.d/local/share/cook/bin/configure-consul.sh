@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # shellcheck disable=SC1091
-. /root/.env.cook
+if [ -e /root/.env.cook ]; then
+    . /root/.env.cook
+fi
 
 set -e
 # shellcheck disable=SC3040
@@ -41,7 +43,7 @@ echo "s${sep}%%gossipkey%%${sep}$GOSSIPKEY${sep}" | sed -i '' -f - \
 chown -R consul:wheel /usr/local/etc/consul.d/
 
 # enable consul
-service consul enable
+service consul enable || true
 
 # set load parameter for consul config
 sysrc consul_args="-config-file=/usr/local/etc/consul.d/agent.hcl"

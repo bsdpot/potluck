@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # shellcheck disable=SC1091
-. /root/.env.cook
+if [ -e /root/.env.cook ]; then
+    . /root/.env.cook
+fi
 
 set -e
 

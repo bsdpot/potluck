@@ -1,3 +1,40 @@
+2.0.24
+
+* Version bump for new consul version
+* Checklist added
+
+---
+
+2.0.23
+
+* Update consul agent.hcl for new setup tls options
+
+---
+
+2.0.22
+
+* Make PEERS optional
+
+---
+
+2.0.21
+
+* Consul is using http not https (see consul-tls for https)
+
+---
+
+2.0.20
+
+* Version bump for new image and cook script
+
+---
+
+2.0.19
+
+* Version bump for FreeBSD-13.1
+
+---
+
 2.0.18
 
 * Switching to syslog-ng

@@ -1,3 +1,22 @@
+1.3.2
+
+* Version bump for rebuild
+* Added checklist
+
+---
+
+1.3.1
+
+* Version bump for new base image and new cook script format
+
+---
+
+1.3.0
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 1.2.9
 
 * Switch to syslog-ng. Include traefik logs in syslog-ng. Update to modern base script.

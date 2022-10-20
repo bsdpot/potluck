@@ -15,10 +15,10 @@ The jail exposes these parameters that can either be set via the environment or 
 
 | Environment      | cook parameter     | Content      |
 | :--------------- | :----------------: | :-----------|
-| HOSTNAME       | -h              | Optional: ```myhostname``` in ```main.cf``` |
-| MYNETWORKS       | -n                 | Optional: ```mynetworks``` in ```main.cf``` (private network addresses that are permitted to send outbound) |
+| HOSTNAME       | -h              | ```myhostname``` in ```main.cf``` |
+| MYNETWORKS       | -n                 | ```mynetworks``` in ```main.cf``` (private network addresses that are permitted to send outbound) |
 | RELAYDOMAINS       | -d                 | ```relay_domains``` in ```main.cf``` (domains this server feels responsible for) |
-| SMTPDBANNER       | -b               | Optional: ```smtpd_banner``` in ```main.cf``` |
+| SMTPDBANNER       | -b               | ```smtpd_banner``` in ```main.cf``` |
 
 *Note: If you schedule this jail via ```nomad``` **and you do not mount in the spool directory from persistent storage like in the example below** and the job gets restarted for whatever reason, mails that are still in the queue and not forwarded will not be part of the newly scheduled instance and will be lost because a completely new jail is created in that case.*
 
@@ -53,8 +53,8 @@ job "backupmx" {
 
       config {
         image = "https://potluck.honeyguide.net/postfix-backupmx-nomad"
-        pot = "postfix-backupmx-nomad-amd64-12_1"
-        tag = "1.0"
+        pot = "postfix-backupmx-nomad-amd64-13_1"
+        tag = "1.0.25"
         command = "/usr/local/bin/cook"
         args = ["-n","10.10.10.10/32","-d","'example1.com, example2.com, example.de'","-b","'mx2.example1.com ESMTP \\$mail_name'","-h","mx2.example1.com"]
         mount = [
@@ -116,8 +116,8 @@ job "backupmx" {
        }
        config {
         image = "https://potluck.honeyguide.net/postfix-backupmx-nomad"
-        pot = "postfix-backupmx-nomad-amd64-12_1"
-        tag = "1.0"
+        pot = "postfix-backupmx-nomad-amd64-13_1"
+        tag = "1.0.25"
         command = "/usr/local/bin/cook"
         args = [""]
 
@@ -141,4 +141,3 @@ job "backupmx" {
   }
 }
 ```
-

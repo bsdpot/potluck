@@ -9,16 +9,13 @@ pot_seasoned_exit() {
     # no /tmp/environment.sh created by pot and we now after configuration
     # block indefinitely
     if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        service cook onestop || true
+        service cook onedisable || true
         /bin/sh /etc/rc
         tail -f /dev/null
     fi
     exit 0
 }
-
-# always disable sshd, we don't need direct access
-# XXX: Do this when baking the image
-#service sshd stop || true
-#service sshd disable || true
 
 # No need to change this, just ensures configuration is done only once
 [ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
@@ -96,33 +93,6 @@ configure-syslog-ng.sh
 log "Setup node_exporter"
 configure-node-exporter.sh
 
-#log "Configure nodemetricsproxy"
-#configure-nodemetricsproxy.sh
-
-#log "Start nodemetricsproxy"
-#timeout --foreground 120 \
-#  sh -c 'while ! service nginx status nodemetricsproxy; do
-#    service nginx start nodemetricsproxy || true; sleep 3;
-#  done'
-
-#log "Configure consulmetricsproxy"
-#configure-consulmetricsproxy.sh
-
-#log "Start consulmetricsproxy"
-#timeout --foreground 120 \
-#  sh -c 'while ! service nginx status consulmetricsproxy; do
-#    service nginx start consulmetricsproxy || true; sleep 3;
-#  done'
-
-#log "Configure nomadmetricsproxy"
-#configure-nomadmetricsproxy.sh
-
-#log "Start nomadmetricsproxy"
-#timeout --foreground 120 \
-#  sh -c 'while ! service nginx status nomadmetricsproxy; do
-#    service nginx start nomadmetricsproxy || true; sleep 3;
-#  done'
-
 log "Configure consul"
 configure-consul.sh
 
@@ -148,15 +118,6 @@ timeout --foreground 120 \
     service promtail start || true; sleep 5;
   done'
 
-#log "Configure lokiproxy"
-#configure-lokiproxy.sh
-
-#log "Start lokiproxy"
-#timeout --foreground 120 \
-#  sh -c 'while ! service nginx status lokiproxy; do
-#    service nginx start lokiproxy || true; sleep 3;
-#  done'
-
 log "Setup prometheus"
 configure-prometheus.sh
 
@@ -171,23 +132,6 @@ configure-grafana.sh
 
 log "Start grafana"
 service grafana start
-
-#log "Configure grafanaproxy"
-#configure-grafanaproxy.sh
-#log "Start grafanaproxy"
-#timeout --foreground 120 \
-#  sh -c 'while ! service nginx status grafanaproxy; do
-#    service nginx start grafanaproxy || true; sleep 3;
-#  done'
-
-#log "Configure prometheusproxy"
-#configure-prometheusproxy.sh
-
-#log "Start prometheusproxy"
-#timeout --foreground 120 \
-#  sh -c 'while ! service nginx status prometheusproxy; do
-#    service nginx start prometheusproxy || true; sleep 3;
-#  done'
 
 log "Start node_exporter"
 service node_exporter start

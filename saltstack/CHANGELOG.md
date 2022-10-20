@@ -1,3 +1,15 @@
+0.0.8
+
+* Version bump for new base image, cook script
+
+---
+
+0.0.7
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 0.0.6
 
 * Including salt-lint installed via pip

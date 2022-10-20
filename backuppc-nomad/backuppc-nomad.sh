@@ -23,7 +23,7 @@ service sendmail onedisable
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 # Install packages
-pkg install -y samba412 rsync rsync-bpc rrdtool par2cmdline p5-XML-RSS backuppc4 apache24 ap24-mod_scgi p5-SCGI
+pkg install -y samba413 rsync rsync-bpc rrdtool par2cmdline p5-XML-RSS backuppc4 apache24 ap24-mod_scgi p5-SCGI
 pkg clean -y
 
 # Create mountpoints

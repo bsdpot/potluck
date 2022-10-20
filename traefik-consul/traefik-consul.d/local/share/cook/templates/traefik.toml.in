@@ -1,0 +1,55 @@
+[entryPoints]
+  [entryPoints.http]
+    address = "0.0.0.0:8080"
+  [entryPoints.traefik]
+    address = "0.0.0.0:9002"
+  [entryPoints.httpSSL]
+    address = "0.0.0.0:8443"
+  [entryPoints.metrics]
+    address = "0.0.0.0:8082"
+
+[http.routers.my-api]
+  entryPoints = ["traefik"]
+  # Catch every request (only available rule for non-tls routers. See below.)
+  rule = "HostSNI(`*`)"
+  service = "api@internal"
+
+[[tls.certificates]]
+  certFile = "/usr/local/etc/ssl/cert.crt"
+  keyFile = "/usr/local/etc/ssl/cert.key"
+
+[tls.options]
+  [tls.options.myTLSOptions]
+    minVersion = "VersionTLS12"
+    cipherSuites = [
+      "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+      "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+    ]
+
+[api]
+  dashboard = true
+  insecure = true
+
+[log]
+  filePath = "/var/log/traefik/traefik.log"
+
+[accessLog]
+  filePath = "/var/log/traefik/traefik-access.log"
+
+[metrics]
+  [metrics.prometheus]
+    entryPoint = "metrics"
+    buckets = [0.1,0.3,1.2,5.0]
+    addEntryPointsLabels = true
+    addRoutersLabels = true
+    addServicesLabels = true
+
+[providers.consulCatalog]
+  stale = false
+  exposedByDefault = true
+  [providers.consulCatalog.endpoint]
+    address = "%%ip%%:8500"

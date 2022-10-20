@@ -59,19 +59,38 @@ Thereafter these files will load automatically, along with any updates, from per
   ```pot copy-in -p <jailname> -s /path/to/data.ldif -d /root/data.ldif```
 * Adjust to your environment:
   ```
-  sudo pot set-env -p <jailname> -E DOMAIN=<domain name> -E MYCREDS=<openldap root pass> \
-  -E IP=<IP address> -E HOSTNAME=<hostname> \
-  [ -E REMOTEIP=<IP address second instance> -E SERVERID=<001 or 002> ]
+  sudo pot set-env -p <jailname> \
+  -E NODENAME=name \
+  -E DATACENTER=<datacenter> \
+  -E CONSULSERVERS='"1.2.3.4"' \
+  -E GOSSIPKEY=<key> \
+  -E IP=<IP address> \
+  -E DOMAIN=<domain name> \
+  -E MYCREDS=<openldap root pass> \
+  -E HOSTNAME=<hostname> \
+  [ -E IMPORTCUSTOM=1 ] \
+  [ -E REMOTEIP=<IP address second instance> ] \
+  [ -E SERVERID=<001 or 002> ] \
   [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
+
+The NODENAME parameter is the name of the node.
+
+The DATACENTER parameter is the name of the datacenter. The REGION parameter is to set "east" or "west" or "global" (default).
+
+The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+
+The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if the parameter is not set, do not use the default key for production encryption, instead provide your own. This key is also used as Nomad's gossipkey. 
+
+The IP parameter is the IP address of this image.
 
 The DOMAIN parameter is the domain name to use for `openldap` configuration.
 
 The MYCREDS parameter is the administrator password for openldap.
 
-The IP parameter is the IP address of this image.
-
 The HOSTNAME is the hostname to be used.
+
+If set, IMPORTCUSTOM enables the import of copied-in files `/root/config.ldif` and `/root/data.ldif` as a repeat in the cook script. Also available via shell scripts.
 
 The optional REMOTEIP parameter is the IP address of a second `openldap` pot server if running a multi-master
 cluster. If set, a cluster setup will be initiated.

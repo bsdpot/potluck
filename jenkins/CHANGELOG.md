@@ -1,3 +1,39 @@
+0.0.20
+
+* More bugfixing for ssh host key changes
+
+---
+
+0.0.19
+
+* Bugfixing, can't remove ssh keys if known_hosts doesn't exist
+
+---
+
+0.0.18
+
+* Fixing typo in if statement
+
+---
+
+0.0.17
+
+* Bug-fixing, removing statements that fail and interfere with cook
+
+---
+
+0.0.16
+
+* Version bump for new image, cook script
+
+---
+
+0.0.15
+
+* Version bump for FreeBSD-13.1 image
+
+---
+
 0.0.14
 
 * Version bump to rebuild
