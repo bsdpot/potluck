@@ -1,3 +1,9 @@
+0.2.14
+
+* Allow placing alternative copies of loki and promtail config files on mount-in
+
+---
+
 0.2.13
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured
