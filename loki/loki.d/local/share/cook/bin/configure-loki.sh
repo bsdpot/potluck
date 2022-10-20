@@ -7,7 +7,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:"$PATH"
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
@@ -17,7 +17,7 @@ mkdir -p /mnt/loki/rules-temp
 
 # shellcheck disable=SC3003
 # safe(r) separator for sed
-sep=$'\001'
+#sep=$'\001'
 
 # loki setup
 
@@ -28,9 +28,13 @@ service loki enable
 sysrc loki_syslog_output_enable="YES"
 
 # copy in loki config file
-< "$TEMPLATEPATH/loki-local-config.yaml.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
-  > /usr/local/etc/loki-local-config.yaml
+if [ -f /mnt/loki/loki-local-config.yaml ]; then
+	cp /mnt/loki/loki-local-config.yaml.in \
+	  /usr/local/etc/loki-local-config.yaml
+else
+	cp "$TEMPLATEPATH/loki-local-config.yaml.in" \
+	  /usr/local/etc/loki-local-config.yaml
+fi
 
 # create loki user
 /usr/sbin/pw useradd -n loki -c 'loki user' -m \
@@ -48,6 +52,10 @@ service promtail enable
 sysrc promtail_syslog_output_enable="YES"
 
 # copy in the promtail config file
-< "$TEMPLATEPATH/promtail-local-config.yaml.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
-  > /usr/local/etc/promtail-local-config.yaml
+if [ -f /mnt/loki/promtail-local-config.yaml ]; then
+	cp /mnt/loki/promtail-local-config.yaml.in \
+	  /usr/local/etc/promtail-local-config.yaml
+else
+	cp "$TEMPLATEPATH/promtail-local-config.yaml.in" \
+	  /usr/local/etc/promtail-local-config.yaml
+fi
