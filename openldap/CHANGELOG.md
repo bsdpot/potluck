@@ -1,3 +1,9 @@
+1.3.6
+
+* Update consul config for new format
+
+---
+
 1.3.5
 
 * Update for openldap26 and general rebuild
