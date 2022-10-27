@@ -1,3 +1,10 @@
+1.3.5
+
+* Update for openldap26 and general rebuild
+* Add checklist
+
+---
+
 1.3.4
 
 * Add optional parameter to import custom ldap data at end of cook script

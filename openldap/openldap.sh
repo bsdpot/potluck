@@ -118,14 +118,11 @@ pkg install -y bash
 step "Install package node_exporter"
 pkg install -y node_exporter
 
-# openldap25 has missing slap* binaries and other files
-# openldap26 may be useful but openldap24 still default dependency for many packages
-step "Install package openldap24-server"
-pkg install -y openldap24-server
+step "Install package openldap26-server"
+pkg install -y openldap26-server
 
-# should be installed with above
-step "Install package openldap24-client"
-pkg install -y openldap24-client
+step "Install package openldap26-client"
+pkg install -y openldap26-client
 
 step "Install package ldap-account-manager"
 pkg install -y ldap-account-manager
