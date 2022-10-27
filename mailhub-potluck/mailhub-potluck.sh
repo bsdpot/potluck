@@ -190,8 +190,8 @@ pkg install -y opendmarc
 step "Install package mail/py-spf-engine"
 pkg install -y mail/py-spf-engine
 
-step "Install package openldap24-client"
-pkg install -y openldap24-client
+step "Install package openldap26-client"
+pkg install -y openldap26-client
 
 step "Install package consul"
 pkg install -y consul
@@ -276,7 +276,8 @@ git sparse-checkout set GIDs UIDs \
 # Quarterly in July 2022 is 2022Q3
 step "Pull files"
 #git pull --depth=1 origin main
-git pull --depth=1 origin 2022Q3
+#git pull --depth=1 origin 2022Q3
+git pull --depth=1 origin 2022Q4
 
 #step "Port build openssl, remove existing, replace with this port"
 ##required for latest / main branch

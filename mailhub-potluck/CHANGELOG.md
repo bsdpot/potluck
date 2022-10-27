@@ -1,3 +1,11 @@
+0.0.29
+
+* update git quarterlies branch to origin 2022Q4
+* Add checklist
+* Update consul config
+
+---
+
 0.0.28
 
 * Version bump for rebuild on new base image
