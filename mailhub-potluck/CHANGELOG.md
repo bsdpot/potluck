@@ -1,3 +1,9 @@
+0.0.35
+
+* Adding back 'or true' option
+
+---
+
 0.0.34
 
 * Fix errors introduced by last change

@@ -41,12 +41,12 @@ if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
     /usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --home /mnt/acme --server letsencrypt
     /usr/local/sbin/acme.sh --set-default-ca --server letsencrypt
     /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --server letsencrypt \
-      --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
+      --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log || true
     if [ ! -f "/mnt/acme/$MAILCERTDOMAIN/$MAILCERTDOMAIN.cer" ]; then
         echo "Trying to register cert again, sleeping 30"
         sleep 30
         /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --server letsencrypt \
-          --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
+          --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log || true
         if [ ! -f "/mnt/acme/$MAILCERTDOMAIN/$MAILCERTDOMAIN.cer" ]; then
             echo "missing $MAILCERTDOMAIN.cer, certificate not registered"
             exit 1
