@@ -1,3 +1,10 @@
+2.0.8
+
+* Version bump for latest consul
+* Add checklist
+
+---
+
 2.0.7
 
 * Version bump for rebuild
