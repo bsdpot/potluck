@@ -1,3 +1,10 @@
+0.0.30
+
+* Switch to letsencrypt for certificates due to issues with zerossl
+* add options for standalone server to use port 80, insecure
+
+---
+
 0.0.29
 
 * update git quarterlies branch to origin 2022Q4
