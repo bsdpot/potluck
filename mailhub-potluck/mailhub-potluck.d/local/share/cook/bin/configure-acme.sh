@@ -35,8 +35,20 @@ if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
     service postfix onestop || true
     #/usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --home /mnt/acme --server zerossl
     /usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --home /mnt/acme --server letsencrypt
-    /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --server letsencrypt \
-      --home /mnt/acme --standalone --listen-v4 --httpport 80 || true
+    /usr/local/sbin/acme.sh --set-default-ca --server letsencrypt
+    /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" \
+      --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
+    if [ ! -f "/mnt/acme/$MAILCERTDOMAIN/$MAILCERTDOMAIN.cer" ]; then
+        echo "Trying to register cert again, sleeping 30"
+        sleep 30
+        /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" \
+          --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
+        if [ ! -f "/mnt/acme/$MAILCERTDOMAIN/$MAILCERTDOMAIN.cer" ]; then
+            echo "missing $MAILCERTDOMAIN.cer, certificate not registered"
+            exit 1
+        fi
+    fi
+    # try continue, with a cert hopefully
     cd /mnt/acme/"$MAILCERTDOMAIN"/ || true
     if [ -d /usr/local/etc/postfix/keys/ ]; then
         cp ./* /usr/local/etc/postfix/keys/

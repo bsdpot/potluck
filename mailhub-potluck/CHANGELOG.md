@@ -1,3 +1,10 @@
+0.0.33
+
+* Add log for acme.sh
+* Add second attempt to register if first fails
+
+---
+
 0.0.32
 
 * Remove acme.sh insecure flag
