@@ -1,3 +1,10 @@
+0.0.32
+
+* Remove acme.sh insecure flag
+* Set 'or true' on acme.sh commands
+
+---
+
 0.0.31
 
 * Specify letsencrypt twice
