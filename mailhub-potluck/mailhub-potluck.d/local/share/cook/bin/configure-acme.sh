@@ -17,6 +17,10 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # make directories if they don't exist
 mkdir -p /mnt/acme
 
+# the following is required for option --set-default-ca
+mkdir -p /root/.acme.sh/
+touch /root/.acme.sh/account.conf
+
 # shellcheck disable=SC3003
 # safe(r) separator for sed
 sep=$'\001'
@@ -36,12 +40,12 @@ if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
     #/usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --home /mnt/acme --server zerossl
     /usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --home /mnt/acme --server letsencrypt
     /usr/local/sbin/acme.sh --set-default-ca --server letsencrypt
-    /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" \
+    /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --server letsencrypt \
       --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
     if [ ! -f "/mnt/acme/$MAILCERTDOMAIN/$MAILCERTDOMAIN.cer" ]; then
         echo "Trying to register cert again, sleeping 30"
         sleep 30
-        /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" \
+        /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --server letsencrypt \
           --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
         if [ ! -f "/mnt/acme/$MAILCERTDOMAIN/$MAILCERTDOMAIN.cer" ]; then
             echo "missing $MAILCERTDOMAIN.cer, certificate not registered"

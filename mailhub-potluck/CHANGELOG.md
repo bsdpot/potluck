@@ -1,3 +1,10 @@
+0.0.34
+
+* Fix errors introduced by last change
+* Make directory /root/.acme.sh/
+
+---
+
 0.0.33
 
 * Add log for acme.sh
