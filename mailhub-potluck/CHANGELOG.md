@@ -1,3 +1,9 @@
+0.0.31
+
+* Specify letsencrypt twice
+
+---
+
 0.0.30
 
 * Switch to letsencrypt for certificates due to issues with zerossl

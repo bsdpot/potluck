@@ -35,7 +35,8 @@ if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
     service postfix onestop || true
     #/usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --home /mnt/acme --server zerossl
     /usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --home /mnt/acme --server letsencrypt
-    /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --home /mnt/acme --standalone --listen-v4 --httpport 80 --insecure
+    /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --server letsencrypt \
+      --home /mnt/acme --standalone --listen-v4 --httpport 80 --insecure
     cd /mnt/acme/"$MAILCERTDOMAIN"/
     if [ -d /usr/local/etc/postfix/keys/ ]; then
         cp ./* /usr/local/etc/postfix/keys/
