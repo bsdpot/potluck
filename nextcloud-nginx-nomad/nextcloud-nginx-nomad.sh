@@ -137,8 +137,8 @@ pkg install -y libzip
 step "Install package oniguruma"
 pkg install -y oniguruma
 
-step "Install package openldap24-client"
-pkg install -y openldap24-client
+step "Install package openldap26-client"
+pkg install -y openldap26-client
 
 step "Install package png"
 pkg install -y png

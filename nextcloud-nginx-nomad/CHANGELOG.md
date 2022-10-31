@@ -1,3 +1,11 @@
+0.53
+
+* Updating php-fpm config
+* Adding www.conf.in file
+* openldap26-client
+
+---
+
 0.52
 
 * Formatting in new patch file, add comma
