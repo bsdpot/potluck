@@ -1,3 +1,9 @@
+1.3.7
+
+* Fix apache config file, missing close tag
+
+---
+
 1.3.6
 
 * Update consul config for new format

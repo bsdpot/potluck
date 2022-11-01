@@ -269,7 +269,7 @@ DocumentRoot "/usr/local/www/lam"
     <FilesMatch ".phps$">
         SetHandler application/x-httpd-php-source
     </FilesMatch>
-</IfModule
+</IfModule>
 
 #
 # The following lines prevent .htaccess and .htpasswd files from being 
