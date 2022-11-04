@@ -1,3 +1,10 @@
+1.0.9
+
+* Version bump for p3 rebuild
+* Add checklist
+
+---
+
 1.0.8
 
 * Add getopts for NODENAME
