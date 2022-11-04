@@ -1,3 +1,9 @@
+0.2.15
+
+* Version bump for p3 rebuild
+
+---
+
 0.2.14
 
 * Allow placing alternative copies of loki and promtail config files on mount-in
