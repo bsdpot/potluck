@@ -1,3 +1,10 @@
+0.0.12
+
+* Version bump for p3 rebuild
+* Add checklist
+
+---
+
 0.0.11
 
 * Version bump for FreeBSD-13.1 image
