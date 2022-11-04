@@ -1,3 +1,9 @@
+1.0.26
+
+* Version bump for p3 rebuild
+
+---
+
 1.0.25
 
 * Fix smtpdbanner variable expansion

@@ -1,3 +1,9 @@
+1.3.8
+
+* Version bump for p3 rebuild
+
+---
+
 1.3.7
 
 * Fix apache config file, missing close tag

@@ -1,3 +1,9 @@
+0.0.9
+
+* Version bump for p3 rebuild
+
+---
+
 0.0.8
 
 * Version bump for new base image, cook script

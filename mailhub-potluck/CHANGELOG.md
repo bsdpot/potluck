@@ -1,3 +1,9 @@
+0.0.36
+
+* Version bump for p3 rebuild
+
+---
+
 0.0.35
 
 * Adding back 'or true' option

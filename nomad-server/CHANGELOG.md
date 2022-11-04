@@ -1,3 +1,9 @@
+2.0.19
+
+* Version bump for p3 rebuild
+
+---
+
 2.0.18
 
 * Update for new nomad version

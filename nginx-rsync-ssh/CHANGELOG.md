@@ -1,3 +1,9 @@
+0.0.8
+
+* Version bump for p3 rebuild
+
+---
+
 0.0.7
 
 * Version bump for FreeBSD-13.1 image

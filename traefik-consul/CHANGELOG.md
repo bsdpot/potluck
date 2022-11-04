@@ -1,3 +1,9 @@
+1.3.3
+
+* Version bump for p3 rebuild
+
+---
+
 1.3.2
 
 * Version bump for rebuild

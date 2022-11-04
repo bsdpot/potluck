@@ -1,3 +1,9 @@
+0.54
+
+* Version bump for p3 rebuild
+
+---
+
 0.53
 
 * Updating php-fpm config

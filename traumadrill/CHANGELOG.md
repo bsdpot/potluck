@@ -1,3 +1,10 @@
+0.0.19
+
+* Version bump for p3 rebuild
+* Add checklist
+
+---
+
 0.0.18
 
 * Version bump for rebuild

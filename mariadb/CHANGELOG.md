@@ -1,3 +1,9 @@
+2.0.9
+
+* Version bump for p3 rebuild
+
+---
+
 2.0.8
 
 * Version bump for latest consul

@@ -1,3 +1,10 @@
+0.0.21
+
+* Version bump for p3 rebuild
+* Add checklist
+
+---
+
 0.0.20
 
 * Version bump for new base image, cook script
