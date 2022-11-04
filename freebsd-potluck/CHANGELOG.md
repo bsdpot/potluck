@@ -1,3 +1,10 @@
+0.0.6
+
+* Version bump for p3 rebuild
+* Add checklist
+
+---
+
 0.0.5
 
 * Simplifying base image to remove unnecessary stuff
