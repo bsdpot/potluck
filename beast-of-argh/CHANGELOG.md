@@ -1,3 +1,9 @@
+0.0.27
+
+* Version bump for p3 rebuild
+
+---
+
 0.0.26
 
 * Adjusting minio dashboard in grafana to better working one
