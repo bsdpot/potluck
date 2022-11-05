@@ -1,3 +1,9 @@
+0.0.24
+
+* Add missing node_exporter installation
+
+---
+
 0.0.23
 
 * Rebuild to fix consul error, fix consul.hcl for new format
