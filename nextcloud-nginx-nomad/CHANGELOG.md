@@ -1,3 +1,9 @@
+0.58
+
+* Version bump for rebuild
+
+---
+
 0.57
 
 * Version bump for rebuild again

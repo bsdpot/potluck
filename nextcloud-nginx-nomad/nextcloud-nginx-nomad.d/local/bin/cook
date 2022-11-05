@@ -112,11 +112,11 @@ log "Configure cron"
 configure-cron.sh
 
 log "Start php-fpm"
-service php-fpm start || true
-#timeout --foreground 120 \
-#  sh -c 'while ! service php-fpm status; do
-#    service php-fpm start || true; sleep 5;
-#  done'
+#service php-fpm start || true
+timeout --foreground 120 \
+  sh -c 'while ! service php-fpm status; do
+    service php-fpm start || true; sleep 5;
+  done'
 
 log "Start nginx"
 service nginx start || true
