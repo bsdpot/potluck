@@ -1,3 +1,9 @@
+0.0.25
+
+* Version bump for rebuild
+
+---
+
 0.0.24
 
 * Add missing node_exporter installation
