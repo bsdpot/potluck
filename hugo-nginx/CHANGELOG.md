@@ -1,3 +1,9 @@
+0.0.23
+
+* Rebuild to fix consul error, fix consul.hcl for new format
+
+---
+
 0.0.22
 
 * Version bump for rebuild to fix missing images on potluck site
