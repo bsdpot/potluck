@@ -95,6 +95,9 @@ service node_exporter start || true
 log "Configure jenkins"
 configure-jenkins.sh
 
+log "Setting goovy warning off"
+export GROOVY_TURN_OFF_JAVA_WARNINGS=true
+
 log "Start jenkins"
 timeout --foreground 120 \
   sh -c 'while ! service jenkins status; do

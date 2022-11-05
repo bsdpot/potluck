@@ -1,3 +1,9 @@
+0.0.24
+
+* Turn off groovy warning via GROOVY_TURN_OFF_JAVA_WARNINGS
+
+---
+
 0.0.23
 
 * Fix consul client hcl for new format
