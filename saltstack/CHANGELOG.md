@@ -1,3 +1,15 @@
+0.0.11
+
+* Fix consul client hcl for new format
+
+---
+
+0.0.10
+
+* Version bump for rebuild to fix missing images on potluck site
+
+---
+
 0.0.9
 
 * Version bump for p3 rebuild
