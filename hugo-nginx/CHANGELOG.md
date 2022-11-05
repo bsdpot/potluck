@@ -1,3 +1,9 @@
+0.0.26
+
+* Adding 'or true' where applicable for hugo steps
+
+---
+
 0.0.25
 
 * Version bump for rebuild

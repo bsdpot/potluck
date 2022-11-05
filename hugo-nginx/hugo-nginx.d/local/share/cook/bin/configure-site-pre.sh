@@ -13,7 +13,7 @@ export PATH=/usr/local/bin:$PATH
 
 # setup hugo pre-steps
 cd /mnt
-/usr/local/bin/hugo new site "$SITENAME"
+/usr/local/bin/hugo new site "$SITENAME" || true
 
 # this has to happen after the force create of site as was wiping this
 # make some directories from input variables

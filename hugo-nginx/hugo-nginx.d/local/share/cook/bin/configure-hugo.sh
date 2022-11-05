@@ -27,12 +27,12 @@ cd "/mnt/${SITENAME}" || exit 1
 chown -R www:www "/mnt/$SITENAME"
 
 # run hugo
-/usr/local/bin/hugo
+/usr/local/bin/hugo || true
 
 # create sample pages
 # we need this to create the blog and microblog directories
-/usr/local/bin/hugo new blog/sample-blog-post.md
-/usr/local/bin/hugo new micro/sample-microblog-post.md
+/usr/local/bin/hugo new blog/sample-blog-post.md || true
+/usr/local/bin/hugo new micro/sample-microblog-post.md || true
 
 # check ownership again
 chown -R www:www "/mnt/$SITENAME"
