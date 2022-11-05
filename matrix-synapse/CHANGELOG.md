@@ -1,3 +1,9 @@
+1.0.25
+
+* Fixing startup command to synapse
+
+---
+
 1.0.24
 
 Fix consul client hcl for new format

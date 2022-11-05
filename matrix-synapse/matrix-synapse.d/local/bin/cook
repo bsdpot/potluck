@@ -135,10 +135,10 @@ timeout --foreground 120 \
     service nginx start || true; sleep 5;
   done'
 
-log "Start matrix"
+log "Start matrix-synapse"
 timeout --foreground 120 \
-  sh -c 'while ! service matrix status; do
-    service matrix start || true; sleep 5;
+  sh -c 'while ! service synapse status; do
+    service synapse start || true; sleep 5;
   done'
 
 log "Exit seasoned"
