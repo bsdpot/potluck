@@ -1,3 +1,15 @@
+2.0.21
+
+* Version bump, missing file
+
+---
+
+2.0.20
+
+* Version bump for rebuild to fix missing images on potluck site
+
+---
+
 2.0.19
 
 * Version bump for p3 rebuild
