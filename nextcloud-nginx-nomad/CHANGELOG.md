@@ -1,3 +1,9 @@
+0.59
+
+* Version bump for rebuild! fails to export
+
+---
+
 0.58
 
 * Version bump for rebuild
