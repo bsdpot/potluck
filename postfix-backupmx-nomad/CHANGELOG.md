@@ -1,3 +1,9 @@
+1.0.30
+
+* Version bump for rebuild
+
+---
+
 1.0.29
 
 * Version bump for rebuild
