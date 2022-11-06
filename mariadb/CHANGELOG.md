@@ -1,3 +1,9 @@
+2.0.12
+
+* Version bump for rebuild
+
+---
+
 2.0.11
 
 * Fix consul client hcl for new format
