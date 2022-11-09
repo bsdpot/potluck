@@ -1,0 +1,21 @@
+#!/bin/sh
+if [ -z "$1" ]; then
+    echo "Please pass in the destination directory to backup to as an argument"
+    echo ""
+    echo "For example:"
+    echo "   ./cronbackup /mnt/openldap-data/backups"
+    echo ""
+    exit 1
+fi
+
+indirectory="$1"
+mydate=$(date +%F)
+
+mkdir -p "$indirectory"
+cd "$indirectory" || exit 1
+find . -mtime +14 -delete
+
+slapcat -n 0 -l config.ldif
+slapcat -n 1 -l data.ldif
+
+tar -czf "ldapbackup.$mydate.tgz" config.ldif data.ldif

@@ -68,6 +68,7 @@ Thereafter these files will load automatically, along with any updates, from per
   -E DOMAIN=<domain name> \
   -E MYCREDS=<openldap root pass> \
   -E HOSTNAME=<hostname> \
+  [ -E CRONBACKUP=/mnt/openldap-data/backups ] \
   [ -E IMPORTCUSTOM=1 ] \
   [ -E REMOTEIP=<IP address second instance> ] \
   [ -E SERVERID=<001 or 002> ] \
@@ -89,6 +90,8 @@ The DOMAIN parameter is the domain name to use for `openldap` configuration.
 The MYCREDS parameter is the administrator password for openldap.
 
 The HOSTNAME is the hostname to be used.
+
+The CRONBACKUP parameter is the path to persistent storage where automatic backups of ldap config and data are dropped.
 
 If set, IMPORTCUSTOM enables the import of copied-in files `/root/config.ldif` and `/root/data.ldif` as a repeat in the cook script. Also available via shell scripts.
 

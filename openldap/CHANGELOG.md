@@ -1,3 +1,9 @@
+1.4.1
+
+* Add cron backups
+
+---
+
 1.4.0
 
 * Version bump for rebuild
