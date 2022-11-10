@@ -40,8 +40,21 @@ timeout --foreground 120 \
   sh -c 'while ! host -ta active.vault.service.consul |
     grep -F -- "'"$LEADER_IP"'"; do sleep 1; done'
 
-"$SCRIPTDIR"/cluster-vault.sh \
+
+sleep 5
+
+LOCAL_VAULT="https://127.0.0.1:8200"
+
+if ! service nginx onestatus vaultproxy; then
+    echo "Starting vaultproxy"
+    service nginx start vaultproxy
+    sleep 1
+fi
+
+vault \
   operator raft join \
+  -address="$LOCAL_VAULT" \
+  -ca-cert=/mnt/vaultcerts/ca_root.crt \
   -leader-client-key=@/mnt/vaultcerts/agent.key \
   -leader-client-cert=@/mnt/vaultcerts/agent.crt \
   -leader-ca-cert=@/mnt/vaultcerts/ca_root.crt \
@@ -64,10 +77,6 @@ for i in $(jot 30); do
     sleep 2
 done
 
-if ! service nginx onestatus vaultproxy; then
-    echo "Starting vaultproxy"
-    service nginx start vaultproxy
-fi
 
 if ! service consul-template onestatus; then
     echo "Unwrapping local consul-template token"
