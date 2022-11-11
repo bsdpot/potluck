@@ -21,5 +21,12 @@ resolvers localdns
   hold valid 30s
   accepted_payload_size 8192
 
+frontend stats
+   bind 127.0.0.1:8404
+   http-request use-service prometheus-exporter if { path /metrics }
+   stats enable
+   stats uri /stats
+   stats refresh 10s
+
 frontend default
   bind 127.0.0.1:80

@@ -25,7 +25,7 @@ scrape_configs:
     metrics_path: '/metrics'
     consul_sd_configs:
     - server: 'localhost:8500'
-      services: ["node-exporter"]
+      services: ["node-exporter", "haproxy-exporter"]
       datacenter: '%%datacenter%%'
     relabel_configs:
     - source_labels: ['__meta_consul_service']
