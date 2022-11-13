@@ -1,3 +1,9 @@
+1.4.5
+
+* Update README to remove openldap24 reference
+
+---
+
 1.4.4
 
 * Include rhash as crc32 application to calculate checksums on ldif files

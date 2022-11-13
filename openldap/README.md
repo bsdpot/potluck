@@ -9,9 +9,6 @@ tags: ["ldap", "openldap", "directory services"]
 
 This is an OpenLDAP jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
 
-It is running `openldap24-server` and not `openldap25-server`! The various `slap*` binaries exist in
-`openldap24-server` only.
-
 The jail exposes parameters that can either be set via the environment or by setting the ```cook```parameters (the
 latter either via ```nomad```, see example below, or by editing the downloaded jails ```pot.conf``` file):
 
