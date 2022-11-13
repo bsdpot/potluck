@@ -1,3 +1,9 @@
+1.4.3
+
+* Update LAM unix.conf for list login
+
+---
+
 1.4.2
 
 * Configure LAM automatically

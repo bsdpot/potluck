@@ -38,9 +38,9 @@ activeTypes: user,group
 
 accessLevel: 100
 
-loginMethod: search
+loginMethod: list
 
-loginSearchSuffix: ou=People,dc=%%mysuffix%%,dc=%%mytld%%
+loginSearchSuffix: ou=People,%%mysuffix%%,dc=%%mytld%%
 
 loginSearchFilter: uid=%USER%
 
