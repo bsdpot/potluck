@@ -1,3 +1,9 @@
+1.4.2
+
+* Configure LAM automatically
+
+---
+
 1.4.1
 
 * Add cron backups

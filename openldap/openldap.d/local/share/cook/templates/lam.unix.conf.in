@@ -1,0 +1,156 @@
+ServerURL: ldap://localhost:389
+
+serverDisplayName: 
+
+useTLS: no
+
+followReferrals: false
+
+pagedResults: false
+
+referentialIntegrityOverlay: false
+
+hidePasswordPromptForExpiredPasswords: false
+
+Passwd: lam
+
+Admins: cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%
+
+defaultLanguage: en_GB.utf8
+
+timeZone: Europe/London
+
+scriptPath: 
+
+scriptServer: 
+
+scriptRights: 750
+
+scriptUserName: 
+
+scriptSSHKey: 
+
+scriptSSHKeyPassword: 
+
+searchLimit: 0
+
+activeTypes: user,group
+
+accessLevel: 100
+
+loginMethod: search
+
+loginSearchSuffix: ou=People,dc=%%mysuffix%%,dc=%%mytld%%
+
+loginSearchFilter: uid=%USER%
+
+loginSearchDN: 
+
+loginSearchPassword: 
+
+httpAuthentication: false
+
+lamProMailFrom: 
+
+lamProMailReplyTo: 
+
+lamProMailSubject: Your password was reset
+
+lamProMailIsHTML: false
+
+lamProMailAllowAlternateAddress: true
+
+lamProMailText: Dear @@givenName@@ @@sn@@,+::++::+your password was reset to: @@newPassword@@+::++::++::+Best regards+::++::+deskside support+::+
+
+jobsBindPassword: 
+
+jobsBindUser: 
+
+jobsDatabase: SQLite
+
+jobsDBHost: 
+
+jobsDBPort: 
+
+jobsDBUser: 
+
+jobsDBPassword: 
+
+jobsDBName: 
+
+jobToken: 906699128267
+
+pwdResetAllowSpecificPassword: true
+
+pwdResetAllowScreenPassword: true
+
+pwdResetForcePasswordChange: true
+
+pwdResetDefaultPasswordOutput: 2
+
+twoFactorAuthentication: none
+
+twoFactorAuthenticationURL: https://localhost
+
+twoFactorAuthenticationClientId: 
+
+twoFactorAuthenticationSecretKey: 
+
+twoFactorAuthenticationDomain: 
+
+twoFactorAuthenticationInsecure: 
+
+twoFactorAuthenticationLabel: 
+
+twoFactorAuthenticationOptional: 
+
+twoFactorAuthenticationCaption: 
+
+twoFactorAuthenticationAttribute: uid
+
+hideDnPart: 
+
+pwdPolicyMinLength: 
+
+pwdPolicyMinLowercase: 
+
+pwdPolicyMinUppercase: 
+
+pwdPolicyMinNumeric: 
+
+pwdPolicyMinSymbolic: 
+modules: posixAccount_user_minUID: 10000
+modules: posixAccount_user_maxUID: 30000
+modules: posixAccount_host_minMachine: 50000
+modules: posixAccount_host_maxMachine: 60000
+modules: posixGroup_group_minGID: 10000
+modules: posixGroup_group_maxGID: 20000
+modules: posixAccount_user_uidGeneratorUsers: range
+modules: posixAccount_host_uidGeneratorUsers: range
+modules: posixAccount_group_gidGeneratorUsers: range
+modules: posixGroup_pwdHash: SSHA
+modules: posixAccount_pwdHash: SSHA
+types: suffix_user: ou=People,dc=%%mysuffix%%,dc=%%mytld%%
+types: attr_user: #uid;#givenName;#sn;#uidNumber;#gidNumber
+types: modules_user: inetOrgPerson,posixAccount,shadowAccount
+types: suffix_group: ou=group,dc=%%mysuffix%%,dc=%%mytld%%
+types: attr_group: #cn;#gidNumber;#memberUID;#description
+types: modules_group: posixGroup
+types: customLabel_user: 
+types: filter_user: 
+types: customLabel_group: 
+types: filter_group: 
+types: hidden_user: 
+types: hidden_group: 
+tools: treeViewSuffix: dc=%%mysuffix%%,dc=%%mytld%%
+tools: tool_hide_toolProfileEditor: false
+tools: tool_hide_toolServerInformation: false
+tools: tool_hide_toolFileUpload: false
+tools: tool_hide_toolMultiEdit: false
+tools: tool_hide_toolWebauthn: false
+tools: tool_hide_ImportExport: false
+tools: tool_hide_toolOUEditor: false
+tools: tool_hide_toolPDFEditor: false
+tools: tool_hide_toolTests: false
+tools: tool_hide_toolSchemaBrowser: false
+tools: tool_hide_TreeViewTool: false

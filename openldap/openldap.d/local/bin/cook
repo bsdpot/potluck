@@ -118,6 +118,9 @@ configure-slapd.sh
 log "Configure apache24"
 configure-apache24.sh
 
+log "Configure LAM"
+configure-lam.sh
+
 log "Start slapd"
 timeout --foreground 120 \
   sh -c 'while ! service slapd status; do
