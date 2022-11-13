@@ -17,6 +17,9 @@ if [ ! -d /mnt/openldap-data ]; then
     exit 1
 fi
 
+# make backups directory
+mkdir -p /mnt/openldap-data/backups
+
 # double check permissions on directories
 chown -R ldap:ldap /mnt/openldap-data
 chmod 700 /mnt/openldap-data

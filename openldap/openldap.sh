@@ -127,6 +127,12 @@ pkg install -y openldap26-client
 step "Install package ldap-account-manager"
 pkg install -y ldap-account-manager
 
+step "Install package rhash"
+pkg install -y rhash
+
+step "Install package p5-Archive-Zip"
+pkg install -y p5-Archive-Zip
+
 step "Install package apache24"
 pkg install -y apache24
 

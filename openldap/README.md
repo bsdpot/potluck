@@ -150,3 +150,54 @@ ldapsearch -x -b "dc=your-domain,dc=net"
 
 ## LAM web frontend
 Open http://yourhost to access the LAM `openldap` web frontend.
+
+## Updating Master password
+It's possible to update the master password on imported ldif files, however to avoid a checksum error extra steps required.
+
+First copy `/usr/local/etc/openldap/slapd.d/cn=config/olcDatabase={1}mdb.ldif` to a temporary file:
+```
+cp "/usr/local/etc/openldap/slapd.d/cn=config/olcDatabase={1}mdb.ldif" /tmp/stepone.ldif
+```
+
+Then generate a password with the `slappasswd` tool as follows:
+```
+slappasswd -s newPassword
+```
+
+For example:
+```
+slappasswd -s lam
+{SSHA}A6feTpxMvW6YWuMka4aK64jUr18hRvvJ
+```
+
+Then edit `/tmp/stepone.ldif` and change the line `olcRootPW:: OldPasswordString` to the string you get from `slappasswd`:
+```
+olcRootPW: {SSHA}A6feTpxMvW6YWuMka4aK64jUr18hRvvJ
+```
+
+Remove the first two lines where it says:
+```
+# AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.
+# CRC32 XXXXXXX
+```
+
+Save the file. Now calculate a new checksum value with `rhash` tool:
+```
+rhash -C /tmp/stepone.ldif
+```
+
+Then update the file with the correct hash value by inserting at the top:
+```
+# AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.
+# CRC32 nEwHaSh
+```
+
+Then make a backup old file, and copy over adjusted file, and restart `slapd`:
+```
+cd "/usr/local/etc/openldap/slapd.d/cn=config/"
+cp "olcDatabase={1}mdb.ldif" backup.ldif
+cp /tmp/stepone.ldif "olcDatabase={1}mdb.ldif"
+service slapd restart
+```
+
+You can now login as Manager via web front end with the new credentials.

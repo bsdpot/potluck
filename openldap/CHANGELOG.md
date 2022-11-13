@@ -1,3 +1,10 @@
+1.4.4
+
+* Include rhash as crc32 application to calculate checksums on ldif files
+* Update docs for changing password
+
+---
+
 1.4.3
 
 * Update LAM unix.conf for list login
