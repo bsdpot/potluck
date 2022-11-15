@@ -121,6 +121,12 @@ if [ -f /root/postfix_sender_transport ]; then
     /usr/local/sbin/postmap /usr/local/etc/postfix/sender_transport
 fi
 
+# fix some issues with running postfix, this file needs postmap run
+# postmap transport file
+if [ -f /usr/local/etc/postfix/transport ]; then
+    /usr/local/sbin/postmap /usr/local/etc/postfix/transport
+fi
+
 # other mailer configuration
 if [ ! -d /usr/local/etc/mail ]; then
     mkdir -p /usr/local/etc/mail

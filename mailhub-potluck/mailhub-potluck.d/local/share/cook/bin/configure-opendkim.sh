@@ -65,6 +65,6 @@ if [ -d /mnt/opendkim ]; then
     fi
 fi
 
-# enable and start service
+# enable service
 service milter-opendkim enable
 #service milter-opendkim start

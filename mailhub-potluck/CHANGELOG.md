@@ -1,3 +1,9 @@
+0.0.39
+
+* postmap transport file
+
+---
+
 0.0.38
 
 * Version bump to rebuild
