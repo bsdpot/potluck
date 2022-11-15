@@ -93,3 +93,6 @@ ruler:
 
 analytics:
   reporting_enabled: false
+
+query_range:
+  parallelise_shardable_queries: false
