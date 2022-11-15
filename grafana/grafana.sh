@@ -103,8 +103,8 @@ sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
 step "Install package node_exporter"
 pkg install -y node_exporter
 
-step "Install package grafana7"
-pkg install -y grafana7
+step "Install package grafana9"
+pkg install -y grafana9
 
 step "Install package sudo"
 pkg install -y sudo

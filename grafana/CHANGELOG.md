@@ -1,3 +1,9 @@
+0.3.0
+
+* Update to grafana9
+
+---
+
 0.2.8
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured
