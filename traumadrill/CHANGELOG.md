@@ -1,4 +1,4 @@
-1.0.1
+1.0
 
 * New major release version 1.0.1
 * Update CHANGELOG.md for major and minor version changes: X.Y.z
