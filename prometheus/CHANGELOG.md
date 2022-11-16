@@ -1,3 +1,10 @@
+0.12.0
+
+* Remove SCRAPEDATABASES parameter
+* Discover postgres-exporters automatically
+
+---
+
 0.11.8
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured
