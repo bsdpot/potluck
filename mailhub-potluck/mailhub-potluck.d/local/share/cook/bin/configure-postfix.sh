@@ -66,6 +66,11 @@ fi
   sed "s${sep}%%mailcertdomain%%${sep}$MAILCERTDOMAIN${sep}g" \
   > /usr/local/etc/postfix/main.cf
 
+# add master.cf with custom variable for mailname and to enable smtps and dovecot-spamass transport
+< "$TEMPLATEPATH/postfix-master.cf.in" \
+  sed "s${sep}%%mailcertdomain%%${sep}$MAILCERTDOMAIN${sep}g" \
+  > /usr/local/etc/postfix/master.cf
+
 # %%ldapserver%%
 # LDAPSERVER=
 #  1.2.3.4

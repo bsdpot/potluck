@@ -2,6 +2,7 @@
 
 * New versioning format
 * Update opendkim setup, requires mailnull ownership on keys
+* Fix postfix dovecot-spamass transport
 
 ---
 
