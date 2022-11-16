@@ -1,3 +1,12 @@
+1.0.1
+
+* New major release version 1.0.1
+* Update CHANGELOG.md for major and minor version changes: X.Y.z
+* Update potname.ini to x.y.Z for automated build processing
+* Next version 1.0.2 will be a test of this functionality
+
+---
+
 0.0.21
 
 * Fix consul client hcl for new format
