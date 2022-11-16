@@ -1,3 +1,10 @@
+0.1
+
+* New versioning format
+* Update opendkim setup, requires mailnull ownership on keys
+
+---
+
 0.0.39
 
 * postmap transport file

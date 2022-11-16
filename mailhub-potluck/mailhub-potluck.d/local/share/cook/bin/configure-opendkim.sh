@@ -43,7 +43,7 @@ if [ -f /root/dkim_my_domains ]; then
         if [ ! -d /mnt/opendkim/keys/"$dkimdomain" ]; then
             mkdir -p /mnt/opendkim/keys/"$dkimdomain"
             /usr/local/sbin/opendkim-genkey --domain="$dkimdomain" --directory=/mnt/opendkim/keys/"$dkimdomain"
-            echo "default._domainkey.$dkimdomain $dkimdomain:default:/mnt/opendkim/keys/$dkimdomain/default" >> /mnt/opendkim/KeyTable
+            echo "default._domainkey.$dkimdomain $dkimdomain:default:/mnt/opendkim/keys/$dkimdomain/default.private" >> /mnt/opendkim/KeyTable
             echo "*@$dkimdomain default._domainkey.$dkimdomain" >> /mnt/opendkim/SigningTable
         fi
     done < /root/dkim_my_domains
@@ -62,6 +62,9 @@ if [ -d /mnt/opendkim ]; then
     fi
     if [ -d /mnt/opendkim/keys ]; then
         chmod 750 /mnt/opendkim/keys
+	# if we change owner of the keys directory and subfolders to mailnull then things work
+	# milter-opendkim is running as mailnull user so permissions to match that
+	chown -R mailnull /mnt/opendkim/keys
     fi
 fi
 
