@@ -105,7 +105,7 @@ fi
 #
 if [ -f /root/postfix_access ]; then
     cp -f /root/postfix_access /usr/local/etc/postfix/access
-    /usr/local/sbin/postmap /usr/local/etc/postfix/access
+    /usr/local/sbin/postmap /usr/local/etc/postfix/access || true
 fi
 
 # configure /usr/local/etc/postfix/external_forwards by copying over the copied-in file
@@ -114,7 +114,7 @@ fi
 #
 if [ -f /root/postfix_external_forwards ]; then
     cp -f /root/postfix_external_forwards /usr/local/etc/postfix/external_forwards
-    /usr/local/sbin/postmap /usr/local/etc/postfix/external_forwards
+    /usr/local/sbin/postmap /usr/local/etc/postfix/external_forwards || true
 fi
 
 # configure /usr/local/etc/postfix/sender_transport
@@ -123,13 +123,13 @@ fi
 #
 if [ -f /root/postfix_sender_transport ]; then
     cp -f /root/postfix_sender_transport /usr/local/etc/postfix/sender_transport
-    /usr/local/sbin/postmap /usr/local/etc/postfix/sender_transport
+    /usr/local/sbin/postmap /usr/local/etc/postfix/sender_transport || true
 fi
 
 # fix some issues with running postfix, this file needs postmap run
 # postmap transport file
 if [ -f /usr/local/etc/postfix/transport ]; then
-    /usr/local/sbin/postmap /usr/local/etc/postfix/transport
+    /usr/local/sbin/postmap /usr/local/etc/postfix/transport || true
 fi
 
 # other mailer configuration
