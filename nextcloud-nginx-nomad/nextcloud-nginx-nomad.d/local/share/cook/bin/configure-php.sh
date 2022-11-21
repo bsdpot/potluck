@@ -25,10 +25,3 @@ cp -f "$TEMPLATEPATH/www.conf.in" /usr/local/etc/php-fpm.d/www.conf
 cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 cp -f "$TEMPLATEPATH/99-custom.ini" /usr/local/etc/php/99-custom.ini
 
-# check for presence of copied-in /root/nc-config.php and copy over any existing (with backup)
-if [ -s /root/nc-config.php ]; then
-    if [ -s /usr/local/www/nextcloud/config/config.php ]; then
-        cp -f /usr/local/www/nextcloud/config/config.php /usr/local/www/nextcloud/config/config.php.old
-    fi
-    cp -f /root/nc-config.php /usr/local/www/nextcloud/config/config.php
-fi

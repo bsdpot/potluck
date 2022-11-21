@@ -1,3 +1,11 @@
+0.61
+
+* Improved process for new installs
+* Copy in multiple config files
+* Update README
+
+---
+
 0.60
 
 * Version bump for rebuild

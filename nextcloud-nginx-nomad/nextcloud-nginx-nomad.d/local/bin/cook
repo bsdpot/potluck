@@ -105,6 +105,9 @@ configure-php.sh
 log "Configure nextcloud"
 configure-nextcloud.sh
 
+log "Configure custom nextcloud config.php files"
+configure-custom.sh
+
 log "Configure nginx"
 configure-nginx.sh
 

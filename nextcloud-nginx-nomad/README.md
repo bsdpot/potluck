@@ -31,17 +31,65 @@ zfs create data/jaildata/nextcloud_files
 `nextcloud_files` is where the files will be kept, and is mounted to `/mnt/filestore` or similar inside the image.
 
 # Installation
-When you first run the image you'll need to setup Nextcloud via the web interface.
+When you first run the image you'll need to setup Nextcloud via the web interface, or cli.
 
 Make sure to specify `/mnt/filestore` or similar for DATADIR parameter (-d) in the web interface for Nextcloud setup too by clicking the dropdown for database and storage.
 
-If you have S3 object storage with a self-signed certificate, set the SELFSIGNHOST parameter to ```ip:port``` or pass with with ```-s ip:port```.
+If you have S3 object storage with a self-signed certificate, set the SELFSIGNHOST parameter to ```ip:port``` or pass in ```-s ip:port```.
 
 You must also copy-in the `rootca.crt` certificate from the setup of self-signed certificates for S3.
 
-## Custom Nextcloud config.php
-If you wish to make use of object storage for file backing you will need to copy-in a custom `nextcloud` config.php to `/root/nc-config.php`. A sample would look like the following, however please pull your source file from a working instance and include the relevant S3 parameters:
+## Custom objectstore.config.php
+If you wish to make use of object storage for file backing you will need to copy-in a custom `objectstore.config.php` to `/root/objectstore.config.php`.
 
+A sample would look like the following, however please pull your source file from a working instance and include the relevant S3 parameters:
+
+```
+<?php
+$CONFIG = array (
+  'objectstore' => array (
+    'class' => '\\OC\\Files\\ObjectStore\\S3',
+    'arguments' => array(
+      'bucket' => '<your-bucket>',
+      'autocreate' => true,
+      'key'    => '<your-key>',
+      'secret' => '<your-secret>',
+      'hostname' => '<your host>',
+      'port' => '<your port>',
+      'use_ssl' => true,
+      'region' => 'optional',
+      'use_path_style' => true
+    ),
+  ),
+);
+```
+
+Take note: the addition of an objectstore array in will stop the mounted-in filestore from working.
+
+## Custom mysql.config.php
+If you wish to pre-configure MySQL settings you can copy-in a custom `mysql.config.php` to `/root/mysql.config.php`.
+
+A sample would look like the following:
+
+```
+<?php
+$CONFIG = array (
+  'dbtype' => 'mysql',
+  'version' => '',
+  'dbname' => '<your-database-name>',
+  'dbhost' => '<ip>:<port>',
+  'dbtableprefix' => 'oc_',
+  'dbuser' => '<db-user>',
+  'dbpassword' => '<db-pass>',
+  'mysql.utf8mb4' => true,
+ ),
+);
+```
+
+## Custom custom.config.php
+If you have other settings you'd like to preconfigure you can copy in a custom `custom.config.php` to `/root/custom.config.php`.
+
+A sample may look like the following:
 ```
 <?php
 $CONFIG = array (
@@ -60,51 +108,21 @@ $CONFIG = array (
       'writable' => false,
     ),
   ),
-  'logfile' => '/var/log/nginx/nextcloud.log',
+  'logfile' => '/mnt/filestore/nextcloud.log',
   'memcache.local' => '\\OC\\Memcache\\APCu',
-  'instanceid' => 'REDACTED',
-  'passwordsalt' => '+REDACTED',
-  'secret' => 'REDACTED',
   'trusted_domains' =>
   array (
-    0 => '10.0.0.2:20900',
+    0 => '10.0.0.2',
     1 => 'my.host.name',
   ),
   'datadirectory' => '/mnt/filestore',
-  'version' => '23.0.3.2',
-  'dbtype' => 'mysql',
-  'dbname' => 'nextcloud',
-  'dbhost' => '10.0.0.3',
-  'dbport' => '3306',
-  'dbtableprefix' => 'nc_',
-  'dbuser' => 'REDACTED',
-  'dbpassword' => 'REDACTED',
-  'installed' => true,
   'overwrite.cli.url' => 'https://my.host.name',
   'overwritehost' => 'my.host.name',
   'overwriteprotocol' => 'https',
-  'installed' => true,
   'theme' => '',
   'loglevel' => 0,
-  'mysql.utf8mb4' => true,
-  'objectstore' => array (
-    'class' => '\\OC\\Files\\ObjectStore\\S3',
-    'arguments' => array(
-      'bucket' => 'mynextcloud',
-      'autocreate' => true,
-      'key'    => 'REDACTED',
-      'secret' => 'REDACTED',
-      'hostname' => '<your host>',
-      'port' => '<your port>',
-      'use_ssl' => true,
-      'region' => 'optional',
-      'use_path_style' => true
-    ),
-  ),
 );
 ```
-
-Take note: the addition of an objectstore array in config.php will stop the mounted-in filestore from working.
 
 ## Nomad Job File
 
@@ -153,11 +171,13 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-13_1"
-        tag = "0.60"
+        tag = "0.61"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
-          "/path/to/custom/config.php:/root/nc-config.php",
+          "/path/to/custom/objectstore.config.php:/root/objectstore.config.php",
+          "/path/to/custom/mysql.config.php:/root/mysql.config.php",
+          "/path/to/custom/custom.config.php:/root/custom.config.php",
           "/path/to/rootca.crt:/root/rootca.crt",
         ]
         mount = [
