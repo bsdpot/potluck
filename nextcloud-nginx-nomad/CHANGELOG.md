@@ -1,3 +1,10 @@
+0.62
+
+* Remove default nextcloud config.php
+* x.y.z versioning numbering not implemented yet for this image
+
+---
+
 0.61
 
 * Improved process for new installs

@@ -82,7 +82,6 @@ $CONFIG = array (
   'dbuser' => '<db-user>',
   'dbpassword' => '<db-pass>',
   'mysql.utf8mb4' => true,
- ),
 );
 ```
 
@@ -171,7 +170,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-13_1"
-        tag = "0.61"
+        tag = "0.62"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
