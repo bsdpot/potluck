@@ -704,7 +704,7 @@ smtpd_recipient_restrictions =
         check_policy_service unix:private/policyd-spf,
         reject_rbl_client bl.spamcop.net,
         reject_rbl_client zen.spamhaus.org,
-        #permit
+#       permit
 # added to stop open relay abuse
 smtpd_relay_restrictions = permit_mynetworks, 
         permit_sasl_authenticated,
@@ -718,12 +718,7 @@ transport_maps = hash:/usr/local/etc/postfix/transport
 #message_size_limit = 536870912 
 message_size_limit = %%messagesizelimit%%
 
-#removed, not valid
-#policyd-spf_time_limit = 3600
-
 sender_dependent_default_transport_maps = hash:/usr/local/etc/postfix/sender_transport
-#removed, not valid
-#dovecot-spamass_destination_recipient_limit = 1
 
 # tls config
 smtpd_tls_auth_only = yes
