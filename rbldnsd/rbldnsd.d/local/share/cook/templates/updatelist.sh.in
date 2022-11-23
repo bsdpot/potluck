@@ -1,0 +1,7 @@
+#!/usr/local/bin/bash
+myruleset="%%rulefile%%"
+mydomain="%%domain%%"
+cd /root/blocklist-ip || exit 1
+git pull -q
+cp -f "$myruleset" "/usr/local/etc/rbldnsd/$mydomain"
+service rbldnsd reload

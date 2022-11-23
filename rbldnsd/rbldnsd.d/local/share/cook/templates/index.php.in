@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>RBLDNSD</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>WIP Content to be added</h1>
+
+<section>
+    <div>
+	<p>text</p>
+    </div>
+</section>
+
+<section>
+    <div>
+	<p>more text</p>
+    </div>
+</section>
+
+</body>
+</html>
