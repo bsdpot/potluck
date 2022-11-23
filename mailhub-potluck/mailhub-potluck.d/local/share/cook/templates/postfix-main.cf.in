@@ -694,6 +694,9 @@ virtual_alias_maps = ldap:/usr/local/etc/postfix/virtual_alias_maps.cf, hash:/us
 smtpd_sasl_type = dovecot
 smtpd_sasl_auth_enable = yes
 smtpd_sasl_path = private/auth
+# Don't talk to mail systems that don't know their own hostname.
+smtpd_helo_restrictions = reject_unknown_helo_hostname
+# removed permit at end for testing
 smtpd_recipient_restrictions =
         permit_sasl_authenticated,
         permit_mynetworks,
@@ -701,7 +704,15 @@ smtpd_recipient_restrictions =
         check_policy_service unix:private/policyd-spf,
         reject_rbl_client bl.spamcop.net,
         reject_rbl_client zen.spamhaus.org,
-        permit
+        #permit
+# added to stop open relay abuse
+smtpd_relay_restrictions = permit_mynetworks, 
+        permit_sasl_authenticated,
+        reject_unauth_destination
+# Block clients that speak too early.
+smtpd_data_restrictions = reject_unauth_pipelining
+
+# transport map
 transport_maps = hash:/usr/local/etc/postfix/transport
 
 #message_size_limit = 536870912 
