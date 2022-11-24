@@ -71,7 +71,7 @@ chmod +x /usr/local/bin/updatelist.sh
 echo "0 */8 * * *  root  /usr/local/bin/updatelist.sh" >> /etc/crontab
 
 # set options
-sysrc rbldnsd_flags="-r /usr/local/etc/rbldnsd -b $IP bl.$DOMAIN:ip4set:$DOMAIN"
+sysrc rbldnsd_flags="-r /usr/local/etc/rbldnsd -b $IP bl.$DOMAIN:ip4tset:$DOMAIN"
 
 # enable rbldnsd
 service rbldnsd enable
