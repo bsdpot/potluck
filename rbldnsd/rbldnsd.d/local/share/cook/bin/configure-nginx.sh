@@ -24,7 +24,7 @@ cp -f "$TEMPLATEPATH/index.php.in" /usr/local/www/rbldnsd/index.php
 chown www:www /usr/local/www/rbldnsd
 chmod 775 /usr/local/www/rbldnsd
 
-# shellcheck disable=SC3003
+# shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 

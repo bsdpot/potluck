@@ -14,6 +14,11 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
+# shellcheck disable=SC3003,SC2039
+# safe(r) separator for sed
+sep=$'\001'
+
+# copy header file and replace domain
 < "$TEMPLATEPATH/header.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" \
   > /root/header.in
