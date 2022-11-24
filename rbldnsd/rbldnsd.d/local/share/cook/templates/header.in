@@ -3,4 +3,3 @@
 # for an entry.  The `$' characters will be replaced by an IP address in
 # question.
 127.0.0.2
-!127.0.0.1
