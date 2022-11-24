@@ -55,7 +55,7 @@ fi
 
 # setup script to update rules regularly
 < "$TEMPLATEPATH/updatelist.sh.in" \
-  sed "s${sep}%%rulefile%%${sep}$RULEFILE${sep}g" \
+  sed "s${sep}%%rulefile%%${sep}$RULEFILE${sep}g" | \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" \
   > /usr/local/bin/updatelist.sh
 
