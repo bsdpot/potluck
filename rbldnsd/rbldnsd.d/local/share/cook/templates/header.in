@@ -1,0 +1,4 @@
+:127.0.0.2: Blocked, see https://bl.%%domain%%/lookup?$
+# The above is a default or implicit value which is used when no value given
+# for an entry.  The `$' characters will be replaced by an IP address in
+# question.

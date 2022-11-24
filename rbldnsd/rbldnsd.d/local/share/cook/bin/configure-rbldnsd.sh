@@ -14,6 +14,10 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
+< "$TEMPLATEPATH/header.in" \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" \
+  > /root/header.in
+
 # remove the example file
 rm /usr/local/etc/rbldnsd/example
 
@@ -39,15 +43,17 @@ case $RULESET in
   ;;
 esac
 
-# copy blocklist to /usr/local/etc/rbldnsd/$DOMAIN
-if [ -f "$RULEFILE" ]; then
-	cp -f "$RULEFILE" "/usr/local/etc/rbldnsd/$DOMAIN"
+# cat header and blocklist to /usr/local/etc/rbldnsd/$DOMAIN
+header="/root/header.in"
+if [ -f "$header" ] && [ -f "$RULEFILE" ]; then
+	#cp -f "$RULEFILE" "/usr/local/etc/rbldnsd/$DOMAIN"
+	cat "$header" "$RULEFILE" > "/usr/local/etc/rbldnsd/$DOMAIN"
 else
 	echo "The rules file is missing."
 	exit 1
 fi
 
-# setup script to update regularly
+# setup script to update rules regularly
 < "$TEMPLATEPATH/updatelist.sh.in" \
   sed "s${sep}%%rulefile%%${sep}$RULEFILE${sep}g" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" \
@@ -60,7 +66,7 @@ chmod +x /usr/local/bin/updatelist.sh
 echo "0 */8 * * *  root  /usr/local/bin/updatelist.sh" >> /etc/crontab
 
 # set options
-sysrc rbldnsd_flags="-r /usr/local/etc/rbldnsd -b $IP bl.$DOMAIN:ip4tset:$DOMAIN"
+sysrc rbldnsd_flags="-r /usr/local/etc/rbldnsd -b $IP bl.$DOMAIN:ip4set:$DOMAIN"
 
 # enable rbldnsd
 service rbldnsd enable

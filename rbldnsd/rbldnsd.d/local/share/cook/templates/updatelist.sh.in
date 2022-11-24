@@ -1,7 +1,13 @@
 #!/usr/local/bin/bash
 myruleset="%%rulefile%%"
 mydomain="%%domain%%"
+header="/root/header.in"
 cd /root/blocklist-ip || exit 1
 git pull -q
-cp -f "$myruleset" "/usr/local/etc/rbldnsd/$mydomain"
-service rbldnsd reload
+#cp -f "$myruleset" "/usr/local/etc/rbldnsd/$mydomain"
+if [ -f "$header" ] && [ -f "$myruleset" ]; then
+	cat "$header" "$myruleset" > "/usr/local/etc/rbldnsd/$mydomain"
+	service rbldnsd reload
+else
+	echo "Missing files, cannot continue"
+fi
