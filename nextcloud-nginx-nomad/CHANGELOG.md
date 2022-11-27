@@ -1,3 +1,9 @@
+0.63
+
+* Bump to php82 versions of nextcloud
+
+---
+
 0.62
 
 * Remove default nextcloud config.php
