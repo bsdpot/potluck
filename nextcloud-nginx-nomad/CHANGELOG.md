@@ -1,3 +1,10 @@
+0.64
+
+* Fix nextcloud versions nextcloud-php80-* with dependancies on php80
+* Incorrectly assumed php82 versions of nextcloud after checking all the other php package names
+
+---
+
 0.63
 
 * Bump to php82 versions of nextcloud
