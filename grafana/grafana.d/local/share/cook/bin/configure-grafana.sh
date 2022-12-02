@@ -30,6 +30,8 @@ fi
 if [ ! -f /mnt/grafana/grafana.db ]; then
     # if empty we need to copy in the directory structure from install
     cp -a /var/db/grafana /mnt
+    mkdir -p /mnt/grafana/provisioning/datasources
+    mkdir -p /mnt/grafana/provisioning/dashboards
 
     # make sure permissions are good for /mnt/grafana
     chown -R grafana:grafana /mnt/grafana

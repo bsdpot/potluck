@@ -1,3 +1,9 @@
+0.3.1
+
+* Bugfix for grafana9 provisioning
+
+---
+
 0.3.0
 
 * Update to grafana9
