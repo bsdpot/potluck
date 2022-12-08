@@ -40,6 +40,8 @@ rdr pass on em0 inet proto tcp from any to <yourhostip> port = 4443 -> <yourpoti
 ```
 &lt;yourhostip&gt; is the IP address users will connect to, &lt;yourpotip&gt; is the ```pot``` generated IP address (e.g. 10.192.0.3), &lt;yourjailname&gt; is the name you have given your jail.
 
-
 For more details about ```nomad```images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
+# Sample job file
+
+todo

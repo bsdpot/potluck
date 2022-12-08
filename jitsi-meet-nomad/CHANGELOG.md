@@ -1,3 +1,9 @@
+1.1
+
+* Rebuild for new pot format
+
+---
+
 1.0.5
 
 * Version bump for FreeBSD-13.1 image
