@@ -1,0 +1,136 @@
+#!/bin/sh
+RUNS_IN_NOMAD=false
+COOKLOG=/var/log/cook.log
+
+pot_seasoned_exit() {
+    [ ! -e /usr/local/etc/pot-is-seasoned ] && \
+      touch /usr/local/etc/pot-is-seasoned
+    # If this pot flavour is blocking (i.e. it should not return), there is
+    # no /tmp/environment.sh created by pot and we now after configuration
+    # block indefinitely
+    if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        service cook onestop || true
+        service cook onedisable || true
+        /bin/sh /etc/rc
+        tail -f /dev/null
+    fi
+    exit 0
+}
+
+# No need to change this, just ensures configuration is done only once
+[ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
+
+########################################################################
+## Functions and settings
+########################################################################
+
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
+set -e
+export HOME=/root
+
+if [ -e /tmp/environment.sh ]
+then
+    # shellcheck disable=SC1091
+    . /tmp/environment.sh
+
+    # XXX: Remove some things from here later
+    cp -a /tmp/environment.sh /root/.env.cook
+fi
+
+
+########################################################################
+## Check config
+########################################################################
+
+required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY DOMAIN EMAIL PUBLICIP"
+optional_args="REMOTELOG"
+
+for var in $required_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "$var is unset - see documentation to configure this flavour."
+    exit 1
+  fi
+done
+
+for var in $optional_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "Optional $var is unset - see documentation to configure this flavour."
+  fi
+done
+
+########################################################################
+## Provision image
+########################################################################
+
+# stop services
+timeout --foreground 10 \
+  service consul onestop || service consul onestop || true
+killall -9 consul || true
+
+export PATH=/usr/local/share/cook/bin:$PATH
+
+if [ -n "${REMOTELOG}" ]; then
+    log "Configure and start syslog-ng"
+    configure-syslog-ng.sh
+fi
+
+log "Setup node_exporter"
+configure-node-exporter.sh
+
+log "Configure consul"
+configure-consul.sh
+
+log "Start consul and wait for it to become stable"
+timeout --foreground 120 \
+  sh -c 'while ! service consul status; do
+    service consul start || true; sleep 5;
+  done'
+
+log "Start node_exporter"
+service node_exporter start
+
+# Generate a password for stitching up the various parts of the configuration
+KEYPASSWORD="$(dd if=/dev/urandom count=1 2> /dev/null | uuencode -m - | sed -ne 2p | cut -c-12)"
+export KEYPASSWORD
+
+log "Configure acme.sh"
+configure-acme.sh
+
+log "Configure prosody"
+configure-prosody.sh
+
+log "Configure nginx"
+configure-nginx.sh
+
+log "Configure jitsi-videobridge"
+configure-jitsi-videobridge.sh
+
+log "Configure jicofo"
+configure-jicofo.sh
+
+log "Configure jitsi-meet"
+configure-jitsi-meet.sh
+
+log "Configure nginx"
+configure-nginx.sh
+
+log "Start jitsi-videobridge"
+service jitsi-videobridge start
+
+log "Start prosody"
+service prosody start
+
+log "Start jicofo"
+service jicofo start
+
+log "Start nginx"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status; do
+    service nginx start || true; sleep 5;
+  done'
+
+log "Exit seasoned"
+pot_seasoned_exit

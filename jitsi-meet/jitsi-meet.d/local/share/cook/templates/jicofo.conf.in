@@ -1,0 +1,8 @@
+JVB_XMPP_HOST=localhost
+JVB_XMPP_DOMAIN=%%domain%%
+JVB_XMPP_PORT=5347
+JVB_XMPP_SECRET=%%keypassword%%
+JVB_XMPP_USER_DOMAIN=auth.%%domain%%
+JVB_XMPP_USER_NAME=focus
+JVB_XMPP_USER_SECRET=%%keypassword%%
+MAX_MEMORY=3072m
