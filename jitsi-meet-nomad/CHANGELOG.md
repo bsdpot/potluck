@@ -1,6 +1,7 @@
 1.1
 
 * Rebuild for new pot format
+* Fix cert renew script filename
 
 ---
 
