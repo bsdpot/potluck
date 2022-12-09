@@ -111,14 +111,11 @@ configure-jitsi-videobridge.sh
 log "Configure jicofo"
 configure-jicofo.sh
 
-log "Configure jitsi-meet"
-configure-jitsi-meet.sh
+log "Start jitsi-videobridge"
+service jitsi-videobridge start
 
 log "Configure nginx"
 configure-nginx.sh
-
-log "Start jitsi-videobridge"
-service jitsi-videobridge start
 
 log "Start prosody"
 service prosody start
