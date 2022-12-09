@@ -101,17 +101,14 @@ configure-acme.sh
 log "Configure prosody"
 configure-prosody.sh
 
-log "Configure nginx"
-configure-nginx.sh
-
 log "Configure jitsi-videobridge"
 configure-jitsi-videobridge.sh
 
+log "Configure nginx"
+configure-nginx.sh
+
 log "Configure jicofo"
 configure-jicofo.sh
-
-log "Configure jitsi-meet"
-configure-jitsi-meet.sh
 
 log "Start jitsi-videobridge"
 service jitsi-videobridge start

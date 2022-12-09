@@ -13,6 +13,7 @@ export PATH=/usr/local/bin:$PATH
 
 # make directories
 mkdir -p /usr/local/etc/jitsi/videobridge/
+mkdir -p /usr/local/www/jitsi-meet
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
@@ -30,10 +31,16 @@ sep=$'\001'
 # copy over sip-communicator.properties
 < "$TEMPLATEPATH/sip-communicator.properties.in" \
   sed "s${sep}%%publicip%%${sep}$PUBLICIP${sep}g" | \
-  sed "s${sep}%%privateip%%${sep}$PRIVATEIP${sep}g" | \
+  sed "s${sep}%%privateip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/etc/jitsi/videobridge/sip-communicator.properties
 
-# enable service
-service jitsi-videobridge enable
+# copy over config.js
+< "$TEMPLATEPATH/config.js.in" \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
+  > /usr/local/www/jitsi-meet/config.js
 
+# enable service
+sysrc jitsi_videobridge_flags="--apis=rest,xmpp"
+service jitsi-videobridge enable

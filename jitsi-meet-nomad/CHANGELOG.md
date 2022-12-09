@@ -2,6 +2,7 @@
 
 * Rebuild for new pot format
 * Fix cert renew script filename
+* Fix jitsi setup and typos
 
 ---
 
