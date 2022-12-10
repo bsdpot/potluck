@@ -8,7 +8,7 @@ if [ -d "/mnt/acme/$mydomain" ]; then
     /usr/local/sbin/acme.sh --register-account -m "$registermail" --home /mnt/acme --server letsencrypt
     /usr/local/sbin/acme.sh --issue -d "$mydomain" --home /mnt/acme --standalone
     cd "/mnt/acme/$mydomain/"
-    cp -f ./* /usr/local/etc/ssl/
+    cp -f /mnt/acme/"$mydomain"/* /usr/local/etc/ssl/
     service nginx restart
     exit 0
 else

@@ -54,7 +54,7 @@ if [ ! -d "/mnt/acme/$DOMAIN" ]; then
     fi
     # try continue, with a cert hopefully
     cd /mnt/acme/"$DOMAIN"/ || true
-    cp -f ./* /usr/local/etc/ssl/
+    cp -f /mnt/acme/"$DOMAIN"/* /usr/local/etc/ssl/
 else
     echo "/mnt/acme/$DOMAIN exists, not creating certificates"
 fi

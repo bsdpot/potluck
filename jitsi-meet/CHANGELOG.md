@@ -6,6 +6,7 @@
 * Fix jitsi config and typo in service start
 * Fix jicofo service start
 * Generate keypassword differently as jicofo doesn't like some characters
+* Fix nginx certificate copy
 
 ---
 
