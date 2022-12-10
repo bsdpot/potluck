@@ -7,6 +7,7 @@
 * Fix jicofo service start
 * Generate keypassword differently as jicofo doesn't like some characters
 * Fix nginx certificate copy
+* Adjust jicofo rc script
 
 ---
 

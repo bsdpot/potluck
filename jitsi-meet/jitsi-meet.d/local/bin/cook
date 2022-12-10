@@ -97,6 +97,8 @@ service node_exporter start
 # using this next approach to remove funny characters which jicofo doesn't like
 KEYPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
 export KEYPASSWORD
+SECPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
+export SECPASSWORD
 
 log "Configure acme.sh"
 configure-acme.sh

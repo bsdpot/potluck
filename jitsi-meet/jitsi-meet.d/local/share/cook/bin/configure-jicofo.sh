@@ -28,11 +28,22 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 sep=$'\001'
 
-# copy over jitsi-videobridge.conf
+# copy over jicofo.conf
 < "$TEMPLATEPATH/jicofo.conf.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/etc/jitsi/jicofo/jicofo.conf
+
+# update rc script for jicofo
+# see https://honeyguide.eu/posts/jitsi-freebsd/
+< "$TEMPLATEPATH/rc-jicofo.in" \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
+  sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
+  > /usr/local/etc/rc.d/jicofo
+
+# set execute permissions
+chmod +x /usr/local/etc/rc.d/jicofo
 
 # enable service
 service jicofo enable
