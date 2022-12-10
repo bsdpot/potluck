@@ -4,6 +4,8 @@
 * This version includes consul, node_exporter, syslog-ng
 * Fix cert renew script name
 * Fix jitsi config and typo in service start
+* Fix jicofo service start
+* Generate keypassword differently as jicofo doesn't like some characters
 
 ---
 
