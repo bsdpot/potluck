@@ -8,6 +8,7 @@
 * Generate keypassword differently as jicofo doesn't like some characters
 * Fix nginx certificate copy
 * Adjust jicofo rc script
+* Fix logic for certs if already registered domain
 
 ---
 
