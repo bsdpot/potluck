@@ -1,3 +1,9 @@
+0.66
+
+* Non-layered version with latest package sources
+
+---
+
 0.65
 
 * php81 versions of nextcloud

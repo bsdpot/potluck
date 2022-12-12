@@ -61,11 +61,14 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-# only modify repo if not already done in base image
 # shellcheck disable=SC2016
-test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
-  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
     >/usr/local/etc/pkg/repos/FreeBSD.conf
+# remove above and add back below for quarterlies
+# only modify repo if not already done in base image
+#test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+#  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+#    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
 step "Touch /etc/rc.conf"
@@ -82,6 +85,25 @@ service sendmail onedisable || true
 
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
+
+##############
+# non-layered image additions
+#############
+step "Install package openssl"
+pkg install -y openssl
+
+step "Install package curl"
+pkg install -y curl
+
+step "Install package jo"
+pkg install -y jo
+
+step "Install package bash"
+pkg install -y bash
+
+step "Install package rsync"
+pkg install -y rsync
+##############
 
 step "Install package nginx"
 pkg install -y nginx
