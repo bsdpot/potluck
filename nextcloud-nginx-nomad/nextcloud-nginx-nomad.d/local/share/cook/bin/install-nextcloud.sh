@@ -14,10 +14,10 @@ export PATH=/usr/local/bin:$PATH
 # If we do not find a Nextcloud installation, we install it. If we do find something though,
 # we do not install/overwrite anything as we assume that updates/modifications are happening
 # from within the Nextcloud installation.
+# removed: nextcloud-twofactor_totp-php81 (included in nextcloud for v 25.0.1 on)
 if [ ! -e /usr/local/www/nextcloud/status.php ]; then
 	pkg update -qf
 	pkg install -y nextcloud-php81 \
-	  nextcloud-twofactor_totp-php81 \
 	  nextcloud-deck-php81 \
 	  nextcloud-mail-php81 \
 	  nextcloud-contacts-php81 \

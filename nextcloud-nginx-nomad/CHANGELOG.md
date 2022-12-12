@@ -1,3 +1,9 @@
+0.67
+
+* nextcloud-twofactor_totp is included in base nextcloud package from v25.0.1 on
+
+---
+
 0.66
 
 * Non-layered version with latest package sources
