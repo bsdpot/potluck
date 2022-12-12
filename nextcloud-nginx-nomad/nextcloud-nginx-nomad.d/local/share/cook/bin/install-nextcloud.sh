@@ -16,13 +16,13 @@ export PATH=/usr/local/bin:$PATH
 # from within the Nextcloud installation.
 if [ ! -e /usr/local/www/nextcloud/status.php ]; then
 	pkg update -qf
-	pkg install -y nextcloud-php80 \
-	  nextcloud-twofactor_totp-php80 \
-	  nextcloud-deck-php80 \
-	  nextcloud-mail-php80 \
-	  nextcloud-contacts-php80 \
-	  nextcloud-calendar-php80 \
-	  nextcloud-end_to_end_encryption-php80
+	pkg install -y nextcloud-php81 \
+	  nextcloud-twofactor_totp-php81 \
+	  nextcloud-deck-php81 \
+	  nextcloud-mail-php81 \
+	  nextcloud-contacts-php81 \
+	  nextcloud-calendar-php81 \
+	  nextcloud-end_to_end_encryption-php81
 	if [ -f /usr/local/www/nextcloud/config/config.php ]; then
 		mv /usr/local/www/nextcloud/config/config.php /usr/local/www/nextcloud/config/config.php.potbak
 		touch /usr/local/www/nextcloud/config/config.php
