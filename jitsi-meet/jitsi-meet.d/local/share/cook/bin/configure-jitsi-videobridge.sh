@@ -41,6 +41,9 @@ sep=$'\001'
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/www/jitsi-meet/config.js
 
+# copy over manifest.json
+cp -f "$TEMPLATEPATH/manifest.json.in" /usr/local/www/jitsi-meet/manifest.json
+
 # enable service
 sysrc jitsi_videobridge_flags="--apis=rest,xmpp"
 service jitsi-videobridge enable

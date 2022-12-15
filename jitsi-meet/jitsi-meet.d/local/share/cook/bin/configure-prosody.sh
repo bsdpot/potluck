@@ -34,5 +34,13 @@ echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate "$DOMAIN"
 echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN"
 prosodyctl register focus auth."$DOMAIN" "$KEYPASSWORD"
 
+# check if valid certificates or exit
+echo "checking prosody certs"
+prosodyctl check certs || exit 1
+
+# check valid config or exit
+echo "checking prosody config"
+prosodyctl check config || exit 1
+
 # enable service
 service prosody enable

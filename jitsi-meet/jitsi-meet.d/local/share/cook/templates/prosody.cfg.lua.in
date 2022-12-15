@@ -65,7 +65,7 @@ log = {
         -- "*console"; -- Log to the console, useful for debugging with daemonize=false
 }
 
-certificates = "certs"
+certificates = "/var/db/prosody"
 
 VirtualHost "%%domain%%"
     authentication = "anonymous"

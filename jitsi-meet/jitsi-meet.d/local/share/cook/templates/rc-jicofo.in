@@ -49,6 +49,7 @@ jicofo_start()
                 -Dnet.java.sip.communicator.SC_LOG_DIR_LOCATION=/var/log/ \
 		-Dconfig.file=${jicofo_config} \
 		-Djavax.net.ssl.trustStore=${jicofo_trust_store} \
+		-Djavax.net.ssl.trustStorePassword=%%keypassword%% \
             -cp ${jicofo_jar} \
             org.jitsi.jicofo.Main \
             --host=localhost \

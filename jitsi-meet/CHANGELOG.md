@@ -9,6 +9,9 @@
 * Fix nginx certificate copy
 * Adjust jicofo rc script
 * Fix logic for certs if already registered domain
+* Re-order service config and start
+* fix prosody cert location
+* fix jicofo rc script with inclusion password
 
 ---
 
