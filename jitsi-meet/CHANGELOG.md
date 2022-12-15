@@ -12,6 +12,7 @@
 * Re-order service config and start
 * fix prosody cert location
 * fix jicofo rc script with inclusion password
+* adjust startup timing
 
 ---
 
