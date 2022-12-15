@@ -13,6 +13,8 @@
 * fix prosody cert location
 * fix jicofo rc script with inclusion password
 * adjust startup timing
+* Adjust startup order
+* fix jitsi-videobridge rc script to match earlier blog post
 
 ---
 
