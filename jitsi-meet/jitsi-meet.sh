@@ -132,6 +132,9 @@ pkg install -y jicofo
 step "Install package jitsi-meet"
 pkg install -y jitsi-meet
 
+step "Install package jitsi-prosody-plugins"
+pkg install -y jitsi-prosody-plugins
+
 step "Install package jitsi-videobridge"
 pkg install -y jitsi-videobridge
 

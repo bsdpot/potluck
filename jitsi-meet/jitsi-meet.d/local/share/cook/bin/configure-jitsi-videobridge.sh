@@ -41,6 +41,23 @@ sep=$'\001'
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/www/jitsi-meet/config.js
 
+
+# if no image filename been passed in for a file copied-in to
+# /usr/local/www/jitsi-meet/image/filename.jpg then default to
+# watermark.svg
+if [ -n "$IMAGE" ]; then
+	IMAGE="$IMAGE"
+	export IMAGE
+else
+	IMAGE="watermark.svg"
+	export IMAGE
+fi
+
+# copy over interface_config.js
+< "$TEMPLATEPATH/interface_config.js.in" \
+  sed "s${sep}%%image%%${sep}$IMAGE${sep}g" \
+  > /usr/local/www/jitsi-meet/interface_config.js
+
 # update rc script for jitsi-videobridge
 # see https://honeyguide.eu/posts/jitsi-freebsd/
 < "$TEMPLATEPATH/rc-jitsi-videobridge.in" \

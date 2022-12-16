@@ -20,6 +20,8 @@ Deploying the image or flavour should be quite straight forward and not take mor
   ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```
   e.g.
   ```sudo pot clone -P jitsi-meet-amd64-13_1_0_1_1 -p jitsi-meet -N alias -i "em0|10.10.10.11"```
+* Copy in any supporting files such as image file for customisation
+  ```sudo pot copy-in -p <clonejailname> -s <source image> -d /usr/local/www/jitsi-meet/images/<destination filename>```
 * Adjust to your environment:
   ```sudo pot set-env -p <clonejailname> -E NODENAME=<name> \
     -E DATACENTER=<datacentername> \
@@ -28,7 +30,8 @@ Deploying the image or flavour should be quite straight forward and not take mor
     -E DOMAIN=<FQDN for host> \
     -E EMAIL=<email address for letsencrypt setup> \
     -E PUBLICIP=<yourpublicip> \
-    [ -E GOSSIPKEY="<32 byte Base64 key from consul keygen>"] \
+    -E GOSSIPKEY="<32 byte Base64 key from consul keygen>" \
+    [ -E IMAGE="filename.jpg" ] \
     [ -E REMOTELOG="<IP syslog-ng server>" ]```
 * Forward the needed ports: ```pot export-ports -p <yourjailname> -e 80:80 -e 443:443 -e 10000:10000 -e 4443:4443``` with &lt;yourjailname&gt; again being the name of your newly created/imported jail.
 * Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.

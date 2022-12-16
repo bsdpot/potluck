@@ -18,6 +18,8 @@
 * fix jitsi-videobridge rc script to use org.jitsi.videobridge.MainKt
 * create /var/db/prosody/custom_plugins
 * fix jicofo start
+* revert to simple start of some services
+* custom image option added
 
 ---
 

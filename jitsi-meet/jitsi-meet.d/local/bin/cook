@@ -46,7 +46,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY DOMAIN EMAIL PUBLICIP"
-optional_args="REMOTELOG"
+optional_args="REMOTELOG IMAGE"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -93,13 +93,9 @@ log "Start node_exporter"
 service node_exporter start
 
 # Generate a password for stitching up the various parts of the configuration
-#KEYPASSWORD="$(dd if=/dev/urandom count=1 2> /dev/null | uuencode -m - | sed -ne 2p | cut -c-12)"
-# using this next approach to remove funny characters which jicofo doesn't like
-
 # shellcheck disable=SC2002
 KEYPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
 export KEYPASSWORD
-
 # shellcheck disable=SC2002
 SECPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
 export SECPASSWORD
@@ -123,29 +119,17 @@ log "Configure nginx"
 configure-nginx.sh
 
 log "Start jitsi-videobridge"
-#service jitsi-videobridge start || true
-timeout --foreground 120 \
-  sh -c 'while ! service jitsi-videobridge status; do
-    service jitsi-videobridge start || true; sleep 5;
-  done'
+service jitsi-videobridge start || true
 
 sleep 5
 
 log "Start jicofo"
-#service jicofo start || true
-timeout --foreground 120 \
-  sh -c 'while ! service jicofo status; do
-    service jicofo start || true; sleep 5;
-  done'
+service jicofo start || true
 
 sleep 5
 
 log "Start prosody"
-#service prosody start || true
-timeout --foreground 120 \
-  sh -c 'while ! service prosody status; do
-    service prosody start || true; sleep 5;
-  done'
+service prosody start || true
 
 log "Start nginx"
 timeout --foreground 120 \
