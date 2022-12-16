@@ -39,7 +39,7 @@ echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN"
 # $ prosodyctl register user FQDN password
 #
 # tested:
-# prosodyctl register focus "$DOMAIN" "$KEYPASSWORD"
+# prosodyctl register focus "$DOMAIN" "$SECPASSWORD"
 #
 # produces:
 # Error: Account creation/modification not supported.
@@ -48,7 +48,7 @@ echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN"
 #
 # retaining this note because there is a problem with focus and video won't start
 # however this is not the issue
-prosodyctl register focus auth."$DOMAIN" "$KEYPASSWORD"
+prosodyctl register focus auth."$DOMAIN" "$SECPASSWORD"
 
 # check for valid certificates
 echo "checking prosody certs"
