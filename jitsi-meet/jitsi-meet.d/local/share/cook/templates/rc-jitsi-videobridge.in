@@ -49,7 +49,7 @@ jitsi_videobridge_start()
 		-Dnet.java.sip.communicator.SC_LOG_DIR_LOCATION=/var/log/ \
 		-Dconfig.file=${jitsi_videobridge_config} \
 		-cp ${jitsi_videobridge_jar} \
-		org.jitsi.videobridge.Main \
+		org.jitsi.videobridge.MainKt \
                 --host=localhost \
                 --domain=%%domain%% \
                 --port=5347 \

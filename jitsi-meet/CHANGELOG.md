@@ -15,6 +15,7 @@
 * adjust startup timing
 * Adjust startup order
 * fix jitsi-videobridge rc script to match earlier blog post
+* fix jitsi-videobridge rc script to use org.jitsi.videobridge.MainKt
 
 ---
 
