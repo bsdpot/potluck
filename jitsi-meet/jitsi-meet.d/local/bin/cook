@@ -123,21 +123,25 @@ log "Configure nginx"
 configure-nginx.sh
 
 log "Start jitsi-videobridge"
-service jitsi-videobridge start
-#timeout --foreground 120 \
-#  sh -c 'while ! service jitsi-videobridge status; do
-#    service jitsi-videobridge start || true; sleep 5;
-#  done'
+#service jitsi-videobridge start || true
+timeout --foreground 120 \
+  sh -c 'while ! service jitsi-videobridge status; do
+    service jitsi-videobridge start || true; sleep 5;
+  done'
+
+sleep 5
 
 log "Start jicofo"
-service jicofo start
-#timeout --foreground 120 \
-#  sh -c 'while ! service jicofo status; do
-#    service jicofo start || true; sleep 5;
-#  done'
+#service jicofo start || true
+timeout --foreground 120 \
+  sh -c 'while ! service jicofo status; do
+    service jicofo start || true; sleep 5;
+  done'
+
+sleep 5
 
 log "Start prosody"
-#service prosody start
+#service prosody start || true
 timeout --foreground 120 \
   sh -c 'while ! service prosody status; do
     service prosody start || true; sleep 5;

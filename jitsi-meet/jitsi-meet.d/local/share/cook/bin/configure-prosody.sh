@@ -13,7 +13,7 @@ export PATH=/usr/local/bin:$PATH
 
 # make directories
 mkdir -p /usr/local/etc/prosody/
-mkdir -p /var/db/prosody/
+mkdir -p /var/db/prosody/custom_plugins
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
