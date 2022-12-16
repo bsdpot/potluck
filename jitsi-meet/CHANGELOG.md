@@ -20,6 +20,7 @@
 * fix jicofo start
 * revert to simple start of some services
 * custom image option added
+* adjust prosodyctl legacy command to register for domain not auth.domain
 
 ---
 

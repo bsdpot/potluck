@@ -32,7 +32,15 @@ sep=$'\001'
 # setup prosody
 echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate "$DOMAIN"
 echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN"
-prosodyctl register focus auth."$DOMAIN" "$KEYPASSWORD"
+
+# from http://www.bobeager.uk/pdf/jitsi.pdf
+# Users are added to FQDN, not to auth.FQDN
+# $ prosodyctl register user FQDN password
+#
+# old, from https://honeyguide.eu/posts/jitsi-freebsd/
+# prosodyctl register focus auth."$DOMAIN" "$KEYPASSWORD"
+# new, testing
+prosodyctl register focus "$DOMAIN" "$KEYPASSWORD"
 
 # check if valid certificates or exit
 echo "checking prosody certs"

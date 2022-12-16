@@ -118,15 +118,8 @@ configure-jicofo.sh
 log "Configure nginx"
 configure-nginx.sh
 
-log "Start jitsi-videobridge"
-service jitsi-videobridge start || true
-
-sleep 5
-
 log "Start jicofo"
 service jicofo start || true
-
-sleep 5
 
 log "Start prosody"
 service prosody start || true
@@ -136,6 +129,9 @@ timeout --foreground 120 \
   sh -c 'while ! service nginx status; do
     service nginx start || true; sleep 5;
   done'
+
+log "Start jitsi-videobridge"
+service jitsi-videobridge start || true
 
 log "Exit seasoned"
 pot_seasoned_exit
