@@ -21,6 +21,7 @@
 * revert to simple start of some services
 * custom image option added
 * adjust prosodyctl legacy command to register for domain not auth.domain
+* revert prosodyctl to register with auth.domain, 3rd party docs incorrect
 
 ---
 
