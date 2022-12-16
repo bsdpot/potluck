@@ -31,7 +31,8 @@ sep=$'\001'
 # copy over jicofo.conf
 < "$TEMPLATEPATH/jicofo.conf.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
+  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
+  sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
   > /usr/local/etc/jitsi/jicofo/jicofo.conf
 
 # update rc script for jicofo
@@ -46,4 +47,5 @@ sep=$'\001'
 chmod +x /usr/local/etc/rc.d/jicofo
 
 # enable service
+sysrc jicofo_env_file="/usr/local/etc/jitsi/jicofo/jicofo.conf"
 service jicofo enable

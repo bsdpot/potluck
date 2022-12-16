@@ -41,7 +41,6 @@ sep=$'\001'
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/www/jitsi-meet/config.js
 
-
 # if no image filename been passed in for a file copied-in to
 # /usr/local/www/jitsi-meet/image/filename.jpg then default to
 # watermark.svg
@@ -70,4 +69,5 @@ cp -f "$TEMPLATEPATH/manifest.json.in" /usr/local/www/jitsi-meet/manifest.json
 
 # enable service
 sysrc jitsi_videobridge_flags="--apis=rest,xmpp"
+sysrc jitsi_videobridge_env_file="/usr/local/etc/jitsi/videobridge/jitsi-videobridge.conf"
 service jitsi-videobridge enable

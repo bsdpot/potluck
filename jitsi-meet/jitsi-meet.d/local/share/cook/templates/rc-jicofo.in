@@ -55,11 +55,13 @@ jicofo_start()
             --host=localhost \
             --domain=%%domain%% \
             --port=5347 \
-            --secret=%%secpassword%% \
+            --secret=%%keypassword%% \
             --user_domain=auth.%%domain%% \
             --user_name=focus \
-            --user_password=%%keypassword%% ${jicofo_flags}
-		echo "Starting ${name}"
+            --user_password=%%secpassword%% \
+            ${jicofo_flags}
+
+	echo "Starting ${name}"
 }
 
 jicofo_stop()
