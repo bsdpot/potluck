@@ -37,6 +37,7 @@
 * remove the rc env setting for jicofo and jitsi-videobridge
 * Revert to quarterlies and layered image, problem was rc env setting
 * Add back rc fix for 'the trustAnchors parameter must be non-empty' by adding -Djavax.net.ssl.trustStorePassword
+* remove internal from bridge stanza
 
 ---
 

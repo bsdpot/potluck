@@ -1,6 +1,6 @@
 jicofo {
   bridge {
-    brewery-jid = "JvbBrewery@internal.auth.%%domain%%"
+    brewery-jid = "JvbBrewery@auth.%%domain%%"
   }
 
   sctp {
