@@ -138,6 +138,9 @@ pkg install -y jitsi-prosody-plugins
 step "Install package jitsi-videobridge"
 pkg install -y jitsi-videobridge
 
+step "Install package jitsi-srtp-native"
+pkg install -y jitsi-srtp-native
+
 step "Clean package installation"
 pkg clean -y
 

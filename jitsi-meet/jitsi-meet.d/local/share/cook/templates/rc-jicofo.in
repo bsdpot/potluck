@@ -52,14 +52,16 @@ jicofo_start()
 		-Djavax.net.ssl.trustStorePassword=%%keypassword%% \
             -cp ${jicofo_jar} \
             org.jitsi.jicofo.Main \
-            --host=localhost \
-            --domain=%%domain%% \
-            --port=5347 \
-            --secret=%%keypassword%% \
-            --user_domain=auth.%%domain%% \
-            --user_name=focus \
-            --user_password=%%secpassword%% \
-            ${jicofo_flags}
+	    ${jicofo_flags}
+# testing, remove bits from blog post
+#            --host=localhost \
+#            --domain=%%domain%% \
+#            --port=5347 \
+#            --secret=%%keypassword%% \
+#            --user_domain=auth.%%domain%% \
+#            --user_name=focus \
+#           --user_password=%%secpassword%% \
+#            ${jicofo_flags}
 
 	echo "Starting ${name}"
 }

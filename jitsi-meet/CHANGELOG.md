@@ -24,6 +24,8 @@
 * revert prosodyctl to register with auth.domain, 3rd party docs incorrect
 * fix password allocations between first and second
 * fix prosodyctl password for auth.domain to second password
+* include package jitsi-srtp-native for improved performance
+* remove custom settings from rc files (from blog post) to test without
 
 ---
 
