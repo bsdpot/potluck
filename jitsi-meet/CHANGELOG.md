@@ -28,6 +28,8 @@
 * remove custom settings from rc files (from blog post) to test without
 * add back custom parameters to rc files, jicofo doesn't start otherwise
 * tweak startup for jitsi-videobridge
+* add jicofostatus script
+* fix error with prosody config to update secpassword
 
 ---
 

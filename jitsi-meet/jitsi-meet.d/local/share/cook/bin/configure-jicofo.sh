@@ -46,6 +46,12 @@ sep=$'\001'
 # set execute permissions
 chmod +x /usr/local/etc/rc.d/jicofo
 
+# copy over jicofostatus.sh, runs:
+# [ curl -s "http://localhost:8080/debug?full=true" | jq . ]
+mkdir -p /root/bin
+cp -f "$TEMPLATEPATH/jicofostatus.sh.in" /root/bin/jicofostatus.sh
+chmod +x /root/bin/jicofostatus.sh
+
 # enable service
 sysrc jicofo_env_file="/usr/local/etc/jitsi/jicofo/jicofo.conf"
 service jicofo enable

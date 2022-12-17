@@ -91,5 +91,9 @@ admins = { "focus@auth.%%domain%%" }
 Component "conference.%%domain%%" "muc"
 Component "jitsi-videobridge.%%domain%%"
     component_secret = "%%keypassword%%"
+-- one of
 Component "focus.%%domain%%"
     component_secret = "%%secpassword%%"
+-- Proxy to jicofo's user JID, so that it doesn't have to register as a component.
+-- Component "focus.%%domain%%" "client_proxy"
+--    target_address = "focusUser@auth.%%domain%%"
