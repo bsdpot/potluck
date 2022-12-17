@@ -28,9 +28,9 @@ videobridge {
         xmpp-server-1 {
           hostname="localhost"
           domain = "auth.%%domain%%"
-          username = "jvb"
-          password = "%%keypassword%%"
-          muc_jids = "JvbBrewery@internal.auth.%%domain%%"
+          username = "focus"
+          password = "%%secpassword%%"
+          muc_jids = "JvbBrewery@auth.%%domain%%"
           muc_nickname = "unique-instance-id"
           disable_certificate_verification = true
         }
