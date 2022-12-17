@@ -1,7 +1,12 @@
 videobridge {
   http-servers {
     public {
-      port = 9090
+      port = -1
+      tls-port = -1
+    }
+    private {
+      # See JettyBundleActivatorConfig in Jicoco for values
+      host = 127.0.0.1
     }
   }
   websockets {
@@ -10,7 +15,6 @@ videobridge {
   sctp {
     enabled = false
   }
-
   stats {
     # Enable broadcasting stats/presence in a MUC
     enabled = true
@@ -18,7 +22,6 @@ videobridge {
       { type = "colibri" }
     ]
   }
-
   apis {
     xmpp-client {
       configs {
@@ -34,13 +37,11 @@ videobridge {
       }
     }
   }
-
   ice {
     tcp {
       enabled = true
       port = 4443
     }
-
     udp {
       port = 10000
     }      
