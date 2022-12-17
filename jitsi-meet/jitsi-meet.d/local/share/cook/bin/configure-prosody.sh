@@ -48,7 +48,7 @@ echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN"
 #
 # retaining this note because there is a problem with focus and video won't start
 # however this is not the issue
-prosodyctl register focus auth."$DOMAIN" "$SECPASSWORD"
+prosodyctl register focus auth."$DOMAIN" "$SECPASSWORD" || true
 
 # check for valid certificates
 echo "checking prosody certs"

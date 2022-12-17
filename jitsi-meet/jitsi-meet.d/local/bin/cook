@@ -131,7 +131,11 @@ timeout --foreground 120 \
   done'
 
 log "Start jitsi-videobridge"
-service jitsi-videobridge start || true
+#service jitsi-videobridge start || true
+timeout --foreground 120 \
+  sh -c 'while ! service jitsi-videobridge status; do
+    service jitsi-videobridge start || true; sleep 5;
+  done'
 
 log "Exit seasoned"
 pot_seasoned_exit
