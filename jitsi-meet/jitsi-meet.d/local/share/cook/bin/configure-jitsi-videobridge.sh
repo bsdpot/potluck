@@ -57,12 +57,16 @@ fi
   sed "s${sep}%%image%%${sep}$IMAGE${sep}g" \
   > /usr/local/www/jitsi-meet/interface_config.js
 
-# update rc script for jitsi-videobridge
-# see https://honeyguide.eu/posts/jitsi-freebsd/
-< "$TEMPLATEPATH/rc-jitsi-videobridge.in" \
-  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
-  > /usr/local/etc/rc.d/jitsi-videobridge
+## Removed ##
+## update rc script for jitsi-videobridge
+## see https://honeyguide.eu/posts/jitsi-freebsd/
+#< "$TEMPLATEPATH/rc-jitsi-videobridge.in" \
+#  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+#  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
+#  > /usr/local/etc/rc.d/jitsi-videobridge
+#
+# missing chmod +x
+###
 
 # copy over manifest.json
 cp -f "$TEMPLATEPATH/manifest.json.in" /usr/local/www/jitsi-meet/manifest.json
@@ -71,4 +75,4 @@ cp -f "$TEMPLATEPATH/manifest.json.in" /usr/local/www/jitsi-meet/manifest.json
 sysrc jitsi_videobridge_flags="--apis=rest,xmpp"
 sysrc jitsi_videobridge_maxmem="3072m"
 sysrc jitsi_videobridge_env_file="/usr/local/etc/jitsi/videobridge/jitsi-videobridge.conf"
-service jitsi-videobridge enable
+service jitsi-videobridge enable || true

@@ -31,6 +31,8 @@
 * add jicofostatus script
 * fix error with prosody config to update secpassword
 * fix source file name for jicofostatus script
+* switch to jitsi-full meta package
+* redo config files for new format
 
 ---
 

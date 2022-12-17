@@ -35,16 +35,18 @@ sep=$'\001'
   sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
   > /usr/local/etc/jitsi/jicofo/jicofo.conf
 
-# update rc script for jicofo
-# see https://honeyguide.eu/posts/jitsi-freebsd/
-< "$TEMPLATEPATH/rc-jicofo.in" \
-  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
-  sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
-  > /usr/local/etc/rc.d/jicofo
-
-# set execute permissions
-chmod +x /usr/local/etc/rc.d/jicofo
+## Removed ##
+## update rc script for jicofo
+## see https://honeyguide.eu/posts/jitsi-freebsd/
+#< "$TEMPLATEPATH/rc-jicofo.in" \
+#  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+#  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
+#  sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
+#  > /usr/local/etc/rc.d/jicofo
+#
+## set execute permissions
+#chmod +x /usr/local/etc/rc.d/jicofo
+###
 
 # copy over jicofostatus.sh, runs:
 # [ curl -s "http://localhost:8080/debug?full=true" | jq . ]
@@ -54,4 +56,5 @@ chmod +x /root/bin/jicofostatus.sh
 
 # enable service
 sysrc jicofo_env_file="/usr/local/etc/jitsi/jicofo/jicofo.conf"
-service jicofo enable
+sysrc jicofo_maxmem="3072m"
+service jicofo enable || true
