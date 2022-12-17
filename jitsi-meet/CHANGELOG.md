@@ -30,6 +30,7 @@
 * tweak startup for jitsi-videobridge
 * add jicofostatus script
 * fix error with prosody config to update secpassword
+* fix source file name for jicofostatus script
 
 ---
 
