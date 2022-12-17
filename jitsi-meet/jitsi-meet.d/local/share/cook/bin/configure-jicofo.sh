@@ -35,18 +35,17 @@ sep=$'\001'
   sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
   > /usr/local/etc/jitsi/jicofo/jicofo.conf
 
-## Removed ##
 ## update rc script for jicofo
 ## see https://honeyguide.eu/posts/jitsi-freebsd/
-#< "$TEMPLATEPATH/rc-jicofo.in" \
-#  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-#  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
-#  sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
-#  > /usr/local/etc/rc.d/jicofo
+## also need -Djavax.net.ssl.trustStorePassword=changeit
+< "$TEMPLATEPATH/rc-jicofo.in" \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
+  sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
+  > /usr/local/etc/rc.d/jicofo
 #
 ## set execute permissions
-#chmod +x /usr/local/etc/rc.d/jicofo
-###
+chmod +x /usr/local/etc/rc.d/jicofo
 
 # copy over jicofostatus.sh, runs:
 # [ curl -s "http://localhost:8080/debug?full=true" | jq . ]
