@@ -63,11 +63,8 @@ step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
 # only modify repo if not already done in base image
 # shellcheck disable=SC2016
-#test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
-#  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
-#    >/usr/local/etc/pkg/repos/FreeBSD.conf
-# switch to using latest package sources and non-layered image
-echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
+test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
     >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 

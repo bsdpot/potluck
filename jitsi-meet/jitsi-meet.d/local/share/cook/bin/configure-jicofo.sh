@@ -55,6 +55,5 @@ cp -f "$TEMPLATEPATH/jicofostatus.sh.in" /root/bin/jicofostatus.sh
 chmod +x /root/bin/jicofostatus.sh
 
 # enable service
-sysrc jicofo_env_file="/usr/local/etc/jitsi/jicofo/jicofo.conf"
 sysrc jicofo_maxmem="3072m"
 service jicofo enable || true

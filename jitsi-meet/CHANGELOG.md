@@ -34,6 +34,8 @@
 * switch to jitsi-full meta package
 * redo config files for new format
 * Switch to latest package sources, non-layered image
+* remove the rc env setting for jicofo and jitsi-videobridge
+* Revert to quarterlies and layered image, problem was rc env setting
 
 ---
 

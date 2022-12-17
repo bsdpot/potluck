@@ -74,5 +74,4 @@ cp -f "$TEMPLATEPATH/manifest.json.in" /usr/local/www/jitsi-meet/manifest.json
 # enable service
 sysrc jitsi_videobridge_flags="--apis=rest,xmpp"
 sysrc jitsi_videobridge_maxmem="3072m"
-sysrc jitsi_videobridge_env_file="/usr/local/etc/jitsi/videobridge/jitsi-videobridge.conf"
 service jitsi-videobridge enable || true

@@ -60,4 +60,4 @@ echo "checking prosody config"
 prosodyctl check config || true
 
 # enable service
-service prosody enable
+service prosody enable || true
