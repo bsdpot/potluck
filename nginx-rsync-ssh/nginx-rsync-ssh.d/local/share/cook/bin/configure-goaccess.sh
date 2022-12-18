@@ -20,10 +20,15 @@ mv /usr/local/etc/goaccess.conf /usr/local/etc/goaccess.conf.ignore
 # copy over goaccess.conf
 cp -f "$TEMPLATEPATH/goaccess.conf.in" /usr/local/etc/goaccess/goaccess.conf
 
+# this warning pops up for some reason
+# /etc/rc: WARNING: $goaccess_enable is not set properly - see rc.conf(5).
+
+# enable goaccess
+service goaccess enable || true
+
 # configure goaccess sysrc entires
 sysrc goaccess_config="/usr/local/etc/goaccess/goaccess.conf"
 sysrc goaccess_log="/var/log/nginx/access.log"
 
-# enable and start
-service goaccess enable
+# start
 service goaccess start || true
