@@ -1,3 +1,10 @@
+0.1
+
+* New pot image format
+* Updates to add additional functionality
+
+---
+
 0.0.9
 
 * Version bump for rebuild to fix missing images on potluck site

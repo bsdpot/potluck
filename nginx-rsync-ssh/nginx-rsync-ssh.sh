@@ -15,9 +15,10 @@
 # 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
-# Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
-# You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script
+# Set this to true if this jail flavour is to be created as a nomad
+# (i.e. blocking) jail.
+# You can then query it in the cook script generation below and the script
+# is installed appropriately at the end of this script
 RUNS_IN_NOMAD=false
 
 # set the cook log path/filename
@@ -60,6 +61,7 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
+# only modify repo if not already done in base image
 # shellcheck disable=SC2016
 test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
   echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
@@ -84,6 +86,13 @@ service sshd enable
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
+# we need consul for consul agent
+step "Install package consul"
+pkg install -y consul
+
+step "Install package openssl"
+pkg install -y openssl
+
 step "Install package sudo"
 pkg install -y sudo
 
@@ -96,6 +105,18 @@ pkg install -y jq
 step "Install package jo"
 pkg install -y jo
 
+step "Install package nano"
+pkg install -y nano
+
+step "Install package bash"
+pkg install -y bash
+
+step "Install package rsync"
+pkg install -y rsync
+
+step "Install package node_exporter"
+pkg install -y node_exporter
+
 step "Install package nginx"
 pkg install -y nginx
 
@@ -104,12 +125,6 @@ pkg install -y goaccess
 
 step "Install package acme.sh"
 pkg install -y acme.sh
-
-step "Install package openssl"
-pkg install -y openssl
-
-step "Install package rsync"
-pkg install -y rsync
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng
@@ -121,214 +136,24 @@ pkg clean -y
 # -------------- END PACKAGE SETUP -------------
 
 #
-# Create configurations
-#
-
-#
 # Now generate the run command script "cook"
 # It configures the system on the first run by creating the config file(s)
 # On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
 #
 
-# clear any old cook runtime file
-step "Remove pre-existing cook script (if any)"
-rm -f /usr/local/bin/cook
-
 # this runs when image boots
 # ----------------- BEGIN COOK ------------------
 
-step "Create cook script"
-echo "#!/bin/sh
-RUNS_IN_NOMAD=$RUNS_IN_NOMAD
-# declare this again for the pot image, might work carrying variable through like
-# with above
-COOKLOG=/var/log/cook.log
-# No need to change this, just ensures configuration is done only once
-if [ -e /usr/local/etc/pot-is-seasoned ]
-then
-    # If this pot flavour is blocking (i.e. it should not return),
-    # we block indefinitely
-    if [ \"\$RUNS_IN_NOMAD\" = \"true\" ]
-    then
-        /bin/sh /etc/rc
-        tail -f /dev/null
-    fi
-    exit 0
-fi
+step "Clean cook artifacts"
+rm -rf /usr/local/bin/cook /usr/local/share/cook
 
-# ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-# not needed, not started automatically, needs configuring
+step "Install pot local"
+tar -C /root/.pot_local -cf - . | tar -C /usr/local -xf -
+rm -rf /root/.pot_local
 
-# No need to adjust this:
-# If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
-# where pot is storing it in this case
-if [ -e /tmp/environment.sh ]
-then
-    . /tmp/environment.sh
-fi
-
-#
-# ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
-#
-
-# Check config variables are set
-#
-if [ -z \${SETUPSCRIPT+x} ]; then
-    echo 'SETUPSCRIPT is unset - see documentation to configure this flavour to run a script'
-    SETUPSCRIPT=0
-fi
-if [ -z \${IMPORTAUTHKEY+x} ]; then
-    echo 'IMPORTAUTHKEY is unset - see documentation to configure this flavour for adding SSH keys to authorized_keys file.'
-    IMPORTAUTHKEY=0
-fi
-if [ -z \${IMPORTSSH+x} ]; then
-    echo 'IMPORTSSH is unset - see documentation to configure this flavour to import sshd config.'
-    IMPORTSSH=0
-fi
-if [ -z \${IMPORTNGINX+x} ]; then
-    echo 'IMPORTNGINX is unset - see documentation to configure this flavour to import nginx config.'
-    IMPORTNGINX=0
-fi
-if [ -z \${IMPORTRSYNC+x} ]; then
-    echo 'IMPORTRSYNC is unset - see documentation to configure this flavour to import rsync config.'
-    IMPORTRSYNC=0
-fi
-if [ -z \${POSTSCRIPT+x} ]; then
-    echo 'POSTSCRIPT is unset - see documentation to configure this flavour to run a script at the end'
-    POSTSCRIPT=0
-fi
-# Remotelog is a remote syslog server, need to pass in IP
-if [ -z \${REMOTELOG+x} ]; then
-    echo 'REMOTELOG is unset - see documentation how to configure this flavour'
-    REMOTELOG=0
-fi
-
-# ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE CREATED:
-# Don't forget to double(!)-escape quotes and dollar signs in the config files
-
-# add custom commands to setup.sh such as directory creation or doing stuff to files
-if [ \${SETUPSCRIPT} -eq 1 ]; then
-    if [ -f /root/setup.sh ]; then
-        chmod +x /root/setup.sh
-        /root/setup.sh
-    fi
-fi
-
-# create root ssh keys
-mkdir -p /root/.ssh
-/usr/bin/ssh-keygen -q -N '' -f /root/.ssh/id_rsa -t rsa
-chown -R root:wheel /root/.ssh
-chmod 700 /root/.ssh
-chmod 600 /root/.ssh/id_rsa
-
-# add imported key to authorized_keys
-if [ \${IMPORTAUTHKEY} -eq 1 ]; then
-    if [ -f /root/authorized_keys_in ]; then
-        echo \"Adding imported keys to /root/.ssh/authorized_keys\"
-        cat /root/authorized_keys_in > /root/.ssh/authorized_keys
-        chown -R root:wheel /root/.ssh
-    else
-        echo \"Error: no /root/authorized_keys_in file found\"
-        echo \"#command=\\\"rsync --server --daemon .\\\",no-agent-forwarding,no-port-forwarding,no-pty,no-user-rc,no-X11-forwarding ssh-rsa key#\" > /root/.ssh/authorized_keys
-    fi
-fi
-
-# setup ssh server with remote root access with a key
-if [ \${IMPORTSSH} -eq 1 ]; then
-    if [ -f /root/sshd_config_in ]; then
-        echo \"Setting up ssh server\"
-        cp -f /root/sshd_config_in /etc/ssh/sshd_config
-        echo \"Manually setting up host keys\"
-        cd /etc/ssh
-        /usr/bin/ssh-keygen -A
-        cd /root/
-        echo \"Restarting ssh\"
-        service sshd restart
-    else
-        echo \"There is no /root/sshd_config_in file\"
-    fi
-fi
-
-# setup nginx and enable and start
-if [ \${IMPORTNGINX} -eq 1 ]; then
-    if [ -f /root/nginx.conf ]; then
-        cp -f /root/nginx.conf /usr/local/etc/nginx/nginx.conf
-        service nginx enable
-        service nginx start
-    else
-        echo \"There is no /root/nginx.conf file\"
-    fi
-fi
-
-# setup rsync
-if [ \${IMPORTRSYNC} -eq 1 ]; then
-    if [ -f /root/rsyncd.conf ]; then
-        cp -f /root/rsyncd.conf /usr/local/etc/rsync/rsyncd.conf
-    else
-        echo \"There is no /root/rsyncd.conf file\"
-    fi
-fi
-
-# goaccess
-# this seems to be needed as install places in /usr/local/etc/goaccess.conf
-# but default for goaccess is /usr/local/etc/goaccess/goaccess.conf
-# using custom goaccess.conf with nginx accesslog hardcoded in
-if [ -f /root/goaccess.conf.in ]; then
-    cp -f /root/goaccess.conf.in /usr/local/etc/goaccess/goaccess.conf
-    mv /usr/local/etc/goaccess.conf /usr/local/etc/goaccess.conf.ignore
-fi
-sysrc goaccess_config=\"/usr/local/etc/goaccess/goaccess.conf\"
-sysrc goaccess_log=\"/var/log/nginx/access.log\"
-service goaccess enable
-service goaccess start || true
-
-# add custom commands to postsetup.sh
-if [ \${POSTSCRIPT} -eq 1 ]; then
-    if [ -f /root/postsetup.sh ]; then
-        chmod +x /root/postsetup.sh
-        /root/postsetup.sh
-    else
-        echo \"There is no /root/postsetup.sh file\"
-    fi
-fi
-
-## remote syslogs
-if [ \"\${REMOTELOG}\" != \"0\" ]; then
-    config_version=\$(/usr/local/sbin/syslog-ng --version | grep '^Config version:' | awk -F: '{ print \$2 }' | xargs)
-
-    # read in template conf file, update remote log IP address, and
-    # write to correct destination
-    < /root/syslog-ng.conf.in \
-      sed \"s|%%config_version%%|\$config_version|g\" | \
-      sed \"s|%%remotelogip%%|\$REMOTELOG|g\" > /usr/local/etc/syslog-ng.conf
-
-    # stop and disable syslogd
-    service syslogd onestop || true
-    service syslogd disable
-
-    # enable and start syslog-ng
-    service syslog-ng enable
-    sysrc syslog_ng_flags=\"-R /tmp/syslog-ng.persist\"
-    service syslog-ng start
-fi
-
-#
-# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-
-
-
-#
-# Do not touch this:
-touch /usr/local/etc/pot-is-seasoned
-
-# If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh
-# created by pot and we now after configuration block indefinitely
-if [ \"\$RUNS_IN_NOMAD\" = \"true\" ]
-then
-    /bin/sh /etc/rc
-    tail -f /dev/null
-fi
-" > /usr/local/bin/cook
+step "Set file ownership on cook scripts"
+chown -R root:wheel /usr/local/bin/cook /usr/local/share/cook
+chmod 755 /usr/local/share/cook/bin/*
 
 # ----------------- END COOK ------------------
 
@@ -390,7 +215,8 @@ then
   step "Enable cook service"
   # This is a non-nomad (non-blocking) jail, so we need to make sure the script
   # gets started when the jail is started:
-  # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
+  # Otherwise, /usr/local/bin/cook will be set as start script by the pot
+  # flavour
   echo "enabling cook" | tee -a $COOKLOG
   service cook enable
 fi
