@@ -24,7 +24,7 @@ cp -f "$TEMPLATEPATH/goaccess.conf.in" /usr/local/etc/goaccess/goaccess.conf
 # /etc/rc: WARNING: $goaccess_enable is not set properly - see rc.conf(5).
 
 # enable goaccess
-service goaccess enable || true
+service goaccess enable
 
 # configure goaccess sysrc entires
 sysrc goaccess_config="/usr/local/etc/goaccess/goaccess.conf"

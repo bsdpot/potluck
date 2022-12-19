@@ -4,6 +4,7 @@
 * Updates to add additional functionality
 * Fix ssh setup to start not restart
 * Adjust goaccess config due to startup error
+* Minor fixes, version bump
 
 ---
 
