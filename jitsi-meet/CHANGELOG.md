@@ -39,6 +39,7 @@
 * Add back rc fix for 'the trustAnchors parameter must be non-empty' by adding -Djavax.net.ssl.trustStorePassword
 * remove internal from bridge stanza
 * Synchronise removal internal from jitsi-videobridge, swap password
+* Tweak config file for prosody
 
 ---
 
