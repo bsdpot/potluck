@@ -97,8 +97,8 @@ service node_exporter start
 KEYPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
 export KEYPASSWORD
 # shellcheck disable=SC2002
-SECPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
-export SECPASSWORD
+#SECPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
+#export SECPASSWORD
 
 log "Configure acme.sh"
 configure-acme.sh
@@ -125,10 +125,11 @@ log "Start prosody"
 service prosody start || true
 
 log "Start nginx"
-timeout --foreground 120 \
-  sh -c 'while ! service nginx status; do
-    service nginx start || true; sleep 5;
-  done'
+service nginx start || true
+#timeout --foreground 120 \
+#  sh -c 'while ! service nginx status; do
+#    service nginx start || true; sleep 5;
+#  done'
 
 log "Start jitsi-videobridge"
 #service jitsi-videobridge start || true

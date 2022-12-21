@@ -31,8 +31,7 @@ sep=$'\001'
 # copy over jicofo.conf
 < "$TEMPLATEPATH/jicofo.conf.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
-  sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
+  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/etc/jitsi/jicofo/jicofo.conf
 
 ## update rc script for jicofo
@@ -40,8 +39,7 @@ sep=$'\001'
 ## also need -Djavax.net.ssl.trustStorePassword=changeit
 < "$TEMPLATEPATH/rc-jicofo.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
-  sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
+  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/etc/rc.d/jicofo
 #
 ## set execute permissions

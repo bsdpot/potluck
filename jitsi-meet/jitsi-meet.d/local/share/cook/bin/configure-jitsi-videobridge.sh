@@ -57,16 +57,15 @@ fi
   sed "s${sep}%%image%%${sep}$IMAGE${sep}g" \
   > /usr/local/www/jitsi-meet/interface_config.js
 
-## Removed ##
 ## update rc script for jitsi-videobridge
 ## see https://honeyguide.eu/posts/jitsi-freebsd/
-#< "$TEMPLATEPATH/rc-jitsi-videobridge.in" \
-#  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-#  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
-#  > /usr/local/etc/rc.d/jitsi-videobridge
-#
-# missing chmod +x
-###
+< "$TEMPLATEPATH/rc-jitsi-videobridge.in" \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
+  > /usr/local/etc/rc.d/jitsi-videobridge
+
+# set execute permission
+chmod +x /usr/local/etc/rc.d/jitsi-videobridge
 
 # copy over manifest.json
 cp -f "$TEMPLATEPATH/manifest.json.in" /usr/local/www/jitsi-meet/manifest.json

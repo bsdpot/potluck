@@ -40,6 +40,8 @@
 * remove internal from bridge stanza
 * Synchronise removal internal from jitsi-videobridge, swap password
 * Tweak config file for prosody
+* Single generated pass for debugging, add back customisations to videobridge rc file
+* Cleanup install list
 
 ---
 

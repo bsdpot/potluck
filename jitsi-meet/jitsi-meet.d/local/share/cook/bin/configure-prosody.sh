@@ -26,13 +26,14 @@ sep=$'\001'
 < "$TEMPLATEPATH/prosody.cfg.lua.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%email%%${sep}$EMAIL${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
-  sed "s${sep}%%secpassword%%${sep}$SECPASSWORD${sep}g" \
+  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/etc/prosody/prosody.cfg.lua
 
 # setup prosody
-echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate "$DOMAIN"
-echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN"
+# shellcheck disable=SC2039
+echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate "$DOMAIN" || true
+# shellcheck disable=SC2039
+echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN" || true
 
 # this information is incorrect
 # from http://www.bobeager.uk/pdf/jitsi.pdf
@@ -40,7 +41,7 @@ echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN"
 # $ prosodyctl register user FQDN password
 #
 # tested:
-# prosodyctl register focus "$DOMAIN" "$SECPASSWORD"
+# prosodyctl register focus "$DOMAIN" "$KEYPASSWORD"
 #
 # produces:
 # Error: Account creation/modification not supported.
@@ -49,7 +50,7 @@ echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN"
 #
 # retaining this note because there is a problem with focus and video won't start
 # however this is not the issue
-prosodyctl register focus auth."$DOMAIN" "$SECPASSWORD" || true
+prosodyctl register focus auth."$DOMAIN" "$KEYPASSWORD" || true
 
 # check for valid certificates
 echo "checking prosody certs"

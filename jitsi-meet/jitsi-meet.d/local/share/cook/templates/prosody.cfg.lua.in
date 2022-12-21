@@ -97,4 +97,4 @@ Component "focus.%%domain%%" "client_proxy"
 
 -- old way
 --Component "focus.%%domain%%"
-    --component_secret = "%%secpassword%%"
+    --component_secret = "%%keypassword%%"

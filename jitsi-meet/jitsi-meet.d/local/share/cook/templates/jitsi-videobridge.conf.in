@@ -29,7 +29,7 @@ videobridge {
           hostname="localhost"
           domain = "auth.%%domain%%"
           username = "focus"
-          password = "%%secpassword%%"
+          password = "%%keypassword%%"
           muc_jids = "JvbBrewery@auth.%%domain%%"
           muc_nickname = "unique-instance-id"
           disable_certificate_verification = true

@@ -59,7 +59,7 @@ jicofo_start()
 #            --secret=%%keypassword%% \
 #            --user_domain=auth.%%domain%% \
 #            --user_name=focus \
-#            --user_password=%%secpassword%% \
+#            --user_password=%%keypassword%% \
 #            ${jicofo_flags}
 
 	echo "Starting ${name}"

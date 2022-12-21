@@ -14,7 +14,7 @@ jicofo {
       port = 5222
       domain = "auth.%%domain%%"
       username = "focus"
-      password = "%%secpassword%%"
+      password = "%%keypassword%%"
       conference-muc-jid = "conference.%%domain%%"
     }
   }

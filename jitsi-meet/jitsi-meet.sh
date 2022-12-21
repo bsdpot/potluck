@@ -126,23 +126,8 @@ pkg install -y acme.sh
 step "Install package prosody"
 pkg install -y prosody
 
-# removed as using meta package jitsi-meet-full
-#step "Install package jicofo"
-#pkg install -y jicofo
-
 step "Install package jitsi-meet"
 pkg install -y jitsi-meet-full
-
-# removed as using meta package jitsi-meet-full
-#step "Install package jitsi-prosody-plugins"
-#pkg install -y jitsi-prosody-plugins
-#
-#step "Install package jitsi-videobridge"
-#pkg install -y jitsi-videobridge
-#
-#step "Install package jitsi-srtp-native"
-#pkg install -y jitsi-srtp-native
-#
 
 step "Clean package installation"
 pkg clean -y
