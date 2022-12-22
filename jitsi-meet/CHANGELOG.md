@@ -42,6 +42,8 @@
 * Tweak config file for prosody
 * Single generated pass for debugging, add back customisations to videobridge rc file
 * Cleanup install list
+* Revert prosody config to older setup, plug jicofo and videobridge rc files
+* Fix config.js for conference muc domain
 
 ---
 
