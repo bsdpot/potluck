@@ -19,7 +19,8 @@ keytool \
   -noprompt \
   -keystore /usr/local/etc/jitsi/jicofo/truststore.jks \
   -storepass "$KEYPASSWORD" \
-  -importcert -alias prosody -file "/var/db/prosody/auth.$DOMAIN.crt"
+  -importcert -alias prosody \
+  -file "/var/db/prosody/auth.$DOMAIN.crt"
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates

@@ -19,7 +19,7 @@ videobridge {
     # Enable broadcasting stats/presence in a MUC
     enabled = true
     transports = [
-      { type = "colibri" }
+      { type = "muc" }
     ]
   }
   apis {
