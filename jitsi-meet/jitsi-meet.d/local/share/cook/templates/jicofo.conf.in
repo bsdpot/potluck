@@ -1,12 +1,11 @@
 jicofo {
   bridge {
-    brewery-jid = "JvbBrewery@auth.%%domain%%"
+    brewery-jid = "JvbBrewery@internal.auth.%%domain%%"
+    xmpp-connection-name = Client
   }
-
   sctp {
     enabled = false
   }
-
   xmpp {
     client {
       enabled = true
@@ -17,5 +16,6 @@ jicofo {
       password = "%%keypassword%%"
       conference-muc-jid = "conference.%%domain%%"
     }
+    trusted-domains = [ "auth.%%domain%%" ]
   }
 }

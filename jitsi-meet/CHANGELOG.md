@@ -45,6 +45,8 @@
 * Revert prosody config to older setup, plug jicofo and videobridge rc files
 * Fix config.js for conference muc domain
 * Revert to newer prosody setup for focus.auth, this authenticates fine
+* Bunch of updates after watching helpful video
+* Video link https://youtu.be/LJOpSDcwWIA
 
 ---
 

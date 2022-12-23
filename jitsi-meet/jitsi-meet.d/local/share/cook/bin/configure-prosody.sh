@@ -52,6 +52,12 @@ echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN" || t
 # however this is not the issue
 prosodyctl register focus auth."$DOMAIN" "$KEYPASSWORD" || true
 
+# adding extra step from
+# https://youtu.be/LJOpSDcwWIA
+# docs
+# https://modules.prosody.im/mod_roster_command.html
+prosodyctl mod_roster_command subscribe focus."$DOMAIN" focus@auth."$DOMAIN" || true
+
 # check for valid certificates
 echo "checking prosody certs"
 prosodyctl check certs || true

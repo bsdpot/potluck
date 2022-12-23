@@ -4,6 +4,8 @@ org.jitsi.impl.neomedia.transform.srtp.SRTPCryptoContext.checkReplay=false
 org.jitsi.videobridge.TCP_HARVESTER_PORT=4443
 org.ice4j.ice.harvest.NAT_HARVESTER_LOCAL_ADDRESS=%%privateip%%
 org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS=%%publicip%%
+org.ice4j.ice.harvest.DISABLE_AWS_HARVESTER=true
+
 #
 # For Grafana dashboard
 #

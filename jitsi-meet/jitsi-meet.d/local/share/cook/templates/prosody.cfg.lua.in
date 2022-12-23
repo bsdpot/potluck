@@ -91,12 +91,8 @@ admins = { "focus@auth.%%domain%%" }
 Component "conference.%%domain%%" "muc"
 Component "jitsi-videobridge.%%domain%%"
     component_secret = "%%keypassword%%"
--- new: Proxy to jicofo's user JID, so that it doesn't have to register as a component.
--- this authenticates fines and starts bosh session
 Component "focus.%%domain%%" "client_proxy"
-  target_address = "focus@auth.%%domain%%"
-
---
--- old method
--- Component "focus.%%domain%%"
---    component_secret = "%%keypassword%%"
+    target_address = "focus@auth.%%domain%%"
+Component "internal.auth.%%domain%%" "muc"
+    muc_room_locking = false
+    muc_room_default_public_jids = true

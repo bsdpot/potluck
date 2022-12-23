@@ -118,11 +118,11 @@ configure-jicofo.sh
 log "Configure nginx"
 configure-nginx.sh
 
-log "Start jicofo"
-service jicofo start || true
-
-log "Start prosody"
-service prosody start || true
+# Startup ordering as outlined in  https://youtu.be/LJOpSDcwWIA
+# 1. web
+# 2. prosody
+# 3. jicofo
+# 4. jitsi-videobridge
 
 log "Start nginx"
 service nginx start || true
@@ -130,6 +130,20 @@ service nginx start || true
 #  sh -c 'while ! service nginx status; do
 #    service nginx start || true; sleep 5;
 #  done'
+
+log "Start prosody"
+service prosody start || true
+
+# adding pause
+log "First pause"
+sleep 10 || true
+
+log "Start jicofo"
+service jicofo start || true
+
+# adding pause
+log "Second pause"
+sleep 10 || true
 
 log "Start jitsi-videobridge"
 service jitsi-videobridge start || true

@@ -24,13 +24,14 @@ videobridge {
   }
   apis {
     xmpp-client {
+      presence-interval = ${videobridge.stats.interval}
       configs {
         xmpp-server-1 {
           hostname="localhost"
           domain = "auth.%%domain%%"
           username = "focus"
           password = "%%keypassword%%"
-          muc_jids = "JvbBrewery@auth.%%domain%%"
+          muc_jids = "JvbBrewery@internal.auth.%%domain%%"
           muc_nickname = "unique-instance-id"
           disable_certificate_verification = true
         }
