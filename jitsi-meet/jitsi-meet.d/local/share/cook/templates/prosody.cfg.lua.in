@@ -1,6 +1,7 @@
 pidfile = "/var/run/prosody/prosody.pid"
 interfaces = { "127.0.0.1" }
 admins = { "focus@auth.%%domain%%" }
+plugin_paths = { "/usr/local/lib/jitsi-prosody-plugins/" }
 
 modules_enabled = {
 

@@ -49,6 +49,7 @@
 * Video link https://youtu.be/LJOpSDcwWIA
 * Add extra bits to prosody config
 * Tweaks to sip-communicator.properties
+* Set jitsi-plugins directory correctly
 
 ---
 
