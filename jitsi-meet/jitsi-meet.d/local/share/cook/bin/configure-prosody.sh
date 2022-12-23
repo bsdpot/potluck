@@ -35,6 +35,14 @@ echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate "$DOMAIN" || true
 # shellcheck disable=SC2039
 echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN" || true
 
+# Set up truststore
+keytool \
+  -noprompt \
+  -keystore /usr/local/etc/jitsi/jicofo/truststore.jks \
+  -storepass "$KEYPASSWORD" \
+  -importcert -alias prosody \
+  -file "/var/db/prosody/auth.$DOMAIN.crt" || true
+
 # this information is incorrect
 # from http://www.bobeager.uk/pdf/jitsi.pdf
 # Users are added to FQDN, not to auth.FQDN
@@ -50,13 +58,14 @@ echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN" || t
 #
 # retaining this note because there is a problem with focus and video won't start
 # however this is not the issue
+prosodyctl register jvb auth."$DOMAIN" "$KEYPASSWORD" || true
 prosodyctl register focus auth."$DOMAIN" "$KEYPASSWORD" || true
 
 # adding extra step from
 # https://youtu.be/LJOpSDcwWIA
 # docs
 # https://modules.prosody.im/mod_roster_command.html
-prosodyctl mod_roster_command subscribe focus."$DOMAIN" focus@auth."$DOMAIN" || true
+prosodyctl mod_roster_command subscribe focus."$DOMAIN" focus@auth."$DOMAIN" "$KEYPASSWORD" || true
 
 # check for valid certificates
 echo "checking prosody certs"

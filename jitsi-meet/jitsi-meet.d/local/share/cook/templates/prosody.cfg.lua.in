@@ -60,10 +60,28 @@ authentication = "internal_hashed"
 archive_expires_after = "1w" -- Remove archived messages after 1 week
 
 log = {
-        info = "prosody.log";
-        error = "prosody.err";
+        info = "/var/log/prosody.log";
+        error = "/var/log/prosody.err";
         -- "*syslog"; -- Uncomment this for logging to syslog
         -- "*console"; -- Log to the console, useful for debugging with daemonize=false
+}
+
+-- domain mapper options, must at least have domain base set to use the mapper
+muc_mapper_domain_base = "%%domain%%";
+
+--cross_domain_bosh = true;
+consider_bosh_secure = true;
+https_ports = { }; -- Remove this line to prevent listening on port 5284
+
+-- https://ssl-config.mozilla.org/#server=haproxy&version=2.1&config=intermediate&openssl=1.1.0g&guideline=5.4
+ssl = {
+    protocol = "tlsv1_2+";
+    ciphers = "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384"
+}
+
+unlimited_jids = {
+    "focus@auth.%%domain%%",
+    "jvb@auth.%%domain%%"
 }
 
 certificates = "/var/db/prosody"
@@ -74,31 +92,102 @@ VirtualHost "%%domain%%"
         key = "/var/db/prosody/%%domain%%.key";
         certificate = "/var/db/prosody/%%domain%%.crt";
     }
+    av_moderation_component = "avmoderation.%%domain%%"
+    speakerstats_component = "speakerstats.%%domain%%"
+    conference_duration_component = "conferenceduration.%%domain%%"
+    -- we need bosh
     modules_enabled = {
         "bosh";
         "pubsub";
+        "ping"; -- Enable mod_ping
+        "speakerstats";
+        "external_services";
+        "conference_duration";
+        "muc_lobby_rooms";
+        "muc_breakout_rooms";
+        "av_moderation";
+        "saslauth";
     }
     c2s_require_encryption = false
-
-VirtualHost "auth.%%domain%%"
-    ssl = {
-        key = "/var/db/prosody/auth.%%domain%%.key";
-        certificate = "/var/db/prosody/auth.%%domain%%.crt";
-    }
-    authentication = "internal_plain"
-
-admins = { "focus@auth.%%domain%%" }
+    lobby_muc = "lobby.%%domain%%"
+    breakout_rooms_muc = "breakout.%%domain%%"
+    main_muc = "conference.%%domain%%"
+    -- muc_lobby_whitelist = { "recorder.%%domain%%" } -- Here we can whitelist jibri to enter lobby enabled rooms
 
 Component "conference.%%domain%%" "muc"
-Component "jitsi-videobridge.%%domain%%"
-    component_secret = "%%keypassword%%"
-Component "focus.%%domain%%" "client_proxy"
-    target_address = "focus@auth.%%domain%%"
+    restrict_room_creation = true
+    storage = "memory"
+    modules_enabled = {
+        "muc_meeting_id";
+        "muc_domain_mapper";
+        "polls";
+        --"token_verification";
+        "muc_rate_limit";
+        "saslauth";
+    }
+    admins = { "focus@auth.%%domain%%" }
+    muc_room_locking = false
+    muc_room_default_public_jids = true
+    c2s_require_encryption = false
+
+Component "breakout.%%domain%%" "muc"
+    restrict_room_creation = true
+    storage = "memory"
+    modules_enabled = {
+        "muc_meeting_id";
+        "muc_domain_mapper";
+        --"token_verification";
+        "muc_rate_limit";
+        "polls";
+        "saslauth";
+    }
+    admins = { "focus@auth.%%domain%%" }
+    muc_room_locking = false
+    muc_room_default_public_jids = true
+
+-- internal muc component
 Component "internal.auth.%%domain%%" "muc"
     storage = "memory"
     modules_enabled = {
-      "ping";
-      "muc_domain_mapper";
+        "ping";
     }
+    admins = { "focus@auth.%%domain%%", "jvb@auth.%%domain%%" }
     muc_room_locking = false
     muc_room_default_public_jids = true
+    c2s_require_encryption = false
+
+VirtualHost "auth.%%domain%%"
+    modules_enabled = {
+        "limits_exception";
+        "saslauth";
+    }
+    -- authentication = "internal_plain" 
+    c2s_require_encryption = false
+    authentication = "internal_hashed"
+
+Component "focus.%%domain%%" "client_proxy"
+    target_address = "focus@auth.%%domain%%"
+
+Component "speakerstats.%%domain%%" "speakerstats_component"
+    muc_component = "conference.%%domain%%"
+
+Component "conferenceduration.%%domain%%" "conference_duration_component"
+    muc_component = "conference.%%domain%%"
+
+Component "avmoderation.%%domain%%" "av_moderation_component"
+    muc_component = "conference.%%domain%%"
+
+Component "lobby.%%domain%%" "muc"
+    storage = "memory"
+    restrict_room_creation = true
+    muc_room_locking = false
+    muc_room_default_public_jids = true
+    modules_enabled = {
+        "muc_rate_limit";
+        "polls";
+        "saslauth";
+    }
+    c2s_require_encryption = false
+
+--Component "jitsi-videobridge.%%domain%%"
+--    component_secret = "%%keypassword%%"

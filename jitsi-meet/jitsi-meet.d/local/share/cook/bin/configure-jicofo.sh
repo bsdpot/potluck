@@ -14,14 +14,6 @@ export PATH=/usr/local/bin:$PATH
 # make directories
 mkdir -p /usr/local/etc/jitsi/jicofo/
 
-# Set up jicofo
-keytool \
-  -noprompt \
-  -keystore /usr/local/etc/jitsi/jicofo/truststore.jks \
-  -storepass "$KEYPASSWORD" \
-  -importcert -alias prosody \
-  -file "/var/db/prosody/auth.$DOMAIN.crt"
-
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 

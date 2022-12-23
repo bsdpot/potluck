@@ -1,3 +1,7 @@
+0.2
+
+* Update prosody and related based on sample prosody config from jitsi-prosody-plugins
+
 0.1
 
 * Creating regular pot jail for jitsi-meet as alternative to jitsi-meet-nomad
