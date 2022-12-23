@@ -30,6 +30,7 @@ sep=$'\001'
 
 # copy over sip-communicator.properties
 < "$TEMPLATEPATH/sip-communicator.properties.in" \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%publicip%%${sep}$PUBLICIP${sep}g" | \
   sed "s${sep}%%privateip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \

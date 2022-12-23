@@ -94,5 +94,10 @@ Component "jitsi-videobridge.%%domain%%"
 Component "focus.%%domain%%" "client_proxy"
     target_address = "focus@auth.%%domain%%"
 Component "internal.auth.%%domain%%" "muc"
+    storage = "memory"
+    modules_enabled = {
+      "ping";
+      "muc_domain_mapper";
+    }
     muc_room_locking = false
     muc_room_default_public_jids = true

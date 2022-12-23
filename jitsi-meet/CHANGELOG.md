@@ -47,6 +47,8 @@
 * Revert to newer prosody setup for focus.auth, this authenticates fine
 * Bunch of updates after watching helpful video
 * Video link https://youtu.be/LJOpSDcwWIA
+* Add extra bits to prosody config
+* Tweaks to sip-communicator.properties
 
 ---
 
