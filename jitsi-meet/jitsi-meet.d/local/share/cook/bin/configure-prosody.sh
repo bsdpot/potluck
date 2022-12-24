@@ -52,6 +52,9 @@ keytool \
   -importcert -alias prosody \
   -file "/var/db/prosody/auth.$DOMAIN.crt" || true
 
+# set permissions on truststore
+chown jicofo:jicofo /usr/local/etc/jitsi/jicofo/truststore.jks
+
 # this information is incorrect
 # from http://www.bobeager.uk/pdf/jitsi.pdf
 # Users are added to FQDN, not to auth.FQDN
@@ -74,7 +77,7 @@ prosodyctl register focus auth."$DOMAIN" "$KEYPASSWORD" || true
 # https://youtu.be/LJOpSDcwWIA
 # docs
 # https://modules.prosody.im/mod_roster_command.html
-prosodyctl mod_roster_command subscribe focus."$DOMAIN" focus@auth."$DOMAIN" "$KEYPASSWORD" || true
+prosodyctl mod_roster_command subscribe focus."$DOMAIN" focus@auth."$DOMAIN" || true
 
 # check for valid certificates
 echo "checking prosody certs"

@@ -4,6 +4,7 @@
 * Fix logging to /var/log/prosody
 * Update jicofo config
 * Update nginx config to match example from jitsi-prosody-plugins
+* Bug-fixing and permissions changes
 
 ---
 
