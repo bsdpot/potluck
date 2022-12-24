@@ -1059,7 +1059,7 @@ var config = {
         // The url for the image used as background
         backgroundImageUrl: 'https://%%domain%%/images/%%image%%',
         // The anchor url used when clicking the logo image
-        logoClickUrl: 'https://%%domain%%',
+        logoClickUrl: '%%link%%',
         // The url used for the image used as logo
         logoImageUrl: 'https://%%domain%%/images/%%image%%',
         // Overwrite for pool of background images for avatars

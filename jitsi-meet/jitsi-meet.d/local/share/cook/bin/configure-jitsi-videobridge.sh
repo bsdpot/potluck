@@ -36,26 +36,34 @@ sep=$'\001'
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/etc/jitsi/videobridge/sip-communicator.properties
 
-# copy over config.js
-< "$TEMPLATEPATH/config.js.in" \
-  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
-  > /usr/local/www/jitsi-meet/config.js
-
 # if no image filename been passed in for a file copied-in to
 # /usr/local/www/jitsi-meet/image/filename.jpg then default to
 # watermark.svg
+# if an image has been passed, check for URL passed in
 if [ -n "$IMAGE" ]; then
 	IMAGE="$IMAGE"
 	export IMAGE
+	if [ -n "$LINK" ]; then
+		LINK="$LINK"
+		export LINK
+	fi
 else
 	IMAGE="watermark.svg"
 	export IMAGE
 fi
 
+# copy over config.js
+< "$TEMPLATEPATH/config.js.in" \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
+  sed "s${sep}%%image%%${sep}$IMAGE${sep}g" | \
+  sed "s${sep}%%link%%${sep}$LINK${sep}g" \
+  > /usr/local/www/jitsi-meet/config.js
+
 # copy over interface_config.js
 < "$TEMPLATEPATH/interface_config.js.in" \
-  sed "s${sep}%%image%%${sep}$IMAGE${sep}g" \
+  sed "s${sep}%%image%%${sep}$IMAGE${sep}g" | \
+  sed "s${sep}%%link%%${sep}$LINK${sep}g" \
   > /usr/local/www/jitsi-meet/interface_config.js
 
 ## update rc script for jitsi-videobridge

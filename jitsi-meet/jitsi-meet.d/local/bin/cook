@@ -46,7 +46,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY DOMAIN EMAIL PUBLICIP"
-optional_args="REMOTELOG IMAGE"
+optional_args="REMOTELOG IMAGE LINK"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
