@@ -5,6 +5,7 @@
 * Update jicofo config
 * Update nginx config to match example from jitsi-prosody-plugins
 * Bug-fixing and permissions changes
+* Working release 0.2.4 with wasm duplication removed from nginx
 
 ---
 
