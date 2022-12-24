@@ -8,6 +8,7 @@
 * Working release 0.2.4 with wasm duplication removed from nginx
 * Update branding options
 * Update README
+* Fix branding link
 
 ---
 

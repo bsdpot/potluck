@@ -22,7 +22,7 @@ var interfaceConfig = {
      * Note: this mode is experimental and subject to breakage.
      */
     AUTO_PIN_LATEST_SCREEN_SHARE: 'remote-only',
-    BRAND_WATERMARK_LINK: '%%link%%',
+    BRAND_WATERMARK_LINK: '',
 
     CLOSE_PAGE_GUEST_HINT: false, // A html text to be shown to guests on the close page, false disables it
 
@@ -87,7 +87,7 @@ var interfaceConfig = {
      */
     HIDE_INVITE_MORE_HEADER: false,
 
-    JITSI_WATERMARK_LINK: 'https://jitsi.org',
+    JITSI_WATERMARK_LINK: '%%link%%',
 
     LANG_DETECTION: true, // Allow i18n to detect the system language
     LIVE_STREAMING_HELP_LINK: 'https://jitsi.org/live', // Documentation reference for the live streaming feature.
