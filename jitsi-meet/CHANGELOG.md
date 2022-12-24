@@ -9,6 +9,7 @@
 * Update branding options
 * Update README
 * Fix branding link
+* Add back global modules_enabled to prosody to clear config check
 
 ---
 
