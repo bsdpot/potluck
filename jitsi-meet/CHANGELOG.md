@@ -1,6 +1,11 @@
 0.2
 
 * Update prosody and related based on sample prosody config from jitsi-prosody-plugins
+* Fix logging to /var/log/prosody
+* Update jicofo config
+* Update nginx config to match example from jitsi-prosody-plugins
+
+---
 
 0.1
 

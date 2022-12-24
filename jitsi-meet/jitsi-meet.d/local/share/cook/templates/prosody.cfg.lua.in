@@ -60,8 +60,8 @@ authentication = "internal_hashed"
 archive_expires_after = "1w" -- Remove archived messages after 1 week
 
 log = {
-        info = "/var/log/prosody.log";
-        error = "/var/log/prosody.err";
+        info = "/var/log/prosody/prosody.log";
+        error = "/var/log/prosody/prosody.err";
         -- "*syslog"; -- Uncomment this for logging to syslog
         -- "*console"; -- Log to the console, useful for debugging with daemonize=false
 }

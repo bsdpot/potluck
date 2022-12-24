@@ -1,7 +1,7 @@
 videobridge {
   http-servers {
     public {
-      port = -1
+      port = 9090
       tls-port = -1
     }
     private {
@@ -19,7 +19,7 @@ videobridge {
     # Enable broadcasting stats/presence in a MUC
     enabled = true
     transports = [
-      { type = "muc" }
+      { type = "colibri,muc" }
     ]
   }
   apis {
