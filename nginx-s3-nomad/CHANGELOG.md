@@ -5,6 +5,8 @@
 * Add error page details to nginx.conf samples
 * Adjust nginx config for error page and proxypass link
 * Match nginx config to minio howto settings
+* Add trailing slash after bucket name
+* Fix nginx rewrite to set index.html for subfolders
 
 ---
 
