@@ -4,6 +4,7 @@
 * Set port 9000 on configure-selfsigned.sh
 * Add error page details to nginx.conf samples
 * Adjust nginx config for error page and proxypass link
+* Match nginx config to minio howto settings
 
 ---
 
