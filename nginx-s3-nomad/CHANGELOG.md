@@ -1,3 +1,9 @@
+0.2
+
+* Update documentation with bucket creation details
+
+---
+
 0.1
 
 * First release nginx-s3-nomad flavour
