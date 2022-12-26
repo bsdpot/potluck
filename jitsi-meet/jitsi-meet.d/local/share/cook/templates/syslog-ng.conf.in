@@ -22,6 +22,13 @@ source src {
  internal();
 };
 
+source s_jitsi {
+ file("/var/log/prosody/prosody.log");
+ file("/var/log/prosody/prosody.err");
+ file("/var/log/jicofo.log");
+ file("/var/log/jitsi-videobridge.log");
+};
+
 # destinations
 destination messages { file("/var/log/messages"); };
 destination security { file("/var/log/security"); };
@@ -156,3 +163,4 @@ log { source(src); filter(f_ppp); destination(ppp); };
 # flags(flow-control);
 #};
 log { source(src); filter(f_all); destination(loghost); };
+log { source(s_jitsi); destination(loghost); };

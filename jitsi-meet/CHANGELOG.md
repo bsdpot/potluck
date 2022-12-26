@@ -10,6 +10,7 @@
 * Update README
 * Fix branding link
 * Add back global modules_enabled to prosody to clear config check
+* Update syslog-ng to capture prosody, jicofo, jitsi-videobridge logs
 
 ---
 
