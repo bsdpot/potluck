@@ -299,6 +299,9 @@ pkg install -y php82-zip
 step "Install package php82-zlib"
 pkg install -y php82-zlib
 
+step "Install package php82-pear"
+pkg install -y php82-pear
+
 step "Install package pkgconf"
 pkg install -y pkgconf
 

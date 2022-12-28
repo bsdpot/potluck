@@ -1,6 +1,7 @@
 2.0
 
 * New version of pot image
+* Include package php82-pear to avoid a plugin error for missing /usr/local/share/pear
 
 ---
 

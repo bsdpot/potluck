@@ -59,7 +59,7 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/wordpress-nginx-nomad"
         pot = "wordpress-nginx-nomad-amd64-13_1"
-        tag = "2.0.1"
+        tag = "2.0.2"
         command = "/usr/local/bin/cook"
         args = [""]
         mount = [
