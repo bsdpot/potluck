@@ -1,3 +1,9 @@
+2.0
+
+* New version of pot image
+
+---
+
 1.0.9
 
 * Version bump for rebuild to fix missing images on potluck site

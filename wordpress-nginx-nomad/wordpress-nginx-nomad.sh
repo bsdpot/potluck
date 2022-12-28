@@ -1,46 +1,347 @@
 #!/bin/sh
 
-# POTLUCK TEMPLATE v2.0
+# Based on POTLUCK TEMPLATE v3.0
+# Altered by Michael Gmelin
+#
 # EDIT THE FOLLOWING FOR NEW FLAVOUR:
-# 1. RUNS_IN_NOMAD - yes or no
-# 2. Create a matching <flavour> file with this <flavour>.sh file that
+# 1. RUNS_IN_NOMAD - true or false
+# 2. If RUNS_IN_NOMAD is false, can delete the <flavour>+4 file, else
+#    make sure pot create command doesn't include it
+# 3. Create a matching <flavour> file with this <flavour>.sh file that
 #    contains the copy-in commands for the config files from <flavour>.d/
-#    Remember that the package directories don't exist yet, so likely copy to /root
-# 3. Adjust package installation between BEGIN & END PACKAGE SETUP
-# 4. Adjust jail configuration script generation between BEGIN & END COOK
+#    Remember that the package directories don't exist yet, so likely copy
+#    to /root
+# 4. Adjust package installation between BEGIN & END PACKAGE SETUP
+# 5. Adjust jail configuration script generation between BEGIN & END COOK
 #    Configure the config files that have been copied in where necessary
 
-# Set this to true if this jail flavour is to be created as a nomad (i.e. blocking) jail.
-# You can then query it in the cook script generation below and the script is installed
-# appropriately at the end of this script
+# Set this to true if this jail flavour is to be created as a nomad
+# (i.e. blocking) jail.
+# You can then query it in the cook script generation below and the script
+# is installed appropriately at the end of this script
 RUNS_IN_NOMAD=true
 
-# -------- BEGIN PACKAGE & MOUNTPOINT SETUP -------------
+# set the cook log path/filename
+COOKLOG=/var/log/cook.log
+
+# check if cooklog exists, create it if not
+if [ ! -e $COOKLOG ]
+then
+    echo "Creating $COOKLOG" | tee -a $COOKLOG
+else
+    echo "WARNING $COOKLOG already exists"  | tee -a $COOKLOG
+fi
+date >> $COOKLOG
+
+# -------------------- COMMON ---------------
+
+STEPCOUNT=0
+step() {
+  STEPCOUNT=$(("$STEPCOUNT" + 1))
+  STEP="$*"
+  echo "Step $STEPCOUNT: $STEP" | tee -a $COOKLOG
+}
+
+exit_ok() {
+  trap - EXIT
+  exit 0
+}
+
+FAILED=" failed"
+exit_error() {
+  STEP="$*"
+  FAILED=""
+  exit 1
+}
+
+set -e
+trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
+
+# -------------- BEGIN PACKAGE SETUP -------------
+
+step "Bootstrap package repo"
+mkdir -p /usr/local/etc/pkg/repos
+# shellcheck disable=SC2016
+echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
+    >/usr/local/etc/pkg/repos/FreeBSD.conf
+# remove above and add back below for quarterlies
+# only modify repo if not already done in base image
+#test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+#  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+#    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
+
+step "Touch /etc/rc.conf"
 touch /etc/rc.conf
-service sendmail onedisable
+
+# this is important, otherwise running /etc/rc from cook will
+# overwrite the IP address set in tinirc
+step "Remove ifconfig_epair0b from config"
 # shellcheck disable=SC2015
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
-# Install packages
-# Wordpress package at the moment is installed with php74, so we use that as base
-# Also we (pre-)install all the packages that wordpress lists as dependencies
-pkg install -y nginx mariadb105-client postgresql13-client
-pkg install -y php82 php82-extensions
-pkg install -y ImageMagick7-nox11 avahi-app bash bash-completion cups dbus dbus-glib expat fftw3 fontconfig freetype2 fribidi gdbm ghostscript9-agpl-base giflib glib gmp gnome_subr gnutls graphite2 gsfonts harfbuzz jbig2dec jbigkit jpeg-turbo lcms2 libICE libSM libX11 libXau libXdmcp libdaemon libevent libffi libgd libidn libidn2 liblqr-1 libltdl libpaper libpthread-stubs libraqm libraw libtasn1 libunistring libwmf-nox11 libxcb libzip nettle openjpeg p11-kit perl5 php82-curl php82-exif php82-fileinfo php82-ftp php82-gd php82-mysqli php82-pecl-imagick php82-zip php82-zlib pkgconf png poppler-data python39 tiff tpm-emulator trousers webp xorgproto
+step "Disable sendmail"
+service sendmail onedisable || true
 
+step "Create /usr/local/etc/rc.d"
+mkdir -p /usr/local/etc/rc.d
+
+step "Install package openssl"
+pkg install -y openssl
+
+step "Install package curl"
+pkg install -y curl
+
+step "Install package jo"
+pkg install -y jo
+
+step "Install package bash"
+pkg install -y bash
+
+step "Install package rsync"
+pkg install -y rsync
+
+step "Install package sudo"
+pkg install -y sudo
+
+step "Install package nginx"
+pkg install -y nginx
+
+step "Install package mariadb105-client"
+pkg install -y mariadb105-client
+
+step "Install package postgresql13-client"
+pkg install -y postgresql13-client
+
+step "Install package php82"
+pkg install -y php82
+
+step "Install package php82-extensions"
+pkg install -y php82-extensions
+
+step "Install package ImageMagick7-nox11"
+pkg install -y ImageMagick7-nox11
+
+step "Install package avahi-app"
+pkg install -y avahi-app
+
+step "Install package bash-completion"
+pkg install -y bash-completion
+
+step "Install package cups"
+pkg install -y cups
+
+step "Install package dbus"
+pkg install -y dbus
+
+step "Install package dbus-glib"
+pkg install -y dbus-glib
+
+step "Install package expat"
+pkg install -y expat
+
+step "Install package fftw3"
+pkg install -y fftw3
+
+step "Install package fontconfig"
+pkg install -y fontconfig
+
+step "Install package freetype2"
+pkg install -y freetype2
+
+step "Install package fribidi"
+pkg install -y fribidi
+
+step "Install package gdbm"
+pkg install -y gdbm
+
+step "Install package ghostscript9-agpl-base"
+pkg install -y ghostscript9-agpl-base
+
+step "Install package giflib"
+pkg install -y giflib
+
+step "Install package glib"
+pkg install -y glib
+
+step "Install package gmp"
+pkg install -y gmp
+
+step "Install package gnome_subr"
+pkg install -y gnome_subr
+
+step "Install package gnutls"
+pkg install -y gnutls
+
+step "Install package graphite2"
+pkg install -y graphite2
+
+step "Install package gsfonts"
+pkg install -y gsfonts
+
+step "Install package harfbuzz"
+pkg install -y harfbuzz
+
+step "Install package jbig2dec"
+pkg install -y jbig2dec
+
+step "Install package jbigkit"
+pkg install -y jbigkit
+
+step "Install package jpeg-turbo"
+pkg install -y jpeg-turbo
+
+step "Install package lcms2"
+pkg install -y lcms2
+
+step "Install package libICE"
+pkg install -y libICE
+
+step "Install package libSM"
+pkg install -y libSM
+
+step "Install package libX11"
+pkg install -y libX11
+
+step "Install package libXau"
+pkg install -y libXau
+
+step "Install package libXdmcp"
+pkg install -y libXdmcp
+
+step "Install package libdaemon"
+pkg install -y libdaemon
+
+step "Install package libevent"
+pkg install -y libevent
+
+step "Install package libffi"
+pkg install -y libffi
+
+step "Install package libgd"
+pkg install -y libgd
+
+step "Install package libidn"
+pkg install -y libidn
+
+step "Install package libidn2"
+pkg install -y libidn2
+
+step "Install package liblqr-1"
+pkg install -y liblqr-1
+
+step "Install package libltdl"
+pkg install -y libltdl
+
+step "Install package libpaper"
+pkg install -y libpaper
+
+step "Install package libpthread-stubs"
+pkg install -y libpthread-stubs
+
+step "Install package libraqm"
+pkg install -y libraqm
+
+step "Install package libraw"
+pkg install -y libraw
+
+step "Install package libtasn1"
+pkg install -y libtasn1
+
+step "Install package libunistring"
+pkg install -y libunistring
+
+step "Install package libwmf-nox11"
+pkg install -y libwmf-nox11
+
+step "Install package libxcb"
+pkg install -y libxcb
+
+step "Install package libzip"
+pkg install -y libzip
+
+step "Install package nettle"
+pkg install -y nettle
+
+step "Install package openjpeg"
+pkg install -y openjpeg
+
+step "Install package p11-kit"
+pkg install -y p11-kit
+
+step "Install package perl5"
+pkg install -y perl5
+
+step "Install package php82-curl"
+pkg install -y php82-curl
+
+step "Install package php82-exif"
+pkg install -y php82-exif
+
+step "Install package php82-fileinfo"
+pkg install -y php82-fileinfo
+
+step "Install package php82-ftp"
+pkg install -y php82-ftp
+
+step "Install package php82-gd"
+pkg install -y php82-gd
+
+step "Install package php82-mysqli"
+pkg install -y php82-mysqli
+
+step "Install package php82-pecl-imagick"
+pkg install -y php82-pecl-imagick
+
+step "Install package php82-zip"
+pkg install -y php82-zip
+
+step "Install package php82-zlib"
+pkg install -y php82-zlib
+
+step "Install package pkgconf"
+pkg install -y pkgconf
+
+step "Install package png"
+pkg install -y png
+
+step "Install package poppler-data"
+pkg install -y poppler-data
+
+step "Install package python39"
+pkg install -y python39
+
+step "Install package tiff"
+pkg install -y tiff
+
+step "Install package tpm-emulator"
+pkg install -y tpm-emulator
+
+step "Install package trousers"
+pkg install -y trousers
+
+step "Install package webp"
+pkg install -y webp
+
+step "Install package xorgproto"
+pkg install -y xorgproto
+
+step "Clean package installation"
 pkg clean -y
 
-sysrc nginx_enable="YES"
-sysrc php_fpm_enable="YES"
+step "Enable nginx"
+service nginx enable
 
-# Create mountpoints
+step "Enable php-fpm"
+service php-fpm enable
+
+# -------------- Custom directories ------------
+
+# Create .snapshots
+step "Create snapshots directory"
 mkdir /.snapshots
-# ---------- END PACKAGE & MOUNTPOINT SETUP -------------
 
-#
-# Create configurations
-#
+# -------------- END PACKAGE SETUP -------------
 
 #
 # Now generate the run command script "cook"
@@ -48,106 +349,33 @@ mkdir /.snapshots
 # On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
 #
 
+# this runs when image boots
 # ----------------- BEGIN COOK ------------------
-echo "#!/bin/sh
-RUNS_IN_NOMAD=$RUNS_IN_NOMAD
-# No need to change this, just ensures configuration is done only once
-if [ -e /usr/local/etc/pot-is-seasoned ]
-then
-    # If this pot flavour is blocking (i.e. it should not return),
-    # we block indefinitely
-    if [ \$RUNS_IN_NOMAD ]
-    then
-        /bin/sh /etc/rc
-        tail -f /dev/null
-    fi
-    exit 0
-fi
 
-# ADJUST THIS: STOP SERVICES AS NEEDED BEFORE CONFIGURATION
-/usr/local/etc/rc.d/nginx stop
-/usr/local/etc/rc.d/php-fpm stop
+step "Clean cook artifacts"
+rm -rf /usr/local/bin/cook /usr/local/share/cook
 
-# No need to adjust this:
-# If this pot flavour is not blocking, we need to read the environment first from /tmp/environment.sh
-# where pot is storing it in this case
-if [ -e /tmp/environment.sh ]
-then
-    . /tmp/environment.sh
-fi
+step "Install pot local"
+tar -C /root/.pot_local -cf - . | tar -C /usr/local -xf -
+rm -rf /root/.pot_local
 
-#
-# ADJUST THIS BY CHECKING FOR ALL VARIABLES YOUR FLAVOUR NEEDS:
-#
-
-# Convert parameters to variables if passed (overwrite environment)
-#while getopts a: option
-#do
-#    case \"\${option}\"
-#    in
-#      a) ALPHA=\${OPTARG};;
-#    esac
-#done
-
-# Check config variables are set
-#if [ -z \${ALPHA+x} ];
-#then
-#    echo 'ALPHA is unset - see documentation how to configure this flavour' >> /var/log/cook.log
-#    echo 'ALPHA is unset - see documentation how to configure this flavour'
-#    exit 1
-#fi
-
-# ADJUST THIS BELOW: NOW ALL THE CONFIGURATION FILES NEED TO BE ADJUSTED & COPIED:
-
-# If we do not find a Wordpress installation, we install it. If we do find something though,
-# we do not install/overwrite anything as we assume that updates/modifications are happening
-# from within the Wordpress web guiWordpress installation, we install it. If we do find something though,
-# we do not install/overwrite anything as we assume that updates/modifications are happening
-# from within the Wordpress web gui..
-if [ ! -e /usr/local/www/wordpress/wp-login.php ]
-then
-    pkg install -y wordpress
-fi
-
-# Configure PHP FPM
-sed -i '' \"s&\\listen = 127.0.0.1:9000&listen = /var/run/php82-fpm.sock&\" /usr/local/etc/php-fpm.d/www.conf
-echo \"listen.owner = www\" >> /usr/local/etc/php-fpm.d/www.conf
-echo \"listen.group = www\" >> /usr/local/etc/php-fpm.d/www.conf
-echo \"listen.mode = 0660\" >> /usr/local/etc/php-fpm.d/www.conf
-
-# Configure PHP
-cp /usr/local/etc/php.ini-production /usr/local/etc/php.ini
-cp /root/99-custom.ini /usr/local/etc/php/99-custom.ini
-
-# Fix www group memberships so it works with fuse mounted directories
-pw addgroup -n newwww -g 1001
-pw moduser www -u 1001 -G 80,0,1001
-
-# Configure NGINX
-cp /root/nginx.conf /usr/local/etc/nginx/nginx.conf
-
-# ADJUST THIS: START THE SERVICES AGAIN AFTER CONFIGURATION
-killall nginx
-/usr/local/etc/rc.d/php-fpm restart
-/usr/local/etc/rc.d/nginx restart
-
-# Do not touch this:
-touch /usr/local/etc/pot-is-seasoned
-# If this pot flavour is blocking (i.e. it should not return), there is no /tmp/environment.sh
-# created by pot and we now after configuration block indefinitely
-if [ \$RUNS_IN_NOMAD ]
-then
-    /bin/sh /etc/rc
-    tail -f /dev/null
-fi
-" > /usr/local/bin/cook
+step "Set file ownership on cook scripts"
+chown -R root:wheel /usr/local/bin/cook /usr/local/share/cook
+chmod 755 /usr/local/share/cook/bin/*
 
 # ----------------- END COOK ------------------
 
 
 # ---------- NO NEED TO EDIT BELOW ------------
 
-chmod u+x /usr/local/bin/cook
+step "Make cook script executable"
+if [ -e /usr/local/bin/cook ]
+then
+    echo "setting executable bit on /usr/local/bin/cook" | tee -a $COOKLOG
+    chmod u+x /usr/local/bin/cook
+else
+    exit_error "there is no /usr/local/bin/cook to make executable"
+fi
 
 #
 # There are two ways of running a pot jail: "Normal", non-blocking mode and
@@ -160,6 +388,9 @@ chmod u+x /usr/local/bin/cook
 #
 
 # Create rc.d script for "normal" mode:
+step "Create rc.d script to start cook"
+echo "creating rc.d script to start cook" | tee -a $COOKLOG
+
 # shellcheck disable=SC2016
 echo '#!/bin/sh
 #
@@ -178,12 +409,25 @@ command_args=""
 run_rc_command "$1"
 ' > /usr/local/etc/rc.d/cook
 
-chmod u+x /usr/local/etc/rc.d/cook
-
-if [ $RUNS_IN_NOMAD = false ]
+step "Make rc.d script to start cook executable"
+if [ -e /usr/local/etc/rc.d/cook ]
 then
-    # This is a non-nomad (non-blocking) jail, so we need to make sure the script
-    # gets started when the jail is started:
-    # Otherwise, /usr/local/bin/cook will be set as start script by the pot flavour
-    echo "cook_enable=\"YES\"" >> /etc/rc.conf
+  echo "Setting executable bit on cook rc file" | tee -a $COOKLOG
+  chmod u+x /usr/local/etc/rc.d/cook
+else
+  exit_error "/usr/local/etc/rc.d/cook does not exist"
 fi
+
+if [ "$RUNS_IN_NOMAD" != "true" ]
+then
+  step "Enable cook service"
+  # This is a non-nomad (non-blocking) jail, so we need to make sure the script
+  # gets started when the jail is started:
+  # Otherwise, /usr/local/bin/cook will be set as start script by the pot
+  # flavour
+  echo "enabling cook" | tee -a $COOKLOG
+  service cook enable
+fi
+
+# -------------------- DONE ---------------
+exit_ok

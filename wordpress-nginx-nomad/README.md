@@ -27,6 +27,12 @@ job "example" {
   group "group1" {
     count = 1
 
+    network {
+      port "http" {
+        static = 20000
+      }
+    }
+
     task "www1" {
       driver = "pot"
 
@@ -36,11 +42,13 @@ job "example" {
         port = "http"
 
          check {
+            name     = "check http port potname"
             type     = "tcp"
-            name     = "tcp"
+            port     = "http"
             interval = "60s"
             timeout  = "30s"
           }
+
           check_restart {
             limit = 5
             grace = "120s"
@@ -51,12 +59,11 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/wordpress-nginx-nomad"
         pot = "wordpress-nginx-nomad-amd64-13_1"
-        tag = "1.0.9"
+        tag = "2.0.1"
         command = "/usr/local/bin/cook"
         args = [""]
-
         mount = [
-         "/mnt/s3/web/wordpress:/usr/local/www/wordpress"
+         "/path/to/wordpress:/usr/local/www/wordpress"
         ]
         port_map = {
           http = "80"
@@ -66,11 +73,6 @@ job "example" {
       resources {
         cpu = 1000
         memory = 1024
-
-        network {
-          mbits = 10
-          port "http" {}
-        }
       }
     }
   }
