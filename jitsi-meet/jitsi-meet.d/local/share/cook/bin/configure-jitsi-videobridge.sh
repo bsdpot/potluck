@@ -80,6 +80,6 @@ chmod +x /usr/local/etc/rc.d/jitsi-videobridge
 cp -f "$TEMPLATEPATH/manifest.json.in" /usr/local/www/jitsi-meet/manifest.json
 
 # enable service
-sysrc jitsi_videobridge_flags="--apis=rest,xmpp"
-sysrc jitsi_videobridge_maxmem="3072m"
+sysrc jitsi_videobridge_flags="--apis=rest,xmpp" || true
+sysrc jitsi_videobridge_maxmem="3072m" || true
 service jitsi-videobridge enable || true

@@ -15,6 +15,8 @@
 * Turn off BWE mechanism in sip-communicator.properties
 * Fix path for external_api.js in nginx.conf
 * Set options in config.js to force video and audio on when joining
+* Turn off P2P mode in config.js
+* Enable pre-join page
 
 ---
 

@@ -180,7 +180,7 @@ var config = {
 
     // Enabling it (with #params) will disable local audio output of remote
     // participants and to enable it back a reload is needed.
-    // startSilent: false
+    //startSilent: false
 
     // Enables support for opus-red (redundancy for Opus).
     // enableOpusRed: false,
@@ -239,7 +239,7 @@ var config = {
     // enableLayerSuspension: false,
 
     // Every participant after the Nth will start video muted.
-    startVideoMuted: 0,
+    startVideoMuted: 10,
 
     // Start calls with video muted. Unlike the option above, this one is only
     // applied locally. FIXME: having these 2 options is confusing.
@@ -556,14 +556,15 @@ var config = {
     // and microsoftApiApplicationClientID
     // enableCalendarIntegration: false,
 
+    // (potluck: enabled)
     // Configs for prejoin page.
-    // prejoinConfig: {
+    prejoinConfig: {
     //     // When 'true', it shows an intermediate page before joining, where the user can configure their devices.
     //     // This replaces `prejoinPageEnabled`.
-    //     enabled: true,
+        enabled: true,
     //     // List of buttons to hide from the extra join options dropdown.
     //     hideExtraJoinButtons: ['no-audio', 'by-phone']
-    // },
+    },
 
     // When 'true', the user cannot edit the display name.
     // (Mainly useful when used in conjuction with the JWT so the JWT name becomes read only.)
@@ -807,7 +808,8 @@ var config = {
         // through the JVB and use the peer to peer connection instead. When a
         // 3rd participant joins the conference will be moved back to the JVB
         // connection.
-        enabled: true,
+        // (potluck: disabled P2P mode)
+        enabled: false,
 
         // Enable unified plan implementation support on Chromium for p2p connection.
         // enableUnifiedOnChrome: false,
