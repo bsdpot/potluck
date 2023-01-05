@@ -67,7 +67,7 @@ http {
         # installation for the electron version of Jitsi Meet to work
         # https://github.com/jitsi/jitsi-meet-electron
         location /external_api.js {
-            alias /srv/jitsi-meet/libs/external_api.min.js;
+            alias /usr/local/www/jitsi-meet/libs/external_api.min.js;
         }
     }
 }

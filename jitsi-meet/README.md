@@ -19,7 +19,7 @@ Deploying the image or flavour should be quite straight forward and not take mor
 * This jail does not work with a public bridge, so clone it to use an IP address directly on your host:
   ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```
   e.g.
-  ```sudo pot clone -P jitsi-meet-amd64-13_1_0_2_9 -p jitsi-meet -N alias -i "em0|10.10.10.11"```
+  ```sudo pot clone -P jitsi-meet-amd64-13_1_0_2_10 -p jitsi-meet -N alias -i "em0|10.10.10.11"```
 * Copy in any supporting files such as image file for customisation
   ```sudo pot copy-in -p <clonejailname> -s <source image> -d /usr/local/www/jitsi-meet/images/<destination filename>```
 * Adjust to your environment:

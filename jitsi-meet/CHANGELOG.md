@@ -11,6 +11,10 @@
 * Fix branding link
 * Add back global modules_enabled to prosody to clear config check
 * Update syslog-ng to capture prosody, jicofo, jitsi-videobridge logs
+* Comment out focusUserJid from config.js
+* Turn off BWE mechanism in sip-communicator.properties
+* Fix path for external_api.js in nginx.conf
+* Set options in config.js to force video and audio on when joining
 
 ---
 

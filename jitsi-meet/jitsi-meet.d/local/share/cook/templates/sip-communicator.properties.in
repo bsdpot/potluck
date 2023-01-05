@@ -7,6 +7,9 @@ org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS=%%publicip%%
 org.ice4j.ice.harvest.DISABLE_AWS_HARVESTER=true
 org.jitsi.videobridge.AUTHORIZED_SOURCE_REGEXP=focus@auth.%%domain%%/.*
 org.jitsi.videobridge.xmpp.user.shard.DISABLE_CERTIFICATE_VERIFICATION=true
+# Switches off the BWE mechanism.
+# https://github.com/jitsi/jitsi-meet/issues/10409
+org.jitsi.videobridge.TRUST_BWE=false
 #
 # For Grafana dashboard
 #

@@ -15,6 +15,7 @@ jicofo {
       username = "focus"
       password = "%%keypassword%%"
       conference-muc-jid = "conference.%%domain%%"
+      client-proxy = "focus.%%domain%%"
     }
     trusted-domains = [ "auth.%%domain%%" ]
   }
