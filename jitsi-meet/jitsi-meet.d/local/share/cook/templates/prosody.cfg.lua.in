@@ -1,5 +1,10 @@
 pidfile = "/var/run/prosody/prosody.pid"
 interfaces = { "127.0.0.1" }
+local_interfaces = { "127.0.0.1" }
+c2s_interfaces = { "127.0.0.1" }
+c2s_ports = { 5222 }
+component_interface = "127.0.0.1"
+https_interfaces = { "127.0.0.1" }
 admins = { "focus@auth.%%domain%%" }
 plugin_paths = { "/usr/local/lib/jitsi-prosody-plugins/" }
 
@@ -88,6 +93,9 @@ unlimited_jids = {
 }
 
 certificates = "/var/db/prosody/"
+
+-- do not remove this, the default virtualhost is required to work
+VirtualHost "localhost"
 
 VirtualHost "%%domain%%"
     authentication = "anonymous"
@@ -196,5 +204,6 @@ Component "lobby.%%domain%%" "muc"
     }
     c2s_require_encryption = false
 
-Component "jitsi-videobridge.%%domain%%"
-    component_secret = "%%keypassword%%"
+-- removing this legacy component
+--Component "jitsi-videobridge.%%domain%%"
+  --  component_secret = "%%keypassword%%"
