@@ -2,6 +2,11 @@ jicofo {
   bridge {
     brewery-jid = "JvbBrewery@internal.auth.%%domain%%"
     xmpp-connection-name = Client
+    health-checks {
+        enabled = true
+        interval = 10 seconds
+    }
+    selection-strategy = IntraRegionBridgeSelectionStrategy
   }
   sctp {
     enabled = false

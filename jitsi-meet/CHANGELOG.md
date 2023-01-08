@@ -18,6 +18,7 @@
 * Turn off P2P mode in config.js
 * Enable pre-join page
 * Prosody needs a localhost virtualhost
+* Updates to jicofo, jitsi-videobridge and sip-communicator.properties after bugfixing
 
 ---
 

@@ -16,7 +16,7 @@ var config = {
         // anonymousdomain: 'guest.%%domain%%',
 
 	// bridge (added)
-	bridge: 'jitsi-videobridge.%%domain%%',
+	//bridge: 'jitsi-videobridge.%%domain%%',
 
         // Domain for authenticated users. Defaults to <domain>.
         authdomain: 'auth.%%domain%%',

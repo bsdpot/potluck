@@ -1,30 +1,66 @@
 videobridge {
+
+  entity-expiration {
+    timeout=1 minute
+    check-interval=${videobridge.entity-expiration.timeout}
+  }
+
+  health {
+    interval=1 minute
+    timeout=90 seconds
+    max-check-duration=3 seconds
+    sticky-failures=false
+  }
+
+  ep-connection-status {
+    first-transfer-timeout=15 seconds
+    max-inactivity-limit=5 seconds
+    check-interval=500 milliseconds
+  }
+
+  cc {
+    bwe-change-threshold=0.15
+    thumbnail-max-height-px=180
+    onstage-ideal-height-px=1080
+    onstage-preferred-height-px=360
+    onstage-preferred-framerate=30
+    allow-oversend-onstage=true
+    max-oversend-bitrate=500 kbps
+    trust-bwe=true
+    padding-period=15ms
+    max-time-between-calculations = 15 seconds
+    jvb-last-n = -1
+  }
+
   http-servers {
     public {
       port = 9090
       tls-port = -1
     }
     private {
-      # See JettyBundleActivatorConfig in Jicoco for values
       host = 127.0.0.1
     }
   }
+
   websockets {
     enabled = false
   }
+
   sctp {
     enabled = false
   }
+
   stats {
-    # Enable broadcasting stats/presence in a MUC
     enabled = true
     transports = [
       { type = "colibri,muc" }
     ]
   }
+
   apis {
     xmpp-client {
       presence-interval = ${videobridge.stats.interval}
+      jid-cache-size = 1000
       configs {
         xmpp-server-1 {
           hostname="localhost"
@@ -38,6 +74,7 @@ videobridge {
       }
     }
   }
+
   ice {
     tcp {
       enabled = true
@@ -45,6 +82,14 @@ videobridge {
     }
     udp {
       port = 10000
-    }      
+    }
+    keep-alive-strategy = "selected_and_tcp"
+    use-component-socket = true
+    nomination-strategy = "NominateFirstValid"
+    advertise-private-candidates = true
+  }
+
+  multi-stream {
+    enabled = true
   }
 }
