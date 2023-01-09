@@ -1,3 +1,9 @@
+0.3
+
+* Version bump for new base image
+
+---
+
 0.2
 
 * Update prosody and related based on sample prosody config from jitsi-prosody-plugins
