@@ -1,3 +1,9 @@
+0.3
+
+* Version bump for new base image
+
+---
+
 0.2
 
 * Update documentation with bucket creation details
