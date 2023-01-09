@@ -1,3 +1,10 @@
+0.1
+
+* Version bump for new base image
+* New changelog format
+
+---
+
 0.0.29
 
 * Fix consul client hcl for new format
