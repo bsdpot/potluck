@@ -1,3 +1,10 @@
+2.1
+
+* Version bump for new base image
+* New version changelog file
+
+---
+
 2.0.27
 
 * Version bump for rebuild
