@@ -1,3 +1,10 @@
+1.1
+
+* Version bump for new base image
+* New changelog format
+
+---
+
 1.0.25
 
 * Fixing startup command to synapse
