@@ -1,3 +1,10 @@
+0.1
+
+* Version bump for new base image
+* New changelog format
+
+---
+
 0.0.26
 
 * Adding 'or true' where applicable for hugo steps
