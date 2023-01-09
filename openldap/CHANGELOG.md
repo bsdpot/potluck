@@ -1,3 +1,16 @@
+1.5
+
+* Version bump for new base image
+* New changelog format
+
+---
+
+1.4.6
+
+* Adjust setup for persistent storage
+
+---
+
 1.4.5
 
 * Update README to remove openldap24 reference
