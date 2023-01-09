@@ -1,6 +1,7 @@
 0.3
 
 * Version bump for new base image
+* Fix missing ca_root_nss dependancy
 
 ---
 
