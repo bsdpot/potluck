@@ -1,3 +1,17 @@
+1.1
+
+* Version bump for new base image
+* New changelog format
+
+---
+
+1.0.10
+
+* Version bump for rebuild to fix missing images on potluck site
+* Updated job file in README for 13.1 and latest version this image
+
+---
+
 1.0.9
 
 * Version bump for p3 rebuild
