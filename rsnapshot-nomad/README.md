@@ -43,13 +43,13 @@ job "rsnapshot" {
   group "group1" {
     count = 1
 
-    task "backupmx1" {
+    task "rsnapshot1" {
       driver = "pot"
 
       config {
         image = "https://potluck.honeyguide.net/rsnapshot-nomad"
-        pot = "rsnapshot-nomad-amd64-12_1"
-        tag = "1.0"
+        pot = "rsnapshot-nomad-amd64-13_1"
+        tag = "1.0.6"
         command = "/usr/local/bin/cook"
         args = ["-a","\"40 23 * * 6\""]
         mount = [
