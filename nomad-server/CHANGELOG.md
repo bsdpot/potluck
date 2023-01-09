@@ -1,3 +1,10 @@
+3.0
+
+* Version bump for new base image
+* New changelog format
+
+---
+
 2.0.21
 
 * Version bump, missing file
