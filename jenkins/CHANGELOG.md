@@ -1,3 +1,10 @@
+0.1
+
+* Version bump for new base image
+* New changelog format
+
+---
+
 0.0.24
 
 * Turn off groovy warning via GROOVY_TURN_OFF_JAVA_WARNINGS
