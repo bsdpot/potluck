@@ -1,3 +1,10 @@
+1.0.7
+
+* Version bump for rebuild
+* This image still to be updated to new formats
+
+---
+
 1.0.6
 
 * Version bump for rebuild to fix missing images on potluck site
