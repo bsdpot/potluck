@@ -1,3 +1,10 @@
+1.1
+
+* Version bump for new base image
+* New version changelog file
+
+---
+
 1.0.7
 
 * Update to new pot image format
