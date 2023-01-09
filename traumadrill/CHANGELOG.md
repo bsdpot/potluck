@@ -1,3 +1,9 @@
+1.1
+
+* Version bump for new base image
+
+---
+
 1.0
 
 * New major release version 1.0.1
