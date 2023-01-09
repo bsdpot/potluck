@@ -1,3 +1,9 @@
+0.68
+
+* Version bump for new base image
+
+---
+
 0.67
 
 * nextcloud-twofactor_totp is included in base nextcloud package from v25.0.1 on
