@@ -93,6 +93,10 @@ pkg install -y openssl
 step "Install package sudo"
 pkg install -y sudo
 
+# necessary if installing curl now
+step "Install package ca_root_nss"
+pkg install -y ca_root_nss
+
 step "Install package curl"
 pkg install -y curl
 
