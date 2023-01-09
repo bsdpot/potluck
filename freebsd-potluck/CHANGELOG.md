@@ -1,3 +1,9 @@
+0.0.7
+
+* Explictly install ca_root_nss
+
+---
+
 0.0.6
 
 * Version bump for p3 rebuild
