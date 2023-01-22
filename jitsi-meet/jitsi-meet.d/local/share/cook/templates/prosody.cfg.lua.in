@@ -8,6 +8,16 @@ https_interfaces = { "127.0.0.1" }
 admins = { "focus@auth.%%domain%%" }
 plugin_paths = { "/usr/local/lib/jitsi-prosody-plugins/" }
 
+use_libevent = true
+network_backend = "event"
+
+external_service_secret = "%%turnpassword%%";
+external_services = {
+     { type = "stun", host = "%%domain%%", port = 3478 },
+     { type = "turn", host = "%%domain%%", port = 3478, transport = "udp", secret = true, ttl = 86400, algorithm = "turn" },
+     { type = "turns", host = "%%domain%%", port = 5349, transport = "tcp", secret = true, ttl = 86400, algorithm = "turn" }
+};
+
 modules_enabled = {
 
 	-- Generally required
@@ -76,8 +86,11 @@ log = {
 -- domain mapper options, must at least have domain base set to use the mapper
 muc_mapper_domain_base = "%%domain%%";
 
---cross_domain_bosh = true;
+--cross_domain_bosh = false;
 consider_bosh_secure = true;
+
+-- cross_domain_websocket = false;
+consider_websocket_secure = true;
 
 https_ports = { }; -- Remove this line to prevent listening on port 5284
 
@@ -97,11 +110,14 @@ certificates = "/var/db/prosody/"
 -- do not remove this, the default virtualhost is required to work
 VirtualHost "localhost"
 
+-- Your domain from here
 VirtualHost "%%domain%%"
     authentication = "anonymous"
     ssl = {
         key = "/var/db/prosody/%%domain%%.key";
         certificate = "/var/db/prosody/%%domain%%.crt";
+        https_key = "/var/db/prosody/%%domain%%.key";
+        https_certificate = "/var/db/prosody/%%domain%%.crt";
     }
     av_moderation_component = "avmoderation.%%domain%%"
     speakerstats_component = "speakerstats.%%domain%%"
@@ -110,7 +126,9 @@ VirtualHost "%%domain%%"
     modules_enabled = {
         "bosh";
         "pubsub";
-        "ping"; -- Enable mod_ping
+        "ping";
+	"websocket";
+	"smacks";
         "speakerstats";
         "external_services";
         "conference_duration";
@@ -124,6 +142,10 @@ VirtualHost "%%domain%%"
     breakout_rooms_muc = "breakout.%%domain%%"
     main_muc = "conference.%%domain%%"
     -- muc_lobby_whitelist = { "recorder.%%domain%%" } -- Here we can whitelist jibri to enter lobby enabled rooms
+    smacks_max_unacked_stanzas = 5;
+    smacks_hibernation_time = 60;
+    smacks_max_hibernated_sessions = 1;
+    smacks_max_old_sessions = 1;
 
 Component "conference.%%domain%%" "muc"
     restrict_room_creation = true

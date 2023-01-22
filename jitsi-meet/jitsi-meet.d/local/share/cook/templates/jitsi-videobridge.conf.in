@@ -6,8 +6,8 @@ videobridge {
   }
 
   health {
-    interval=1 minute
-    timeout=90 seconds
+    interval=10 seconds
+    timeout=30 seconds
     max-check-duration=3 seconds
     sticky-failures=false
   }
@@ -26,7 +26,7 @@ videobridge {
     onstage-preferred-framerate=30
     allow-oversend-onstage=true
     max-oversend-bitrate=500 kbps
-    trust-bwe=true
+    trust-bwe=false
     padding-period=15ms
     max-time-between-calculations = 15 seconds
     jvb-last-n = -1
@@ -43,7 +43,10 @@ videobridge {
   }
 
   websockets {
-    enabled = false
+    enabled = true
+    server-id = "default-id"
+    domain = "%%domain%%:443"
+    tls = true
   }
 
   sctp {
@@ -85,7 +88,8 @@ videobridge {
     }
     keep-alive-strategy = "selected_and_tcp"
     use-component-socket = true
-    nomination-strategy = "NominateFirstValid"
+    resolve-remote-candidates = false
+    nomination-strategy = "NominateFirstHostOrReflexiveValid"
     advertise-private-candidates = true
   }
 

@@ -96,9 +96,6 @@ service node_exporter start
 # shellcheck disable=SC2002
 KEYPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
 export KEYPASSWORD
-# shellcheck disable=SC2002
-#SECPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
-#export SECPASSWORD
 
 log "Configure acme.sh"
 configure-acme.sh
@@ -108,6 +105,9 @@ configure-prosody.sh
 
 log "Configure nginx"
 configure-nginx.sh
+
+log "Configure turnserver"
+configure-turnserver.sh
 
 log "Configure jitsi-videobridge"
 configure-jitsi-videobridge.sh
@@ -120,6 +120,7 @@ configure-nginx.sh
 
 # Startup ordering as outlined in  https://youtu.be/LJOpSDcwWIA
 # 1. web
+# 2. turnserver
 # 2. prosody
 # 3. jicofo
 # 4. jitsi-videobridge
@@ -131,19 +132,18 @@ service nginx start || true
 #    service nginx start || true; sleep 5;
 #  done'
 
+log "Start turnserver"
+service turnserver start || true
+
 log "Start prosody"
 service prosody start || true
 
 # adding pause
 log "First pause"
-sleep 10 || true
+sleep 5 || true
 
 log "Start jicofo"
 service jicofo start || true
-
-# adding pause
-log "Second pause"
-sleep 10 || true
 
 log "Start jitsi-videobridge"
 service jitsi-videobridge start || true

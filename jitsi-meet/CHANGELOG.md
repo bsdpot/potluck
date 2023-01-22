@@ -1,6 +1,7 @@
 0.3
 
 * Version bump for new base image
+* Implement websockets and turnserver
 
 ---
 

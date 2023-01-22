@@ -1,0 +1,15 @@
+server-name=%%domain%%
+realm=%%domain%%
+cert=/usr/local/etc/ssl/%%domain%%.cer
+pkey=/usr/local/etc/ssl/%%domain%%.key
+fingerprint
+listening-ip=%%privateip%%
+external-ip=%%publicip%%
+listening-port=3478
+tls-listening-port=5349
+min-port=10000
+max-port=20000
+log-file=/var/log/turnserver.log
+verbose
+cli-password=%%turnpassword%%
+static-auth-secret=%%keypassword%%

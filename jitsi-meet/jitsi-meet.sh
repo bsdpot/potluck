@@ -130,6 +130,9 @@ pkg install -y acme.sh
 step "Install package prosody"
 pkg install -y prosody
 
+step "Install package turnserver"
+pkg install -y turnserver
+
 step "Install package jitsi-meet"
 pkg install -y jitsi-meet-full
 
