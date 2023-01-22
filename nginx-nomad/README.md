@@ -51,7 +51,7 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/nginx-nomad"
         pot = "nginx-nomad-amd64-13_1"
-        tag = "1.1.11"
+        tag = "1.1.12"
         command = "nginx"
         args = ["-g","'daemon off;'"]
 
