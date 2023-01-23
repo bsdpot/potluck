@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * New changelog format
+* Grafana8 instead of Grafana7
 
 ---
 
