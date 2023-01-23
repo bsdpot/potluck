@@ -8,9 +8,12 @@ https_interfaces = { "127.0.0.1" }
 admins = { "focus@auth.%%domain%%" }
 plugin_paths = { "/usr/local/lib/jitsi-prosody-plugins/" }
 
-use_libevent = true
+-- deprecated
+-- use_libevent = true
+-- use this instead
 network_backend = "event"
 
+-- turn server
 external_service_secret = "%%turnpassword%%";
 external_services = {
      { type = "stun", host = "%%domain%%", port = 3478 },
@@ -109,6 +112,10 @@ certificates = "/var/db/prosody/"
 
 -- do not remove this, the default virtualhost is required to work
 VirtualHost "localhost"
+    ssl = {
+        key = "/var/db/prosody/localhost.key";
+        certificate = "/var/db/prosody/localhost.crt";
+    }
 
 -- Your domain from here
 VirtualHost "%%domain%%"
@@ -122,7 +129,7 @@ VirtualHost "%%domain%%"
     av_moderation_component = "avmoderation.%%domain%%"
     speakerstats_component = "speakerstats.%%domain%%"
     conference_duration_component = "conferenceduration.%%domain%%"
-    -- we need bosh
+    -- we need bosh, websocket, smacks
     modules_enabled = {
         "bosh";
         "pubsub";

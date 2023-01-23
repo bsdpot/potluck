@@ -97,6 +97,11 @@ service node_exporter start
 KEYPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
 export KEYPASSWORD
 
+# Generate a password for the turnserver and then hash it with turnadmin
+TURNPASSWORD=$(date | md5sum)
+HASHTURNPASSWORD=$(/usr/local/bin/turnadmin -P -p "$TURNPASSWORD")
+export HASHTURNPASSWORD
+
 log "Configure acme.sh"
 configure-acme.sh
 
