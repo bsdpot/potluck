@@ -26,9 +26,9 @@ videobridge {
     onstage-preferred-framerate=30
     allow-oversend-onstage=true
     max-oversend-bitrate=500 kbps
-    trust-bwe=false
+    trust-bwe=true
     padding-period=15ms
-    max-time-between-calculations = 15 seconds
+    max-time-between-calculations = 5 seconds
     jvb-last-n = -1
   }
 

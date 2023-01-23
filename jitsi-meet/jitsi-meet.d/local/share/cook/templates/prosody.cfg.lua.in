@@ -7,14 +7,10 @@ component_interface = "127.0.0.1"
 https_interfaces = { "127.0.0.1" }
 admins = { "focus@auth.%%domain%%" }
 plugin_paths = { "/usr/local/lib/jitsi-prosody-plugins/" }
-
--- deprecated
--- use_libevent = true
--- use this instead
 network_backend = "event"
 
 -- turn server
-external_service_secret = "%%turnpassword%%";
+external_service_secret = "%%keypassword%%";
 external_services = {
      { type = "stun", host = "%%domain%%", port = 3478 },
      { type = "turn", host = "%%domain%%", port = 3478, transport = "udp", secret = true, ttl = 86400, algorithm = "turn" },
