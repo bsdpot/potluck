@@ -15,8 +15,8 @@ org.jitsi.videobridge.TRUST_BWE=false
 # For Grafana dashboard
 #
 # the callstats credentials
-io.callstats.sdk.CallStats.appId="jistats"
-io.callstats.sdk.CallStats.keyId="jistats_%%keypassword%%"
+#io.callstats.sdk.CallStats.appId="jistats"
+#io.callstats.sdk.CallStats.keyId="jistats_%%keypassword%%"
 # enable statistics and callstats statistics and the report interval
 org.jitsi.videobridge.ENABLE_STATISTICS=true
 #org.jitsi.videobridge.STATISTICS_INTERVAL.callstats.io=30000

@@ -90,11 +90,11 @@ var config = {
     // Feature Flags.
     flags: {
         // Enables source names in the signaling.
-        // sourceNameSignaling: false,
+        sourceNameSignaling: true,
 
         // Enables sending multiple video streams, i.e., camera and desktop tracks can be shared in the conference
         // separately as two different streams instead of one composite stream.
-        // sendMultipleVideoStreams: false
+        sendMultipleVideoStreams: true
     },
 
     // Disables moderator indicators.
@@ -195,7 +195,8 @@ var config = {
     // Video
 
     // Sets the preferred resolution (height) for local video. Defaults to 720.
-    resolution: 720,
+    // set to 480
+    resolution: 480,
 
     // Specifies whether the raised hand will hide when someone becomes a dominant speaker or not
     // disableRemoveRaisedHandOnFocus: false,
@@ -219,15 +220,16 @@ var config = {
     // util#browser#usesNewGumFlow. The constraints are independent from
     // this config's resolution value. Defaults to requesting an ideal
     // resolution of 720p.
-    // constraints: {
-    //     video: {
-    //         height: {
-    //             ideal: 720,
-    //             max: 720,
-    //             min: 240
-    //         }
-    //     }
-    // },
+    // set to 480
+    constraints: {
+        video: {
+            height: {
+                ideal: 480,
+                max: 480,
+                min: 240
+            }
+        }
+    },
 
     // Enable / disable simulcast support.
     // disableSimulcast: false,
@@ -319,7 +321,10 @@ var config = {
     // Misc
 
     // Default value for the channel "last N" attribute. -1 for unlimited.
-    channelLastN: -1,
+    // channelLastN: -1,
+    // set to 4
+    // https://jitsi-club.gitlab.io/jitsi-self-hosting/en/01-deployment-howto/03-tuning/
+    channelLastN: 4,
 
     // Connection indicators
     // connectionIndicators: {

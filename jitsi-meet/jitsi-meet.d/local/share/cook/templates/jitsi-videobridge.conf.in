@@ -21,12 +21,12 @@ videobridge {
   cc {
     bwe-change-threshold=0.15
     thumbnail-max-height-px=180
-    onstage-ideal-height-px=1080
+    onstage-ideal-height-px=480
     onstage-preferred-height-px=360
     onstage-preferred-framerate=30
     allow-oversend-onstage=true
-    max-oversend-bitrate=500 kbps
-    trust-bwe=true
+    max-oversend-bitrate=300 kbps
+    trust-bwe=false
     padding-period=15ms
     max-time-between-calculations = 5 seconds
     jvb-last-n = -1

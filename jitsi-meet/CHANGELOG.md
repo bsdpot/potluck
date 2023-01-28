@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Implement websockets and turnserver
 * Script error fixes with introduction turnserver
+* Adjust config.js and videobridge settings
 
 ---
 
