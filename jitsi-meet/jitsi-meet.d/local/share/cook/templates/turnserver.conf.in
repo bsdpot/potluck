@@ -6,7 +6,6 @@ cert=/usr/local/etc/ssl/%%domain%%.cer
 pkey=/usr/local/etc/ssl/%%domain%%.key
 no-multicast-peers
 no-cli
-no-loopback-peers
 no-tlsv1
 no-tlsv1_1
 # https://ssl-config.mozilla.org/#server=haproxy&version=2.1&config=intermediate&openssl=1.1.0g&guideline=5.4

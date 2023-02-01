@@ -4,6 +4,7 @@
 * Implement websockets and turnserver
 * Script error fixes with introduction turnserver
 * Adjust config.js and videobridge settings
+* Remove no-loopback-peers from turnserver config, bad config option
 
 ---
 
