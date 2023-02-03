@@ -52,10 +52,20 @@ else
 	export IMAGE
 fi
 
+# check if resolution has been passed in or set a default of 360
+if [ -n "$RESOLUTION" ]; then
+	RESOLUTION="$RESOLUTION"
+	export RESOLUTION
+else
+	RESOLUTION="360"
+	export RESOLUTION
+fi
+
 # copy over config.js
 < "$TEMPLATEPATH/config.js.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
+  sed "s${sep}%%resolution%%${sep}$RESOLUTION${sep}g" | \
   sed "s${sep}%%image%%${sep}$IMAGE${sep}g" | \
   sed "s${sep}%%link%%${sep}$LINK${sep}g" \
   > /usr/local/www/jitsi-meet/config.js

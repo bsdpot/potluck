@@ -19,7 +19,7 @@ Deploying the image or flavour should be quite straight forward and not take mor
 * This jail does not work with a public bridge, so clone it to use an IP address directly on your host:
   ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```
   e.g.
-  ```sudo pot clone -P jitsi-meet-amd64-13_1_0_3_9 -p jitsi-meet -N alias -i "em0|10.10.10.11"```
+  ```sudo pot clone -P jitsi-meet-amd64-13_1_0_3_10 -p jitsi-meet -N alias -i "em0|10.10.10.11"```
 * Copy in any supporting files such as image file for customisation
   ```sudo pot copy-in -p <clonejailname> -s <source image> -d /usr/local/www/jitsi-meet/images/<destination filename>```
 * Adjust to your environment:
@@ -31,6 +31,7 @@ Deploying the image or flavour should be quite straight forward and not take mor
     -E GOSSIPKEY="<32 byte Base64 key from consul keygen>" \
     -E DOMAIN=<FQDN for host> \
     -E EMAIL=<email address for letsencrypt setup> \
+    -E RESOLUTION=<one of 180|240|360|480|720> \
     -E PUBLICIP=<yourpublicip> \
     [ -E IMAGE="filename.svg" ] \
     [ -E LINK="https://full.url" ] \
@@ -68,6 +69,8 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 The DOMAIN parameter is the domain name of the `jitsi-meet` instance.
 
 The EMAIL parameter is the email address to use for letsencrypt registration. SSL certificates are mandatory, modern browsers won't open camera or microphone unless SSL enabled.
+
+The RESOLUTION parameter is one of the valid [jitsi-meet resolution settings](https://github.com/jitsi/lib-jitsi-meet/blob/master/service/RTC/Resolutions.js) such as `180`, `240`, `360`, `480`, `720`, `fullhd` etc.
 
 The PUBLIC IP parameter is the public facing IP address which users connect to.
 

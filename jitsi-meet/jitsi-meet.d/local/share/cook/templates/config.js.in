@@ -92,9 +92,10 @@ var config = {
         // Enables source names in the signaling.
         sourceNameSignaling: true,
 
-        // Enables sending multiple video streams, i.e., camera and desktop tracks can be shared in the conference
+        // Enables send/receive multiple video streams, i.e., camera and desktop tracks can be shared in the conference
         // separately as two different streams instead of one composite stream.
-        sendMultipleVideoStreams: true
+	sendMultipleVideoStreams: true,
+        receiveMultipleVideoStreams: true,
     },
 
     // Disables moderator indicators.
@@ -194,9 +195,8 @@ var config = {
 
     // Video
 
-    // Sets the preferred resolution (height) for local video. Defaults to 720.
-    // set to 480
-    resolution: 480,
+    // Sets the preferred resolution (height) for local video. Defaults to 360 in potluck image.
+    resolution: %%resolution%%,
 
     // Specifies whether the raised hand will hide when someone becomes a dominant speaker or not
     // disableRemoveRaisedHandOnFocus: false,
@@ -220,12 +220,11 @@ var config = {
     // util#browser#usesNewGumFlow. The constraints are independent from
     // this config's resolution value. Defaults to requesting an ideal
     // resolution of 720p.
-    // set to 480
     constraints: {
         video: {
             height: {
-                ideal: 480,
-                max: 480,
+                ideal: %%resolution%%,
+                max: 720,
                 min: 240
             }
         }
