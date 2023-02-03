@@ -8,6 +8,9 @@ org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS=%%publicip%%
 org.ice4j.ice.harvest.DISABLE_AWS_HARVESTER=true
 org.jitsi.videobridge.AUTHORIZED_SOURCE_REGEXP=focus@auth.%%domain%%/.*
 org.jitsi.videobridge.xmpp.user.shard.DISABLE_CERTIFICATE_VERIFICATION=true
+# A comma-separated list of STUN server addresses to use for mapping harvesters.
+# Each STUN server address is an ip_address:port pair. Example: stun1.example.com:12345,stun2.example.com:23456
+org.ice4j.ice.harvest.STUN_MAPPING_HARVESTER_ADDRESSES=%%domain%%:3478,%%domain%%:5349
 # Switches off the BWE mechanism.
 # https://github.com/jitsi/jitsi-meet/issues/10409
 org.jitsi.videobridge.TRUST_BWE=false

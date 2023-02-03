@@ -6,6 +6,7 @@
 * Adjust config.js and videobridge settings
 * Remove no-loopback-peers from turnserver config, bad config option
 * Allow setting default resolution as parameter
+* Specify turnservers in sip-communicator.properties
 
 ---
 

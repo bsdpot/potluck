@@ -32,8 +32,7 @@ sep=$'\001'
 < "$TEMPLATEPATH/sip-communicator.properties.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%publicip%%${sep}$PUBLICIP${sep}g" | \
-  sed "s${sep}%%privateip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
+  sed "s${sep}%%privateip%%${sep}$IP${sep}g" \
   > /usr/local/etc/jitsi/videobridge/sip-communicator.properties
 
 # if no image filename been passed in for a file copied-in to
