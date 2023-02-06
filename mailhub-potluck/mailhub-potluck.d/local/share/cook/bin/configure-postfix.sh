@@ -27,7 +27,7 @@ if [ -d /etc/mail/certs ] && [ ! -f /etc/mail/certs/dh.param ]; then
     /usr/bin/openssl dhparam -out /etc/mail/certs/dh.param 2048
 fi
 
-# shellcheck disable=SC3003
+# shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 

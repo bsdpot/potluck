@@ -4,6 +4,8 @@
 * Adjust postfix ldap search parameters
 * Update quarterly release pulled to 2023Q1
 * Update port names to latest versions, include databases/mysql57-client
+* Fix logic to import existing certificates to postfix
+* Shellcheck ignore for SC2039
 
 ---
 

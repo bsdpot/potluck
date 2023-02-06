@@ -17,7 +17,7 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # make directories if not exist
 mkdir -p /mnt/spamassassin
 
-# shellcheck disable=SC3003
+# shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 

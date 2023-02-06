@@ -21,7 +21,7 @@ mkdir -p /mnt/acme
 mkdir -p /root/.acme.sh/
 touch /root/.acme.sh/account.conf
 
-# shellcheck disable=SC3003
+# shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 
@@ -74,5 +74,26 @@ if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
         exit 1
     fi
 else
-    echo "/mnt/acme/$MAILCERTDOMAIN exists, not creating certificates"
+    echo "/mnt/acme/$MAILCERTDOMAIN exists, not creating certificates, importing existing certs to postfix"
+    # try continue, with a cert hopefully
+    cd /mnt/acme/"$MAILCERTDOMAIN"/ || true
+    if [ -d /usr/local/etc/postfix/keys/ ]; then
+        cp ./* /usr/local/etc/postfix/keys/
+        cd /usr/local/etc/postfix/keys/
+        if [ -f "$MAILCERTDOMAIN".cer ]; then
+            mv "$MAILCERTDOMAIN".cer "$MAILCERTDOMAIN".crt
+        else
+            echo "Error, missing $MAILCERTDOMAIN.cer file"
+            exit 1
+        fi
+        if [ -f ca.cer ] && [ -f "$MAILCERTDOMAIN".crt ]; then
+            cat ca.cer >> "$MAILCERTDOMAIN".crt
+        else
+            echo "Error, missing ca.cer file"
+            exit 1
+        fi
+    else
+        echo "/usr/local/etc/postfix/keys/ does not exist"
+        exit 1
+    fi
 fi
