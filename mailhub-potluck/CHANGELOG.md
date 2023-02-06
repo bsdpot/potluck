@@ -6,6 +6,7 @@
 * Update port names to latest versions, include databases/mysql57-client
 * Fix logic to import existing certificates to postfix
 * Shellcheck ignore for SC2039
+* Forced copy and move of certificates into postfix
 
 ---
 

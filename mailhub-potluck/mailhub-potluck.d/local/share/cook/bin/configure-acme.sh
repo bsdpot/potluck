@@ -53,12 +53,12 @@ if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
         fi
     fi
     # try continue, with a cert hopefully
-    cd /mnt/acme/"$MAILCERTDOMAIN"/ || true
+    cd /mnt/acme/"$MAILCERTDOMAIN"/ || exit 1
     if [ -d /usr/local/etc/postfix/keys/ ]; then
-        cp ./* /usr/local/etc/postfix/keys/
+        cp -f ./* /usr/local/etc/postfix/keys/
         cd /usr/local/etc/postfix/keys/
         if [ -f "$MAILCERTDOMAIN".cer ]; then
-            mv "$MAILCERTDOMAIN".cer "$MAILCERTDOMAIN".crt
+            mv -f "$MAILCERTDOMAIN".cer "$MAILCERTDOMAIN".crt
         else
             echo "Error, missing $MAILCERTDOMAIN.cer file"
             exit 1
@@ -76,12 +76,12 @@ if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
 else
     echo "/mnt/acme/$MAILCERTDOMAIN exists, not creating certificates, importing existing certs to postfix"
     # try continue, with a cert hopefully
-    cd /mnt/acme/"$MAILCERTDOMAIN"/ || true
+    cd /mnt/acme/"$MAILCERTDOMAIN"/ || exit 1
     if [ -d /usr/local/etc/postfix/keys/ ]; then
-        cp ./* /usr/local/etc/postfix/keys/
+        cp -f ./* /usr/local/etc/postfix/keys/
         cd /usr/local/etc/postfix/keys/
         if [ -f "$MAILCERTDOMAIN".cer ]; then
-            mv "$MAILCERTDOMAIN".cer "$MAILCERTDOMAIN".crt
+            mv -f "$MAILCERTDOMAIN".cer "$MAILCERTDOMAIN".crt
         else
             echo "Error, missing $MAILCERTDOMAIN.cer file"
             exit 1
