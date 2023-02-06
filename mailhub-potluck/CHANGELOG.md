@@ -1,6 +1,9 @@
 0.2
 
 * Version bump for new base image
+* Adjust postfix ldap search parameters
+* Update quarterly release pulled to 2023Q1
+* Update port names to latest versions, include databases/mysql57-client
 
 ---
 

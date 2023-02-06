@@ -4,8 +4,8 @@ start_tls        = no
 version          = 3
 search_base      = %%searchbase%%
 scope            = sub
-query_filter     = (&(cn=%s)(objectClass=inetOrgPerson))
-result_attribute = cn
+query_filter     = (&(objectclass=inetOrgPerson)(mail=%s))
+result_attribute = mail
 result_format    = %d/%u/
 debuglevel       = 0
 

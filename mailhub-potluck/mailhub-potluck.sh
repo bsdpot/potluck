@@ -262,13 +262,14 @@ git sparse-checkout set GIDs UIDs \
   mail/dcc-dccd/ \
   databases/p5-DBD-mysql/ \
   databases/p5-DBD-Pg/ \
+  databases/mysql57-client \
   mail/pyzor/ \
   mail/razor-agents/ \
   security/p5-Digest-SHA1/ \
   net/p5-GeoIP2/ \
   net/p5-IP-Country/ \
-  net/openldap24-client \
-  net/openldap24-server \
+  net/openldap26-client \
+  net/openldap26-server \
   devel/p5-BSD-Resource/
 
 # checkout quarterly branch instead
@@ -277,11 +278,12 @@ git sparse-checkout set GIDs UIDs \
 #   and quarter (Q1-4) they are created in.
 #   For example, the quarterly branch created in
 #   January 2016, is named 2016Q1."
-# Quarterly in July 2022 is 2022Q3
+# Quarterly in Feb 2023 is 2023Q1
 step "Pull files"
 #git pull --depth=1 origin main
 #git pull --depth=1 origin 2022Q3
-git pull --depth=1 origin 2022Q4
+#git pull --depth=1 origin 2022Q4
+git pull --depth=1 origin 2023Q1
 
 #step "Port build openssl, remove existing, replace with this port"
 ##required for latest / main branch
