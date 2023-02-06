@@ -5,7 +5,7 @@ version          = 3
 search_base      = %%searchbase%%
 scope            = sub
 query_filter     = (&(objectclass=inetOrgPerson)(mail=%s))
-result_attribute = mail
-result_format    = %d/%u/
+result_attribute = uid
+result_format    = %u/
 debuglevel       = 0
 
