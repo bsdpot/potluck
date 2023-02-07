@@ -9,6 +9,7 @@
 * Forced copy and move of certificates into postfix
 * Simplifying postfix ldap search
 * Adjust mailboxes to /mnt/dovecot/mail/username
+* dovecot-ldap needs extra fields to work with new setup
 
 ---
 
