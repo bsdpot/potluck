@@ -99,7 +99,7 @@ done
 # make persistent storage and set permissions
 mkdir -p /mnt/smokeping/data
 mkdir -p /mnt/smokeping/imagecache
-chown -r smokeping:smokeping /mnt/smokeping
+chown -R smokeping:smokeping /mnt/smokeping
 
 # set path
 export PATH=/usr/local/share/cook/bin:$PATH
