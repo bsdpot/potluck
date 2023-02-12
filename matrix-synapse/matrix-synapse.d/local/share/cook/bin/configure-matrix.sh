@@ -14,8 +14,6 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-## start consul config
-# make consul configuration directory and set permissions
 # make dirs
 mkdir -p /mnt/matrixdata/matrix-synapse
 mkdir -p /mnt/matrixdata/media_store

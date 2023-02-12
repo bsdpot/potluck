@@ -24,22 +24,46 @@ sep=$'\001'
   > /usr/local/etc/nginx/nginx.conf
 
 # copy in certrenew script
+mkdir -p /root/bin
 < "$TEMPLATEPATH/certrenew.sh.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" \
-  > /root/certrenew.sh
+  > /root/bin/certrenew.sh
 
 # set executable permissions
-chmod u+x /root/certrenew.sh
+chmod u+x /root/bin/certrenew.sh
 
 # setup crontab
-echo "30      4       1       *       *       root   /bin/sh /root/certrenew.sh" >> /etc/crontab
+echo "30      4       1       *       *       root   /bin/sh /root/bin/certrenew.sh" >> /etc/crontab
 
 # certificates
 echo "Generating certificates"
-cd /root
-/usr/local/sbin/acme.sh --register-account -m "${SSLEMAIL}" --server zerossl
-/usr/local/sbin/acme.sh --force --issue -d "${DOMAIN}" --standalone
-cp -f /.acme.sh/"${DOMAIN}"/* /usr/local/etc/ssl/
+# the following is required for option --set-default-ca
+mkdir -p /mnt/acme
+mkdir -p /root/.acme.sh/
+touch /root/.acme.sh/account.conf
+
+if [ ! -d "/mnt/acme/$DOMAIN" ]; then
+    /usr/local/sbin/acme.sh --register-account -m "$SSLEMAIL" --home /mnt/acme --server zerossl
+    /usr/local/sbin/acme.sh --set-default-ca --server zerossl
+    /usr/local/sbin/acme.sh --issue -d "$DOMAIN" --server zerossl \
+      --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log || true
+    if [ ! -f "/mnt/acme/$DOMAIN/$DOMAIN.cer" ]; then
+        echo "Trying to register cert again, sleeping 30"
+        sleep 30
+        /usr/local/sbin/acme.sh --issue -d "$DOMAIN" --server zerossl \
+          --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log || true
+        if [ ! -f "/mnt/acme/$DOMAIN/$DOMAIN.cer" ]; then
+            echo "missing $DOMAIN.cer, certificate not registered"
+            exit 1
+        fi
+    fi
+    # copy files to ssl dir
+    cp -f /mnt/acme/"$DOMAIN"/* /usr/local/etc/ssl/
+else
+    echo "/mnt/acme/$DOMAIN exists, not creating certificates, copying to SSL dir"
+    # try continue, with a cert hopefully
+    cp -f /mnt/acme/"$DOMAIN"/* /usr/local/etc/ssl/
+fi
 
 # enable nginx
 if [ -f "/usr/local/etc/ssl/${DOMAIN}.key" ]; then

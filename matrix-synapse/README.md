@@ -39,7 +39,8 @@ This is a quirk of using .well-known/matrix/server with the server's details.
    -E SMTPHOST=<mail host> [-E SMTPPORT=25 ] \
    -E SMTPUSER=username -E SMTPPASS=password -E SMTPFROM=<email> \
    -E LDAPSERVER=<IP> -E LDAPPASSWORD=<password> -E LDAPDOMAIN=<domain for ldap> \
-   -E NOSSL=<true|false> -E CONTROLUSER=<true|false>
+   -E CONTROLUSER=<true|false> \
+   [ -E NOSSL=<any value set disables SSL> ] \
    [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 
@@ -66,6 +67,10 @@ LDAPSERVER is the domain name or IP address of an LDAP server. Don't include a p
 LDAPPASSWORD is the password to access the LDAP server.
 
 LDAPDOMAIN is the domain for the LDAP server which will be split into name.tld for the purposes of updating config.
+
+CONTROLUSER enables a control user. Copy in a SSH pubkey to `/root/importauthkey` to have it imported to control user account.
+
+NOSSL will disable SSL setup for any value set. You might want this for a reverse proxy setup with SSL handled in the proxy.
 
 REMOTELOG is an optional parameter for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
