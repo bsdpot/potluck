@@ -2,7 +2,9 @@ use-auth-secret
 keep-address-family
 server-name=%%domain%%
 realm=%%domain%%
-cert=/usr/local/etc/ssl/%%domain%%.cer
+#using fullchain certificate
+#cert=/usr/local/etc/ssl/%%domain%%.cer
+cert=/usr/local/etc/ssl/fullchain.cer
 pkey=/usr/local/etc/ssl/%%domain%%.key
 no-multicast-peers
 no-cli

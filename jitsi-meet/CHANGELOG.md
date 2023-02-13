@@ -7,6 +7,8 @@
 * Remove no-loopback-peers from turnserver config, bad config option
 * Allow setting default resolution as parameter
 * Specify turnservers in sip-communicator.properties
+* Adjust to use full certificate chain in fullchain.cer so mobile devices work
+* Re-enable P2P in config.js
 
 ---
 
