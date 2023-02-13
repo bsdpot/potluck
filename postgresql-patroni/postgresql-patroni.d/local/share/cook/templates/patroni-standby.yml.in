@@ -1,0 +1,121 @@
+scope: postgresql
+#namespace: /service/
+name: %%nodename%%
+
+log:
+  level: WARNING
+
+restapi:
+  listen: %%ip%%:8008
+  connect_address: %%ip%%:8008
+  # Needs to be from consul CA, so consul can do health checks
+  certfile: /mnt/patronicerts/consul.crt
+  keyfile: /mnt/patronicerts/consul.key
+  cafile: /mnt/patronicerts/consul_ca_root.crt
+  verify_client: required
+  http_extra_headers:
+    'X-Frame-Options': 'SAMEORIGIN'
+    'X-XSS-Protection': '1; mode=block'
+    'X-Content-Type-Options': 'nosniff'
+  https_extra_headers:
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
+
+ctl:
+  insecure: false
+  # These certs are used as client certs/ca to verify by patronictl
+  certfile: /mnt/patronicerts/consul.crt
+  keyfile: /mnt/patronicerts/consul.key
+  cafile: /mnt/patronicerts/consul_ca_root.crt
+
+consul:
+  host: 127.0.0.1:8500 # use local consul
+  token: %%consultoken%%
+  # automatic - if used, make sure to use some valid array type
+  #service_tags: ["%%servicetag%%"] #master/replica/standby-leader
+  register_service: true
+  service_check_interval: 15s
+  service_check_tls_server_name: %%nodename%%.%%datacenter%%.consul
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        wal_level: replica
+        # Won't allow reading from the node when in standby.
+        hot_standby: "off"
+        wal_keep_segments: 8
+        max_wal_senders: 5
+        max_replication_slots: 5
+        max_connections: 1000
+        checkpoint_timeout: 30
+  # Note: this needs to be a yml list
+  # (some options need values, others are switches)
+  initdb:
+    - encoding: UTF8
+    - data-checksums
+  pg_hba:  # Add following lines to pg_hba.conf after running 'initdb'
+    - host replication replicator 0.0.0.0/0 md5
+    - host all all 0.0.0.0/0 md5
+  users:
+    admin:
+      password: %%admpass%%
+      options:
+        - createrole
+        - createdb
+    replicator:
+      password: %%reppass%%
+      options:
+        - replication
+    postgres_exporter:
+      password: %%exppass%%
+  post_init: /usr/local/share/cook/bin/postgres-post-init.sh
+
+# XXX: using sslmode=verify-ca instead of sslmode=verify-full
+# as postgresql doesn't look at IP address alt names
+postgresql:
+  listen: %%ip%%:5432
+  connect_address: %%ip%%:5432
+  data_dir: /mnt/postgres/data/
+  conf_dir: /mnt/postgres/data/
+  pgpass: /tmp/pgpass0
+  authentication:
+    superuser:
+      username: postgres
+      password: %%suppass%%
+      sslmode: verify-ca
+      sslcert: /mnt/patronicerts/postgres.crt
+      sslkey: /mnt/patronicerts/postgres.key
+      sslrootcert: /mnt/patronicerts/postgres_ca_root.crt
+    replication:
+      username: replicator
+      password: %%reppass%%
+      sslmode: verify-ca
+      sslcert: /mnt/patronicerts/postgres.crt
+      sslkey: /mnt/patronicerts/postgres.key
+      sslrootcert: /mnt/patronicerts/postgres_ca_root.crt
+    rewind:
+      username: rewind_user
+      password: rewind_password
+      sslmode: verify-ca
+      sslcert: /mnt/patronicerts/postgres.crt
+      sslkey: /mnt/patronicerts/postgres.key
+      sslrootcert: /mnt/patronicerts/postgres_ca_root.crt
+  parameters:
+    unix_socket_directories: '/tmp/'
+    ssl: on
+    ssl_cert_file: /mnt/patronicerts/postgres.crt
+    ssl_key_file: /mnt/patronicerts/postgres.key
+    ssl_ca_file: /mnt/patronicerts/postgres_ca_root.crt
+
+tags:
+  nofailover: true
+  noloadbalance: false
+  clonefrom: false
+  nosync: false
+  is_standby: true

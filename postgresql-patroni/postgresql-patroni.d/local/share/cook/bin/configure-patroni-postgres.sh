@@ -28,8 +28,13 @@ EXPPASS=$(cat /mnt/patronicerts/exporter.pass)
 REPPASS=$(cat /mnt/patronicerts/replicator.pass)
 SUPPASS=$(cat /mnt/patronicerts/superuser.pass)
 
+if [ "$SERVICETAG" = "standby-leader" ]; then
+  CONFIG_NAME="patroni-standby.yml.in"
+else
+  CONFIG_NAME="patroni.yml.in"
+fi
 # setup patroni.yml by updating variables
-< "$TEMPLATEPATH/patroni.yml.in" \
+< "$TEMPLATEPATH/$CONFIG_NAME" \
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
@@ -63,6 +68,11 @@ if [ ! -d /mnt/postgres/data ]; then
     mkdir -p /mnt/postgres/data
     chown -R postgres:postgres /mnt/postgres/
     chmod -R 750 /mnt/postgres/
+fi
+
+# Add a standby.signal file so the node actually is standby.
+if [ "$SERVICETAG" = "standby-leader" ]; then
+  touch /mnt/postgres/data/standby.signal
 fi
 
 # modify postgres user homedir to /mnt/postgres/data
