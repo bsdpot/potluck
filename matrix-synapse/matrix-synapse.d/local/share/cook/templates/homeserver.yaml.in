@@ -1546,7 +1546,7 @@ password_providers:
         enabled: true
         mode: "search"
         uri: "ldap://%%ldapserver%%:389"
-        start_tls: true
+        start_tls: false
         base: "ou=People,dc=%%mysuffix%%,dc=%%mytld%%"
         attributes:
            uid: "uid"

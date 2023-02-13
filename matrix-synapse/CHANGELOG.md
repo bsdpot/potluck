@@ -3,6 +3,7 @@
 * Version bump for new base image
 * New changelog format
 * Improved acme.sh script
+* TLS false for ldap connection
 
 ---
 
