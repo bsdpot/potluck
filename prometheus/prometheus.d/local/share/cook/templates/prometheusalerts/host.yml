@@ -163,7 +163,7 @@ groups:
       description: "Context switching is growing on node (> 10000 / s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   # Host swap filling up
   - alert: HostSwapIsFillingUp
-    expr: (1 - (node_memory_swap_used_bytes / node_memory_swap_size_bytes)) * 100 > 80
+    expr: ((1 + node_memory_swap_used_bytes) / node_memory_swap_size_bytes) * 100 > 80
     for: 2m
     labels:
       severity: warning
