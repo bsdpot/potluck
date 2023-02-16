@@ -9,6 +9,7 @@
 * Specify turnservers in sip-communicator.properties
 * Adjust to use full certificate chain in fullchain.cer so mobile devices work
 * Re-enable P2P in config.js
+* Set this server as STUN server in config.js
 
 ---
 
