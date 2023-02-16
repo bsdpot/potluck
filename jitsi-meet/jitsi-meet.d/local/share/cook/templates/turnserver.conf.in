@@ -15,6 +15,7 @@ cipher-list=ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDS
 fingerprint
 listening-ip=%%privateip%%
 external-ip=%%publicip%%
+allowed-peer-ip=%%privateip%%
 listening-port=3478
 tls-listening-port=5349
 min-port=10000
