@@ -11,6 +11,7 @@
 * Re-enable P2P in config.js
 * Set this server as STUN server in config.js
 * Add local IP to turnserver allowed-peer-ip
+* Include password for prosodyctl mod_roster_command
 
 ---
 

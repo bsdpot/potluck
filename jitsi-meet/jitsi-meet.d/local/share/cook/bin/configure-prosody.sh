@@ -80,7 +80,9 @@ prosodyctl register focus auth."$DOMAIN" "$KEYPASSWORD" || true
 # https://youtu.be/LJOpSDcwWIA
 # docs
 # https://modules.prosody.im/mod_roster_command.html
-prosodyctl mod_roster_command subscribe focus."$DOMAIN" focus@auth."$DOMAIN" || true
+#prosodyctl mod_roster_command subscribe focus."$DOMAIN" focus@auth."$DOMAIN" || true
+# with password
+prosodyctl mod_roster_command subscribe focus."$DOMAIN" focus@auth."$DOMAIN" "$KEYPASSWORD" || true
 
 # check for valid certificates
 echo "checking prosody certs"
