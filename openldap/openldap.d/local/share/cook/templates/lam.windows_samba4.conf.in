@@ -5,7 +5,7 @@
 ###################################################################################################
 
 # server address (e.g. ldap://localhost:389 or ldaps://localhost:636)
-ServerURL: ldap://pdc.%%mysuffix%%.%%mytld%%
+ServerURL: ldap://localhost:389
 
 # list of users who are allowed to use LDAP Account Manager
 # names have to be separated by semicolons

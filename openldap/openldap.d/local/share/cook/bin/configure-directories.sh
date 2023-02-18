@@ -11,13 +11,18 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
+# this is a bad setup
 # check that /mnt/openldap-data exists
-if [ ! -d /mnt/openldap-data ]; then
-    echo "ERROR: /mnt/openldap-data does not exist. Where is the persistent storage mount-in?"
-    exit 1
-fi
+#if [ ! -d /mnt/openldap-data ]; then
+#    echo "ERROR: /mnt/openldap-data does not exist. Where is the persistent storage mount-in?"
+#    exit 1
+#fi
 
-# make backups directory
+# The database directory MUST exist prior to running slapd AND
+# should only be accessible by the slapd and slap tools.
+# Mode 700 recommended.
+
+# make database directory if doesn't exist, plus backups directory
 mkdir -p /mnt/openldap-data/backups
 
 # double check permissions on directories

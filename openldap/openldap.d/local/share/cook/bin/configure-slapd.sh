@@ -18,6 +18,9 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 touch /var/log/slapd.log
 mkdir -p /usr/local/etc/syslog.d/
 
+# create password
+SETSLAPPASS=$(/usr/local/sbin/slappasswd -s "$MYCREDS")
+
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
@@ -27,11 +30,13 @@ if [ -n "$REMOTEIP" ]; then
     sed "s${sep}%%serverid%%${sep}$SERVERID${sep}g" | \
     sed "s${sep}%%mysuffix%%${sep}$MYSUFFIX${sep}g" | \
     sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" | \
+    sed "s${sep}%%setslappass%%${sep}$SETSLAPPASS${sep}g" | \
     sed "s${sep}%%remoteip%%${sep}$REMOTEIP${sep}g" \
     > /usr/local/etc/openldap/slapd.conf
 else
     < "$TEMPLATEPATH/slapd.conf.in" \
     sed "s${sep}%%mysuffix%%${sep}$MYSUFFIX${sep}g" | \
+    sed "s${sep}%%setslappass%%${sep}$SETSLAPPASS${sep}g" | \
     sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" \
     > /usr/local/etc/openldap/slapd.conf
 fi
@@ -41,9 +46,6 @@ chown ldap:ldap /usr/local/etc/openldap/slapd.conf
 
 # remove world-read access
 chmod o-rwx /usr/local/etc/openldap/slapd.conf
-
-# create password
-SETSLAPPASS=$(/usr/local/sbin/slappasswd -s "$MYCREDS")
 
 < "$TEMPLATEPATH/slapd.ldif.in" \
  sed "s${sep}%%setslappass%%${sep}$SETSLAPPASS${sep}g" | \

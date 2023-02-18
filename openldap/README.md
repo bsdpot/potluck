@@ -7,12 +7,9 @@ tags: ["ldap", "openldap", "directory services"]
 
 # Overview
 
-This is an OpenLDAP jail that can be started with ```pot``` but it can also be deployed via ```nomad```.
+This is an OpenLDAP jail that can be started with ```pot```.
 
-The jail exposes parameters that can either be set via the environment or by setting the ```cook```parameters (the
-latter either via ```nomad```, see example below, or by editing the downloaded jails ```pot.conf``` file):
-
-For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
+The jail exposes parameters that can be set via the environment with `pot set-env` parameters below.
 
 # Setup
 
@@ -44,13 +41,13 @@ Thereafter these files will load automatically, along with any updates, from per
 
 ## Installation
 
-* Create a ZFS data set on the parent system beforehand
-  ```zfs create -o mountpoint=/mnt/openldap-data zroot/openldap-data```
+* Create a ZFS data set on the parent system beforehand, for example:
+  ```zfs create -o mountpoint=/mnt/openldap root/openldap```
 * Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created
-  ```pot mount-in -p <jailname> -m /mnt -d /mnt/openldap-data```
-* Optional: Copy in YOUR config.ldif file if importing config:
+  ```pot mount-in -p <jailname> -d /mnt/openldap -m /mnt```
+* Optional: Copy in YOUR config.ldif file if importing an existing config:
   ```pot copy-in -p <jailname> -s /path/to/config.ldif -d /root/config.ldif```
 * Optional: Copy in YOUR data.ldif file if importing existing data:
   ```pot copy-in -p <jailname> -s /path/to/data.ldif -d /root/data.ldif```

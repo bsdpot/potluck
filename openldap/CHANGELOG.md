@@ -2,6 +2,8 @@
 
 * Version bump for new base image
 * New changelog format
+* Fix rootdn access issues
+* Add missing step to mkdir openldap-data in persistent storage
 
 ---
 

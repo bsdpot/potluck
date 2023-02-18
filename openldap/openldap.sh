@@ -170,18 +170,18 @@ step "Create necessary directories if they don't exist"
 # The database directory MUST exist prior to running slapd AND
 # should only be accessible by the slapd and slap tools.
 # Mode 700 recommended.
-mkdir -p /mnt/openldap-data
+#mkdir -p /mnt/openldap-data
 mkdir -p /var/db/run/
 mkdir -p /usr/local/etc/openldap/slapd.d
 
-step "Set ldap owner on /mnt/openldap-data"
-chown -R ldap:ldap /mnt/openldap-data
+#step "Set ldap owner on /mnt/openldap-data"
+#chown -R ldap:ldap /mnt/openldap-data
 
-step "Set 700 permissions on /mnt/openldap-data"
-chmod 700 /mnt/openldap-data
+#step "Set 700 permissions on /mnt/openldap-data"
+#chmod 700 /mnt/openldap-data
 
-step "Set ldap owner on /usr/local/etc/openldap/slapd.d"
-chown -R ldap:ldap /usr/local/etc/openldap/slapd.d
+#step "Set ldap owner on /usr/local/etc/openldap/slapd.d"
+#chown -R ldap:ldap /usr/local/etc/openldap/slapd.d
 
 #
 # Now generate the run command script "cook"
