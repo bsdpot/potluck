@@ -99,8 +99,3 @@ sysrc slapd_cn_config="YES"
 sysrc slapd_sockets="/var/run/openldap/ldapi"
 # makes root stuff work, currently unset
 # sysrc slapd_owner="DEFAULT"
-
-# to-do
-# set backup to /mnt/openldap-settings
-# add a script to crontab which runs slapcat
-# and outputs to a second mount in persistent storage

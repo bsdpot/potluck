@@ -46,8 +46,8 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
-required_args="$required_args DOMAIN MYCREDS HOSTNAME SERVERID"
-optional_args="CRONBACKUP REMOTEIP IMPORTCUSTOM REMOTELOG"
+required_args="$required_args DOMAIN MYCREDS HOSTNAME"
+optional_args="SERVERID CRONBACKUP REMOTEIP IMPORTCUSTOM REMOTELOG"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then

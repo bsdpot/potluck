@@ -5,6 +5,7 @@
 * Fix rootdn access issues
 * Add missing step to mkdir openldap-data in persistent storage
 * Set apache servername to IP to avoid problems with unresolvable hostnames
+* Optional parameter SERVERID, was under required
 
 ---
 

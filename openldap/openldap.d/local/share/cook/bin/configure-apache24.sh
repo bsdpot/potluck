@@ -14,6 +14,7 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 HOSTNAME="$HOSTNAME"
+IP="$IP"
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
