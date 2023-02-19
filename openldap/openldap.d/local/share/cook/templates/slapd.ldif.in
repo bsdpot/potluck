@@ -46,6 +46,12 @@ olcRootDN: cn=Manager,cn=config
 # and replace text here
 olcRootPW: %%setslappass%%
 olcMonitoring: FALSE
+#
+# If you want to use Unix domain socket authentication (-Y EXTERNAL)
+# then you have to give root the manage permission to the database. 
+#
+# This is done with the first ACL rule below
+olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth write by * break
 olcAccess: to * by * none
 
 # LMDB database definitions
@@ -59,5 +65,11 @@ olcRootDN: cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%
 # sample pass is password, set a new password with slappasswd
 # and replace text here
 olcRootPW: %%setslappass%%
+#
+# If you want to use Unix domain socket authentication (-Y EXTERNAL)
+# then you have to give root the manage permission to the database. 
+#
+# the rule must be repeated here for root socket access but manage and without break
+olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by *
 olcDbDirectory: /mnt/openldap-data
 olcDbIndex: objectClass eq
