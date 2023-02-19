@@ -224,7 +224,8 @@ ServerAdmin www-data@%%hostname%%
 #
 # If your host doesn't have a registered DNS name, enter its IP address here.
 #
-ServerName %%hostname%%:80
+#ServerName %%hostname%%:80
+ServerName %%ip%%:80
 
 #
 # Deny access to the entirety of your server's filesystem. You must
