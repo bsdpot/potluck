@@ -49,7 +49,7 @@ job "rsnapshot" {
       config {
         image = "https://potluck.honeyguide.net/rsnapshot-nomad"
         pot = "rsnapshot-nomad-amd64-13_1"
-        tag = "1.0.6"
+        tag = "1.0.7"
         command = "/usr/local/bin/cook"
         args = ["-a","\"40 23 * * 6\""]
         mount = [

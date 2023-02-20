@@ -1,3 +1,10 @@
+1.0.7
+
+* Version bump for new base image
+* This image is still old formats
+
+---
+
 1.0.6
 
 * Version bump for new base image
