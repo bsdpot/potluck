@@ -1,3 +1,11 @@
+0.0.8
+
+* Version bump for rebuild
+* Fix FreeBSD-SA-23:02.openssh
+* Fix FreeBSD-SA-23:03.openssl
+
+---
+
 0.0.7
 
 * Explictly install ca_root_nss
