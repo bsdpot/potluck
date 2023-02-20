@@ -148,6 +148,7 @@ else
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/
 fi
 
+# config file hasn't been renamed to grafani.ini yet
 # local edits for grafana.conf here
 # the mount path for some options is set to /mnt/grafana/...
 < "$TEMPLATEPATH/grafana.conf.in" \
@@ -157,9 +158,9 @@ fi
   > /usr/local/etc/grafana.conf
 
 # enable grafana service
-# not worked for some reason
-#service grafana enable
+# 'service grafana enable' not working for some reason, use sysrc method
 sysrc grafana_enable="YES"
+# config file hasn't been renamed to grafani.ini yet
 sysrc grafana_config="/usr/local/etc/grafana.conf"
 sysrc grafana_user="grafana"
 sysrc grafana_group="grafana"
