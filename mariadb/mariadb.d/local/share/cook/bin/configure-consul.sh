@@ -20,7 +20,7 @@ mkdir -p /usr/local/etc/consul.d
 chown consul /usr/local/etc/consul.d
 chmod 750 /usr/local/etc/consul.d
 
-# shellcheck disable=SC3003
+# shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 

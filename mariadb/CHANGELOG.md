@@ -1,3 +1,9 @@
+3.1
+
+* Version bump for new base image
+
+---
+
 3.0
 
 * Version bump for new base image
