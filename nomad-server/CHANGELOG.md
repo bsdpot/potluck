@@ -1,3 +1,12 @@
+3.1
+
+* Version bump for new base image
+* Fix checklist
+* Shellcheck exclusions
+* Add ports to consul agent config
+
+---
+
 3.0
 
 * Version bump for new base image

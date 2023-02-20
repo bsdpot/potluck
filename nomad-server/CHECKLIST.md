@@ -13,6 +13,7 @@ Z = Build updates
 Changes to major or minor versions need to be logged in:
 * `CHANGELOG.md`
 * `nomad-server.ini`
+* Example clone statement in README
 
 ## Automated build processing
 To force a rebuild of the pot image for the potluck site, increment Z of version="x.y.Z" in:

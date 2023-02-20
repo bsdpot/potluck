@@ -5,6 +5,10 @@ dns_config = {
   a_record_limit = 3
   enable_truncate = true
 }
+ports = {
+  http = 8500
+  https = -1
+}
 tls {
   defaults {
     verify_incoming = false

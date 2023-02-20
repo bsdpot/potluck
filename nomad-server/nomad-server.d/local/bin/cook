@@ -68,18 +68,21 @@ done
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
 # Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys
 # We'll re-use the one from the consul flavour
+# shellcheck disable=SC2086
 if [ -z ${GOSSIPKEY+x} ]; then
     GOSSIPKEY="BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw="
     export GOSSIPKEY
 fi
 
 # Importjobs flag to enable automatic job importing
+# shellcheck disable=SC2086
 if [ -z ${IMPORTJOBS+x} ]; then
     IMPORTJOBS=0
     export IMPORTJOBS
 fi
 
 # Region is required now and can be setup else set to global by default
+# shellcheck disable=SC2086
 if [ -z ${REGION+x} ]; then
     REGION="global"
     export REGION
