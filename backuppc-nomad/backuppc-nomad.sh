@@ -83,8 +83,9 @@ service sendmail onedisable || true
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
-step "Install package samba413"
-pkg install -y samba413
+# update
+step "Install package samba416"
+pkg install -y samba416
 
 step "Install package rsync"
 pkg install -y rsync

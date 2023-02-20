@@ -1,3 +1,10 @@
+1.2
+
+* Version bump for new base image
+* samba416 replaces samba413
+
+---
+
 1.1
 
 * Version bump for new base image
