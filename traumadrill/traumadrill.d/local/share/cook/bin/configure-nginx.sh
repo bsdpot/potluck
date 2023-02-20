@@ -28,7 +28,7 @@ chmod 775 /usr/local/www/traumadrill
 cp -f "$TEMPLATEPATH/my-stress-ng.sh.in" /usr/local/bin/my-stress-ng.sh
 chmod +x /usr/local/bin/my-stress-ng.sh
 
-# shellcheck disable=SC3003
+# shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 
