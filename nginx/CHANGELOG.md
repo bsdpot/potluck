@@ -1,3 +1,10 @@
+1.0.9
+
+* Version bump for rebuild
+* This image still to be updated to new formats
+
+---
+
 1.0.8
 
 * Version bump for rebuild
