@@ -9,37 +9,54 @@ tags: ["matrix", "synapse", "im", "instant messaging", "rooms", "chat"]
 
 This is a Matrix-Synapse jail that can be started with ```pot```.
 
-This instance uses `sqlite` instead of `postgres` and may not be suitable for busy servers.
+Important: this instance uses `sqlite` instead of `postgres` and may not be suitable for busy servers!
 
-The jail exposes parameters that can either be set via the environment or by setting the ```cook```parameters (the
-latter either via ```nomad```, see example below, or by editing the downloaded jails ```pot.conf``` file):
+The jail exposes parameters that can either be set via the environment.
 
-For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
+It also contains `node_exporter` and a local `consul` agent instance to be
+available that it can connect to (see configuration below). You can e.g.
+use the [consul](https://potluck.honeyguide.net/blog/consul/) `pot` flavour
+on this site to run `consul`.
 
 # Setup
-You must run your matrix instance from a top level domain such as example.com, not matrix.example.com.
+You must run your matrix instance from a top level domain such as `example.com`, not `matrix.example.com`.
 
-This is a quirk of using .well-known/matrix/server with the server's details.
+This is a quirk of using `.well-known/matrix/server` with the server's details.
 
 ## Installation
 
 * Create a ZFS data set on the parent system beforehand
-  ```zfs create -o mountpoint=/mnt/matrixdata zroot/matrixdata```
+  ```
+  zfs create -o mountpoint=/mnt/matrixdata zroot/matrixdata
+  ```
 * Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created
-  ```pot mount-in -p <jailname> -m /mnt -d /mnt/matrixdata```
+  ```
+  pot mount-in -p <jailname> -m /mnt -d /mnt/matrixdata
+  ```
 * Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> \
-   -E DOMAIN=<domain name> -E IP=<IP address> \
+   -E DATACENTER=<datacenter name> \
+   -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
+   -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+   -E NODENAME=<name of node> \
+   -E IP=<IP address> \
+   -E DOMAIN=<domain name> \
    -E ALERTEMAIL=<alert email> \
    -E REGISTRATIONENABLE=<true|false> \
    -E MYSHAREDSECRET=<shared secret for registrations> \
-   -E SMTPHOST=<mail host> [-E SMTPPORT=25 ] \
-   -E SMTPUSER=username -E SMTPPASS=password -E SMTPFROM=<email> \
-   -E LDAPSERVER=<IP> -E LDAPPASSWORD=<password> -E LDAPDOMAIN=<domain for ldap> \
+   -E SMTPHOST=<mail host> \
+   -E SMTPUSER=username \
+   -E SMTPPASS=password \
+   -E SMTPFROM=<email> \
+   -E SSLEMAIL=<email address for certificate registration|none> \
+   -E LDAPSERVER=<IP of LDAP server> \
+   -E LDAPPASSWORD=<LDAP Manager password> \
+   -E LDAPDOMAIN=<domain name for ldap> \
    -E CONTROLUSER=<true|false> \
+   [ -E SMTPPORT=25 ] \
    [ -E NOSSL=<any value set disables SSL> ] \
    [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
@@ -62,9 +79,11 @@ SMTPUSER is the smtp username. SMTPPASS is the associated password.
 
 SMTPFROM is the from email address for the authenticated SMTP user.
 
+SSLEMAIL is an email address to use for SSL certificate registation. If NOSSL is also set, then set `-E SSLEMAIL=none` as it must have a value set at this time.
+
 LDAPSERVER is the domain name or IP address of an LDAP server. Don't include a port!
 
-LDAPPASSWORD is the password to access the LDAP server.
+LDAPPASSWORD is the password to access the LDAP server as Manager.
 
 LDAPDOMAIN is the domain for the LDAP server which will be split into name.tld for the purposes of updating config.
 

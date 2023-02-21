@@ -1,6 +1,7 @@
 1.2
 
 * Version bump for new base image
+* Fix README for missing parameters
 
 ---
 
