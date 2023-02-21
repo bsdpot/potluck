@@ -79,13 +79,8 @@ fi
 ## Provision image
 ########################################################################
 
-# check that /mnt/matrixdata exists
-if [ -d /mnt/matrixdata ]; then
-    echo "INFO: /mnt/matrixdata exists. All good."
-else
-    echo "ERROR: /mnt/matrixdata does not exist. Where is the persistent storage?"
-    exit 1
-fi
+# create /mnt/matrixdata
+mkdir -p /mnt/matrixdata
 
 # stop services
 timeout --foreground 10 \

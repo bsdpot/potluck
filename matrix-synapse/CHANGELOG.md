@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Fix README for missing parameters
+* Create /mnt/matrixdata if not exist
 
 ---
 
