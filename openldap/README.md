@@ -42,15 +42,23 @@ Thereafter these files will load automatically, along with any updates, from per
 ## Installation
 
 * Create a ZFS data set on the parent system beforehand, for example:
-  ```zfs create -o mountpoint=/mnt/openldap root/openldap```
+  ```
+  zfs create -o mountpoint=/mnt/openldap root/openldap
+  ```
 * Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created
-  ```pot mount-in -p <jailname> -d /mnt/openldap -m /mnt```
+  ```
+  pot mount-in -p <jailname> -d /mnt/openldap -m /mnt
+  ```
 * Optional: Copy in YOUR config.ldif file if importing an existing config:
-  ```pot copy-in -p <jailname> -s /path/to/config.ldif -d /root/config.ldif```
+  ```
+  pot copy-in -p <jailname> -s /path/to/config.ldif -d /root/config.ldif
+  ```
 * Optional: Copy in YOUR data.ldif file if importing existing data:
-  ```pot copy-in -p <jailname> -s /path/to/data.ldif -d /root/data.ldif```
+  ```
+  pot copy-in -p <jailname> -s /path/to/data.ldif -d /root/data.ldif
+  ```
 * Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> \
@@ -66,16 +74,19 @@ Thereafter these files will load automatically, along with any updates, from per
   [ -E IMPORTCUSTOM=1 ] \
   [ -E REMOTEIP=<IP address second instance> ] \
   [ -E SERVERID=<001 or 002> ] \
+  [ -E DEFAULTGROUPS=Y ] \
+  [ -E USERNAME=<generic user username> ] \
+  [ -E PASSWORD=<generic user password ] \
   [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 
 The NODENAME parameter is the name of the node.
 
-The DATACENTER parameter is the name of the datacenter. The REGION parameter is to set "east" or "west" or "global" (default).
+The DATACENTER parameter is the name of the datacenter.
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
-The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if the parameter is not set, do not use the default key for production encryption, instead provide your own. This key is also used as Nomad's gossipkey. 
+The GOSSIPKEY parameter is the gossip encryption key for consul agent.
 
 The IP parameter is the IP address of this image.
 
@@ -93,6 +104,10 @@ The optional REMOTEIP parameter is the IP address of a second `openldap` pot ser
 cluster. If set, a cluster setup will be initiated.
 
 The optional SERVERID parameter is one of `001` or `002` for first or second server if running a multi-master cluster.
+
+The optional DEFAULTGROUPS parameter will enable a default group arrangement with People and mail, if set to any value. This will not work if IMPORTCUSTOM is enabled.
+
+The optional USERNAME and PASSWORD parameters will setup a generic user if DEFAULTGROUPS is also enabled. If not passed in, no generic user will be created, but the groups will be. No mail value is assigned to the generic user and can be set manually. This will not work if IMPORTCUSTOM is enabled.
 
 The optional REMOTELOG parameter is for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 

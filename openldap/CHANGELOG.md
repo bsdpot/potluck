@@ -1,6 +1,9 @@
 1.6
 
 * Version bump for new base image
+* add new parameters DEFAULTGROUPS USERNAME PASSWORD
+* add default groups if no custom import
+* add genericuser options and setup a generic user if set
 
 ---
 

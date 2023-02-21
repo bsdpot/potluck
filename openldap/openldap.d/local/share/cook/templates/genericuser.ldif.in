@@ -1,0 +1,12 @@
+dn: uid=%%genericusername%%,ou=People,dc=%%mysuffix%%,dc=%%mytld%%
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: inetOrgPerson
+cn: %%genericusername%%
+sn: genericuser
+uid: %%genericusername%%
+uidNumber: 5000
+gidNumber: 5000
+homeDirectory: /home/%%genericusername%%
+loginShell: /bin/sh
+userPassword: %%genericpassword%%

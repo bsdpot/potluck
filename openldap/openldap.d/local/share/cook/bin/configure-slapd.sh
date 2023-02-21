@@ -84,6 +84,34 @@ chown -R ldap:ldap /usr/local/etc/openldap/slapd.d/
 # import configuration ldif file, uses -c to continue on error, database 0
 /usr/local/sbin/slapadd -c -n 0 -F /usr/local/etc/openldap/slapd.d/ -l /usr/local/etc/openldap/slapd.ldif || true
 
+if [ -z "$IMPORTCUSTOM" ] && [ -n "$DEFAULTGROUPS" ]; then
+    # Create a default group for people
+    < "$TEMPLATEPATH/group.ldif.in" \
+       sed "s${sep}%%mysuffix%%${sep}$MYSUFFIX${sep}g" | \
+       sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" \
+    > /tmp/group.ldif
+
+    # add groups to database 1, uses -c to continue on error
+    /usr/local/sbin/slapadd -c -n 1 -F /usr/local/etc/openldap/slapd.d/ -l /tmp/group.ldif || true
+
+    # if set, adds a generic user with custom password
+    if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
+        < "$TEMPLATEPATH/genericuser.ldif.in" \
+           sed "s${sep}%%mysuffix%%${sep}$MYSUFFIX${sep}g" | \
+           sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" | \
+           sed "s${sep}%%genericusername%%${sep}$USERNAME${sep}g" | \
+           sed "s${sep}%%genericpassword%%${sep}$PASSWORD${sep}g" \
+        > /tmp/genericuser.ldif
+
+        # add groups to database 1, uses -c to continue on error
+        /usr/local/sbin/slapadd -c -n 1 -F /usr/local/etc/openldap/slapd.d/ -l /tmp/genericuser.ldif || true
+    fi
+else
+    echo "Cannot import custom config AND set default groups"
+    echo "Not adding default groups"
+    echo "Not adding generic user"
+fi
+
 # create import scripts
 cp -f "$TEMPLATEPATH/importldapconfig.sh.in" /root/importldapconfig.sh
 chmod +x /root/importldapconfig.sh

@@ -1,0 +1,18 @@
+dn: dc=%%mysuffix%%,dc=%%mytld%%
+objectClass: organization
+objectClass: dcObject
+dc: %%mysuffix%%
+o: %%mysuffix%%
+
+dn: ou=People,dc=%%mysuffix%%,dc=%%mytld%%
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=group,dc=%%mysuffix%%,dc=%%mytld%%
+objectClass: organizationalUnit
+ou: group
+
+dn: cn=mail,ou=group,dc=%%mysuffix%%,dc=%%mytld%%
+objectClass: posixGroup
+gidNumber: 3000
+cn: mail
