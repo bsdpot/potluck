@@ -61,9 +61,17 @@ This is a quirk of using `.well-known/matrix/server` with the server's details.
    [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 
-The DOMAIN parameter is the domain name to use for `matrix` configuration. It will be the same as the servername for the host.
+The DATACENTER parameter is the name of the datacenter.
+
+The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+
+The GOSSIPKEY parameter is the gossip encryption key for consul agent.
+
+The NODENAME parameter is the name of the node.
 
 The IP parameter is the IP address of this image.
+
+The DOMAIN parameter is the domain name to use for `matrix` configuration. It will be the same as the servername for the host.
 
 ALERTEMAIL is an email address to use.
 
