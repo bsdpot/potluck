@@ -60,10 +60,6 @@ chown postgres /usr/local/etc/patroni/patroni.yml
 # copy patroni startup script to /usr/local/etc/rc.d/
 cp "$TEMPLATEPATH/patroni.rc.in" /usr/local/etc/rc.d/patroni
 
-# enable postgresql
-service postgresql enable
-sysrc postgresql_data="/mnt/postgres/data/"
-
 # enable patroni
 service patroni enable
 
