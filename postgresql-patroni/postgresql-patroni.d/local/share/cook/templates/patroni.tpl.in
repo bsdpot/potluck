@@ -23,7 +23,8 @@
     (print "alt_names=localhost,"
       "master.postgresql.service.consul,"
       "replica.postgresql.service.consul,"
-      "standby-leader.postgresql.service.consul")
+      "standby-leader.postgresql.service.consul,"
+      "backup_node.postgresql.service.consul")
     "ip_sans=127.0.0.1,%%ip%%"}}
 {{- $psql_cert = (print .Data.certificate "\n" .Data.issuing_ca) }}
 {{- $psql_key = .Data.private_key }}

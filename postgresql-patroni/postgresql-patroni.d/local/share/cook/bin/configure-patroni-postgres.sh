@@ -28,7 +28,7 @@ EXPPASS=$(cat /mnt/patronicerts/exporter.pass)
 REPPASS=$(cat /mnt/patronicerts/replicator.pass)
 SUPPASS=$(cat /mnt/patronicerts/superuser.pass)
 
-if [ "$SERVICETAG" = "standby-leader" ]; then
+if [ "$SERVICETAG" = "backup_node" ]; then
   CONFIG_NAME="patroni-standby.yml.in"
 else
   CONFIG_NAME="patroni.yml.in"
@@ -71,7 +71,7 @@ if [ ! -d /mnt/postgres/data ]; then
 fi
 
 # Add a standby.signal file so the node actually is standby.
-if [ "$SERVICETAG" = "standby-leader" ]; then
+if [ "$SERVICETAG" = "backup_node" ]; then
   touch /mnt/postgres/data/standby.signal
 fi
 

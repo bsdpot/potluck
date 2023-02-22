@@ -30,7 +30,8 @@ create_pki_role "postgrespki_int" "postgres-server" \
   "{{identity.entity.metadata.nodename}}.global.postgres" \
   master.postgresql.service.consul \
   replica.postgresql.service.consul \
-  standby-leader.postgresql.service.consul
+  standby-leader.postgresql.service.consul \
+  backup_node.postgresql.service.consul
 
 vault policy write issue-postgres-server-cert - <<-EOF
 	path "postgrespki_int/issue/postgres-server" {
