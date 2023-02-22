@@ -29,16 +29,20 @@ REPPASS=$(cat /mnt/patronicerts/replicator.pass)
 SUPPASS=$(cat /mnt/patronicerts/superuser.pass)
 
 if [ "$SERVICETAG" = "backup_node" ]; then
-  CONFIG_NAME="patroni-standby.yml.in"
+  NO_FAILOVER=true
+  HOT_STANDBY=off
 else
-  CONFIG_NAME="patroni.yml.in"
+  NO_FAILOVER=false
+  HOT_STANDBY=on
 fi
 # setup patroni.yml by updating variables
-< "$TEMPLATEPATH/$CONFIG_NAME" \
+< "$TEMPLATEPATH/patroni.yml.in" \
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%servicetag%%${sep}$SERVICETAG${sep}g" \
+  sed "s${sep}%%servicetag%%${sep}$SERVICETAG${sep}g" | \
+  sed "s${sep}%%nofailover%%${sep}$NO_FAILOVER${sep}g" | \
+  sed "s${sep}%%hot_standby%%${sep}$HOT_STANDBY${sep}g" \
   > /usr/local/etc/patroni/patroni.yml
 chmod 600 /usr/local/etc/patroni/patroni.yml
 echo "s${sep}%%admpass%%${sep}$ADMPASS${sep}g" | sed -i '' -f - \
@@ -68,11 +72,6 @@ if [ ! -d /mnt/postgres/data ]; then
     mkdir -p /mnt/postgres/data
     chown -R postgres:postgres /mnt/postgres/
     chmod -R 750 /mnt/postgres/
-fi
-
-# Add a standby.signal file so the node actually is standby.
-if [ "$SERVICETAG" = "backup_node" ]; then
-  touch /mnt/postgres/data/standby.signal
 fi
 
 # modify postgres user homedir to /mnt/postgres/data
