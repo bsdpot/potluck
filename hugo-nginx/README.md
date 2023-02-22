@@ -56,9 +56,11 @@ The DATACENTER parameter is the name of the datacenter. The REGION parameter is 
 
 The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
 
-The IP parameter is the IP address of the pot image.
+The GOSSIPKEY parameter is the gossip encryption key for consul agent.
 
 The SERVERNAME parameter is the fully qualified domain name to configure nginx with.
+
+The IP parameter is the IP address of the pot image.
 
 The SITENAME parameter is the name of the hugo site and affects directory naming.
 
@@ -66,16 +68,16 @@ The GITEMAIL parameter is the email address to use for a git username.
 
 The GITUSER parameter is the git username associated with the email address.
 
-The CUSTOMDIR parameter is a custom directory to create inside the hugo installation in SITENAME.
+The optional CUSTOMDIR parameter is a custom directory to create inside the hugo installation in SITENAME.
 
-The CUSTOMFILE parameter, if set to 1, will copy in your own customfile.tgz which will be extracted to ```/mnt/{SITENAME}/```. This would be a custom config.toml, static microblog posts or about.md pages and images for static dir.
+The optional CUSTOMFILE parameter, if set to 1, will copy in your own customfile.tgz which will be extracted to ```/mnt/{SITENAME}/```. This would be a custom config.toml, static microblog posts or about.md pages and images for static dir.
 
-The IMPORTKEYS parameter, if set to 1, will add the copied in pubkey to authenticated_keys.
+The optional IMPORTKEYS parameter, if set to 1, will add the copied in pubkey to authenticated_keys.
 Copy in the applicable id_rsa.pub as part of the pot setup and start process.
 
-The THEMEADJUST parameter, if set to 1, will make changes specific to http://potluck.honeyguide.net.
+The optional THEMEADJUST parameter, if set to 1, will make changes specific to http://potluck.honeyguide.net.
 
-REMOTELOG is an optional parameter for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
+The optional REMOTELOG parameter is for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
 # Usage
 Start hugo manually (not necessary):

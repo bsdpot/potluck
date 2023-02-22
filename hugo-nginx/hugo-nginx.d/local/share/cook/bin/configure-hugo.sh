@@ -16,6 +16,7 @@ chown -R www:www "/mnt/$SITENAME"
 
 # add changed files
 cd "/mnt/${SITENAME}" || exit 1
+# shellcheck disable=SC2035
 /usr/local/bin/git add -v *
 
 # commit and push

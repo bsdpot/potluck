@@ -1,6 +1,8 @@
 0.2
 
 * Version bump for new base image
+* Fix documentation for missing parameters
+* Add ports to consul config
 
 ---
 

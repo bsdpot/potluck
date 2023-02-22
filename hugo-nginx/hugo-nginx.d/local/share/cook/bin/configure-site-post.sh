@@ -36,6 +36,7 @@ cd "/mnt/$SITENAME"
 /usr/local/bin/git config user.name "$GITUSER"
 /usr/local/bin/git config --global --add safe.directory "/mnt/$SITENAME"
 /usr/local/bin/git submodule add https://github.com/pavel-pi/kiss-em.git themes/kiss-em
+# shellcheck disable=SC2035
 /usr/local/bin/git add -v *
 
 # copy across site icons and css
