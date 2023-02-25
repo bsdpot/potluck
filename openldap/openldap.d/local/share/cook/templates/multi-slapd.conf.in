@@ -72,13 +72,16 @@ index   objectClass eq
 #
 syncrepl rid=000
 	provider=ldap://%%remoteip%%
-	type=refreshAndPersist
-	retry="5 5 300 +"
 	searchbase="dc=%%mysuffix%%,dc=%%mytld%%"
-	attrs="*,+"
 	bindmethod=simple
 	binddn="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%"
-	credentials=ofcsecret
+	credentials=%%setslappass%%
+	type=refreshAndPersist
+	retry="5 5 300 +"
+	interval=00:00:05:00
+	attrs="*,+"
+	scope=sub
+	schemachecking=on
 
 # Indices to maintain
 index default pres,eq

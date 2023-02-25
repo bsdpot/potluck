@@ -6,6 +6,7 @@
 * add genericuser options and setup a generic user if set
 * add missing php modules which need inclusion now
 * Switch to php81 
+* Fix sync password
 
 ---
 

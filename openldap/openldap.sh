@@ -80,9 +80,12 @@ sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 step "Disable sendmail"
 service sendmail onedisable
 
+# to-do
+# this could be disabled?
 step "Enable SSH"
 service sshd enable
 
+# required
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
@@ -115,7 +118,7 @@ pkg install -y nano
 step "Install package bash"
 pkg install -y bash
 
-# not including, openldap_exporter doesn't work on freebsd
+# not including go, was depedency for openldap_exporter, which does not work on freebsd
 #step "Install package go"
 #pkg install -y go
 
@@ -174,6 +177,7 @@ pkg install -y php81-filter
 step "Install package php81-zip"
 pkg install -y php81-zip
 
+# ldap account manager
 step "Install package ldap-account-manager"
 pkg install -y ldap-account-manager
 
@@ -205,20 +209,9 @@ step "Create necessary directories if they don't exist"
 # The database directory MUST exist prior to running slapd AND
 # should only be accessible by the slapd and slap tools.
 # Mode 700 recommended.
-#mkdir -p /mnt/openldap-data
 mkdir -p /var/db/run/
 mkdir -p /usr/local/etc/openldap/slapd.d
 
-#step "Set ldap owner on /mnt/openldap-data"
-#chown -R ldap:ldap /mnt/openldap-data
-
-#step "Set 700 permissions on /mnt/openldap-data"
-#chmod 700 /mnt/openldap-data
-
-#step "Set ldap owner on /usr/local/etc/openldap/slapd.d"
-#chown -R ldap:ldap /usr/local/etc/openldap/slapd.d
-
-#
 # Now generate the run command script "cook"
 # It configures the system on the first run by creating the config file(s)
 # On subsequent runs, it only starts sleeps (if nomad-jail) or simply exits
