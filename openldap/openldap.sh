@@ -128,9 +128,6 @@ pkg install -y openldap26-server
 step "Install package openldap26-client"
 pkg install -y openldap26-client
 
-step "Install package ldap-account-manager"
-pkg install -y ldap-account-manager
-
 step "Install package rhash"
 pkg install -y rhash
 
@@ -140,11 +137,45 @@ pkg install -y p5-Archive-Zip
 step "Install package apache24"
 pkg install -y apache24
 
-step "Enable apache24 in /etc/rc.conf"
-service apache24 enable || true
+step "Install package mod_php81"
+pkg install -y mod_php81
 
-step "Install package mod_php80"
-pkg install -y mod_php80
+# php modules need explicit installation now
+step "Install package php81-session"
+pkg install -y php81-session
+
+step "Install package php81-ldap"
+pkg install -y php81-ldap
+
+step "Install package php81-gettext"
+pkg install -y php81-gettext
+
+step "Install package php81-xml"
+pkg install -y php81-xml
+
+step "Install package php81-xmlreader"
+pkg install -y php81-xmlreader
+
+step "Install package php81-xmlwriter"
+pkg install -y php81-xmlwriter
+
+step "Install package php81-mbstring"
+pkg install -y php81-mbstring
+
+step "Install package php81-gd"
+pkg install -y php81-gd
+
+step "Install package php81-gmp"
+pkg install -y php81-gmp
+
+step "Install package php81-filter"
+pkg install -y php81-filter
+
+step "Install package php81-zip"
+pkg install -y php81-zip
+
+step "Install package ldap-account-manager"
+pkg install -y ldap-account-manager
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng
@@ -152,6 +183,10 @@ pkg install -y syslog-ng
 step "Clean package installation"
 pkg autoremove -y
 pkg clean -y
+
+step "Enable apache24 in /etc/rc.conf"
+service apache24 enable || true
+
 
 # TODO
 # git clone https://github.com/tomcz/openldap_exporter

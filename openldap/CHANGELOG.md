@@ -4,6 +4,8 @@
 * add new parameters DEFAULTGROUPS USERNAME PASSWORD
 * add default groups if no custom import
 * add genericuser options and setup a generic user if set
+* add missing php modules which need inclusion now
+* Switch to php81 
 
 ---
 
