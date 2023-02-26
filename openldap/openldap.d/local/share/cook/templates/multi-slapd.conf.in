@@ -67,6 +67,10 @@ rootpw      %%setslappass%%
 # should only be accessible by the slapd and slap tools.
 # Mode 700 recommended.
 directory   /mnt/openldap-data
+
+# allow sync consumers to read
+olcAccess: to * by dn.base="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" read by * break
+
 # Indices to maintain
 index   objectClass eq
 #

@@ -8,6 +8,7 @@
 * Switch to php81 
 * Fix sync password
 * Access control for sync consumer read
+* Re-do sync access control
 
 ---
 
