@@ -157,6 +157,15 @@ Check entries in your `openldap` database by running an anonymous search (no aut
 ldapsearch -x -b "dc=your-domain,dc=net"
 ```
 
+Or with authenticated search:
+```
+ldapsearch -x -LLL -b "dc=your-domain,dc=net" -W
+Enter LDAP Password:
+
+ldapsearch -x -LLL -D cn=Manager,dc=your-domain,dc=net -W
+Enter LDAP Password:
+```
+
 ## LAM web frontend
 Open http://yourhost to access the LAM `openldap` web frontend.
 

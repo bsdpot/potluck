@@ -67,6 +67,12 @@ rootpw      %%setslappass%%
 # should only be accessible by the slapd and slap tools.
 # Mode 700 recommended.
 directory   /mnt/openldap-data
+
+# SSL
+TLSCACertificateFile /usr/local/etc/openldap/ca.crt
+TLSCertificateFile /usr/local/etc/openldap/server.crt
+TLSCertificateKeyFile /usr/local/etc/openldap/private/server.key
+
 # Indices to maintain
 index   objectClass eq
 #
