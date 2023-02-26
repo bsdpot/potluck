@@ -10,6 +10,7 @@
 * Access control for sync consumer read
 * Re-do sync access control
 * Fix access control, no olcAccess in slapd.conf
+* New access control setup, to be tested
 
 ---
 

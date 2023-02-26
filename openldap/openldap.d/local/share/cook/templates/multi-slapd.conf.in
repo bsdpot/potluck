@@ -20,6 +20,8 @@ modulepath  /usr/local/libexec/openldap
 moduleload    back_mdb
 moduleload    syncprov
 moduleload    lastmod
+# needed? things break when included
+#moduleload    pw-sha2
 # moduleload    back_ldap
 # this will be automatically updated if cluster
 serverID %%serverid%%
@@ -70,11 +72,30 @@ directory   /mnt/openldap-data
 
 # allow sync consumers to read
 # this file must not have olcAccess from ldif file
-access to * by dn.base="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" read by * break
+#not-working# access to * by dn.base="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" read by * break
+access  to      dn.base=""
+                by * read
 
-# Indices to maintain
-index   objectClass eq
-#
+access  to      dn.base="cn=Subschema"
+                by * read
+
+access  to      attrs=userPassword
+                by self write
+                by anonymous write
+                by * none
+
+access  to      *
+                by dn.base="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" manage
+                by * break
+
+access  to      *
+                by self write
+                by users read
+                by peername.ip=127.0.0.1 read
+                by peername.ip=%%remoteip%% read
+                by anonymous auth
+
+# sync
 syncrepl rid=000
 	provider=ldap://%%remoteip%%
 	searchbase="dc=%%mysuffix%%,dc=%%mytld%%"
@@ -87,6 +108,9 @@ syncrepl rid=000
 	attrs="*,+"
 	scope=sub
 	schemachecking=on
+
+# Indices to maintain
+index   objectClass eq
 
 # Indices to maintain
 index default pres,eq
