@@ -7,6 +7,7 @@
 * add missing php modules which need inclusion now
 * Switch to php81 
 * Fix sync password
+* Access control for sync consumer read
 
 ---
 
