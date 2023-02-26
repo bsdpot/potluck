@@ -69,7 +69,8 @@ rootpw      %%setslappass%%
 directory   /mnt/openldap-data
 
 # allow sync consumers to read
-olcAccess: to * by dn.base="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" read by * break
+# this file must not have olcAccess from ldif file
+access to * by dn.base="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" read by * break
 
 # Indices to maintain
 index   objectClass eq
