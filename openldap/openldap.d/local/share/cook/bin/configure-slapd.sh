@@ -94,6 +94,9 @@ if [ -z "$IMPORTCUSTOM" ] && [ -n "$DEFAULTGROUPS" ]; then
     # add groups to database 1, uses -c to continue on error
     /usr/local/sbin/slapadd -c -n 1 -F /usr/local/etc/openldap/slapd.d/ -l /tmp/group.ldif || true
 
+    # remove file
+    rm -f /tmp/group.ldif
+
     # if set, adds a generic user with custom password
     if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
         < "$TEMPLATEPATH/genericuser.ldif.in" \
@@ -105,6 +108,9 @@ if [ -z "$IMPORTCUSTOM" ] && [ -n "$DEFAULTGROUPS" ]; then
 
         # add user to database 1, uses -c to continue on error
         /usr/local/sbin/slapadd -c -n 1 -F /usr/local/etc/openldap/slapd.d/ -l /tmp/genericuser.ldif || true
+
+	# remove file with plaintext password
+	rm -f /tmp/genericuser.ldif
     fi
 else
     echo "Cannot import custom config AND set default groups"
@@ -117,11 +123,14 @@ if [ -n "$REMOTEIP" ]; then
     < "$TEMPLATEPATH/syncuser.ldif.in" \
     sed "s${sep}%%mysuffix%%${sep}$MYSUFFIX${sep}g" | \
     sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" | \
-    sed "s${sep}%%setslappass%%${sep}$SETSLAPPASS${sep}g" \
+    sed "s${sep}%%mycreds%%${sep}$MYCREDS${sep}g" \
     > /tmp/syncuser.ldif
 
     # add syncuser to database 1, uses -c to continue on error
     /usr/local/sbin/slapadd -c -n 1 -F /usr/local/etc/openldap/slapd.d/ -l /tmp/syncuser.ldif || true
+
+    # remove file with plaintext password
+    rm -f /tmp/syncuser.ldif
 fi
 
 # create import scripts

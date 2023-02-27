@@ -9,4 +9,4 @@ uidNumber: 5500
 gidNumber: 5500
 homeDirectory: /home/replicator
 loginShell: /bin/sh
-userPassword: %%setslappass%%
+userPassword: %%mycreds%%
