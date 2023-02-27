@@ -15,6 +15,7 @@
 * set ldap owner for self-signed certificates
 * Missing dc= in slapd.conf ACLs
 * Fix replicator user, avoid double-encrypting password, remove tmp files
+* Correct sync dn to use uid not cn
 
 ---
 
