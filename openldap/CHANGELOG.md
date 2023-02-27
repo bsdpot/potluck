@@ -11,7 +11,8 @@
 * Re-do sync access control
 * Fix access control, no olcAccess in slapd.conf
 * New access control setup, to be tested
-* Experiental: attempt sync config with replicator user automatically setup
+* Experimental: attempt sync config with replicator user automatically setup
+* set ldap owner for self-signed certificates
 
 ---
 

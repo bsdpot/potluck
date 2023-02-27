@@ -44,3 +44,8 @@ mkdir -p /usr/local/etc/openldap/private/
  -out /usr/local/etc/openldap/client.crt \
  -CA /usr/local/etc/openldap/ca.crt \
  -CAkey /usr/local/etc/openldap/private/ca.key
+
+# set file permissions with owner ldap
+chown -R ldap:ldap /usr/local/etc/openldap/private/
+chown ldap:ldap /usr/local/etc/openldap/ca.crt
+chown ldap:ldap /usr/local/etc/openldap/server.crt

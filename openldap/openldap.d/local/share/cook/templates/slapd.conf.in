@@ -69,6 +69,7 @@ rootpw      %%setslappass%%
 directory   /mnt/openldap-data
 
 # SSL
+#security ssf=128
 TLSCACertificateFile /usr/local/etc/openldap/ca.crt
 TLSCertificateFile /usr/local/etc/openldap/server.crt
 TLSCertificateKeyFile /usr/local/etc/openldap/private/server.key
