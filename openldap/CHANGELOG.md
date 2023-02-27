@@ -13,6 +13,7 @@
 * New access control setup, to be tested
 * Experimental: attempt sync config with replicator user automatically setup
 * set ldap owner for self-signed certificates
+* Missing dc= in slapd.conf ACLs
 
 ---
 

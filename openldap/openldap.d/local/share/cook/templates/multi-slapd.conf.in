@@ -82,11 +82,11 @@ access  to      *
                 by * break
         
 access  to      *
-                by dn.base="cn=Manager,%%mysuffix%%,dc=%%mytld%%" manage
+                by dn.base="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" manage
                 by * break
 
 access  to      *
-                by dn.base="cn=replicator,ou=People,%%mysuffix%%,dc=%%mytld%%" manage
+                by dn.base="cn=replicator,ou=People,dc=%%mysuffix%%,dc=%%mytld%%" manage
                 by * break
 
 access  to      dn.base=""
