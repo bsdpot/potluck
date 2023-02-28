@@ -1,12 +1,12 @@
-dn: uid=replicator,ou=People,dc=%%mysuffix%%,dc=%%mytld%%
+dn: cn=replicator,dc=%%mysuffix%%,dc=%%mytld%%
 objectClass: posixAccount
 objectClass: shadowAccount
 objectClass: inetOrgPerson
 cn: replicator
 sn: syncuser
 uid: replicator
-uidNumber: 5500
-gidNumber: 5500
+uidNumber: 5999
+gidNumber: 5999
 homeDirectory: /home/replicator
 loginShell: /bin/sh
 userPassword: %%mycreds%%

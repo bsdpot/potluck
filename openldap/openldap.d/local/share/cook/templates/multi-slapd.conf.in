@@ -86,27 +86,8 @@ access  to      *
                 by * break
 
 access  to      *
-                by dn.base="uid=replicator,ou=People,dc=%%mysuffix%%,dc=%%mytld%%" manage
+                by dn.base="cn=replicator,dc=%%mysuffix%%,dc=%%mytld%%" read
                 by * break
-
-access  to      dn.base=""
-                by * read
-
-access  to      dn.base="cn=Subschema"
-                by * read
-
-access  to      attrs=userPassword
-                by self =xw
-		by dn.exact="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%"
-		by dn.exact="uid=replicator,ou=People,dc=%%mysuffix%%,dc=%%mytld%%"
-                by anonymous write
-                by * none
-
-access  to      *
-                by self write
-		by dn.exact="uid=replicator,ou=People,dc=%%mysuffix%%,dc=%%mytld%%" read
-                by users read
-                by anonymous auth
 
 # sync
 syncrepl rid=000
@@ -116,7 +97,7 @@ syncrepl rid=000
 	scope=sub
 	attrs="*,+"
 	bindmethod=simple
-	binddn="uid=replicator,ou=People,dc=%%mysuffix%%,dc=%%mytld%%"
+	binddn="cn=replicator,dc=%%mysuffix%%,dc=%%mytld%%"
 	credentials=%%setslappass%%
 	type=refreshAndPersist
 	retry="5 5 300 +"

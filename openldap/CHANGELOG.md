@@ -17,6 +17,7 @@
 * Fix replicator user, avoid double-encrypting password, remove tmp files
 * Correct sync dn to use uid not cn
 * Adjust ACLs again
+* Simplify ACLs, tested working sync
 
 ---
 

@@ -164,6 +164,9 @@ Enter LDAP Password:
 
 ldapsearch -x -LLL -D cn=Manager,dc=your-domain,dc=net -W
 Enter LDAP Password:
+
+ldapsearch -x -LLL -D cn=Manager,dc=your-domain,dc=net -W -H ldap://1.2.3.4
+Enter LDAP Password:
 ```
 
 ## LAM web frontend
