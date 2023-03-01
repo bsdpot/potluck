@@ -6,6 +6,7 @@
 * Remove prosody localhost virtualhost and cert generation
 * Set user jvb instead of user focus
 * Simplify many config files
+* Add local IP to /etc/hosts
 
 ---
 

@@ -27,5 +27,9 @@ sep=$'\001'
   sed "s${sep}%%ip%%${sep}$IP${sep}g" \
   > /usr/local/etc/nginx/nginx.conf
 
+# add entry to /etc/hosts
+# we want jail queries for the public domain to stay local
+echo "$IP $DOMAIN" >> /etc/hosts
+
 # enable nginx
 service nginx enable
