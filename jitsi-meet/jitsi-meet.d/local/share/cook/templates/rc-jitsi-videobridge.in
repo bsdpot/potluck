@@ -38,7 +38,9 @@ restart_cmd=${name}_restart
 
 jitsi_videobridge_start()
 {
-	daemon -u ${jitsi_videobridge_user} -p ${pidfile} -o /var/log/jitsi-videobridge.log \
+# removing -u bit, run as root
+#	daemon -u ${jitsi_videobridge_user} -p ${pidfile} -o /var/log/jitsi-videobridge.log \
+	daemon -p ${pidfile} -o /var/log/jitsi-videobridge.log \
 		${command} -Xmx${jitsi_videobridge_maxmem} \
 		-XX:+UseConcMarkSweepGC \
 		-XX:+HeapDumpOnOutOfMemoryError \

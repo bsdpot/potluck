@@ -1,45 +1,12 @@
 videobridge {
 
-  entity-expiration {
-    timeout=1 minute
-    check-interval=${videobridge.entity-expiration.timeout}
-  }
-
-  health {
-    interval=10 seconds
-    timeout=30 seconds
-    max-check-duration=3 seconds
-    sticky-failures=false
-  }
-
-  ep-connection-status {
-    first-transfer-timeout=15 seconds
-    max-inactivity-limit=5 seconds
-    check-interval=500 milliseconds
-  }
-
   cc {
-    bwe-change-threshold=0.15
-    thumbnail-max-height-px=180
-    onstage-ideal-height-px=480
-    onstage-preferred-height-px=360
-    onstage-preferred-framerate=30
-    allow-oversend-onstage=true
-    max-oversend-bitrate=300 kbps
-    trust-bwe=false
-    padding-period=15ms
-    max-time-between-calculations = 5 seconds
-    jvb-last-n = -1
+      trust-bwe = false
   }
-
   http-servers {
-    public {
-      port = 9090
-      tls-port = -1
-    }
-    private {
-      host = 127.0.0.1
-    }
+      public {
+          port = 9090
+      }
   }
 
   websockets {
@@ -56,19 +23,17 @@ videobridge {
   stats {
     enabled = true
     transports = [
-      { type = "colibri,muc" }
+      { type = "colibri" }
     ]
   }
 
   apis {
     xmpp-client {
-      presence-interval = ${videobridge.stats.interval}
-      jid-cache-size = 1000
       configs {
         xmpp-server-1 {
           hostname="localhost"
           domain = "auth.%%domain%%"
-          username = "focus"
+          username = "jvb"
           password = "%%keypassword%%"
           muc_jids = "JvbBrewery@internal.auth.%%domain%%"
           muc_nickname = "unique-instance-id"
@@ -80,20 +45,11 @@ videobridge {
 
   ice {
     tcp {
-      enabled = true
+      enabled = false
       port = 4443
     }
     udp {
       port = 10000
     }
-    keep-alive-strategy = "selected_and_tcp"
-    use-component-socket = true
-    resolve-remote-candidates = false
-    nomination-strategy = "NominateFirstHostOrReflexiveValid"
-    advertise-private-candidates = true
-  }
-
-  multi-stream {
-    enabled = true
   }
 }

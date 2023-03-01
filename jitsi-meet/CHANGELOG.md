@@ -1,3 +1,14 @@
+0.5
+
+* Major rewrite for testing
+* Set ketstore type to jks
+* Remove user flag for rc scripts on jicofo and jitsi-videobridge
+* Remove prosody localhost virtualhost and cert generation
+* Set user jvb instead of user focus
+* Simplify many config files
+
+---
+
 0.4
 
 * Version bump for new base image

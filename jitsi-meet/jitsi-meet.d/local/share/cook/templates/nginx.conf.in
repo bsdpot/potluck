@@ -29,16 +29,23 @@ http {
         ssl_certificate      /usr/local/etc/ssl/fullchain.cer;
         ssl_certificate_key  /usr/local/etc/ssl/%%domain%%.key;
 
-        ssl_session_cache    shared:SSL:1m;
+	ssl_protocols TLSv1.3 TLSv1.2;
+	# https://ssl-config.mozilla.org/#server=nginx&config=intermediate
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+        ssl_session_cache    shared:SSL:50m;
         ssl_session_timeout  5m;
 
         ssl_ciphers  HIGH:!aNULL:!MD5;
-        ssl_prefer_server_ciphers  on;
+        ssl_prefer_server_ciphers  off;
 
 	ssl_early_data on;
 
-        proxy_buffer_size 10m;
-	proxy_buffers  4 10m;
+        add_header X-Early-Data $tls1_3_early_data;
+        add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+        add_header X-Frame-Options "DENY";
+
+        #proxy_buffer_size 10m;
+	#proxy_buffers  4 10m;
 
         server_name %%domain%%;
 
@@ -54,6 +61,11 @@ http {
             ssi on;
         }
 
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/local/www/nginx-dist;
+        }
+
         # BOSH, Bidirectional-streams Over Synchronous HTTP
         # https://en.wikipedia.org/wiki/BOSH_(protocol)
         location /http-bind {
@@ -62,6 +74,7 @@ http {
             proxy_set_header Host $http_host;
         }
 
+	# try disabling this next round
         location /xmpp-websocket {
             proxy_pass http://127.0.0.1:5280/xmpp-websocket;
             proxy_set_header X-Forwarded-For $remote_addr;
@@ -89,5 +102,13 @@ http {
         location /external_api.js {
             alias /usr/local/www/jitsi-meet/libs/external_api.min.js;
         }
+    }
+
+    # This block is useful for debugging TLS v1.3. Please feel free to remove this
+    # and use the `$ssl_early_data` variable exposed by NGINX directly should you
+    # wish to do so.
+    map $ssl_early_data $tls1_3_early_data {
+      "~." $ssl_early_data;
+      default "";
     }
 }

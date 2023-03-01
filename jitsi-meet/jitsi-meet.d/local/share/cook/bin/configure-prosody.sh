@@ -44,12 +44,15 @@ sep=$'\001'
 echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate "$DOMAIN" || true
 # shellcheck disable=SC2039
 echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN" || true
+
+# disabling as prosody localhost virtualhost disabled
 # shellcheck disable=SC2039
-echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate localhost || true
+#echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate localhost || true
 
 # Set up truststore
 keytool \
   -noprompt \
+  -storetype jks  \
   -keystore /usr/local/etc/jitsi/jicofo/truststore.jks \
   -storepass "$KEYPASSWORD" \
   -importcert -alias prosody \

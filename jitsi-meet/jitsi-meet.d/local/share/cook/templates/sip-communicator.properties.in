@@ -1,35 +1,3 @@
-org.jitsi.impl.neomedia.transform.srtp.SRTPCryptoContext.checkReplay=false
-# The videobridge uses 443 by default with 4443 as a fallback, but since we're already
-# running nginx on 443 in this example doc, we specify 4443 manually to avoid a race condition
-org.jitsi.videobridge.DISABLE_TCP_HARVESTER=false
-org.jitsi.videobridge.TCP_HARVESTER_PORT=4443
+org.ice4j.ice.harvest.DISABLE_AWS_HARVESTER=true
 org.ice4j.ice.harvest.NAT_HARVESTER_LOCAL_ADDRESS=%%privateip%%
 org.ice4j.ice.harvest.NAT_HARVESTER_PUBLIC_ADDRESS=%%publicip%%
-org.ice4j.ice.harvest.DISABLE_AWS_HARVESTER=true
-org.jitsi.videobridge.AUTHORIZED_SOURCE_REGEXP=focus@auth.%%domain%%/.*
-org.jitsi.videobridge.xmpp.user.shard.DISABLE_CERTIFICATE_VERIFICATION=true
-# A comma-separated list of STUN server addresses to use for mapping harvesters.
-# Each STUN server address is an ip_address:port pair. Example: stun1.example.com:12345,stun2.example.com:23456
-org.ice4j.ice.harvest.STUN_MAPPING_HARVESTER_ADDRESSES=%%domain%%:3478,%%domain%%:5349
-# Switches off the BWE mechanism.
-# https://github.com/jitsi/jitsi-meet/issues/10409
-org.jitsi.videobridge.TRUST_BWE=false
-#
-# For Grafana dashboard
-#
-# the callstats credentials
-#io.callstats.sdk.CallStats.appId="jistats"
-#io.callstats.sdk.CallStats.keyId="jistats_%%keypassword%%"
-# enable statistics and callstats statistics and the report interval
-org.jitsi.videobridge.ENABLE_STATISTICS=true
-#org.jitsi.videobridge.STATISTICS_INTERVAL.callstats.io=30000
-#org.jitsi.videobridge.STATISTICS_TRANSPORT=callstats.io
-org.jitsi.videobridge.STATISTICS_TRANSPORT=muc,colibri
-org.jitsi.videobridge.rest.jetty.port=9090
-org.jitsi.videobridge.rest.COLIBRI_WS_DISABLE=false
-org.jitsi.videobridge.rest.COLIBRI_WS_TLS=true
-org.jitsi.videobridge.rest.COLIBRI_WS_DOMAIN=%%domain%%:443
-org.jitsi.videobridge.rest.COLIBRI_WS_SERVER_ID=default-id
-org.jitsi.videobridge.rest.COLIBRI_WS_PATH=colibri
-videobridge.websockets.domain=%%domain%%
-videobridge.websockets.enabled=true

@@ -1,6 +1,12 @@
 jicofo {
   bridge {
     brewery-jid = "JvbBrewery@internal.auth.%%domain%%"
+    xmpp-connection-name = Client
+    health-checks {
+      enabled = true
+      interval = 10 seconds
+    }
+    selection-strategy = "SingleBridgeSelectionStrategy"
   }
 
   sctp {
@@ -12,10 +18,11 @@ jicofo {
       hostname = "localhost"
       port = 5222
       domain = "auth.%%domain%%"
-      username = "jvb"
+      username = "focus"
       password = "%%keypassword%%"
       conference-muc-jid = "conference.%%domain%%"
       client-proxy = "focus.%%domain%%"
     }
+    trusted-domains = [ "auth.%%domain%%" ]
   }
 }
