@@ -4,6 +4,8 @@ LOG="/var/log/sa-training.log"
 
 echo -e "SpamAssassing training starting at $(date +%c)..." > "$LOG" 2>&1
 
+# make sure to update for mail/{domain}/{username}/ or mail/{username}/
+# this wasn't done but is correct with mail/{domain}/{username}/ for mail_location
 for d in $(ls %%vhostdir%%/mail/); do
     for m in $(ls %%vhostdir%%/mail/"$d"/); do
         echo "$d"/"$m" >> "$LOG" 2>&1

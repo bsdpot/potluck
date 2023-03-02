@@ -202,10 +202,12 @@ ssl = yes
 # from 10-mail.conf
 #
 
-#mail_location = maildir:%%vhostdir%%/mail/%d/%n:LAYOUT=fs
-#mail_home = %%vhostdir%%/mail/%d/%n
-mail_location = maildir:%%vhostdir%%/mail/%n:LAYOUT=fs
-mail_home = %%vhostdir%%/mail/%n
+# testing, delivers to /mnt/dovecot/mail/{domain}/{username}
+mail_location = maildir:%%vhostdir%%/mail/%d/%n:LAYOUT=fs
+mail_home = %%vhostdir%%/mail/%d/%n
+# delivers to /mnt/dovecot/mail/{username}
+#mail_location = maildir:%%vhostdir%%/mail/%n:LAYOUT=fs
+#mail_home = %%vhostdir%%/mail/%n
 mail_privileged_group = vhost
 mail_plugins = quota acl
 mbox_write_locks = fcntl
@@ -315,8 +317,10 @@ namespace inbox {
 namespace {
   inbox = no
   list = children
-  #location = maildir:%%vhostdir%%/mail/%%d/%%n:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%d/%n/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%d/%n/shared/%%u
-  location = maildir:%%vhostdir%%/mail/%%n:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%n/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%n/shared/%%u
+  # testing
+  location = maildir:%%vhostdir%%/mail/%%d/%%n:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%d/%n/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%d/%n/shared/%%u
+  # removing for testing
+  #location = maildir:%%vhostdir%%/mail/%%n:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%n/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%n/shared/%%u
   prefix = shared/%%n/
   separator = /
   subscriptions = no
@@ -470,21 +474,27 @@ protocol sieve {
 plugin {
   # The path to the user's main active script. 
   #sieve = ~/.dovecot.sieve
-  #sieve = %%vhostdir%%/mail/%d/%n/.dovecot.sieve
-  sieve = %%vhostdir%%/mail/%n/.dovecot.sieve
+  # testing
+  sieve = %%vhostdir%%/mail/%d/%n/.dovecot.sieve
+  # removed for testing
+  #sieve = %%vhostdir%%/mail/%n/.dovecot.sieve
 
   # A path to a global sieve script file, which gets executed ONLY
   # if user's private Sieve script doesn't exist. Be sure to 
   # pre-compile this script manually using the sievec command line 
   # tool.
   #sieve_global_path = /var/lib/dovecot/sieve/default.sieve
-  #sieve_global_path = %%vhostdir%%/sieve/%d/default.sieve
-  sieve_global_path = %%vhostdir%%/sieve/default.sieve
+  # testing
+  sieve_global_path = %%vhostdir%%/sieve/%d/default.sieve
+  # removed for testing
+  #sieve_global_path = %%vhostdir%%/sieve/default.sieve
 
   # Directory for :personal include scripts for the include extension. 
   #sieve_dir = ~/sieve
-  #sieve_dir = %%vhostdir%%/mail/%d/%n
-  sieve_dir = %%vhostdir%%/mail/%n
+  # testing
+  sieve_dir = %%vhostdir%%/mail/%d/%n
+  # removed for testing
+  #sieve_dir = %%vhostdir%%/mail/%n
 
   # Directory for :global include scripts for the include extension. 
   #sieve_global_dir =

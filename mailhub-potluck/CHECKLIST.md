@@ -26,5 +26,10 @@ git pull --depth=1 origin 2023Q1
 in this file:
 * mailhub-potluck.sh 
 
+## Switching between mail/%d/%n and mail/%n
+If switching around mail_location settings to flip between `mail/{domain}/{username}/` and `mail/{username}/`, then comment/uncomment applicable sections, or edit variables in
+* templates/dovecot.conf.in
+* templates/sa-training.sh
+
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?

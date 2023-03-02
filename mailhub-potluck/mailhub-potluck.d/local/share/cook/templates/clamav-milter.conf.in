@@ -294,4 +294,3 @@ ClamdSocket unix:/var/run/clamav/clamd.sock
 # is currently set to off for legacy reasons.
 # Default: no
 #SupportMultipleRecipients yes
-
