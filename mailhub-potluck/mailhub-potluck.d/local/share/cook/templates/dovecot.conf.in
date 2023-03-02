@@ -203,11 +203,14 @@ ssl = yes
 #
 
 # testing, delivers to /mnt/dovecot/mail/{domain}/{username}
-mail_location = maildir:%%vhostdir%%/mail/%d/%n:LAYOUT=fs
-mail_home = %%vhostdir%%/mail/%d/%n
+#mail_location = maildir:%%vhostdir%%/mail/%d/%n:LAYOUT=fs
+#mail_home = %%vhostdir%%/mail/%d/%n
 # delivers to /mnt/dovecot/mail/{username}
 #mail_location = maildir:%%vhostdir%%/mail/%n:LAYOUT=fs
 #mail_home = %%vhostdir%%/mail/%n
+# delivers to /mnt/dovecot/mail/{uid}
+mail_location = maildir:%%vhostdir%%/mail/%u:LAYOUT=fs
+mail_home = %%vhostdir%%/mail/%u
 mail_privileged_group = vhost
 mail_plugins = quota acl
 mbox_write_locks = fcntl
@@ -318,10 +321,13 @@ namespace {
   inbox = no
   list = children
   # testing
-  location = maildir:%%vhostdir%%/mail/%%d/%%n:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%d/%n/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%d/%n/shared/%%u
+  #location = maildir:%%vhostdir%%/mail/%%d/%%n:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%d/%n/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%d/%n/shared/%%u
   # removing for testing
   #location = maildir:%%vhostdir%%/mail/%%n:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%n/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%n/shared/%%u
-  prefix = shared/%%n/
+  # new unified to uid
+  location = maildir:%%vhostdir%%/mail/%%u:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%u/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%u/shared/%%u
+  #prefix = shared/%%n/
+  prefix = shared/%%u/
   separator = /
   subscriptions = no
   type = shared
@@ -475,9 +481,11 @@ plugin {
   # The path to the user's main active script. 
   #sieve = ~/.dovecot.sieve
   # testing
-  sieve = %%vhostdir%%/mail/%d/%n/.dovecot.sieve
+  #sieve = %%vhostdir%%/mail/%d/%n/.dovecot.sieve
   # removed for testing
   #sieve = %%vhostdir%%/mail/%n/.dovecot.sieve
+  # new unified to uid
+  sieve = %%vhostdir%%/mail/%u/.dovecot.sieve
 
   # A path to a global sieve script file, which gets executed ONLY
   # if user's private Sieve script doesn't exist. Be sure to 
@@ -485,16 +493,19 @@ plugin {
   # tool.
   #sieve_global_path = /var/lib/dovecot/sieve/default.sieve
   # testing
-  sieve_global_path = %%vhostdir%%/sieve/%d/default.sieve
+  #sieve_global_path = %%vhostdir%%/sieve/%d/default.sieve
   # removed for testing
   #sieve_global_path = %%vhostdir%%/sieve/default.sieve
+  sieve_global_path = %%vhostdir%%/sieve/default.sieve
 
   # Directory for :personal include scripts for the include extension. 
   #sieve_dir = ~/sieve
   # testing
-  sieve_dir = %%vhostdir%%/mail/%d/%n
+  #sieve_dir = %%vhostdir%%/mail/%d/%n
   # removed for testing
   #sieve_dir = %%vhostdir%%/mail/%n
+  # new unified to uid
+  sieve_dir = %%vhostdir%%/mail/%u
 
   # Directory for :global include scripts for the include extension. 
   #sieve_global_dir =

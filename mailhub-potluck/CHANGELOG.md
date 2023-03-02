@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Change mailhome location to mail/domain/username
 * Update checklist
+* Switch to deliver to full uid
 
 ---
 

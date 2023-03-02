@@ -1,0 +1,27 @@
+#!/usr/local/bin/bash
+
+LOG="/var/log/sa-training.log"
+
+echo -e "SpamAssassing training starting at $(date +%c)..." > "$LOG" 2>&1
+
+# make sure to update for mail/{domain}/{username}/ or mail/{username}/
+# this wasn't done but is correct with mail/{domain}/{username}/ for mail_location
+for d in $(ls %%vhostdir%%/mail/); do
+    for m in $(ls %%vhostdir%%/mail/"$d"/); do
+        echo "$d"/"$m" >> "$LOG" 2>&1
+        /usr/local/bin/sa-learn -u "$m" --no-sync --ham %%vhostdir%%/mail/"$d"/"$m"/cur >> "$LOG" 2>&1
+        /usr/local/bin/sa-learn -u "$m" --no-sync --ham %%vhostdir%%/mail/"$d"/"$m"/new >> "$LOG" 2>&1
+        /usr/local/bin/sa-learn -u "$m" --no-sync --spam %%vhostdir%%/mail/"$d"/"$m"/Junk >> "$LOG" 2>&1
+    done
+done
+
+## Sync the SpamAssassin journal and print out stats
+
+echo "Syncing the SpamAssassin journal" >> "$LOG" 2>&1
+/usr/local/bin/sa-learn --sync >> "$LOG" 2>&1
+echo "Statistics for this run:" >> "$LOG" 2>&1
+/usr/local/bin/sa-learn --dump magic >> "$LOG" 2>&1
+
+echo -e "Run finished $(date +%c)" >> "$LOG" 2>&1
+
+exit
