@@ -4,6 +4,7 @@
 * Change mailhome location to mail/domain/username
 * Update checklist
 * Switch to deliver to full uid
+* Debugging adjustments for delivery to correct user folder
 
 ---
 
