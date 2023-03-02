@@ -89,6 +89,20 @@ access  to      *
                 by dn.base="cn=replicator,dc=%%mysuffix%%,dc=%%mytld%%" read
                 by * break
 
+access	to	attrs=userPassword,shadowLastChange 
+		by dn="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" write 
+		by anonymous auth
+		by self write
+		by * none
+
+access	to	dn.base=""
+		by * read
+
+access	to	to *
+		by self write
+		by dn="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" write
+		by * read
+
 # sync
 syncrepl rid=000
 	provider=ldap://%%remoteip%%:389

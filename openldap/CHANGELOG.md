@@ -18,6 +18,7 @@
 * Correct sync dn to use uid not cn
 * Adjust ACLs again
 * Simplify ACLs, tested working sync
+* Adjust ACLs to allow users access
 
 ---
 
