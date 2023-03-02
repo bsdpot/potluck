@@ -98,7 +98,7 @@ access	to	attrs=userPassword,shadowLastChange
 access	to	dn.base=""
 		by * read
 
-access	to	to *
+access	to	*
 		by self write
 		by dn="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" write
 		by * read

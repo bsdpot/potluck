@@ -19,6 +19,7 @@
 * Adjust ACLs again
 * Simplify ACLs, tested working sync
 * Adjust ACLs to allow users access
+* Remove double to in ACL
 
 ---
 
