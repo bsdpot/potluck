@@ -39,7 +39,7 @@ restart_cmd=${name}_restart
 
 jicofo_start()
 {
-# removing user specification and run as roon
+# removing user specification and run as root
 #	daemon -u ${jicofo_user} -p ${pidfile} -o /var/log/${name}.log \
 	daemon -p ${pidfile} -o /var/log/${name}.log \
 		${command} -Xmx${jicofo_maxmem} \

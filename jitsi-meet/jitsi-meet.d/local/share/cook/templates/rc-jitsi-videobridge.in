@@ -53,14 +53,6 @@ jitsi_videobridge_start()
 		-cp ${jitsi_videobridge_jar} \
 		org.jitsi.videobridge.MainKt \
 		${jitsi_videobridge_flags}
-# technically this should no longer be needed
-#                --host=localhost \
-#                --domain=%%domain%% \
-#                --port=5347 \
-#                --secret=%%keypassword%% \
-#		--apis=rest,xmpp \
-#		${jitsi_videobridge_flags}
-
 		echo "Starting ${name}"
 }
 

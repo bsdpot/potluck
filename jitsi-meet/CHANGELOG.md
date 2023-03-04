@@ -7,6 +7,7 @@
 * Set user jvb instead of user focus
 * Simplify many config files
 * Add local IP to /etc/hosts
+* Fix duplicate ssl_ciphers error
 
 ---
 
