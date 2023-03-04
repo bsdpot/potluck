@@ -47,7 +47,7 @@ echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate auth."$DOMAIN" || t
 
 # disabling as prosody localhost virtualhost disabled
 # shellcheck disable=SC2039
-#echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate localhost || true
+echo -ne '\n\n\n\n\n\n\n\n\n\n\n' | prosodyctl cert generate localhost || true
 
 # Set up truststore
 keytool \

@@ -8,6 +8,7 @@
 * Simplify many config files
 * Add local IP to /etc/hosts
 * Fix duplicate ssl_ciphers error
+* Add back prosody localhost virtualhost for testing, add nginx-full
 
 ---
 

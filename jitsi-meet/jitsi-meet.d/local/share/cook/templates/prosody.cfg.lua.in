@@ -106,13 +106,11 @@ unlimited_jids = {
 
 certificates = "/var/db/prosody/"
 
--- REMOVING TEMP BASIS
--- do not remove this, the default virtualhost is required to work
---VirtualHost "localhost"
---    ssl = {
---        key = "/var/db/prosody/localhost.key";
---        certificate = "/var/db/prosody/localhost.crt";
---    }
+VirtualHost "localhost"
+    ssl = {
+        key = "/var/db/prosody/localhost.key";
+        certificate = "/var/db/prosody/localhost.crt";
+    }
 
 -- Your domain from here
 VirtualHost "%%domain%%"
