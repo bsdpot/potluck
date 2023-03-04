@@ -9,6 +9,7 @@
 * Add local IP to /etc/hosts
 * Fix duplicate ssl_ciphers error
 * Add back prosody localhost virtualhost for testing, add nginx-full
+* Revert to normal nginx because nginx-full has conflicts which result in removal of nginx
 
 ---
 

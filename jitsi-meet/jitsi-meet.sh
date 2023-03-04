@@ -118,8 +118,9 @@ pkg install -y rsync
 step "Install package node_exporter"
 pkg install -y node_exporter
 
-step "Install package nginx-full"
-pkg install -y nginx-full
+# nginx-full has conflicts and will remove any nginx
+step "Install package nginx"
+pkg install -y nginx
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng
