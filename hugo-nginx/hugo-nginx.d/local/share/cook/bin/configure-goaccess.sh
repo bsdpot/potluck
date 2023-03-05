@@ -14,6 +14,9 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
+# make directory
+mkdir -p /usr/local/etc/goaccess
+
 # copy in custom goaccess.conf with nginx accesslog hardcoded in
 cp -f "$TEMPLATEPATH/goaccess.conf.in" /usr/local/etc/goaccess/goaccess.conf
 

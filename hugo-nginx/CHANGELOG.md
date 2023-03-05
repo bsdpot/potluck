@@ -9,6 +9,7 @@
 * Remove call to non-existent script configure-permissions.sh
 * Bug-fixing git and hugo commands
 * Fix typos in bug-fixes
+* Fix goaccess config file location
 
 ---
 
