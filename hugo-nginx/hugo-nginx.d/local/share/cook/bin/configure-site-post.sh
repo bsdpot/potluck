@@ -35,8 +35,8 @@ cd "/mnt/$SITENAME"
 # move this step first
 /usr/local/bin/git config --global --add safe.directory "/mnt/$SITENAME" || true
 /usr/local/bin/git init || true
-/usr/local/bin/git config user.email "$GITEMAIL" || true
-/usr/local/bin/git config user.name "$GITUSER" || true
+/usr/local/bin/git config --replace-all user.email "$GITEMAIL" || true
+/usr/local/bin/git config --replace-all user.name "$GITUSER" || true
 /usr/local/bin/git submodule add https://github.com/pavel-pi/kiss-em.git themes/kiss-em || true
 # shellcheck disable=SC2035
 /usr/local/bin/git add -v *

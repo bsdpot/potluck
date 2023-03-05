@@ -18,7 +18,7 @@ chown -R www:www "/mnt/$SITENAME"
 cd "/mnt/${SITENAME}" || exit 1
 
 # shellcheck disable=SC2035
-/usr/local/bin/git add -v *
+/usr/local/bin/git add -v * || true
 
 # commit and push
 #/usr/local/bin/git commit -m "Changed templates via cook script"
@@ -33,8 +33,12 @@ chown -R www:www "/mnt/$SITENAME"
 
 # create sample pages
 # we need this to create the blog and microblog directories
-/usr/local/bin/hugo new blog/sample-blog-post.md || true
-/usr/local/bin/hugo new micro/sample-microblog-post.md || true
+if [ ! -f "/mnt/${SITENAME}/blog/sample-blog-post.md" ]; then
+    /usr/local/bin/hugo new blog/sample-blog-post.md || true
+fi
+if [ ! -f "/mnt/${SITENAME}/micro/sample-microblog-post.md" ] then
+    /usr/local/bin/hugo new micro/sample-microblog-post.md || true
+fi
 
 # check ownership again
 chown -R www:www "/mnt/$SITENAME"
@@ -45,6 +49,7 @@ chmod 777 "/mnt/$SITENAME"
 chmod 777 "/mnt/$SITENAME/$CUSTOMDIR"
 chmod 777 "/mnt/$SITENAME/content"
 chmod 777 "/mnt/$SITENAME/content/blog"
-chmod 666 "/mnt/$SITENAME/content/blog/*.md"
+chmod 666 "/mnt/$SITENAME/content/blog/*.md" || true
 chmod 777 "/mnt/$SITENAME/content/micro"
+chmod 666 "/mnt/$SITENAME/content/micro/*.md" || true
 chmod 777 "/mnt/$SITENAME/static"

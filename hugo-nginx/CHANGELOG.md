@@ -7,6 +7,7 @@
 * Fix git fatal error by moving step to add safe directory before git init step
 * Adjust theme copy step
 * Remove call to non-existent script configure-permissions.sh
+* Bug-fixing git and hugo commands
 
 ---
 
