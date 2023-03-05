@@ -36,7 +36,7 @@ chown -R www:www "/mnt/$SITENAME"
 if [ ! -f "/mnt/${SITENAME}/blog/sample-blog-post.md" ]; then
     /usr/local/bin/hugo new blog/sample-blog-post.md || true
 fi
-if [ ! -f "/mnt/${SITENAME}/micro/sample-microblog-post.md" ] then
+if [ ! -f "/mnt/${SITENAME}/micro/sample-microblog-post.md" ]; then
     /usr/local/bin/hugo new micro/sample-microblog-post.md || true
 fi
 
