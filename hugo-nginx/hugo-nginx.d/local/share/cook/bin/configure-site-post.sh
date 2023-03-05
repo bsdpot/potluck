@@ -39,7 +39,14 @@ cd "/mnt/$SITENAME"
 /usr/local/bin/git config user.name "$GITUSER" || true
 /usr/local/bin/git submodule add https://github.com/pavel-pi/kiss-em.git themes/kiss-em || true
 # shellcheck disable=SC2035
-/usr/local/bin/git add -v * || true
+/usr/local/bin/git add -v *
 
 # copy across site icons and css
-cp -r "/mnt/$SITENAME/themes/kiss-em/static/*" "/mnt/$SITENAME/static/"
+if [ -d "/mnt/$SITENAME/themes/kiss-em/static/" ] && [ -d "/mnt/$SITENAME/static/" ]; then
+    cd "/mnt/$SITENAME/themes/kiss-em/static/"
+    cp -r * "/mnt/$SITENAME/static/"
+    cd "/mnt/$SITENAME"
+else
+    echo "There is an error with /mnt/$SITENAME/themes/kiss-em/static/ or /mnt/$SITENAME/static/"
+    exit 1
+fi

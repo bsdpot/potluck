@@ -5,6 +5,7 @@
 * Add ports to consul config
 * Adjust hugo-pre step to create new hugo site if not existing
 * Fix git fatal error by moving step to add safe directory before git init step
+* Adjust theme copy step
 
 ---
 
