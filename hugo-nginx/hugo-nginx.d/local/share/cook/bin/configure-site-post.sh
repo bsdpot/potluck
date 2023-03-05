@@ -31,13 +31,15 @@ chown -R www:www "/mnt/$SITENAME"
 
 # setup git
 cd "/mnt/$SITENAME"
-/usr/local/bin/git init
-/usr/local/bin/git config user.email "$GITEMAIL"
-/usr/local/bin/git config user.name "$GITUSER"
-/usr/local/bin/git config --global --add safe.directory "/mnt/$SITENAME"
-/usr/local/bin/git submodule add https://github.com/pavel-pi/kiss-em.git themes/kiss-em
+# git init complains about dubious ownership and gives an error. whitelist the directory
+# move this step first
+/usr/local/bin/git config --global --add safe.directory "/mnt/$SITENAME" || true
+/usr/local/bin/git init || true
+/usr/local/bin/git config user.email "$GITEMAIL" || true
+/usr/local/bin/git config user.name "$GITUSER" || true
+/usr/local/bin/git submodule add https://github.com/pavel-pi/kiss-em.git themes/kiss-em || true
 # shellcheck disable=SC2035
-/usr/local/bin/git add -v *
+/usr/local/bin/git add -v * || true
 
 # copy across site icons and css
 cp -r "/mnt/$SITENAME/themes/kiss-em/static/*" "/mnt/$SITENAME/static/"
