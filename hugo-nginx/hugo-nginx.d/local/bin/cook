@@ -123,9 +123,6 @@ if [ -n "${THEMEADJUST}" ]; then
     configure-theme.sh
 fi
 
-log "Configuring permissions"
-configure-permissions.sh
-
 log "Configure Hugo"
 configure-hugo.sh
 
