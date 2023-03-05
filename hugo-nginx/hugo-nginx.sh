@@ -127,6 +127,9 @@ pkg install -y nginx
 step "Install package gohugo"
 pkg install -y gohugo
 
+step "Install package goaccess"
+pkg install -y goaccess
+
 step "Install package node_exporter"
 pkg install -y node_exporter
 

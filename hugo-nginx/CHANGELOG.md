@@ -10,6 +10,7 @@
 * Bug-fixing git and hugo commands
 * Fix typos in bug-fixes
 * Fix goaccess config file location
+* Include goaccess in pkg install
 
 ---
 
