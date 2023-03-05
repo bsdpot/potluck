@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Fix documentation for missing parameters
 * Add ports to consul config
+* Adjust hugo-pre step to create new hugo site if not existing
 
 ---
 

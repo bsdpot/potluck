@@ -9,7 +9,7 @@ tags: ["www", "website generator", "static site", "automated builds", "hugo", "n
 
 This is a flavour containing the ```hugo``` website builder and nginx, a webserver.
 
-This is a minimal config with no SSL configured as this is expected to be handled by a proxy to the image.
+This is a minimal config with no SSL configured as this is expected to be handled by a reverse proxy.
 
 It has been put together specifically for use by the https://potluck.honeyguide.net website, however it could be utilised for any site.
 

@@ -13,9 +13,15 @@ export PATH=/usr/local/bin:$PATH
 
 # setup hugo pre-steps
 cd /mnt
-/usr/local/bin/hugo new site "$SITENAME" || true
 
-# this has to happen after the force create of site as was wiping this
+# if no hugo site directories, then create a site
+# testing, not clear if mandatory
+if [ ! -f /mnt/$SITENAME/config.toml ]; then
+    /usr/local/bin/hugo new site "$SITENAME" || true
+fi
+
+# this has to happen after the force create, as this directory was getting wiped
+# this is pot a mount-in now
 # make some directories from input variables
 mkdir -p "/mnt/$SITENAME/$CUSTOMDIR/"
 
