@@ -21,7 +21,9 @@ mkdir -p /usr/local/etc/goaccess
 cp -f "$TEMPLATEPATH/goaccess.conf.in" /usr/local/etc/goaccess/goaccess.conf
 
 # move old goaccess config
-mv /usr/local/etc/goaccess.conf /usr/local/etc/goaccess.conf.ignore
+if [ -f /usr/local/etc/goaccess.conf ]; then
+    mv -f /usr/local/etc/goaccess.conf /usr/local/etc/goaccess.conf.ignore
+fi
 
 # setup service
 sysrc goaccess_config="/usr/local/etc/goaccess/goaccess.conf"

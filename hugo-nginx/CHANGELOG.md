@@ -11,6 +11,7 @@
 * Fix typos in bug-fixes
 * Fix goaccess config file location
 * Include goaccess in pkg install
+* Fix ongoing goaccess issues
 
 ---
 
