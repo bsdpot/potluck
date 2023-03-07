@@ -1,3 +1,9 @@
+2.2.12
+
+* Various fixes, support for backup node
+
+---
+
 2.2.11
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured
