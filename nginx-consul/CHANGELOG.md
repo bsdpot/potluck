@@ -1,3 +1,9 @@
+0.1.4
+
+* Explicitly install ca_root_nss, as it does not come with curl anymore
+
+---
+
 0.1.3
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured

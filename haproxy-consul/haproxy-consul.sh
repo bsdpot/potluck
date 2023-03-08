@@ -115,6 +115,9 @@ pkg install -y sudo
 step "Install package curl"
 pkg install -y curl
 
+step "Install package ca_root_nss"
+pkg install -y ca_root_nss
+
 step "Install package jq"
 pkg install -y jq
 
