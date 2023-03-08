@@ -1,3 +1,9 @@
+2.2.13
+
+* Remove outdated consul patch
+
+---
+
 2.2.12
 
 * Various fixes, support for backup node
