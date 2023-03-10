@@ -141,6 +141,9 @@ if [ -f /usr/local/share/postfix/mailer.conf.postfix ]; then
     install -m 0644 /usr/local/share/postfix/mailer.conf.postfix /usr/local/etc/mail/mailer.conf
 fi
 
+# increase default for virrtual alias expansion
+postconf -e virtual_alias_expansion_limit=3000 || true
+
 # disable old mail services and enable postfix
 sysrc sendmail_submit_enable="NO"
 sysrc sendmail_outbound_enable="NO"
