@@ -209,7 +209,7 @@ ssl = yes
 #mail_location = maildir:%%vhostdir%%/mail/%n:LAYOUT=fs
 #mail_home = %%vhostdir%%/mail/%n
 # delivers to /mnt/dovecot/mail/{uid}
-mail_location = maildir:%%vhostdir%%/mail/%u:LAYOUT=fs
+mail_location = maildir:%%vhostdir%%/mail/%u:LAYOUT=fs:LISTINDEX=
 mail_home = %%vhostdir%%/mail/%u
 mail_privileged_group = vhost
 mail_plugins = quota acl
@@ -221,7 +221,8 @@ namespace inbox {
   # Hierarchy separator to use. You should use the same separator for all
   # namespaces or some clients get confused. '/' is usually a good one.
   # The default however depends on the underlying mail storage format.
-  separator = /
+  # use '.' instead of '/' for Maildir
+  separator = .
 
   # Prefix required to access this namespace. This needs to be different for
   # all namespaces. For example "Public/".
@@ -328,8 +329,10 @@ namespace {
   location = maildir:%%vhostdir%%/mail/%%u:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%u/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%u/shared/%%u
   #prefix = shared/%%n/
   prefix = shared/%%u/
-  separator = /
-  subscriptions = no
+  # use '.' for Maildir instead of '/'
+  separator = .
+  # setting to yes instead of no, revert if issues
+  subscriptions = yes
   type = shared
 }
 

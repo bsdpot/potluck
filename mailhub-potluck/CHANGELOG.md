@@ -7,6 +7,7 @@
 * Debugging adjustments for delivery to correct user folder
 * Add back user-based auth-bind
 * Increase default virtual_alias_expansion_limit to 3000
+* Adjustments for Maildir
 
 ---
 
