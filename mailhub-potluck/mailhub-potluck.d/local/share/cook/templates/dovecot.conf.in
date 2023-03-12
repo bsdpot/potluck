@@ -209,7 +209,9 @@ ssl = yes
 #mail_location = maildir:%%vhostdir%%/mail/%n:LAYOUT=fs
 #mail_home = %%vhostdir%%/mail/%n
 # delivers to /mnt/dovecot/mail/{uid}
-mail_location = maildir:%%vhostdir%%/mail/%u:LAYOUT=fs:LISTINDEX=
+#
+# include Maildir after %u
+mail_location = maildir:%%vhostdir%%/mail/%u/Maildir:LAYOUT=fs:LISTINDEX=
 mail_home = %%vhostdir%%/mail/%u
 mail_privileged_group = vhost
 mail_plugins = quota acl
@@ -250,7 +252,7 @@ namespace inbox {
 
   # Namespace handles its own subscriptions. If set to "no", the parent
   # namespace handles them (empty prefix should always have this as "yes")
-  subscriptions = yes
+  #subscriptions = yes
 }
 mail_shared_explicit_inbox = yes
 
@@ -270,6 +272,9 @@ protocol lda {
 #
 
 namespace inbox {
+
+  # adding
+  inbox = yes
 
   #mailbox name {
     # auto=create will automatically create this mailbox.
@@ -330,8 +335,7 @@ namespace {
   #prefix = shared/%%n/
   prefix = shared/%%u/
   separator = /
-  # setting to yes instead of no, revert if issues
-  subscriptions = yes
+  subscriptions = no
   type = shared
 }
 
