@@ -221,11 +221,11 @@ namespace inbox {
   # Hierarchy separator to use. You should use the same separator for all
   # namespaces or some clients get confused. '/' is usually a good one.
   # The default however depends on the underlying mail storage format.
-  # use '.' instead of '/' for Maildir
-  separator = .
+  separator = /
 
   # Prefix required to access this namespace. This needs to be different for
   # all namespaces. For example "Public/".
+  # default not enabled
   #prefix =
 
   # Physical location of the mailbox. This is in same format as
@@ -250,7 +250,7 @@ namespace inbox {
 
   # Namespace handles its own subscriptions. If set to "no", the parent
   # namespace handles them (empty prefix should always have this as "yes")
-  #subscriptions = yes
+  subscriptions = yes
 }
 mail_shared_explicit_inbox = yes
 
@@ -329,8 +329,7 @@ namespace {
   location = maildir:%%vhostdir%%/mail/%%u:LAYOUT=fs:INDEX=%%vhostdir%%/indexes/%u/shared/%%u:INDEXPVT=%%vhostdir%%/indexes/%u/shared/%%u
   #prefix = shared/%%n/
   prefix = shared/%%u/
-  # use '.' for Maildir instead of '/'
-  separator = .
+  separator = /
   # setting to yes instead of no, revert if issues
   subscriptions = yes
   type = shared
@@ -488,7 +487,7 @@ plugin {
   # removed for testing
   #sieve = %%vhostdir%%/mail/%n/.dovecot.sieve
   # new unified to uid
-  sieve = %%vhostdir%%/mail/%u/.dovecot.sieve
+  sieve = %%vhostdir%%/mail/%u/Maildir/.dovecot.sieve
 
   # A path to a global sieve script file, which gets executed ONLY
   # if user's private Sieve script doesn't exist. Be sure to 
@@ -508,7 +507,7 @@ plugin {
   # removed for testing
   #sieve_dir = %%vhostdir%%/mail/%n
   # new unified to uid
-  sieve_dir = %%vhostdir%%/mail/%u
+  sieve_dir = %%vhostdir%%/mail/%u/Maildir
 
   # Directory for :global include scripts for the include extension. 
   #sieve_global_dir =

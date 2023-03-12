@@ -8,6 +8,7 @@
 * Add back user-based auth-bind
 * Increase default virtual_alias_expansion_limit to 3000
 * Adjustments for Maildir
+* Revert some settings
 
 ---
 
