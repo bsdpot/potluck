@@ -16,6 +16,7 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # make directories if not exist
 mkdir -p /mnt/dovecot/mail
+mkdir -p /mnt/dovecot/sieve/before.d/
 
 # create vhost user and group
 # create Dovecot Virtual Mail User
