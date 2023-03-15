@@ -10,6 +10,8 @@
 * Adjustments for Maildir
 * Revert some settings
 * More changes to Maildir settings
+* Add dovecot-spamass_destination_recipient_limit = 1 to main.cf
+* Adjust postfix ldap alias filters to get uid
 
 ---
 
