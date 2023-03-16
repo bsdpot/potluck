@@ -13,6 +13,7 @@
 * Add dovecot-spamass_destination_recipient_limit = 1 to main.cf
 * Adjust postfix ldap alias filters to get uid
 * Create missing sieve directories
+* Fix postfix ldap settings again
 
 ---
 
