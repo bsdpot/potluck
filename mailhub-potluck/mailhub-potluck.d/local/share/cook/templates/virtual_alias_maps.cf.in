@@ -4,7 +4,8 @@ start_tls        = no
 version          = 3
 search_base      = %%searchbase%%
 scope            = sub
-query_filter     = (&(objectclass=inetOrgPerson)(mail=%s))
+query_filter     = (&(objectClass=posixAccount)(|(uid=%s)(mail=%s)))
 result_attribute = uid
+result_format    = %s
 debuglevel       = 0
 

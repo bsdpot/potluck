@@ -743,3 +743,7 @@ smtpd_sender_restrictions = hash:/usr/local/etc/postfix/access
 # get rid of error
 # warning: pipe flag `D' requires dovecot-spamass_destination_recipient_limit = 1
 dovecot-spamass_destination_recipient_limit = 1
+
+# added to allow delivery to 'username' accounts (not username@domain) which aren't local
+# but are in virtual aliases
+receive_override_options = no_address_mappings
