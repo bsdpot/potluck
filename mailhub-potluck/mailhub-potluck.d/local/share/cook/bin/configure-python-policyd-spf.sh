@@ -23,5 +23,5 @@ sep=$'\001'
 
 # setup a default policyd-spf.conf where the HELO_reject is set to False and add whitelist
 < "$TEMPLATEPATH/policyd-spf.conf.in" \
-  sed "s${sep}%%postnetworks%%${sep}$POSTNETWORKS${sep}g" \
+  sed "s${sep}%%whitelist%%${sep}$WHITELIST${sep}g" \
   > /usr/local/etc/python-policyd-spf/policyd-spf.conf

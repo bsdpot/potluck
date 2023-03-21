@@ -20,6 +20,7 @@
 * Adjust default HELO_reject rule to False in python-policyd-spf.conf
 * Include POSTNETWORKS in python-policyd-spf.conf Whitelist
 * Adjust note for excluding gateway/firewall in POSTNETWORKS
+* Change to WHITELIST for python-policyd-spf.conf Whitelist
 
 ---
 
