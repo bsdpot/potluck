@@ -67,9 +67,9 @@ The SEARCHBASE parameter is for LDAP usage in the format `"ou=People,dc=yourdoma
 
 The POSTDATADIR parameter is the postfix data directory, such as `/var/db/postfix` or `/mnt/postfix` with a mount-in persistent storage.
 
-The POSTNETWORKS parameter is a comma-deliminated list of host/mask addresses with zero restrictions and must include `"127.0.0.0/8,10.0.0.0/8,your-trusted-host/netmask,your-trusted-host-2/netmask"`
+The POSTNETWORKS parameter is a comma-deliminated list of host/mask addresses with zero restrictions and must include `"127.0.0.0/8,10.0.0.0/8,!10.0.0.1,your-trusted-host/netmask,your-trusted-host-2/netmask"`
 
-> Do not set too broadly, do not list your gateway/firewall IP, else postfix will become an open relay.
+> Do not set too broadly, exclude your gateway/firewall IP with !, else postfix will become an open relay.
 
 The POSTDOMAINS parameter is a comma-deliminated list of domain names to accept mail for, such as `"domain.tld, other.com, newdomain.sh"`.
 
