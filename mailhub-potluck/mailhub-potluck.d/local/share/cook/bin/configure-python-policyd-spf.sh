@@ -21,9 +21,7 @@ mkdir -p /usr/local/etc/python-policyd-spf
 # safe(r) separator for sed
 sep=$'\001'
 
-# setup a default policyd-spf.conf where the HELO_reject is set to SPF_Not_Pass (to be tested, adjusted)
-# This replacement adds the mail domain to a comment. In future this could be expanded to set
-# specific options in the file, or add hosts to ignore
+# setup a default policyd-spf.conf where the HELO_reject is set to False and add whitelist
 < "$TEMPLATEPATH/policyd-spf.conf.in" \
-  sed "s${sep}%%mailcertdomain%%${sep}$MAILCERTDOMAIN${sep}g" \
+  sed "s${sep}%%postnetworks%%${sep}$POSTNETWORKS${sep}g" \
   > /usr/local/etc/python-policyd-spf/policyd-spf.conf
