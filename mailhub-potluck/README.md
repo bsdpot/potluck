@@ -9,6 +9,8 @@ tags: ["email", "mail server", "postfix", "dovecot", "spamassassin"]
 
 This flavour is an application pot flavour with `postfix-ldap`, `dovecot`, `spamassassin` and related packages.
 
+It is assumed this jail is running behind a firewall or gateway device with proxyarp on public address, and 1:1 NAT to internal IP.
+
 # Installation
 
 * Create your local jail from the image or the flavour files.

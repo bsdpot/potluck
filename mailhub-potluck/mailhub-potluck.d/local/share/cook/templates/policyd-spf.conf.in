@@ -6,8 +6,8 @@ TestOnly = 1
 # Adjust this for problem mail sources like outlook or rsgsv.net
 #HELO_reject = Fail
 # default is SPF_Not_Pass in some docs, but default in FreeBSD is Fail
-HELO_reject = False
-Mail_From_reject = False
+HELO_reject = Fail
+Mail_From_reject = Fail
 
 PermError_reject = False
 TempError_Defer = False

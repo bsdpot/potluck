@@ -22,6 +22,7 @@
 * Adjust note for excluding gateway/firewall in POSTNETWORKS
 * Change to WHITELIST for python-policyd-spf.conf Whitelist
 * README updates
+* Revert some python-policyd-spf.conf settings to original
 
 ---
 
