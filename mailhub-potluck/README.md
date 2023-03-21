@@ -72,7 +72,7 @@ The POSTNETWORKS parameter is a comma-deliminated list of host/mask addresses wi
 
 > Do not set too broadly, exclude your gateway/firewall IP with !, else postfix will become an open relay.
 
-The WHITELIST parameter is similar to POSTNEWORKS, except no exclusions, or 127.0.0.1. Include your LAN and trusted mail hosts `"10.0.0.0/8,your-trusted-host/netmask,your-trusted-host-2/netmask"`
+The WHITELIST parameter is similar to POSTNETWORKS, except no exclusions. Use CIDR notation and do not include netmask for single IPs, only ranges. `"127.0.0.1,10.0.0.0/8,your-trusted-host/netmask,your-trusted-host-2/netmask"`
 
 The POSTDOMAINS parameter is a comma-deliminated list of domain names to accept mail for, such as `"domain.tld, other.com, newdomain.sh"`.
 
