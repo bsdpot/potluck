@@ -118,11 +118,15 @@ configure-opendkim.sh
 log "Configure opendmarc"
 configure-opendmarc.sh
 
+# configure custom python-policyd-spf
+log "Configure custom python-policyd-spf rules"
+configure-python-policyd-spf.sh
+
 # configure dovecot
 log "Configure dovecot"
 configure-dovecot.sh
 
-# configure claman
+# configure clamav
 log "Configure clamav"
 configure-clamav.sh
 

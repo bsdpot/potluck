@@ -1,0 +1,20 @@
+#  For a fully commented sample config file see policyd-spf.conf.commented
+
+debugLevel = 1 
+TestOnly = 1
+
+# Added for future use with configurable options, a random thing to replace
+# remove when replacing actual fields
+#  %%mailcertdomain%%
+# Adjust this for problem mail sources like outlook or rsgsv.net
+#HELO_reject = Fail
+# default is SPF_Not_Pass in some docs, but default in FreeBSD is Fail
+HELO_reject = SPF_Not_Pass
+Mail_From_reject = Fail
+
+PermError_reject = False
+TempError_Defer = False
+
+skip_addresses = 127.0.0.0/8,::ffff:127.0.0.0/104,::1
+# potential changes
+#skip_addresses = 127.0.0.0/8,::ffff:127.0.0.0/104,::1 %%skipaddresses%%
