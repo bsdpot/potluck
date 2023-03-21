@@ -695,15 +695,22 @@ smtpd_sasl_type = dovecot
 smtpd_sasl_auth_enable = yes
 smtpd_sasl_path = private/auth
 # Don't talk to mail systems that don't know their own hostname.
-smtpd_helo_restrictions = reject_unknown_helo_hostname
-# removed permit at end for testing
+smtpd_helo_restrictions = 
+        permit_sasl_authenticated,
+        permit_mynetworks,
+	reject_unknown_helo_hostname
+# removed permit at end of smtpd_recipient_restrictions for testing
+# do not add back
+# add new RBL servers with
+#       reject_rbl_client hostname.tld,
+# don't forget comma, but no comma at end of last item
 smtpd_recipient_restrictions =
         permit_sasl_authenticated,
         permit_mynetworks,
         reject_unauth_destination,
         check_policy_service unix:private/policyd-spf,
         reject_rbl_client bl.spamcop.net,
-        reject_rbl_client zen.spamhaus.org,
+        reject_rbl_client zen.spamhaus.org
 #       permit
 # added to stop open relay abuse
 smtpd_relay_restrictions = permit_mynetworks, 

@@ -15,6 +15,7 @@
 * Create missing sieve directories
 * Fix postfix ldap settings again
 * Add obscure setting 'receive_override_options = no_address_mappings' in main.cf to allow delivery to 'username' (not 'username@domain') accounts which aren't local but are in virtual aliases
+* Permit authenticated and my networks instead of blocking at helo time
 
 ---
 
