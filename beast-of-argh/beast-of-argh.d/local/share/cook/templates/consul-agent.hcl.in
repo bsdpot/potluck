@@ -1,6 +1,8 @@
 datacenter = "%%datacenter%%"
 node_name = "%%nodename%%"
 data_dir =  "/var/db/consul"
+bind_addr = "%%ip%%"
+client_addr = "127.0.0.1"
 dns_config = {
   a_record_limit = 3
   enable_truncate = true

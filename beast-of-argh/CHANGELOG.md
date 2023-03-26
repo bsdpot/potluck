@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Update loki and promtail to 2.7.3
+* Set consul options for bind address
 
 ---
 
