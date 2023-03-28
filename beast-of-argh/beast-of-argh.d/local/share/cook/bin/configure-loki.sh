@@ -16,29 +16,37 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # setup directories for loki
 mkdir -p /mnt/loki/rules-temp
+mkdir -p /tmp/loki
+
+# loki setup
+
+# create loki user
+/usr/sbin/pw useradd -n loki -c 'loki user' -m -s /usr/bin/nologin -h -
 
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
-
-# loki setup
 
 # copy in loki rc
 cp "$TEMPLATEPATH/loki.rc.in" /usr/local/etc/rc.d/loki
 chmod +x /usr/local/etc/rc.d/loki
 service loki enable || true
 sysrc loki_syslog_output_enable="YES"
+# not specifically needed if permissions on /tmp/loki and loki-local-config.yaml
+# are correct
+#sysrc loki_user="loki"
+#sysrc loki_group="loki"
+#sysrc loki_config="/usr/local/etc/loki-local-config.yaml"
 
-# copy in loki config file
+# copy in loki config file, make sure loki can RW it
 < "$TEMPLATEPATH/loki-local-config.yaml.in" \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" \
   > /usr/local/etc/loki-local-config.yaml
 
-# create loki user
-/usr/sbin/pw useradd -n loki -c 'loki user' -m -s /usr/bin/nologin -h -
-
-# chown to loki user
+# set permissions on directories and files
+chown loki:loki /usr/local/etc/loki-local-config.yaml
 chown -R loki:loki /mnt/loki
+chown -R loki:loki /tmp/loki
 
 # promtail setup
 

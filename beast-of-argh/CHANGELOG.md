@@ -5,6 +5,7 @@
 * Set consul options for bind address
 * Revert to consul json config file until consul fixed start with hcl
 * Update loki and promtail to 2.7.5
+* Update loki configuration file, permissions, sysrc entries
 
 ---
 

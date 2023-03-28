@@ -8,6 +8,21 @@ server:
   log_format: logfmt
   log_level: warn
 
+querier:
+  multi_tenant_queries_enabled: false
+  max_concurrent: 4096
+  query_store_only: false
+
+query_scheduler:
+  max_outstanding_requests_per_tenant: 10000
+
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100
+
 common:
   path_prefix: /tmp/loki
   storage:
