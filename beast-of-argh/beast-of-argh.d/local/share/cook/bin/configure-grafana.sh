@@ -33,6 +33,9 @@ chown -R grafana:grafana /mnt/applog/grafana
 if [ ! -f /mnt/grafana/grafana.db ]; then
     # if empty we need to copy in the directory structure from install
     cp -a /var/db/grafana /mnt
+    # new: we get the provisioning directory from here now
+    #  /usr/local/etc/grafana/provisioning
+    cp -a /usr/local/etc/grafana/provisioning /mnt/grafana
 
     # make sure permissions are good for /mnt/grafana
     chown -R grafana:grafana /mnt/grafana
@@ -148,20 +151,20 @@ else
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/
 fi
 
-# config file hasn't been renamed to grafani.ini yet
-# local edits for grafana.conf here
+# config file has been updated to grafani.ini
+# local edits for grafana.ini here
 # the mount path for some options is set to /mnt/grafana/...
-< "$TEMPLATEPATH/grafana.conf.in" \
+< "$TEMPLATEPATH/grafana.ini.in" \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%grafanauser%%${sep}$GRAFANAUSER${sep}g" | \
   sed "s${sep}%%grafanapassword%%${sep}$GRAFANAPASSWORD${sep}g" \
-  > /usr/local/etc/grafana.conf
+  > /usr/local/etc/grafana.ini
 
 # enable grafana service
 # 'service grafana enable' not working for some reason, use sysrc method
 sysrc grafana_enable="YES"
 # config file hasn't been renamed to grafani.ini yet
-sysrc grafana_config="/usr/local/etc/grafana.conf"
+sysrc grafana_config="/usr/local/etc/grafana.ini"
 sysrc grafana_user="grafana"
 sysrc grafana_group="grafana"
 sysrc grafana_syslog_output_enable="YES"
