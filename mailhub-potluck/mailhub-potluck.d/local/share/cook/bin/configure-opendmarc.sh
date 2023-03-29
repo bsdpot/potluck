@@ -22,7 +22,7 @@ mkdir -p /mnt/opendmarc/
 sep=$'\001'
 
 < "$TEMPLATEPATH/opendmarc.conf.in" \
-  sed "s${sep}%%mailhost%%${sep}$MAILCERTDOMAIN${sep}g" | \
+  sed "s${sep}%%mailcertdomain%%${sep}$MAILCERTDOMAIN${sep}g" | \
   sed "s${sep}%%postmasteraddress%%${sep}$POSTMASTERADDRESS${sep}g" \
   > /usr/local/etc/mail/opendmarc.conf
 

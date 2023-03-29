@@ -61,7 +61,7 @@
 ##  Defines the "authserv-id" token to be used when generating 
 ##  Authentication-Results headers after message verification.
 
-# AuthservID        example.com
+AuthservID %%mailcertdomain%%
 
 ##  AuthservIDWithJobID
 ##      default "no"

@@ -23,6 +23,8 @@
 * Change to WHITELIST for python-policyd-spf.conf Whitelist
 * README updates
 * Revert some python-policyd-spf.conf settings to original
+* Set AuthservID for opendkim to public mail name
+* Set myhostname from mail certificate name in postfix main.cf
 
 ---
 

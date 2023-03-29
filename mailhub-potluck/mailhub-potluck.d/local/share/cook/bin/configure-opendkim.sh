@@ -23,6 +23,7 @@ sep=$'\001'
 
 # steps to setup opendkim
 < "$TEMPLATEPATH/opendkim.conf.in" \
+  sed "s${sep}%%mailcertdomain%%${sep}$MAILCERTDOMAIN${sep}g" | \
   sed "s${sep}%%signdomains%%${sep}$SIGNDOMAINS${sep}g" \
   > /usr/local/etc/mail/opendkim.conf
 
