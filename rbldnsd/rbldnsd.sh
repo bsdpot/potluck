@@ -97,6 +97,9 @@ pkg install -y ca_root_nss
 step "Install package curl"
 pkg install -y curl
 
+step "Install package acme.sh"
+pkg install -y acme.sh
+
 step "Install package jq"
 pkg install -y jq
 
