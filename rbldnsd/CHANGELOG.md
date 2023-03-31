@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Revert to json format consul config
+* Fix missing comma in agent.json
 
 ---
 

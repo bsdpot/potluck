@@ -17,7 +17,7 @@
       "verify_server_hostname": false
     }
   },
-  "disable_update_check": true
+  "disable_update_check": true,
   "encrypt": "%%gossipkey%%",
   "enable_syslog": true,
   "leave_on_terminate": true,
