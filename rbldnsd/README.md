@@ -26,6 +26,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
     -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
     -E DOMAIN=<your domain name> \
+    -E SSLEMAIL="<email address for certificate rgistration>" \
     [ -E REMOTELOG=<IP address> ] \
     [ -E RULESET="ruleset" ]
 
@@ -45,6 +46,8 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 
 The DOMAIN parameter is the domain name to use for this host. This will be utilised at bl.$DOMAIN and you must setup a DNS entry to match.
 
+The SSLEMAIL parameter is the email address used to register the domain at `zerossl`. 
+
 ## Optional Parameters
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
@@ -53,13 +56,13 @@ The RULESET parameter is one of 1, 2, 3, 7, or 30, for the [ruleset sources](htt
 
 # Usage
 
-To be added. This early version just starts `rbldnsd` with the applicable ruleset, and can be added to `postfix` as an RBL.
+To be added. This early version just starts `rbldnsd` with the applicable ruleset, and can be added to `postfix` as a RBL.
 
 # Testing rbldnsd
 
-To test if working, check host IP 1.2.3.4 in reverse notation, and include the domain of this image, and query the IP:
+To test if working, check host IP 1.2.3.4 in reverse notation, and include the domain `bl.your.domain` of this image, and query the IP:
 
 ```
-host -t TXT 4.3.2.1.your.domain ip.of.rbldnsd
+host -t TXT 4.3.2.1.bl.your.domain ip.of.rbldnsd
 ```
 * needs review

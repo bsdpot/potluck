@@ -45,7 +45,7 @@ fi
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY DOMAIN"
+required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY DOMAIN SSLEMAIL"
 optional_args="REMOTELOG RULESET"
 
 for var in $required_args; do
@@ -106,17 +106,17 @@ service rbldnsd start
 # with a reply to
 # 1.2.3.4 :127.0.0.2:Blocked, see http://bl.domain.com/lookup?$
 #
-#log "Start nginx"
-#timeout --foreground 120 \
-#  sh -c 'while ! service nginx status; do
-#    service nginx start || true; sleep 5;
-#  done'
-#
-#log "Start php-fpm"
-#timeout --foreground 120 \
-#  sh -c 'while ! service php-fpm status; do
-#    service php-fpm start || true; sleep 5;
-#  done'
+log "Start nginx"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status; do
+    service nginx start || true; sleep 5;
+  done'
+
+log "Start php-fpm"
+timeout --foreground 120 \
+  sh -c 'while ! service php-fpm status; do
+    service php-fpm start || true; sleep 5;
+  done'
 
 log "Exit seasoned"
 pot_seasoned_exit

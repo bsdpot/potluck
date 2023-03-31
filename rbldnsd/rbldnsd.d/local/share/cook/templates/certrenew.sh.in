@@ -1,0 +1,9 @@
+#!/bin/sh
+cd /root
+service nginx stop
+/usr/local/sbin/acme.sh --register-account -m "%%sslemail%%" --home /mnt/acme --server zerossl
+/usr/local/sbin/acme.sh --set-default-ca --server zerossl
+/usr/local/sbin/acme.sh --issue -d bl.%%domain%% --server zerossl --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
+cp -f /mnt/acme/bl.%%domain%%/* /usr/local/etc/ssl/
+service nginx start
+service php-fpm restart

@@ -16,19 +16,24 @@ http {
     proxy_read_timeout 600s;
     fastcgi_send_timeout 600s;
     fastcgi_read_timeout 600s;
+
     server {
         listen %%ip%%:80 default_server;
         server_name bl.%%domain%%;
-        root /usr/local/www/rbldnsd;
-        index index.html index.php;
-        client_max_body_size 512M;
-        client_body_timeout 600s;
-        fastcgi_buffers 64 4K;
-        fastcgi_buffer_size 64k;
-        fastcgi_busy_buffers_size 64k;
+        return 301 https://$host$request_uri;
+        }
+    }
+
+    server {
+        listen %%ip%%:443 ssl;
+        server_name bl.%%domain%%;
+        ssl_certificate /usr/local/etc/ssl/fullchain.cer;
+        ssl_certificate_key /usr/local/etc/ssl/bl.%%domain%%.key;
+
         location / {
             try_files $uri $uri/ =404;
         }
+
         location ~ \.php$ {
             root           /usr/local/www/rbldnsd;
             fastcgi_pass   127.0.0.1:9000;

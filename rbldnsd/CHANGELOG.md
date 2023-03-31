@@ -3,6 +3,8 @@
 * Version bump for new base image
 * Revert to json format consul config
 * Fix missing comma in agent.json
+* Update README for sample query
+* Add acme.sh and finalise nginx
 
 ---
 

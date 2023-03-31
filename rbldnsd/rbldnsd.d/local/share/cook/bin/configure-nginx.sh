@@ -14,11 +14,15 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# make traumadrill web directory and set permissions
+# make rbldnsd web directory and set permissions
 mkdir -p /usr/local/www/rbldnsd
 
 # copy in index.php
-cp -f "$TEMPLATEPATH/index.php.in" /usr/local/www/rbldnsd/index.php
+##cp -f "$TEMPLATEPATH/index.php.in" /usr/local/www/rbldnsd/index.php
+< "$TEMPLATEPATH/index.php.in" \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+  sed "s${sep}%%ruleset%%${sep}$RULESET${sep}g" \
+  > /usr/local/www/rbldnsd/index.php
 
 # set ownership on web directory, www needs write perms for stress-ng
 chown www:www /usr/local/www/rbldnsd
@@ -37,8 +41,54 @@ sep=$'\001'
 # copy over custom php.ini with long execution time
 cp -f "$TEMPLATEPATH/php.ini.in" /usr/local/etc/php.ini
 
-# enable nginx
-service nginx enable || true
+# copy in certrenew script
+mkdir -p /root/bin
+< "$TEMPLATEPATH/certrenew.sh.in" \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+  sed "s${sep}%%sslemail%%${sep}$SSLEMAIL${sep}g" \
+  > /root/bin/certrenew.sh
 
-# enable php-fpm
-service php-fpm enable || true
+# set executable permissions
+chmod u+x /root/bin/certrenew.sh
+
+# setup crontab
+echo "30      4       1       *       *       root   /bin/sh /root/bin/certrenew.sh" >> /etc/crontab
+
+# certificates
+echo "Generating certificates"
+# the following is required for option --set-default-ca
+mkdir -p /mnt/acme
+mkdir -p /root/.acme.sh/
+touch /root/.acme.sh/account.conf
+
+if [ ! -d "/mnt/acme/bl.$DOMAIN" ]; then
+    /usr/local/sbin/acme.sh --register-account -m "$SSLEMAIL" --home /mnt/acme --server zerossl
+    /usr/local/sbin/acme.sh --set-default-ca --server zerossl
+    /usr/local/sbin/acme.sh --issue -d "bl.$DOMAIN" --server zerossl \
+      --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log || true
+    if [ ! -f "/mnt/acme/bl.$DOMAIN/bl$DOMAIN.cer" ]; then
+        echo "Trying to register cert again, sleeping 30"
+        sleep 30
+        /usr/local/sbin/acme.sh --issue -d "bl.$DOMAIN" --server zerossl \
+          --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log || true
+        if [ ! -f "/mnt/acme/bl.$DOMAIN/bl.$DOMAIN.cer" ]; then
+            echo "missing bl.$DOMAIN.cer, certificate not registered"
+            exit 1
+        fi
+    fi
+    # copy files to ssl dir
+    cp -f "/mnt/acme/bl.$DOMAIN/*" /usr/local/etc/ssl/
+else
+    echo "/mnt/acme/bl.$DOMAIN exists, not creating certificates, copying to SSL dir"
+    # try continue, with a cert hopefully
+    cp -f "/mnt/acme/bl.$DOMAIN/*" /usr/local/etc/ssl/
+fi
+
+# enable nginx
+if [ -f "/usr/local/etc/ssl/bl.$DOMAIN.key" ]; then
+    service nginx enable || true
+    service php-fpm enable || true
+else
+    echo "Cannot enable nginx. Missing /usr/local/etc/ssl/bl.$DOMAIN.key"
+    exit 1
+fi

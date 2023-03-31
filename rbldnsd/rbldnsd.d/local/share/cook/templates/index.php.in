@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>RBLDNSD</title>
+<title>bl.%%domain%% - RBLDNSD</title>
 <style>
     body {
         width: 35em;
@@ -11,17 +11,17 @@
 </style>
 </head>
 <body>
-<h1>WIP Content to be added</h1>
+<h1>Welcome to bl.%%domain%%</h1>
 
 <section>
     <div>
-	<p>text</p>
+	<p>If you got a blocked notice please access the URL in the notice.</p>
     </div>
 </section>
 
 <section>
     <div>
-	<p>more text</p>
+	<p>Ruleset is %%ruleset%%D from <a href="https://github.com/borestad/blocklist-ip" target="_blank">https://github.com/borestad/blocklist-ip</a>.</p>
     </div>
 </section>
 
