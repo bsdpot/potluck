@@ -8,13 +8,12 @@ fi
 set -e
 
 # add node_exporter user
-
 if ! id -u "nodeexport" >/dev/null 2>&1; then
   /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
 fi
 
 # enable node_exporter service
-service node_exporter enable
+service node_exporter enable || true
 sysrc node_exporter_args="--log.level=warn"
 sysrc node_exporter_user=nodeexport
 sysrc node_exporter_group=nodeexport

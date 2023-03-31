@@ -74,4 +74,5 @@ echo "0 */8 * * *  root  /usr/local/bin/updatelist.sh" >> /etc/crontab
 sysrc rbldnsd_flags="-r /usr/local/etc/rbldnsd -b $IP bl.$DOMAIN:ip4tset:$DOMAIN"
 
 # enable rbldnsd
-service rbldnsd enable
+service rbldnsd enable || true
+

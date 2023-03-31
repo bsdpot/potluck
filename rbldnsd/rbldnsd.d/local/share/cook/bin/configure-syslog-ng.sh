@@ -31,6 +31,6 @@ service syslogd onestop || true
 sysrc syslogd_enable="NO"
 
 # enable and start syslog-ng
-service syslog-ng enable
+service syslog-ng enable || true
 sysrc syslog_ng_flags="-R /tmp/syslog-ng.persist"
 service syslog-ng start

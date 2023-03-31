@@ -38,7 +38,7 @@ sep=$'\001'
 cp -f "$TEMPLATEPATH/php.ini.in" /usr/local/etc/php.ini
 
 # enable nginx
-service nginx enable
+service nginx enable || true
 
 # enable php-fpm
-service php-fpm enable
+service php-fpm enable || true
