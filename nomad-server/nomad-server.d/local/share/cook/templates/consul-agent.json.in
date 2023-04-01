@@ -1,0 +1,33 @@
+{
+  "bind_addr": "%%ip%%",
+  "client_addr": "127.0.0.1",
+  "advertise_addr": "%%ip%%",
+  "server": false,
+  "node_name": "%%nodename%%",
+  "datacenter": "%%datacenter%%",
+  "log_level": "WARN",
+  "data_dir": "/var/db/consul",
+  "tls": {
+    "defaults": {
+      "verify_incoming": false,
+      "verify_outgoing": false
+    },
+    "internal_rpc": {
+      "verify_incoming": false,
+      "verify_server_hostname": false
+    }
+  },
+  "disable_update_check": true,
+  "encrypt": "%%gossipkey%%",
+  "enable_syslog": true,
+  "leave_on_terminate": true,
+  "start_join": [ "%%consulservers%%" ],
+  "service": {
+    "name": "node-exporter",
+    "tags": ["_app=host-server", "_service=node-exporter", "_hostname=%%nodename%%", "_datacenter=%%datacenter%%"],
+    "port": 9100
+  },
+  "telemetry": {
+    "prometheus_retention_time": "24h"
+  }
+}

@@ -4,6 +4,8 @@
 * Fix checklist
 * Shellcheck exclusions
 * Add ports to consul agent config
+* Fix permissions on /usr/local/libexec/nomad/plugins
+* Revert to consul JSON agent config file
 
 ---
 

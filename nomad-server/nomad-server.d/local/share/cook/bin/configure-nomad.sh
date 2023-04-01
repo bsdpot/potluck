@@ -18,6 +18,7 @@ fi
 
 # make nomad plugin directory, may be useful in future
 mkdir -p /usr/local/libexec/nomad/plugins
+chown -R nomad:wheel /usr/local/libexec/nomad/
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
