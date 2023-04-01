@@ -158,13 +158,16 @@ fi
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%grafanauser%%${sep}$GRAFANAUSER${sep}g" | \
   sed "s${sep}%%grafanapassword%%${sep}$GRAFANAPASSWORD${sep}g" \
-  > /usr/local/etc/grafana.ini
+  > /usr/local/etc/grafana/grafana.ini
+
+# set permissions on grafana.ini
+chown grafana:grafana /usr/local/etc/grafana/grafana.ini
 
 # enable grafana service
 # 'service grafana enable' not working for some reason, use sysrc method
 sysrc grafana_enable="YES"
 # config file hasn't been renamed to grafani.ini yet
-sysrc grafana_config="/usr/local/etc/grafana.ini"
+sysrc grafana_config="/usr/local/etc/grafana/grafana.ini"
 sysrc grafana_user="grafana"
 sysrc grafana_group="grafana"
 sysrc grafana_syslog_output_enable="YES"

@@ -20,3 +20,8 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?
+
+## Testing notes
+This needs to be tested on:
+* new install, no data in persistent storage
+* upgrade install, existing data in persistent storage
