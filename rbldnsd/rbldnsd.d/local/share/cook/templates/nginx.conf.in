@@ -21,7 +21,6 @@ http {
         listen %%ip%%:80 default_server;
         server_name bl.%%domain%%;
         return 301 https://$host$request_uri;
-        }
     }
 
     server {
