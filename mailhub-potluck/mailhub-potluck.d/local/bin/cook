@@ -56,7 +56,7 @@ required_args="$required_args POSTDATADIR POSTNETWORKS WHITELIST"
 required_args="$required_args POSTDOMAINS MAILCERTDOMAIN"
 required_args="$required_args VHOSTDIR POSTMASTERADDRESS SIGNDOMAINS"
 required_args="$required_args MYSQLIP MYSQLDB MYSQLUSER MYSQLPASS"
-optional_args="REMOTELOG POSTSIZELIMIT ROOTMAIL"
+optional_args="REMOTELOG POSTSIZELIMIT ROOTMAIL CUSTOMRBL"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then

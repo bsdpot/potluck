@@ -49,7 +49,8 @@ It is assumed this jail is running behind a firewall or gateway device with prox
     -E MYSQLUSER=<username> -E MYSQLPASS=<password> \
     [-E REMOTELOG=<IP address of syslog-ng server>]
     [-E POSTSIZELIMIT=<size limit>] \
-    [-E ROOTMAIL=<email address to send root's mail>]
+    [-E ROOTMAIL=<email address to send root's mail>] \
+    [-E CUSTOMRBL=<IP address of rbldnsd jail>]
   ```
 * Start the jail
 
@@ -98,6 +99,8 @@ The REMOTELOG parameter is the IP address of a `syslog-ng` remote log service, s
 The POSTSIZELIMIT parameter is to set the size of accepted mail. The default is `536870912`.
 
 The ROOTMAIL parameter is an email address to use for redirecting root's mail.
+
+The CUSTOMRBL parameter is the IP address of a `rbldnsd` instance, such as [Potluck rbldnsd](https://github.com/bsdpot/potluck/tree/master/rbldnsd).
 
 ## Optional files to copy in
 

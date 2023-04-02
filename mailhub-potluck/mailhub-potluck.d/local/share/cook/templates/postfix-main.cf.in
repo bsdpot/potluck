@@ -713,6 +713,7 @@ smtpd_recipient_restrictions =
         check_policy_service unix:private/policyd-spf,
         reject_rbl_client bl.spamcop.net,
         reject_rbl_client zen.spamhaus.org
+        #customrbl#
 #       permit
 # added to stop open relay abuse
 smtpd_relay_restrictions = permit_mynetworks, 

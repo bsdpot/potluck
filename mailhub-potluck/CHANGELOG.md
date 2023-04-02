@@ -25,6 +25,8 @@
 * Revert some python-policyd-spf.conf settings to original
 * Set AuthservID for opendkim to public mail name
 * Set myhostname from mail certificate name in postfix main.cf
+* Adjust copied in files to subdirectory of root
+* Include CUSTOMRBL parameter and update main.cf if set
 
 ---
 
