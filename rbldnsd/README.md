@@ -56,13 +56,14 @@ The RULESET parameter is one of 1, 2, 3, 7, or 30, for the [ruleset sources](htt
 
 # Usage
 
-To be added. This early version just starts `rbldnsd` with the applicable ruleset, and can be added to `postfix` as a RBL.
+This early version just starts `rbldnsd` with the applicable ruleset, and can be added to `postfix` as a RBL.
+
+A standard page is available at `https://bl.YOURDOMAIN` and RBL blocks with URIs with automatically direct to the default page.
 
 # Testing rbldnsd
 
-To test if working, check host IP 1.2.3.4 in reverse notation, and include the domain `bl.your.domain` of this image, and query the IP:
+To test if working, take example IP 1.2.3.4, put in reverse notation, and append `bl.your.domain` and the IP to query:
 
 ```
 host -t TXT 4.3.2.1.bl.your.domain ip.of.rbldnsd
 ```
-* needs review
