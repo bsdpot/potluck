@@ -15,13 +15,19 @@
 
 <section>
     <div>
-	<p>If you got a blocked notice please access the URL in the notice.</p>
+	<p>If you got a blocked notice, please check your host reputation using one or more of the following services and get removed from the applicable RBLs:</p>
+        <ul>
+            <li><a href="https://multirbl.valli.org/lookup/" target="_blank">https://multirbl.valli.org/lookup/</a></li>
+            <li><a href="https://www.cyren.com/security-center/cyren-ip-reputation-check-gate" target="_blank">https://www.cyren.com/security-center/cyren-ip-reputation-check-gate</a></li>
+        </ul>
+        <p>We are automatically blocking because your IP is in the ruleset identified below. We cannot get your IP address removed.</p>
     </div>
 </section>
 
 <section>
     <div>
-	<p>Ruleset is %%ruleset%%D from <a href="https://github.com/borestad/blocklist-ip" target="_blank">https://github.com/borestad/blocklist-ip</a>.</p>
+        <h5>Current Ruleset</h5>
+	<p>Ruleset is %%ruleset%% Day from <a href="https://github.com/borestad/blocklist-ip" target="_blank">https://github.com/borestad/blocklist-ip</a>.</p>
     </div>
 </section>
 

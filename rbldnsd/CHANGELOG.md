@@ -8,6 +8,9 @@
 * Fix errors in previous update
 * Adjust acme certificates copy to ssl directory
 * Fix nginx.conf brackets
+* Adjust nginx config to fix index.php not showing as default
+* Fix default index.php page to list tools
+* Set temporary solution for lookup URI to direct to main page
 
 ---
 

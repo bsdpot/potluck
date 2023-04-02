@@ -28,9 +28,9 @@ sep=$'\001'
   sed "s${sep}%%ruleset%%${sep}$RULESET${sep}g" \
   > /usr/local/www/rbldnsd/index.php
 
-# set ownership on web directory, www needs write perms for stress-ng
-chown www:www /usr/local/www/rbldnsd
-chmod 775 /usr/local/www/rbldnsd
+# set ownership on web directory
+chown -R www:www /usr/local/www/rbldnsd
+chmod 755 /usr/local/www/rbldnsd
 
 # copy in custom nginx and set IP to ip address of pot image
 < "$TEMPLATEPATH/nginx.conf.in" \
