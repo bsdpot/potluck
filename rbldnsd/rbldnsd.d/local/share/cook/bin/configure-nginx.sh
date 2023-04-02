@@ -77,11 +77,12 @@ if [ ! -d "/mnt/acme/bl.$DOMAIN" ]; then
         fi
     fi
     # copy files to ssl dir
-    cp -f "/mnt/acme/bl.$DOMAIN/*" /usr/local/etc/ssl/
+    # option -R and trailing / will copy files inside the directory
+    cp -Rf "/mnt/acme/bl.$DOMAIN/" /usr/local/etc/ssl/
 else
     echo "/mnt/acme/bl.$DOMAIN exists, not creating certificates, copying to SSL dir"
     # try continue, with a cert hopefully
-    cp -f "/mnt/acme/bl.$DOMAIN/*" /usr/local/etc/ssl/
+    cp -Rf "/mnt/acme/bl.$DOMAIN/" /usr/local/etc/ssl/
 fi
 
 # enable nginx

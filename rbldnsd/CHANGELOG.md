@@ -6,6 +6,7 @@
 * Update README for sample query
 * Add acme.sh and finalise nginx
 * Fix errors in previous update
+* Adjust acme certificates copy to ssl directory
 
 ---
 
