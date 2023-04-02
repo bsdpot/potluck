@@ -5,6 +5,7 @@
 * Fix missing comma in agent.json
 * Update README for sample query
 * Add acme.sh and finalise nginx
+* Fix errors in previous update
 
 ---
 

@@ -17,6 +17,10 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # make rbldnsd web directory and set permissions
 mkdir -p /usr/local/www/rbldnsd
 
+# shellcheck disable=SC3003,SC2039
+# safe(r) separator for sed
+sep=$'\001'
+
 # copy in index.php
 ##cp -f "$TEMPLATEPATH/index.php.in" /usr/local/www/rbldnsd/index.php
 < "$TEMPLATEPATH/index.php.in" \
@@ -27,10 +31,6 @@ mkdir -p /usr/local/www/rbldnsd
 # set ownership on web directory, www needs write perms for stress-ng
 chown www:www /usr/local/www/rbldnsd
 chmod 775 /usr/local/www/rbldnsd
-
-# shellcheck disable=SC3003,SC2039
-# safe(r) separator for sed
-sep=$'\001'
 
 # copy in custom nginx and set IP to ip address of pot image
 < "$TEMPLATEPATH/nginx.conf.in" \
