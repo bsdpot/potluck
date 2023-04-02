@@ -12,6 +12,7 @@
 * Fix default index.php page to list tools
 * Set temporary solution for lookup URI to direct to main page
 * Update README to include default page
+* Include abuseipdb in the linked lookups
 
 ---
 
