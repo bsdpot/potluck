@@ -15,7 +15,9 @@ SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # cleanup goaccess
-mv /usr/local/etc/goaccess.conf /usr/local/etc/goaccess.conf.ignore
+if [ -f /usr/local/etc/goaccess.conf ]; then
+    mv -f /usr/local/etc/goaccess.conf /usr/local/etc/goaccess.conf.ignore
+fi
 
 # copy over goaccess.conf
 cp -f "$TEMPLATEPATH/goaccess.conf.in" /usr/local/etc/goaccess/goaccess.conf
@@ -24,9 +26,8 @@ cp -f "$TEMPLATEPATH/goaccess.conf.in" /usr/local/etc/goaccess/goaccess.conf
 # /etc/rc: WARNING: $goaccess_enable is not set properly - see rc.conf(5).
 
 # enable goaccess
-service goaccess enable
-
-# configure goaccess sysrc entires
+#service goaccess enable || true
+sysrc goaccess_enable="YES"
 sysrc goaccess_config="/usr/local/etc/goaccess/goaccess.conf"
 sysrc goaccess_log="/var/log/nginx/access.log"
 
