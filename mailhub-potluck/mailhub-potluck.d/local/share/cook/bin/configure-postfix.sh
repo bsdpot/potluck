@@ -70,8 +70,8 @@ fi
 # to the zen.spamhaus.org line, then replace text '#customrbl#' with the applicable
 # value for a new RBL server
 if [ -n "$CUSTOMRBL" ]; then
-  sed -i '' -e 's${sep}zen.spamhaus.org${sep}zen.spamhaus.org,${sep}g' \
-    -e 's${sep}#customrbl#${sep}reject_rbl_client $CUSTOMRBL${sep}g' /usr/local/etc/postfix/main.cf
+  sed -i '' -e "s${sep}zen.spamhaus.org${sep}zen.spamhaus.org,${sep}g" \
+    -e "s${sep}#customrbl#${sep}reject_rbl_client $CUSTOMRBL${sep}g" /usr/local/etc/postfix/main.cf
 fi
 
 # add master.cf with custom variable for mailname and to enable smtps and dovecot-spamass transport

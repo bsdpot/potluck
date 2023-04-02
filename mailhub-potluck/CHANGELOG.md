@@ -27,6 +27,7 @@
 * Set myhostname from mail certificate name in postfix main.cf
 * Adjust copied in files to subdirectory of root
 * Include CUSTOMRBL parameter and update main.cf if set
+* Fix sed for CUSTOMRBL
 
 ---
 
