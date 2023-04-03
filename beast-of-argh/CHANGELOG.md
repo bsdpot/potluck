@@ -8,6 +8,7 @@
 * Update loki configuration file, permissions, sysrc entries
 * Update grafana for grafana.ini and copy provisions dir from /usr/local/etc/grafana now
 * Fix permissions on grafana.ini
+* Update logs dashboard, replace nomad dashboards with newer ones
 
 ---
 
