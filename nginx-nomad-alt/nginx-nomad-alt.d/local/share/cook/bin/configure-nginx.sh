@@ -14,12 +14,15 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# Configure NGINX
-#cp -f "$TEMPLATEPATH/nginx.conf" /usr/local/etc/nginx/nginx.conf
-
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
+
+# make sure /mnt/www exists
+mkdir -w /mnt/www
+
+# set www owner on files
+chown -R www:www /mnt/www
 
 # copy in custom nginx and set IP to ip address of pot image
 < "$TEMPLATEPATH/nginx.conf.in" \
