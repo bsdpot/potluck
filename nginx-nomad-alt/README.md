@@ -11,7 +11,7 @@ This is a ```nginx``` jail that can be deployed via ```nomad```.
 
 You need to create persistent storage, with a subdirectory www. Place an index.php or index.html file, or whole website, in the www directory.
 
-Mount in the persistant storage to /mnt and the www subdirectory will be available in /mnt/www
+Mount in the persistant storage with www subdirectory to /usr/local/www/stdwebsite in the job file as below.
 
 ```nginx``` will serve files from this location by default.
 
@@ -26,10 +26,7 @@ You can pass in parameters to the image to set variables.
 
 -E SERVERNAME or `-s servername`.
 
-
 # Nomad Job File Samples
-
-## Two Minio servers
 
 The following is an example job file:
 
@@ -66,9 +63,12 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/nginx-nomad-alt"
         pot = "nginx-nomad-alt-amd64-13_1"
-        tag = "0.1.1"
+        tag = "0.1.3"
         command = "/usr/local/bin/cook"
         args = ["-s","servername"]
+        mount = [
+          "/mnt/data/jaildata/stdwebsite/www:/usr/local/www/stdwebsite",
+        ]
         port_map = {
           http = "80"
         }

@@ -18,11 +18,11 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 sep=$'\001'
 
-# make sure /mnt/www exists
-mkdir -w /mnt/www
+# make sure /usr/local/www/stdwebsite exists
+mkdir -p /usr/local/www/stdwebsite
 
 # set www owner on files
-chown -R www:www /mnt/www
+chown -R www:www /usr/local/www/stdwebsite
 
 # copy in custom nginx and set IP to ip address of pot image
 < "$TEMPLATEPATH/nginx.conf.in" \
