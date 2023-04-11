@@ -47,4 +47,31 @@ http {
             root   /usr/local/www/nginx-dist;
         }
     }
+
+    server {
+        listen       %%ip%%:9102 ssl http2;
+        server_name  %%nodename%%.%%datacenter%%.metrics;
+
+        ssl_certificate      /mnt/metricscerts/metrics.crt;
+        ssl_certificate_key  /mnt/metricscerts/metrics.key;
+
+        ssl_client_certificate /mnt/metricscerts/ca_root.crt;
+        ssl_verify_client on;
+
+        ssl_protocols TLSv1.3 TLSv1.2;
+        # https://ssl-config.mozilla.org/#server=nginx&config=intermediate
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+        ssl_prefer_server_ciphers off;
+
+        location / {
+          proxy_pass http://127.0.0.1:9102;
+        }
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/local/www/nginx-dist;
+        }
+    }
 }

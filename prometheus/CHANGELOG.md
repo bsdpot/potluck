@@ -1,3 +1,9 @@
+0.12.1
+
+* Add support from prometheus-log-exporter (implementation to be provided by user)
+
+---
+
 0.12.0
 
 * Remove SCRAPEDATABASES parameter
