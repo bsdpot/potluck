@@ -1,3 +1,10 @@
+1.7
+
+* Version bump for new base image
+* Update syslog-ng.conf stats_freq(0); -> stats(freq(0));
+
+---
+
 1.6
 
 * Version bump for new base image
