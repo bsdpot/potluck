@@ -58,7 +58,7 @@ The RULESET parameter is one of 1, 2, 3, 7, or 30, for the [ruleset sources](htt
 
 This early version just starts `rbldnsd` with the applicable ruleset, and can be added to `postfix` as a RBL.
 
-A standard page is available at `https://bl.YOURDOMAIN` and RBL blocks with URIs with automatically direct to the default page.
+A standard page is available at `https://bl.YOURDOMAIN` and RBL block messages with URIs are automatically directed to the default page.
 
 # Testing rbldnsd
 

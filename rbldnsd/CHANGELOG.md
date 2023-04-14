@@ -1,3 +1,10 @@
+0.4
+
+* Version bump for new base image
+* Update syslog-ng.conf stats_freq(0); -> stats(freq(0));
+
+---
+
 0.3
 
 * Version bump for new base image
@@ -13,6 +20,7 @@
 * Set temporary solution for lookup URI to direct to main page
 * Update README to include default page
 * Include abuseipdb in the linked lookups
+* Tweak README
 
 ---
 
