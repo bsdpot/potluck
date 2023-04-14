@@ -21,7 +21,7 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 ## Quarterly Package Updates
 Every new quarterly pkg release, update this line to next applicable quarter
 ```
-git pull --depth=1 origin 2023Q1
+git pull --depth=1 origin 2023Q2
 ```
 in this file:
 * mailhub-potluck.sh 
