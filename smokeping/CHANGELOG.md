@@ -1,3 +1,9 @@
+0.2
+
+* Version bump for new quarterlies
+
+---
+
 0.1
 
 * First bash at smokeping with nginx
