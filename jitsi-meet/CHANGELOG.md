@@ -1,3 +1,10 @@
+0.6
+
+* Version bump for new base image
+* Update syslog-ng.conf stats_freq(0); -> stats(freq(0));
+
+---
+
 0.5
 
 * Major rewrite for testing
