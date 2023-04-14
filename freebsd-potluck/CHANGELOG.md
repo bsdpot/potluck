@@ -1,3 +1,9 @@
+0.0.9
+
+* Version bump for new quarterly packages
+
+---
+
 0.0.8
 
 * Version bump for rebuild
