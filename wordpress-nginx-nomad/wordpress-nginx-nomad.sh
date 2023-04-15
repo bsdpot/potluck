@@ -240,8 +240,9 @@ pkg install -y libltdl
 step "Install package libpaper"
 pkg install -y libpaper
 
-step "Install package libpthread-stubs"
-pkg install -y libpthread-stubs
+# removed
+#step "Install package libpthread-stubs"
+#pkg install -y libpthread-stubs
 
 step "Install package libraqm"
 pkg install -y libraqm

@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Version bump for image rebuild
+* Package libpthread-stubs no longer exists
 
 ---
 
