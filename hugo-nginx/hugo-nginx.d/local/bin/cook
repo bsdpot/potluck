@@ -136,10 +136,7 @@ log "Configure goaccess"
 configure-goaccess.sh
 
 log "Start goaccess"
-timeout --foreground 120 \
-  sh -c 'while ! service goaccess status; do
-    service goaccess start || true; sleep 5;
-  done'
+service goaccess start || true
 
 log "Exit seasoned"
 pot_seasoned_exit

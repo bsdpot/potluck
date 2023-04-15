@@ -42,6 +42,7 @@ cd "/mnt/$SITENAME"
 /usr/local/bin/git add -v *
 
 # copy across site icons and css
+# shellcheck disable=SC2035
 if [ -d "/mnt/$SITENAME/themes/kiss-em/static/" ] && [ -d "/mnt/$SITENAME/static/" ]; then
     cd "/mnt/$SITENAME/themes/kiss-em/static/"
     cp -r * "/mnt/$SITENAME/static/"

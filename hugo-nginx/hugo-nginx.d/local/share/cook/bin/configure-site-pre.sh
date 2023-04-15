@@ -16,7 +16,7 @@ cd /mnt
 
 # if no hugo site directories, then create a site
 # testing, not clear if mandatory
-if [ ! -f /mnt/$SITENAME/config.toml ]; then
+if [ ! -f "/mnt/$SITENAME/config.toml" ]; then
     /usr/local/bin/hugo new site "$SITENAME" || true
 fi
 
