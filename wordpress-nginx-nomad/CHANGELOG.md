@@ -1,6 +1,7 @@
 2.3
 
 * Version bump for new base image
+* Version bump for image rebuild
 
 ---
 
