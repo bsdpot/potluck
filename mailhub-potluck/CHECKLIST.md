@@ -26,6 +26,10 @@ git pull --depth=1 origin 2023Q2
 in this file:
 * mailhub-potluck.sh 
 
+### mysql-client
+`databases/mysql80-client` pulled from git sources may need updating to a newer version between quarterly releases, in this file:
+* mailhub-potluck.sh
+
 ## Switching between mail/%d/%n and mail/%n
 If switching around mail_location settings to flip between `mail/{domain}/{username}/` and `mail/{username}/`, then comment/uncomment applicable sections, or edit variables in
 * templates/dovecot.conf.in

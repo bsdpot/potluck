@@ -3,7 +3,9 @@
 * Version bump for new base image
 * Update syslog-ng.conf stats_freq(0); -> stats(freq(0));
 * Update ports for 2023Q2
-
+* Need databases/mysql80-client to replace databases/mysql57-client
+* databases/mysql80-client wants /mysql80-server/Makefile, so add mysql80-server
+* Add packages p5-Class-XSAccessor and p5-XString
 ---
 
 0.3

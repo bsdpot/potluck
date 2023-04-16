@@ -161,6 +161,12 @@ pkg install -y p5-Mail-SPF
 step "Install package p5-IO-Socket-SSL"
 pkg install -y p5-IO-Socket-SSL
 
+step "Install package p5-Class-XSAccessor"
+pkg install -y p5-Class-XSAccessor
+
+step "Install package p5-XString"
+pkg install -y p5-XString
+
 step "Install package re2c"
 pkg install -y re2c
 
@@ -262,7 +268,8 @@ git sparse-checkout set GIDs UIDs \
   mail/dcc-dccd/ \
   databases/p5-DBD-mysql/ \
   databases/p5-DBD-Pg/ \
-  databases/mysql57-client \
+  databases/mysql80-client \
+  databases/mysql80-server \
   mail/pyzor/ \
   mail/razor-agents/ \
   security/p5-Digest-SHA1/ \
