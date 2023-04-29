@@ -18,5 +18,9 @@ Changes to major or minor versions need to be logged in:
 To force a rebuild of the pot image for the potluck site, increment Z of version="x.y.Z" in:
 * `mariadb.ini`
 
+## Mariadb versions
+When updating mariadb versions, make sure to edit the pkg install line in:
+* `mariadb.sh`
+
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?
