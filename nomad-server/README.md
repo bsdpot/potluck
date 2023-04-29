@@ -23,7 +23,7 @@ Please note that a specific network configuration is suggested (see Installation
 * This jail does not work with a public bridge, so clone it to use an IP address directly on your host:
   ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```
   e.g.
-  ```sudo pot clone -P nomad-server-amd64-13_3_4_1 -p my-nomad-server -N alias -i "em0|10.10.10.11"```
+  ```sudo pot clone -P nomad-server-amd64-13_3_4_2 -p my-nomad-server -N alias -i "em0|10.10.10.11"```
 * Optionally copy-in job files in `jobname.nomad` filenaming convention to /root/nomadjobs, repeat for multiple files
   ```sudo pot -p <clonejailname> copy-in -s /root/nomadjobs/jobname.nomad -d /root/nomadjobs/jobname.nomad```
 * Adjust to your environment:
