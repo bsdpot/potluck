@@ -21,7 +21,7 @@
   "encrypt": "%%gossipkey%%",
   "enable_syslog": true,
   "leave_on_terminate": true,
-  "start_join": [ "%%consulservers%%" ],
+  "start_join": [ %%consulservers%% ],
   "service": {
     "name": "node-exporter",
     "tags": ["_app=host-server", "_service=node-exporter", "_hostname=%%nodename%%", "_datacenter=%%datacenter%%"],
