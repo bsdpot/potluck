@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Update syslog-ng.conf stats_freq(0); -> stats(freq(0));
+* Remove quotes from variable as adjustment for list of consul servers to join
 
 ---
 
