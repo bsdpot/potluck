@@ -7,6 +7,7 @@ advertise {
   # in your cluster
   http = "%%ip%%"
   rpc = "%%ip%%"
+  serf = "%%ip%%"
 }
 server {
   enabled = true
@@ -17,17 +18,21 @@ server {
   heartbeat_grace = "10s"
   rejoin_after_leave = true
 }
+tls {
+  http = false
+  rpc = false
+  verify_server_hostname = false
+  verify_https_client = false
+}
 consul {
   # The address to the local Consul agent.
   address = "http://%%ip%%:8500"
-  # The service name to register the server and client with Consul.
   server_service_name = "nomad"
-  # Enables automatically registering the services.
   auto_advertise = true
-  # Enabling the server and client to bootstrap using Consul.
   server_auto_join = true
 }
 telemetry {
+  collection_interval = "15s"
   publish_allocation_metrics = true
   publish_node_metrics = true
   prometheus_metrics = true
