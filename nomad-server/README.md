@@ -23,11 +23,11 @@ Please note that a specific network configuration is suggested (see Installation
 * This jail does not work with a public bridge, so clone it to use an IP address directly on your host:
   ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```
   e.g.
-  ```sudo pot clone -P nomad-server-amd64-13_3_4_4 -p my-nomad-server -N alias -i "em0|10.10.10.11"```
+  ```sudo pot clone -P nomad-server-amd64-13_3_4_5 -p my-nomad-server -N alias -i "em0|10.10.10.11"```
 * Optionally copy-in job files in `jobname.nomad` filenaming convention to /root/nomadjobs, repeat for multiple files
   ```sudo pot -p <clonejailname> copy-in -s /root/nomadjobs/jobname.nomad -d /root/nomadjobs/jobname.nomad```
 * Adjust to your environment:
-  ```sudo pot set-env -p <clonejailname> -E NODENAME=<name> -E DATACENTER=<datacentername> -E REGION=<identifier like east, west, global> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY="<32 byte Base64 key from consul keygen>"] [ -E REMOTELOG="<IP syslog-ng server>" -E IMPORTJOBS=1 ]```
+  ```sudo pot set-env -p <clonejailname> -E NODENAME=<name> -E DATACENTER=<datacentername> -E REGION=<identifier like east, west, global> -E NODENAME=<name of this node> -E IP=<IP address of this nomad instance> -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> [-E BOOTSTRAP=<1|3|5>] [-E GOSSIPKEY="<32 byte Base64 key from consul keygen>"] [ -E REMOTELOG="<IP syslog-ng server>" -E IMPORTJOBS=1 -E RAFTMULTIPLIER=<int less than 10> ]```
 
 The NODENAME parameter is the name of the node.
 
@@ -44,6 +44,8 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to.
 
 The IMPORTJOBS parameter is a binary flag to turn on automatic job imports. You must include steps to copy-in `jobname.nomad` to `/root/nomadjobs/` and set this parameter to value of `1` to enable the import and running of copied-in nomad jobs.
+
+The RAFTMULTIPLIER parameter is an optional setting to decrease sensitivity in a cluster. The default is 1 and you can experiment with values 2-5 if problems with leader elections.
 
 # Usage
 

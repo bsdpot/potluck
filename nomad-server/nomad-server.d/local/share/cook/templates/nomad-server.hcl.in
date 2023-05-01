@@ -17,6 +17,7 @@ server {
   encrypt = "%%nomadgossipkey%%"
   heartbeat_grace = "10s"
   rejoin_after_leave = true
+  raft_multiplier = %%raftmultiplier%%
 }
 tls {
   http = false
