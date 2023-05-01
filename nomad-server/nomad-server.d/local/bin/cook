@@ -126,13 +126,22 @@ service node_exporter start
 log "Configure nomad"
 configure-nomad.sh
 
-log "Start nomad"
-timeout --foreground 120 \
-  sh -c 'while ! service nomad status; do
-    service nomad start || true; sleep 5;
-  done'
+# causing problems in testing with raft networks, fine without
+#log "Start nomad"
+#timeout --foreground 120 \
+#  sh -c 'while ! service nomad status; do
+#    service nomad start || true; sleep 5;
+#  done'
+
+# simplify and test
+log "Start nomad and sleep 30 (testing)"
+service nomad start || true
+# allow raft network to form
+sleep 30
+
 
 if [ "$IMPORTJOBS" != 0 ]; then
+    log "Import custom nomad jobs"
     configure-jobs.sh
 fi
 

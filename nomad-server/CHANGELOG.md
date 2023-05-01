@@ -7,6 +7,8 @@
 * Add autopilot stanza to nomad config and disable some defaults to see if leader election improves in poor latency environments
 * Include parameter to set raft_multiplier value, or set to default of 1
 * Fix missing pipe in configure nomad script
+* Simplify nomad startup due to run errors with raft networks
+* Disable nomad update check
 
 ---
 

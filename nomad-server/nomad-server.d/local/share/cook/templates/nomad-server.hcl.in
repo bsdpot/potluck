@@ -17,6 +17,7 @@ server {
   encrypt = "%%nomadgossipkey%%"
   heartbeat_grace = "10s"
   rejoin_after_leave = true
+  # Change from 1 to 2-5 for higher latency environments
   raft_multiplier = %%raftmultiplier%%
 }
 tls {
@@ -51,6 +52,7 @@ autopilot {
   disable_upgrade_migration = false
   enable_custom_upgrades = false
 }
-enable_syslog=true
-log_level="WARN"
-syslog_facility="LOCAL5"
+enable_syslog = true
+log_level = "WARN"
+syslog_facility = "LOCAL5"
+disable_update_check = true
