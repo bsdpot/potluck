@@ -32,7 +32,7 @@ sep=$'\001'
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%region%%${sep}$REGION${sep}g" | \
-  sed "s${sep}%%bootstrap%%${sep}$BOOTSTRAP${sep}g" \
+  sed "s${sep}%%bootstrap%%${sep}$BOOTSTRAP${sep}g" | \
   sed "s${sep}%%raftmultiplier%%${sep}$RAFTMULTIPLIER${sep}g" \
   > /usr/local/etc/nomad/server.hcl
 
