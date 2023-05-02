@@ -1,3 +1,10 @@
+3.5
+
+* Version increment for new feature
+* Pass in consul servers as a comma-deliminated list
+
+---
+
 3.4
 
 * Version bump for new base image
