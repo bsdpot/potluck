@@ -64,10 +64,10 @@ Thereafter these files will load automatically, along with any updates, from per
   sudo pot set-env -p <jailname> \
   -E NODENAME=name \
   -E DATACENTER=<datacenter> \
-  -E CONSULSERVERS='"1.2.3.4"' \
-  -E GOSSIPKEY=<key> \
+  -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
+  -E GOSSIPKEY="<key>" \
   -E IP=<IP address> \
-  -E DOMAIN=<domain name> \
+  -E DOMAIN="<domain name>" \
   -E MYCREDS=<openldap root pass> \
   -E HOSTNAME=<hostname> \
   [ -E CRONBACKUP=/mnt/openldap-data/backups ] \
@@ -84,7 +84,9 @@ The NODENAME parameter is the name of the node.
 
 The DATACENTER parameter is the name of the datacenter.
 
-The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+The CONSULSERVERS parameter is a comma-deliminated list of consul servers. Do not include spaces!
+
+e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.5,10.0.0.6"```
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent.
 
