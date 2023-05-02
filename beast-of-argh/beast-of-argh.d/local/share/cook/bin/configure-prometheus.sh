@@ -45,9 +45,9 @@ sep=$'\001'
 < "$TEMPLATEPATH/prometheus.yml.in" \
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%consulservers%%${sep}$SCRAPECONSUL${sep}g" | \
-  sed "s${sep}%%nomadservers%%${sep}$SCRAPENOMAD${sep}g" | \
-  sed "s${sep}%%traefikserver%%${sep}$TRAEFIKSERVER${sep}g" \
+  sed "s${sep}%%consulservers%%${sep}$FIXSCRAPECONSUL${sep}g" | \
+  sed "s${sep}%%nomadservers%%${sep}$FIXSCRAPENOMAD${sep}g" | \
+  sed "s${sep}%%traefikserver%%${sep}$FIXTRAEFIKSERVER${sep}g" \
   > /usr/local/etc/prometheus.yml
 
 # enable prometheus service

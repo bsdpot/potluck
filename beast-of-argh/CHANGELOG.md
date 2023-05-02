@@ -1,3 +1,10 @@
+0.4
+
+* Version bump for new feature
+* Pass in consul servers and scrape lists in comma-deliminated format
+
+---
+
 0.3
 
 * Version bump for new base image

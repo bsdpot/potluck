@@ -29,13 +29,13 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E DATACENTER=<datacentername> \
     -E NODENAME=<nodename> \
     -E IP=<IP address of this system> \
-    -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
+    -E CONSULSERVERS=<consul IP address(es) in comma-deliminated format> \
     -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
     -E GRAFANAUSER=<grafana username> \
     -E GRAFANAPASSWORD=<grafana password> \
-    -E SCRAPECONSUL='<correctly formatted list of quoted IP addresses>' \
-    -E SCRAPENOMAD='<correctly formatted list of quoted IP addresses>' \
-    -E TRAEFIKSERVER='<ip:port of traefik-consul instance>' \
+    -E SCRAPECONSUL=<consul IP address(es) in comma-deliminated format> \
+    -E SCRAPENOMAD=<nomad IP address(es) in comma-deliminated format> \
+    -E TRAEFIKSERVER=<ip:port of traefik-consul instances in comma-deliminated format> \
     -E SMTPHOSTPORT="10.0.0.2:25" \
     -E SMTPFROM=<from email address> \
     -E ALERTADDRESS=<to email address> \
@@ -49,17 +49,25 @@ The NODENAME parameter defines the name of this node.
 
 The IP parameter is the IP address which will be used to access services.
 
-The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+The CONSULSERVERS parameter defines the consul server instances, from one to five IP addresses in comma-deliminated format and no spaces.
+
+```-E CONSULSERVERS="10.0.0.1,10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.5"```
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
 
 The GRAFANAUSER and GRAFANAPASSWORD parameters are to set a custom user/pass for Grafana.
 
-The SCRAPECONSUL parameter is a list of consul servers to scrape data from. Metrics must be configured in consul.
+The SCRAPECONSUL parameter is a comma-deliminated list of consul servers to scrape data from. Metrics must be configured in consul.
 
-The SCRAPENOMAD parameter is a list of nomad servers to scrape data from. Metrics must be configured in nomad.
+```-E SCRAPECONSUL="10.0.0.1,10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.5"```
 
-The TRAEFIKSERVER parameter is the IP address and port of a `traefik-consul` instance to scrape metrics from. It must be setup with metrics endpoint.
+The SCRAPENOMAD parameter is a comma-deliminated list of nomad servers to scrape data from. Metrics must be configured in nomad.
+
+```-E SCRAPENOMAD="10.0.0.1,10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.5"```
+
+The TRAEFIKSERVER parameter is comma-deliminated list of IP:port of `traefik-consul` instances to scrape metrics from. They must be setup with a metrics endpoint.
+
+```-E TRAEFIKSERVER="10.0.0.1:8082,10.0.0.2:8082"```
 
 The SMTPHOSTPORT parameter is the IP address and port of the mail server to use when sending alerts.
 
