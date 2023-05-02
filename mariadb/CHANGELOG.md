@@ -1,3 +1,10 @@
+3.3
+
+* Version increment for new feature
+* Pass consul servers in as a comma-deliminated list of IP addresses
+
+---
+
 3.2
 
 * Version bump for new base image

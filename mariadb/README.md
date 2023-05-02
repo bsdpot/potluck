@@ -31,8 +31,8 @@ To ensure that software and database file versions match, ```mysql_upgrade``` is
     -E DATACENTER=<datacentername> \
     -E NODENAME=<nodename> \
     -E IP=<IP address of this system> \
-    -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
-    -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+    -E CONSULSERVERS="<comma-deliminated list of consul server IP addresses>" \
+    -E GOSSIPKEY="<32 byte Base64 key from consul keygen>" \
     -E DBROOTPASS=<database root password> \
     -E DBSCRAPEPASS=<mysqld exporter user password> \
     [ -E DUMPSCHEDULE="<cronschedule>" -E DUMPUSER=<backupuser> -E DUMPFILE=</insidejail/dumpfile.sql> ] \
@@ -51,7 +51,9 @@ NODENAME defines the name of this node.
 
 IP is the IP address which will be used to access services.
 
-CONSULSERVERS defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+CONSULSERVERS is a comma-deliminated list of consul server instances. Do not include spaces!
+
+e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.6,10.0.0.6"```
 
 GOSSIPKEY is the gossip encryption key for consul agent and must be passed in as a parameter.
 
@@ -70,5 +72,3 @@ REMOTELOG is the IP address of a destination ```syslog-ng``` server, such as wit
 # Usage
 
 You can connect to the database server with a ```mariadb``` client according to the configuration you have copied in (or the default ```mariadb``` configuration).
-
-

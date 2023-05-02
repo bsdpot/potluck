@@ -24,18 +24,16 @@ chmod 750 /usr/local/etc/consul.d
 # safe(r) separator for sed
 sep=$'\001'
 
-#GOSSIPKEY="$(cat /mnt/consulcerts/gossip.key)"
-# GOSSIPKEY is passed in as a variable
-
 < "$TEMPLATEPATH/consul-agent.hcl.in" \
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%consulservers%%${sep}$CONSULSERVERS${sep}g" \
+  sed "s${sep}%%consulservers%%${sep}$FIXCONSULSERVERS${sep}g" \
   > /usr/local/etc/consul.d/agent.hcl
 
 chmod 600 \
   /usr/local/etc/consul.d/agent.hcl
+# set gossipkey
 echo "s${sep}%%gossipkey%%${sep}$GOSSIPKEY${sep}" | sed -i '' -f - \
   /usr/local/etc/consul.d/agent.hcl
 
