@@ -28,6 +28,11 @@ log() {
     echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
 }
 
+# convert comma-delminated input to quoted items of output
+convert_to_required_format() {
+    echo "$1" | sed 's/\([^,]*\)/"\1"/g'
+}
+
 set -e
 export HOME=/root
 
@@ -64,6 +69,15 @@ done
 ########################################################################
 ## Provision image
 ########################################################################
+
+# Input is "10.0.0.1,10.2.0.1,10.45.2.4"
+# Expected output is "10.0.0.1", "10.2.0.1", "10.45.2.4"
+# Allows all cluster members to be passed in as comma-deliminated list
+# and correctly expand to what we require for consul agent config
+if [ -n "${PEERS+x}" ]; then
+    FIXPEERS=$(convert_to_required_format "$PEERS")
+    export FIXPEERS
+fi
 
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.
 # Re-used for nomad, which is usually 16 byte key but supports 32 byte, Base64 encoded keys

@@ -1,3 +1,10 @@
+2.4
+
+* Version bump for functionality change
+* Pass in cluster members in comma-deliminated format
+
+---
+
 2.3
 
 * Version bump for new base image

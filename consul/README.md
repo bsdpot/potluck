@@ -25,8 +25,8 @@ Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-serve
    -E IP=<IP address of this consul node> \
    -E BOOTSTRAP=<1|3|5> \
    -E GOSSIPKEY="<32 byte Base64 consul keygen key>" \
-   [-E PEERS=<comma-separated IP addresses of other servers in cluster>] \
-   [-E REMOTELOG=<ip address remote syslog server> ]
+   [-E PEERS="<comma-separated IP addresses of all servers in cluster>" ] \
+   [-E REMOTELOG="<ip address remote syslog server>" ]
    ```
 
 The NODENAME parameter defines the name of the node.
@@ -35,11 +35,11 @@ The DATACENTER parameter is the datacenter name to use.
 
 The BOOTSTRAP parameter defines the expected number of cluster nodes. You must pass in 1,3 or 5.
 
-For 3 and 5 node clusters the other peers must be passed in via the PEERS variable in the following format.
+For 3 and 5 node clusters all cluster member IP addresses must be passed in using the PEERS variable (comma-deliminated, no spaces):
 
-```-E IP=10.0.0.1 -E PEERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5"'```
+```-E PEERS="10.0.0.1,10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.5"```
 
-The GOSSIPKEY parameter is to enable custom gossip encryption and defaults to a standard key. Do not use the default key for production encryption, instead provide your own with ```consul keygen```.
+The GOSSIPKEY parameter is to enable custom gossip encryption and defaults to a standard key. Do not use the default key for production encryption, instead provide your own after running ```consul keygen``` with ```consul``` client.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to.
 
