@@ -23,7 +23,7 @@ This is a flavour containing the ```traefik``` reverse proxy and load balancer p
     -E DATACENTER=<datacentername> \
     -E NODENAME=<nodename> \
     -E IP=<IP address of this system> \
-    -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
+    -E CONSULSERVERS="<comma-deliminated list of consul IP addresses>" \
     -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
     [ -E REMOTELOG=<IP address> ]
   ```
@@ -36,7 +36,9 @@ The NODENAME parameter defines the name of this node.
 
 The IP parameter is the IP address which will be used to access services.
 
-The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+The CONSULSERVERS parameter defines the consul server instances, and must be set as a comma-deliminated list. Do not include spaces!
+
+e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.5,10.0.0.6"```
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
 
