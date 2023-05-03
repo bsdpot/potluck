@@ -51,7 +51,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME BOOTSTRAP"
-optional_args="PEERS GOSSIPKEY REMOTELOG"
+optional_args="CONSULSERVERS GOSSIPKEY REMOTELOG"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -70,13 +70,20 @@ done
 ## Provision image
 ########################################################################
 
+# set the pot image IP to be part of CONSULSERVERS automatically for
+# single server setups which don't pass in CONSULSERVERS parameter
+if [ -z "${CONSULSERVERS+x}" ]; then
+    CONSULSERVERS="$IP"
+    export CONSULSERVERS
+fi
+
 # Input is "10.0.0.1,10.2.0.1,10.45.2.4"
-# Expected output is "10.0.0.1", "10.2.0.1", "10.45.2.4"
+# Expected output is "10.0.0.1","10.2.0.1","10.45.2.4"
 # Allows all cluster members to be passed in as comma-deliminated list
 # and correctly expand to what we require for consul agent config
-if [ -n "${PEERS+x}" ]; then
-    FIXPEERS=$(convert_to_required_format "$PEERS")
-    export FIXPEERS
+if [ -n "${CONSULSERVERS+x}" ]; then
+    FIXCONSULSERVERS=$(convert_to_required_format "$CONSULSERVERS")
+    export FIXCONSULSERVERS
 fi
 
 # GOSSIPKEY is a 32 byte, Base64 encoded key generated with consul keygen for the consul flavour.

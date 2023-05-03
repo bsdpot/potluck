@@ -2,6 +2,7 @@
 
 * Version bump for functionality change
 * Pass in cluster members in comma-deliminated format
+* Rename PEERS parameter to CONSULSERVERS for consistency with other pot images
 
 ---
 
