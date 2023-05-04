@@ -1,3 +1,11 @@
+0.4
+
+* Version increment for new feature
+* Pass in consul servers as a comma-deliminated list
+* Remove invalid ENABLECONSUL
+
+---
+
 0.3
 
 * Version bump for new base image
