@@ -39,7 +39,7 @@ This is a quirk of using `.well-known/matrix/server` with the server's details.
   ```
   sudo pot set-env -p <jailname> \
    -E DATACENTER=<datacenter name> \
-   -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
+   -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
    -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
    -E NODENAME=<name of node> \
    -E IP=<IP address> \
@@ -63,7 +63,9 @@ This is a quirk of using `.well-known/matrix/server` with the server's details.
 
 The DATACENTER parameter is the name of the datacenter.
 
-The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+The CONSULSERVERS parameter is a comma-deliminated list of IP addresses for the consul server or cluster. Do not include spaces!
+
+e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.5,10.0.0.6"```
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent.
 
