@@ -32,7 +32,7 @@ It is assumed this jail is running behind a firewall or gateway device with prox
     -E NODENAME=<nodename> \
     -E IP=<IP address of this system> \
     -E DATACENTER=<consul dc> \
-    -E CONSULSERVERS=<IP address> \
+    -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
     -E GOSSIPKEY="<gossipkey>" \
     -E LDAPSERVER=<IP address> \
     -E SEARCHBASE="<ldap config, see docs>" \
@@ -61,7 +61,9 @@ The IP parameter is the IP address which will be used to access services.
 
 The DATACENTER parameter is the `consul` datacenter.
 
-The CONSULSERVERS parameter is a correctly formatted list of `consul` servers.
+The CONSULSERVERS parameter is a comma-deliminated list of IP addresses for the consul server or cluster. Do not include spaces!
+
+e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.5,10.0.0.6"```
 
 The GOSSIPKEY parameter is the gossip key for the consul datacenter.
 

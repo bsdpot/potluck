@@ -1,3 +1,11 @@
+0.5
+
+* Version increment for new feature
+* Pass in consul servers as a comma-deliminated list
+* Fix cert renew script
+
+---
+
 0.4
 
 * Version bump for new base image
@@ -6,6 +14,7 @@
 * Need databases/mysql80-client to replace databases/mysql57-client
 * databases/mysql80-client wants /mysql80-server/Makefile, so add mysql80-server
 * Add packages p5-Class-XSAccessor and p5-XString
+
 ---
 
 0.3
