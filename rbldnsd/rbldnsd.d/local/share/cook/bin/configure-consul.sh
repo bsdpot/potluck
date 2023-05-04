@@ -29,7 +29,7 @@ sep=$'\001'
 #  sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
 #  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
 #  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-#  sed "s${sep}%%consulservers%%${sep}$CONSULSERVERS${sep}g" \
+#  sed "s${sep}%%consulservers%%${sep}$FIXCONSULSERVERS${sep}g" \
 #  > /usr/local/etc/consul.d/agent.hcl
 #
 #chmod 600 \
@@ -42,7 +42,7 @@ sep=$'\001'
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%consulservers%%${sep}$CONSULSERVERS${sep}g" \
+  sed "s${sep}%%consulservers%%${sep}$FIXCONSULSERVERS${sep}g" \
   > /usr/local/etc/consul.d/agent.json
 
 chmod 600 /usr/local/etc/consul.d/agent.json

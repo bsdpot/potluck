@@ -28,6 +28,10 @@ log() {
     echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
 }
 
+convert_to_required_format() {
+    echo "$1" | sed 's/\([^,]*\)/"\1"/g'
+}
+
 set -e
 export HOME=/root
 
@@ -64,6 +68,14 @@ done
 ########################################################################
 ## Provision image
 ########################################################################
+
+# Input is "10.0.0.1,10.2.0.1,10.45.2.4"
+# Expected output is "10.0.0.1","10.2.0.1","10.45.2.4"
+
+if [ -n "${CONSULSERVERS+x}" ]; then
+    FIXCONSULSERVERS=$(convert_to_required_format "$CONSULSERVERS")
+    export FIXCONSULSERVERS
+fi
 
 # stop services
 timeout --foreground 10 \
