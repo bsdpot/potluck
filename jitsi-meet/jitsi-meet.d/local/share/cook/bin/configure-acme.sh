@@ -18,6 +18,7 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # make directories if they don't exist
 mkdir -p /mnt/acme
 mkdir -p /root/bin
+mkdir -p /usr/local/www/acmetmp/
 
 # the following is required for option --set-default-ca
 mkdir -p /root/.acme.sh/

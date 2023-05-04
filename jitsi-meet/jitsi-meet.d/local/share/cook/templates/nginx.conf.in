@@ -18,6 +18,12 @@ http {
         listen 80 default_server;
         server_name _;
         return 301 https://$host$request_uri;
+
+	location ~ ^/\.well-known/acme-challenge/([-_a-zA-Z0-9]+)$ {
+            alias /usr/local/www/acmetmp/;
+            allow all;
+            default_type "text/plain";
+        }
     }
 
     server {

@@ -1,3 +1,12 @@
+0.7
+
+* Version increment for new feature
+* Pass in consul servers as a comma-deliminated list
+* Update nginx for acme challenges
+* Fix certificate renewals
+
+---
+
 0.6
 
 * Version bump for new base image
