@@ -38,7 +38,7 @@ It is advised to run this image behind a proxy. The directory permissions on the
   sudo pot set-env -p <jailname> \
   -E NODENAME=name \
   -E DATACENTER=datacenter \
-  -E CONSULSERVERS=<'"list", "of", "consul", "IPs"'> \
+  -E CONSULSERVERS=<comma-deliminated list of consul servers> \
   -E SERVERNAME=<fqdn> \
   -E IP=<IP of potbuilder VM> \
   -E SITENAME=<site name> \
@@ -54,7 +54,9 @@ The NODENAME parameter is the name of the node.
 
 The DATACENTER parameter is the name of the datacenter. The REGION parameter is to set "east" or "west" or "global" (default).
 
-The CONSULSERVERS parameter defines the consul server instances, and must be set as ```CONSULSERVERS='"10.0.0.2"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4"'``` or ```CONSULSERVERS='"10.0.0.2", "10.0.0.3", "10.0.0.4", "10.0.0.5", "10.0.0.6"'```
+The CONSULSERVERS parameter is a comma-deliminated list of IP addresses for the consul server or cluster. Do not include spaces!
+
+e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.5,10.0.0.6"```
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent.
 
