@@ -13,7 +13,7 @@ export PATH=/usr/local/bin:$PATH
 
 # add parsedmarc user
 if ! id -u "parsedmarc" >/dev/null 2>&1; then
-  /usr/sbin/pw useradd -n parsedmac -c 'parsedmarc user' -m -d /opt/parsedmarc -s /bin/sh -h -
+  /usr/sbin/pw useradd -n parsedmarc -c 'parsedmarc user' -m -d /opt/parsedmarc -s /bin/sh -h -
 fi
 
 # create virtualenv

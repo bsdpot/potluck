@@ -1,6 +1,9 @@
 0.1
 
 * Rework project to start with parsedmarc python application
+* Remove serverport parameter
+* Fix username parsedmarc in user creation
+* Update checklist for python39 changes
 
 ---
 

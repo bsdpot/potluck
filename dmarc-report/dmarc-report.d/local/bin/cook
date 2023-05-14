@@ -51,7 +51,7 @@ fi
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args IMAPSERVER IMAPUSER IMAPPASS IMAPFOLDER"
-optional_args="SERVERPORT REMOTELOG"
+optional_args="REMOTELOG"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -76,11 +76,6 @@ done
 if [ -n "${CONSULSERVERS+x}" ]; then
     FIXCONSULSERVERS=$(convert_to_required_format "$CONSULSERVERS")
     export FIXCONSULSERVERS
-fi
-
-if [ -z "${SERVERPORT+x}" ]; then
-    SERVERPORT=3000
-    export serverport
 fi
 
 # stop services

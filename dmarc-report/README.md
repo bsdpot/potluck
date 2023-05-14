@@ -33,7 +33,6 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E IMAPUSER=<imap username> \
     -E IMAPPASS=<imap password> \
     -E IMAPFOLDER=<imap folder with dmarc reports> \
-    -E SERVERPORT=<default 3000> \
     [ -E REMOTELOG=<IP address> ]
   ```
 * Start the jail
@@ -56,8 +55,6 @@ The IMAPSERVER parameter is the IP address or hostname of the IMAP server. It de
 The IMAP user credentials are set with IMAPUSER and IMAPPASS.
 
 The IMAPFOLDER parameter is the mail folder with the DMARC reports as attachments. 
-
-The SERVERPORT parameter is the port to make the `nodejs` application available. It defaults to `3000`.
 
 ## Optional Parameters
 
