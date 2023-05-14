@@ -51,6 +51,7 @@ fi
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args IMAPSERVER IMAPUSER IMAPPASS IMAPFOLDER"
+required_args="$required_args OUTPUTFOLDER"
 optional_args="REMOTELOG"
 
 for var in $required_args; do

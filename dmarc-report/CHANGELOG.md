@@ -4,6 +4,8 @@
 * Remove serverport parameter
 * Fix username parsedmarc in user creation
 * Update checklist for python39 changes
+* Add parsedmarc.ini with imported parameters
+* Add outputfolder parameter
 
 ---
 

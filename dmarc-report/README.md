@@ -21,6 +21,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
 
 * Create your local jail from the image or the flavour files.
 * Clone the local jail
+* Mount in persistent storage
 * Adjust to your environment:
   ```
   sudo pot set-env -p <jailname> \
@@ -33,6 +34,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E IMAPUSER=<imap username> \
     -E IMAPPASS=<imap password> \
     -E IMAPFOLDER=<imap folder with dmarc reports> \
+    -E OUTPUTFOLDER=<name of folder to create in /mnt/> \
     [ -E REMOTELOG=<IP address> ]
   ```
 * Start the jail
@@ -56,14 +58,16 @@ The IMAP user credentials are set with IMAPUSER and IMAPPASS.
 
 The IMAPFOLDER parameter is the mail folder with the DMARC reports as attachments. 
 
+The OUTPUTFOLDER parameter is the folder to create in /mnt, which should be mounted in as persistent storage.
+
 ## Optional Parameters
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 
 # Usage
 
-Open a browser and navigate to ```http://dmarc-report-ip/``` to access the report.
-
-There is no SSL or authentication in this early version of the image. Run it on an internal IP address. 
-
 We recommend creating a dedicated mailbox folder for DMARC reports and filtering those mails to it. Then configure this image to use that mail folder.
+
+This development version simply sets up `parsedmarc` and allows a user to run the python process to generate JSON and CSV output from a mailbox.
+
+It still needs automation, and some way to store and show the reports. Possibly `elasticsearch` and `kibana` or something lighter.

@@ -1,0 +1,35 @@
+[general]
+save_aggregate = True
+save_forensic = True
+output = /mnt/%%outputfolder%%
+log_file = /var/log/python-parsedmarc.log
+strip_attachment_payloads = False
+n_procs = 1
+
+[imap]
+host = %%imapserver%%
+user = %%imapuser%%
+password = %%imappass%%
+
+[mailbox]
+watch = True
+delete = False
+reports_folder = %%imapfolder%%
+#test = True
+
+#[elasticsearch]
+#hosts = 127.0.0.1:9200
+#ssl = False
+
+#[splunk_hec]
+#url = https://splunkhec.example.com
+#token = HECTokenGoesHere
+#index = email
+
+#[s3]
+#bucket = my-bucket
+#path = parsedmarc
+
+[syslog]
+server = localhost
+port = 514
