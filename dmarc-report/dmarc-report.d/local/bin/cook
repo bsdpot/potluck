@@ -113,8 +113,8 @@ service node_exporter start
 log "Configure nginx"
 configure-nginx.sh
 
-log "Configure and start dmarc-report"
-configure-dmarcreport.sh
+log "Configure parsedmarc"
+configure-parsedmarc.sh
 
 log "Start nginx"
 timeout --foreground 120 \

@@ -27,9 +27,7 @@ http {
         fastcgi_buffer_size 64k;
         fastcgi_busy_buffers_size 64k;
 	location / {
-		proxy_set_header Host $host;
-		proxy_set_header X-Real-IP $remote_addr;
-		proxy_pass http://%%ip%%:%%serverport%%;
+		try_files $uri $uri/ =404;
 	}
     }
 }

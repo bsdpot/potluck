@@ -7,7 +7,11 @@ tags: ["dmarc", "mail", "monitoring"]
 
 # Overview
 
-This flavour contains a local implementation of [dmarc-report](https://github.com/hitalos/dmarc-report/).
+This flavour contains a local implementation of [parsedmarc](https://pypi.org/project/parsedmarc/).
+
+`parsedmarc` will produce JSON output from the relevant mailbox folder. 
+
+This information will be displayed with TBA.
 
 It is currently expected that this jail will run on an internal IP with no remote access.
 

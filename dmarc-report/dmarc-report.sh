@@ -127,21 +127,34 @@ pkg install -y nginx
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
-step "Install package node"
-pkg install -y node
+step "Install package python39"
+pkg install -y python39
 
-step "Install package npm"
-pkg install -y npm
+step "Install package py39-pip"
+pkg install -y py39-pip
+
+step "Install package py39-virtualenv"
+pkg install -y py39-virtualenv
+
+step "Install package py39-libxml2"
+pkg install -y py39-libxml2
+
+step "Install package py39-cryptography"
+pkg install -y py39-cryptography
+
+step "Install pckage py39-cryptography-vectors"
+pkg install -y py39-cryptography-vectors
+
+step "Install package libxslt"
+pkg install -y libxslt
+
+step "Install pckage rust"
+pkg install -y rust
 
 step "Clean package installation"
 pkg clean -y
 
 # -------------- END PACKAGE SETUP -------------
-
-# -------------- BEGIN GIT CLONE ---------------
-#mkdir -p /root/dmarc-report
-#git clone https://github.com/hitalos/dmarc-report /root/dmarc-report
-# --------------- END GIT CLONE ----------------
 
 #
 # Now generate the run command script "cook"

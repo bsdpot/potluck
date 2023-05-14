@@ -25,11 +25,14 @@ chmod 755 /usr/local/www/dmarc-report
 # safe(r) separator for sed
 sep=$'\001'
 
-# copy in custom nginx and set IP to ip address of pot image
+# copy in custom nginx.conf and set IP to ip address of pot image
 < "$TEMPLATEPATH/nginx.conf.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%serverport%%${sep}$SERVERPORT${sep}g" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
   > /usr/local/etc/nginx/nginx.conf
+
+# copy in standard html
+# remove this and replace with website files in future
+cp -f "$TEMPLATEPATH/index.html.in" /usr/local/www/dmarc-report/index.html
 
 # enable nginx
 service nginx enable
