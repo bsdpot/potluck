@@ -6,6 +6,9 @@
 * Update checklist for python39 changes
 * Add parsedmarc.ini with imported parameters
 * Add outputfolder parameter
+* Touch log file and set permissions
+* Add rc script for parsedmarc
+* Update README
 
 ---
 

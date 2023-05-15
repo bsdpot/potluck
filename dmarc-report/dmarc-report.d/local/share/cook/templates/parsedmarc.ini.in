@@ -17,19 +17,14 @@ delete = False
 reports_folder = %%imapfolder%%
 #test = True
 
+[syslog]
+server = localhost
+port = 514
+
 #[elasticsearch]
 #hosts = 127.0.0.1:9200
 #ssl = False
 
-#[splunk_hec]
-#url = https://splunkhec.example.com
-#token = HECTokenGoesHere
-#index = email
-
 #[s3]
 #bucket = my-bucket
 #path = parsedmarc
-
-[syslog]
-server = localhost
-port = 514

@@ -9,9 +9,9 @@ tags: ["dmarc", "mail", "monitoring"]
 
 This flavour contains a local implementation of [parsedmarc](https://pypi.org/project/parsedmarc/).
 
-`parsedmarc` will produce JSON output from the relevant mailbox folder. 
+`parsedmarc` will produce CSV/JSON output from the relevant mailbox folder in the destination folder selected for /mnt.
 
-This information will be displayed with TBA.
+This information will be displayed with (TBA).
 
 It is currently expected that this jail will run on an internal IP with no remote access.
 
@@ -68,6 +68,8 @@ The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` serve
 
 We recommend creating a dedicated mailbox folder for DMARC reports and filtering those mails to it. Then configure this image to use that mail folder.
 
-This development version simply sets up `parsedmarc` and allows a user to run the python process to generate JSON and CSV output from a mailbox.
+This development version simply sets up `parsedmarc` and runs the python process to generate JSON and CSV output from a mailbox.
 
-It still needs automation, and some way to store and show the reports. Possibly `elasticsearch` and `kibana` or something lighter.
+It still needs a way to store the reports long term, and show pretty charts. Possibly `elasticsearch` and `kibana` or something lighter.
+
+Note: there is very little feedback that process a mailbox has happened. Check the folders under `Archive` called `Aggregate`, `Foresic`, and `Invalid`. You might need to subscribe to the folders in an IMAP client to see. When mails are processed from the identified `dmarc` mail folder, they are transferred to the `Archive` subfolders.

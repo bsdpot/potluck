@@ -32,6 +32,10 @@ sudo -u parsedmarc /opt/parsedmarc/venv/bin/pip install -U parsedmarc || true
 # deactivate the virtual environment
 deactivate
 
+# make sure the process can write to log file
+touch /var/log/python-parsedmarc.log
+chown parsedmarc /var/log/python-parsedmarc.log
+
 # Adapt config files
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
@@ -49,12 +53,24 @@ sep=$'\001'
   sed "s${sep}%%outputfolder%%${sep}$OUTPUTFOLDER${sep}g" \
   > /usr/local/etc/parsedmarc.ini
 
-# need steps to run python process to get report
-#
+# set the ownership of the config file. This could be changed
+# to something only root can read but parsedmarc service can read too?
+chown parsedmarc /usr/local/etc/parsedmarc.ini
+
 # as user parsedmarc run
-# /opt/parsedmarc/venv/bin/parsedmarc -c /usr/local/etc/parsedmarc.ini
-#
+#   /opt/parsedmarc/venv/bin/parsedmarc -c /usr/local/etc/parsedmarc.ini
 # this takes a long time to complete so should not be a pot startup command
 # rather a service that starts some other way and backgrounds after the pot
 # image is live
 
+# copy over the rc script
+cp -f "$TEMPLATEPATH/parsedmarc.rc.in" /usr/local/etc/rc.d/parsedmarc
+
+# set executable bit on rc file
+chmod +x /usr/local/etc/rc.d/parsedmarc
+
+# enable the service
+service parsedmarc enable || true
+
+# start the service so long
+service parsedmarc start || true

@@ -22,6 +22,10 @@ source src {
  internal();
 };
 
+source s_parsedmarc {
+ file("/var/log/python-parsedmarc.log");
+};
+
 # destinations
 destination messages { file("/var/log/messages"); };
 destination security { file("/var/log/security"); };
@@ -156,3 +160,5 @@ log { source(src); filter(f_ppp); destination(ppp); };
 # flags(flow-control);
 #};
 log { source(src); filter(f_all); destination(loghost); };
+# enable otherlogs
+log { source(s_parsedmarc); destination(loghost); };

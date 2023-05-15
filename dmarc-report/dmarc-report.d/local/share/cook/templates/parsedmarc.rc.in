@@ -1,0 +1,78 @@
+#!/bin/sh
+
+# PROVIDE: parsedmarc
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+# Add the following lines to /etc/rc.conf to enable parsedmarc
+# parsedmarc_enable="YES"
+#
+# parsedmarc_enable (bool):
+#     Set it to YES to enable parsedmarc
+#     Set to NO by default
+# parsedmarc_user (string):
+#     Set user that parsedmarc will run under
+#     Default is "parsedmarc"
+# parsedmarc_group (string):
+#     Set group that own parsedmarc files
+#     Default is "parsedmarc"
+# parsedmarc_config (string)
+#     Set full path to config file
+#     Default is "parsedmarc.ini"
+# parsedmarc_syslog_output_enable (bool)
+#     Set it to YES to enable stdout/stderr syslog output
+#     Set to NO by default
+# parsedmarc_syslog_output_tag (str)
+#     Set syslog tag if syslog enabled
+#     Default is "parsedmarc"
+# parsedmarc_args (string)
+#     Set additional command line arguments
+#     Default is ""
+
+. /etc/rc.subr
+
+name=parsedmarc
+rcvar=parsedmarc_enable
+
+load_rc_config $name
+
+: ${parsedmarc_enable:="NO"}
+: ${parsedmarc_user:="parsedmarc"}
+: ${parsedmarc_group:="parsedmarc"}
+: ${parsedmarc_config:="/usr/local/etc/parsedmarc.ini"}
+: ${parsedmarc_syslog_output_enable:="NO"}
+: ${parsedmarc_args:=""}
+
+if [ -n "${parsedmarc_conf}" ]; then
+        parsedmarc_config="${parsedmarc_conf}"
+fi
+
+if checkyesno parsedmarc_syslog_output_enable; then
+        if [ -n "${parsedmarc_syslog_output_tag}" ]; then
+                parsedmarc_syslog_output_flags="-T ${parsedmarc_syslog_output_tag}"
+        else
+                parsedmarc_syslog_output_flags="-T ${name}"
+        fi
+fi
+
+pidfile="/var/run/${name}/${name}.pid"
+required_files="${parsedmarc_config}"
+
+procname="/opt/parsedmarc/venv/bin/parsedmarc"
+command="/usr/sbin/daemon"
+command_args="-f ${parsedmarc_syslog_output_flags} -p ${pidfile} -t ${name} \
+        /usr/bin/env ${parsedmarc_env} ${procname} \
+        --config-file ${parsedmarc_config} \
+        ${parsedmarc_args}"
+
+start_precmd="parsedmarc_start_precmd"
+
+parsedmarc_start_precmd()
+{
+        if [ ! -d "/var/run/${name}" ]; then
+                install -d -m 0750 -o ${parsedmarc_user} -g ${parsedmarc_group} \
+                  "/var/run/${name}"
+        fi
+}
+
+run_rc_command "$1"
