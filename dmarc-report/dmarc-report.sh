@@ -148,24 +148,20 @@ pkg install -y py39-cryptography-vectors
 step "Install package libxslt"
 pkg install -y libxslt
 
-step "Install package rust"
-pkg install -y rust
-
-step "Install package elasticsearch7"
-pkg install -y elasticsearch7
-
-step "Install package kibana7"
-pkg install -y kibana7
-
 step "Clean package installation"
 pkg clean -y
 
 step "Download and extract zincsearch binary from github"
-fetch -qo - https://github.com/zincsearch/zincsearch/releases/download/\
-v0.4.5/zincsearch_0.4.5_freebsd_x86_64.tar.gz | tar xzf - -C /usr/local/bin
-chmod 755 /usr/local/bin/zincsearch
+fetch -qo - \
+ https://github.com/zincsearch/zincsearch/releases/download/v0.4.5/zincsearch_0.4.5_freebsd_x86_64.tar.gz | \
+ tar xzf - -C /usr/local/bin
 
-Step "Checksum query for zincsearch"
+step "Testing if zincsearch binary exists"
+if [ ! -f /usr/local/bin/zincsearch ]; then
+    exit_error "/usr/local/bin/zincsearch is missing"
+fi
+
+step "Checksum query for zincsearch"
 if [ "$(sha256 -q /usr/local/bin/zincsearch)" != \
   "a5dc9adf2ecf7f880b55ce03fbb302e1e5a8d2cc9437f3e830b1180ade6229f9" ]; then
   exit_error "/usr/local/bin/zincsearch checksum mismatch!"

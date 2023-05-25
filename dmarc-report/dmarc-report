@@ -1,3 +1,1 @@
-set-attribute -A fdescfs -V YES
-set-attribute -A procfs -V YES
 copy-in -s /usr/local/etc/pot/flavours/dmarc-report.d/local -d /root/.pot_local

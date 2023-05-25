@@ -11,6 +11,8 @@
 * Update README
 * Add zincsearch, an elasticsearch clone
 * Make parsedmarc log to zincsearch automatically
+* Remove Elasticsearch and Kibana install
+* Fix zincsearch download
 
 ---
 
