@@ -21,9 +21,9 @@ reports_folder = %%imapfolder%%
 server = localhost
 port = 514
 
-#[elasticsearch]
-#hosts = 127.0.0.1:9200
-#ssl = False
+[elasticsearch]
+hosts = %%ip%%:%%zincport%%
+ssl = False
 
 #[s3]
 #bucket = my-bucket

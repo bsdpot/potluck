@@ -9,6 +9,8 @@
 * Touch log file and set permissions
 * Add rc script for parsedmarc
 * Update README
+* Add zincsearch, an elasticsearch clone
+* Make parsedmarc log to zincsearch automatically
 
 ---
 

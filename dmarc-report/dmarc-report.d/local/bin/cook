@@ -50,6 +50,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
+required_args="$required_args ZINCUSER ZINCPASS ZINCDATA ZINCPORT"
 required_args="$required_args IMAPSERVER IMAPUSER IMAPPASS IMAPFOLDER"
 required_args="$required_args OUTPUTFOLDER"
 optional_args="REMOTELOG"
@@ -79,6 +80,18 @@ if [ -n "${CONSULSERVERS+x}" ]; then
     export FIXCONSULSERVERS
 fi
 
+# shellcheck disable=SC2157
+if [ -z "{$ZINCDATA+x}" ]; then
+    ZINCDATA="/mnt/zinc/data"
+    export ZINCDATA
+fi
+
+# shellcheck disable=SC2157
+if [ -z "{$ZINCPORT+x}" ]; then
+    ZINCPORT=4080
+    export ZINCPORT
+fi
+
 # stop services
 timeout --foreground 10 \
   service consul onestop || service consul onestop || true
@@ -105,6 +118,9 @@ timeout --foreground 120 \
 
 log "Start node_exporter"
 service node_exporter start
+
+log "configure and start zincsearch"
+configure-zincsearch.sh
 
 log "Configure nginx"
 configure-nginx.sh

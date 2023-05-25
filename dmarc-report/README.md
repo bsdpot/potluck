@@ -11,9 +11,11 @@ This flavour contains a local implementation of [parsedmarc](https://pypi.org/pr
 
 `parsedmarc` will produce CSV/JSON output from the relevant mailbox folder in the destination folder selected for /mnt.
 
-This information will be displayed with (TBA).
+This information can be submitted to the local `zincsearch` instance, a low footprint, non-java, `elasticsearch` clone.
 
 It is currently expected that this jail will run on an internal IP with no remote access.
+
+The display of the report using `zincsearch` data is pending.
 
 The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. You can also connect to this host and ```service consul restart``` manually.
 
@@ -35,6 +37,10 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E IMAPPASS=<imap password> \
     -E IMAPFOLDER=<imap folder with dmarc reports> \
     -E OUTPUTFOLDER=<name of folder to create in /mnt/> \
+    -E ZINCUSER=<zincsearch admin user> \
+    -E ZINCPASS=<zincsearch admin pass> \
+    -E ZINCDATA=<path to store zincsearch files, default /mnt/zinc/data> \
+    [ -E ZINCPORT=<zincsearch port, default 4080> ] \
     [ -E REMOTELOG=<IP address> ]
   ```
 * Start the jail
@@ -60,7 +66,13 @@ The IMAPFOLDER parameter is the mail folder with the DMARC reports as attachment
 
 The OUTPUTFOLDER parameter is the folder to create in /mnt, which should be mounted in as persistent storage.
 
+The ZINCUSER and ZINCPASS parameters set the `zincsearch` admin user and password.
+
+The ZINCDATA parameter is the directory to save `zincsearch` data files. Defaults to `/mnt/zinc/data`.
+
 ## Optional Parameters
+
+The ZINCPORT parameter is the port to make `zincsearch` available on. Defaults to `4080`.
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 
