@@ -148,6 +148,9 @@ pkg install -y py39-cryptography-vectors
 step "Install package libxslt"
 pkg install -y libxslt
 
+step "Install package rust"
+pkg install -y rust
+
 step "Clean package installation"
 pkg clean -y
 

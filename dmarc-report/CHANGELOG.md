@@ -13,6 +13,7 @@
 * Make parsedmarc log to zincsearch automatically
 * Remove Elasticsearch and Kibana install
 * Fix zincsearch download
+* Add back rust
 
 ---
 
