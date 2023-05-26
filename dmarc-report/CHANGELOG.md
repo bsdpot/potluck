@@ -14,6 +14,7 @@
 * Remove Elasticsearch and Kibana install
 * Fix zincsearch download
 * Add back rust
+* Fix zincsearch startup
 
 ---
 

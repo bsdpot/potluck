@@ -36,6 +36,9 @@ sep=$'\001'
   sed "s${sep}%%zincdata%%${sep}$ZINCDATA${sep}g" \
   > /usr/local/etc/rc.d/zincsearch
 
+# set execute permissions
+chmod 755 /usr/local/etc/rc.d/zincsearch
+
 # enable zincsearch
 service zincsearch enable || true
 
