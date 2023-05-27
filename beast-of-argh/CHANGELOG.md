@@ -2,6 +2,7 @@
 
 * Version bump for new feature
 * Pass in consul servers and scrape lists in comma-deliminated format
+* Update logo
 
 ---
 
