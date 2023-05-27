@@ -1,3 +1,9 @@
+0.0.12
+
+* Rebuild to attend to build system problems
+
+---
+
 0.0.11
 
 * Rebuild for 13.2 with build scripts corrected for version
