@@ -1,3 +1,9 @@
+0.0.11
+
+* Rebuild for 13.2 with build scripts corrected for version
+
+---
+
 0.0.10
 
 * New base image for FreeBSD-13.2
