@@ -151,7 +151,6 @@ service nomad start || true
 # allow raft network to form
 sleep 30
 
-
 if [ "$IMPORTJOBS" != 0 ]; then
     log "Import custom nomad jobs"
     configure-jobs.sh
