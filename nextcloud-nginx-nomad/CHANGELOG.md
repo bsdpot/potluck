@@ -1,3 +1,10 @@
+0.73
+
+* Version bump for new base image
+* Signified
+
+---
+
 0.72
 
 * Version bump for rebuild
