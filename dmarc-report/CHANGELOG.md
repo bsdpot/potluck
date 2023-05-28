@@ -1,3 +1,10 @@
+0.2
+
+* Version bump for new base image
+* Signified
+
+---
+
 0.1
 
 * Rework project to start with parsedmarc python application
