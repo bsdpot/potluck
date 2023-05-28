@@ -1,3 +1,10 @@
+2.5
+
+* Version bump for new base image
+* Signified
+
+---
+
 2.4
 
 * Version bump for functionality change
