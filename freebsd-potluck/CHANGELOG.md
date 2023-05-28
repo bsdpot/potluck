@@ -1,3 +1,10 @@
+0.0.13
+
+* Revert to 13.1 kernel
+* Signify signatures added during build process
+
+---
+
 0.0.12
 
 * Rebuild to attend to build system problems
