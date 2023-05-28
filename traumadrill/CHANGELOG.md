@@ -1,3 +1,10 @@
+1.5
+
+* Verson bump for new base image
+* Signified
+
+---
+
 1.4
 
 * Version increment for new feature
