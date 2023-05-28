@@ -13,7 +13,7 @@ Z = Build updates
 Changes to major or minor versions need to be logged in:
 * `CHANGELOG.md`
 * `nginx-s3-nomad.ini`
-* Example job in `README.md`
+* Two example jobs in `README.md`
 
 ## Automated build processing
 To force a rebuild of the pot image for the potluck site, increment Z of version="x.y.Z" in:
