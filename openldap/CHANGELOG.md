@@ -1,3 +1,10 @@
+1.9
+
+* Version bump for new base image
+* Signified
+
+---
+
 1.8
 
 * Version increment for new feature
