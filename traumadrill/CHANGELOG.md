@@ -2,6 +2,7 @@
 
 * Verson bump for new base image
 * Signified
+* Fix nologin shell for nodeexport user
 
 ---
 
