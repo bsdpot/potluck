@@ -1,3 +1,10 @@
+0.0.17
+
+* Fix nologin shell for nodeexport user
+* This image is still old format versioning
+
+---
+
 0.0.16
 
 * Version bump for FreeBSD-13.1 image

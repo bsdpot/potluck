@@ -574,7 +574,7 @@ echo \"tls_server_config:
 
 # enable node_exporter service
 # add node_exporter user
-/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/bin/nologin -h -
+/usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/sbin/nologin -h -
 
 # invite node_exporter to certaccess group
 /usr/sbin/pw usermod nodeexport -G certaccess
