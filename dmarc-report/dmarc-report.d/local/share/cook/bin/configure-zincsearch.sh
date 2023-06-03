@@ -12,7 +12,7 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 if ! id -u "zincsearch" >/dev/null 2>&1; then
-  /usr/sbin/pw useradd -n zincsearch -c 'zincsearch user' -m -s /usr/bin/nologin -h -
+  /usr/sbin/pw useradd -n zincsearch -c 'zincsearch user' -m -s /usr/sbin/nologin -h -
 fi
 
 # make sure the data directory is created
