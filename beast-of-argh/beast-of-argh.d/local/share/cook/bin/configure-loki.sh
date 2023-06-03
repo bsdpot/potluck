@@ -21,7 +21,7 @@ mkdir -p /tmp/loki
 # loki setup
 
 # create loki user
-/usr/sbin/pw useradd -n loki -c 'loki user' -m -s /usr/bin/nologin -h -
+/usr/sbin/pw useradd -n loki -c 'loki user' -m -s /usr/sbin/nologin -h -
 
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed

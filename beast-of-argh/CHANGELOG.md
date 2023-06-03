@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Signified
 * Fix nologin shell for nodeexport user
+* Fix nologin shell for loki user
 
 ---
 
