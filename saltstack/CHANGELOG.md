@@ -3,6 +3,8 @@
 * Version bump for new base image
 * Signified
 * Fix nologin shell for nodeexport user
+* Remove existing ssh key for user-configured saltuser if exists
+* Adjust formatting of parameters in README
 
 ---
 

@@ -25,9 +25,14 @@ The flavour expects a local ```consul``` agent instance to be available that it 
   ```
 * Adjust to your environment:
   ```
-  sudo pot set-env -p <jailname> -E DATACENTER=<datacentername> -E NODENAME=<nodename> \
-  -E IP=<IP address of this node> -E PKIPATH="/mnt/salt/pki/master" -E STATEPATH="/mnt/salt/state" \
-  -E PILLARPATH="/mnt/salt/pillar" -E SSHUSER=<username> \
+  sudo pot set-env -p <jailname> \
+  -E DATACENTER=<datacentername> \
+  -E NODENAME=<nodename> \
+  -E IP=<IP address of this node> \
+  -E PKIPATH="/mnt/salt/pki/master" \
+  -E STATEPATH="/mnt/salt/state" \
+  -E PILLARPATH="/mnt/salt/pillar" \
+  -E SSHUSER=<username> \
   -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
   -E GOSSIPKEY="<32 byte Base64 key from consul keygen>" \
   [ -E REMOTELOG=<remote syslog IP> ]

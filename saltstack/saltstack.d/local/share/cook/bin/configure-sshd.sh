@@ -37,7 +37,19 @@ sep=$'\001'
 
 # configure ssh user ssh keys
 mkdir -p "/mnt/home/$SSHUSER/.ssh"
+
+# remove any existing private key
+if [ -f "/mnt/home/$SSHUSER/.ssh/id_rsa" ]; then
+	rm -f "/mnt/home/$SSHUSER/.ssh/id_rsa"
+fi
+# remove any existing public key
+if [ -f "/mnt/home/$SSHUSER/.ssh/id_rsa.pub" ]; then
+	rm -f "/mnt/home/$SSHUSER/.ssh/id_rsa.pub"
+fi
+# generate a new key
 /usr/bin/ssh-keygen -q -N '' -f "/mnt/home/$SSHUSER/.ssh/id_rsa" -t rsa
+
+# set permissions
 chmod 700 "/mnt/home/$SSHUSER/.ssh"
 cat "/mnt/home/$SSHUSER/.ssh/id_rsa.pub" > "/mnt/home/$SSHUSER/.ssh/authorized_keys"
 chmod 700 "/mnt/home/$SSHUSER/.ssh"
