@@ -87,6 +87,9 @@ mkdir -p /usr/local/etc/rc.d
 step "Install package consul"
 pkg install -y consul
 
+step "Install package node_exporter"
+pkg install -y node_exporter
+
 step "Install package openssl"
 pkg install -y openssl
 

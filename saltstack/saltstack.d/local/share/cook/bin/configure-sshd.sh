@@ -59,4 +59,4 @@ chown "$SSHUSER":wheel "/mnt/home/$SSHUSER/.ssh"
 
 # restart ssh
 service sshd enable || true
-service ssh start || true
+service sshd start || true

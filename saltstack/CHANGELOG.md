@@ -5,6 +5,7 @@
 * Fix nologin shell for nodeexport user
 * Remove existing ssh key for user-configured saltuser if exists
 * Adjust formatting of parameters in README
+* Fix services start for sshd and node_exporter
 
 ---
 
