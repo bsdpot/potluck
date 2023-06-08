@@ -1,3 +1,10 @@
+0.75
+
+* Version bump to rebuild for 13.2
+* Still using php81 versions
+
+---
+
 0.74
 
 * Version bump for rebuild
