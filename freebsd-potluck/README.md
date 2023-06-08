@@ -7,7 +7,7 @@ tags: ["base image", "layers", "testing"]
 
 # Overview
 
-This flavour is a bare base pot image. Just FreeBSD-13.1.
+This flavour is a bare base pot image. Just FreeBSD-13.2.
 
 # Installation
 

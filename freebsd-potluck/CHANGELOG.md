@@ -1,3 +1,9 @@
+0.0.14
+
+* New base image for FreeBSD-13.2 (second attempt)
+
+---
+
 0.0.13
 
 * Revert to 13.1 kernel
