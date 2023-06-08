@@ -1,3 +1,10 @@
+0.3
+
+* Version bump for new base image
+* Still WIP image, not working 100% yet for reports
+
+---
+
 0.2
 
 * Version bump for new base image
