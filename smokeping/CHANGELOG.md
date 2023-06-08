@@ -1,3 +1,10 @@
+0.4
+
+* Version bump for new kernel
+* This is a non-layered image
+
+---
+
 0.3
 
 * Version bump for new base image
