@@ -29,6 +29,7 @@ scrape_configs:
         - node-exporter
         - haproxy-exporter
         - postgres-exporter
+        - prometheus-json-metrics-exporter
         - prometheus-log-exporter
       datacenter: '%%datacenter%%'
     relabel_configs:
