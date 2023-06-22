@@ -1,6 +1,7 @@
 0.6
 
 * Version bump for new base image
+* Rebuild for newer jenkins
 
 ---
 
