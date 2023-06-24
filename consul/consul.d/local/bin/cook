@@ -96,10 +96,10 @@ fi
 
 # check if DISABLEUI is set, then set the flag to false, else default to true
 if [ -n "${DISABLEUI+x}" ]; then
-	UIFLAG=false
+	UIFLAG="false"
 	export UIFLAG
 else
-	UIFLAG=true
+	UIFLAG="true"
 	export UIFLAG
 fi
 
