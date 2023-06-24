@@ -26,6 +26,7 @@ Together with the [nomad-server](https://potluck.honeyguide.net/blog/nomad-serve
    -E BOOTSTRAP=<1|3|5> \
    -E GOSSIPKEY="<32 byte Base64 consul keygen key>" \
    [-E CONSULSERVERS="<comma-separated IP addresses of all servers in cluster>" ] \
+   [-E DISABLEUI=<any value disables> ] \
    [-E REMOTELOG="<ip address remote syslog server>" ]
    ```
 
@@ -42,6 +43,8 @@ For 3 and 5 node clusters all cluster member IP addresses must be passed in usin
 The GOSSIPKEY parameter is to enable custom gossip encryption and defaults to a standard key. Do not use the default key for production encryption, instead provide your own after running ```consul keygen``` with ```consul``` client.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send logs to.
+
+The optional DISABLEUI parameter will disable the web UI if set to any value. Otherwise the UI will be available by default.
 
 # Usage
 

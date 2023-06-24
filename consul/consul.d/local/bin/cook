@@ -51,7 +51,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME BOOTSTRAP"
-optional_args="CONSULSERVERS GOSSIPKEY REMOTELOG"
+optional_args="CONSULSERVERS GOSSIPKEY DISABLEUI REMOTELOG"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -92,6 +92,15 @@ fi
 if [ -z "${GOSSIPKEY+x}" ]; then
     GOSSIPKEY="BY+vavBUSEmNzmxxS3k3bmVFn1giS4uEudc774nBhIw="
     export GOSSIPKEY
+fi
+
+# check if DISABLEUI is set, then set the flag to false, else default to true
+if [ -n "${DISABLEUI+x}" ]; then
+	UIFLAG=false
+	export UIFLAG
+else
+	UIFLAG=true
+	export UIFLAG
 fi
 
 # stop services

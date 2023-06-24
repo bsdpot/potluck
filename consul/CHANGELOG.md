@@ -1,6 +1,7 @@
 2.6
 
 * Version bump for new base image
+* Add optional DISABLEUI parameter to disable web ui
 
 ---
 

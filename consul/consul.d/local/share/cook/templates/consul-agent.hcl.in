@@ -25,7 +25,7 @@ log_level = "WARN"
 node_name = "%%nodename%%"
 translate_wan_addrs = true
 ui_config = {
-  enabled= true
+  enabled= %%uiflag%%
 }
 server = true
 encrypt = "%%gossipkey%%"

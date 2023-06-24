@@ -38,6 +38,7 @@ sep=$'\001'
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%bootstrap%%${sep}$BOOTSTRAP${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+  sed "s${sep}%%uiflag%%${sep}$UIFLAG${sep}g" | \
   sed "s${sep}%%consulservers%%${sep}$FIXCONSULSERVERS${sep}g" | \
   sed "s${sep}%%forcluster%%${sep}$for_cluster${sep}g" \
   > /usr/local/etc/consul.d/agent.hcl
