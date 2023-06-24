@@ -50,7 +50,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS BOOTSTRAP"
-optional_args="REGION GOSSIPKEY IMPORTJOBS RAFTMULTIPLIER REMOTELOG"
+optional_args="REGION GOSSIPKEY IMPORTJOBS RAFTMULTIPLIER DISABLEUI REMOTELOG"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -106,6 +106,15 @@ fi
 if [ -z "${RAFTMULTIPLIER+x}" ]; then
     RAFTMULTIPLIER=1
     export RAFTMULTIPLIER
+fi
+
+# If set, disable the web UI, else default to enabled UI
+if [ -n "${DISABLEUI+x}" ]; then
+	UIFLAG="false"
+	export UIFLAG
+else
+	UIFLAG="true"
+	export UIFLAG
 fi
 
 # stop services

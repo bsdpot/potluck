@@ -52,6 +52,9 @@ autopilot {
   disable_upgrade_migration = false
   enable_custom_upgrades = false
 }
+ui {
+  enabled = %%uiflag%%
+}
 enable_syslog = true
 log_level = "WARN"
 syslog_facility = "LOCAL5"

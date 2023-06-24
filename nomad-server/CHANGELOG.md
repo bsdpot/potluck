@@ -1,6 +1,7 @@
 3.7
 
 * Version bump for new base image
+* Add optional DISABLEUI parameter
 
 ---
 
