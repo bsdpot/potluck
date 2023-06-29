@@ -1,3 +1,9 @@
+0.2.18
+
+* Add filtering of metric logs to a separate file in loki
+
+---
+
 0.2.17
 
 * Version bump to rebuild

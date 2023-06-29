@@ -64,6 +64,7 @@ destination ppp { file("/var/log/ppp.log"); };
 destination allusers { usertty("*"); };
 # pot settings
 destination lokilogs { file("/mnt/log/remote/$HOST.log"); };
+destination metricslog { file("/mnt/log/remote/metrics.log"); };
 destination loghost {
   tcp("%%myip%%" port(6514)
   tls(
@@ -123,6 +124,11 @@ filter f_is_debug { level(debug); };
 
 # program filters
 filter f_ppp { program("ppp"); };
+
+# metrics filter
+filter f_not_metric { not message("jsonmetric"); };
+filter f_metric { message("jsonmetric"); };
+
 
 # filter all
 filter f_all {
@@ -190,4 +196,5 @@ log { source(src); filter(f_ppp); destination(ppp); };
 
 # pot config
 # log network logs to lokilogs
-log { source(mynetwork); destination(lokilogs); destination(lokisyslog); };
+log { source(mynetwork); filter(f_not_metric); destination(lokilogs); destination(lokisyslog); };
+log { source(mynetwork); filter(f_metric); destination(metricslog); };
