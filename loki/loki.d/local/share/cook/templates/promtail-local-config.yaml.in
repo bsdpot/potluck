@@ -64,20 +64,6 @@ scrape_configs:
             - timestamp:
                 source: timestamp
                 format: RFC3339Nano
-      - match:
-          selector: '{job = "syslog"} |= "jsonmetric -"'
-          stages:
-            - regex:
-                expression: "jsonmetric - '(?P<json_str>.*)'"
-            - output:
-                source: json_str
-            - json:
-                expressions:
-                  name: '"@name"'
-                  type: '"@type"'
-                  method: '"@http.method"'
-                  status_code: '"@http.status_code"'
-                  server_duration: '"@http.server.duration"'
     relabel_configs:
       - source_labels: ['__syslog_message_hostname']
         target_label: 'host'

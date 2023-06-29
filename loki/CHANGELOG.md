@@ -1,3 +1,9 @@
+0.2.19
+
+* Move special logs into their own dirs
+
+---
+
 0.2.18
 
 * Add filtering of metric logs to a separate file in loki
