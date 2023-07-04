@@ -3,6 +3,8 @@
 * Version bump for new base image
 * Still WIP image, not working 100% yet for reports
 * Update to zincsearch 0.4.7
+* Make nginx fake elasticsearch on ip:9200/_bulk by proxy_pass to ip:4080/api/_bulk
+* Make parsedmarc send to ip:9200
 
 ---
 
