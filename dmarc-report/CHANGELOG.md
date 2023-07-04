@@ -10,6 +10,7 @@
 * Start parsedmarc service last
 * Increase request entity size for fake elasticsearch to 512MB
 * Enable prometheus monitoring for zincsearch
+* Proxy_pass to elasticsearch compatible API bulk endpoint
 
 ---
 
