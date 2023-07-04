@@ -125,11 +125,11 @@ configure-zincsearch.sh
 log "Configure nginx"
 configure-nginx.sh
 
-log "Configure and start parsedmarc"
-configure-parsedmarc.sh
-
 log "Start nginx"
 service nginx start || true
+
+log "Configure and start parsedmarc. This takes a while for the virtual environment."
+configure-parsedmarc.sh
 
 log "Exit seasoned"
 pot_seasoned_exit

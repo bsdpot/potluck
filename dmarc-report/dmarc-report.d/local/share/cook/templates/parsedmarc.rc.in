@@ -61,8 +61,7 @@ required_files="${parsedmarc_config}"
 procname="/opt/parsedmarc/venv/bin/parsedmarc"
 command="/usr/sbin/daemon"
 command_args="-f ${parsedmarc_syslog_output_flags} -p ${pidfile} -t ${name} \
-        /usr/bin/env ${parsedmarc_env} ${procname} \
-        --config-file ${parsedmarc_config} \
+        ${procname} --config-file ${parsedmarc_config} \
         ${parsedmarc_args}"
 
 start_precmd="parsedmarc_start_precmd"

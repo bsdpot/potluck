@@ -5,6 +5,9 @@
 * Update to zincsearch 0.4.7
 * Make nginx fake elasticsearch on ip:9200/_bulk by proxy_pass to ip:4080/api/_bulk
 * Make parsedmarc send to ip:9200
+* Adjustments to parsedmarc rc script
+* Add zinc user/pass to parsedmarc elasticsearch config
+* Start parsedmarc service last
 
 ---
 
