@@ -19,6 +19,12 @@ The display of the report using `zincsearch` data is pending.
 
 The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. You can also connect to this host and ```service consul restart``` manually.
 
+# Warnings
+
+The `parsedmarc` process can take up to 30min to complete with only a few hundred mails in your dmarc folder on a first run.
+
+There is no progress indicator when complete. When your dmarc folder empties, the initial run is complete, and the messages go to the Archive folder.
+
 # Installation
 
 * Create your local jail from the image or the flavour files.

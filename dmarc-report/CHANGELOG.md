@@ -8,6 +8,8 @@
 * Adjustments to parsedmarc rc script
 * Add zinc user/pass to parsedmarc elasticsearch config
 * Start parsedmarc service last
+* Increase request entity size for fake elasticsearch to 512MB
+* Enable prometheus monitoring for zincsearch
 
 ---
 
