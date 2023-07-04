@@ -125,14 +125,11 @@ configure-zincsearch.sh
 log "Configure nginx"
 configure-nginx.sh
 
-log "Configure parsedmarc"
+log "Configure and start parsedmarc"
 configure-parsedmarc.sh
 
 log "Start nginx"
-timeout --foreground 120 \
-  sh -c 'while ! service nginx status; do
-    service nginx start || true; sleep 5;
-  done'
+service nginx start || true
 
 log "Exit seasoned"
 pot_seasoned_exit

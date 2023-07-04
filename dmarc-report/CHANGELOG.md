@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Still WIP image, not working 100% yet for reports
+* Update to zincsearch 0.4.7
 
 ---
 

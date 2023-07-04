@@ -44,5 +44,3 @@ service zincsearch enable || true
 
 # start zincsearch
 service zincsearch start || true
-
-
