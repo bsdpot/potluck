@@ -20,6 +20,17 @@ fi
 mkdir -p "/mnt/$OUTPUTFOLDER"
 chown -R parsedmarc "/mnt/$OUTPUTFOLDER"
 
+# create index via fake elasticsearch
+# this should address the error:
+# 'core.MultiSearchV2: error accessing reader: no index found'
+#
+zinccredentials="$ZINCUSER:$ZINCPASS"
+echo "Creating dmarc_aggregate index"
+curl -u "$zinccredentials" -XPUT -d '{}' "http://$IP:9200/dmarc_aggregate" | jq .acknowledged
+
+echo "Creating dmarc_forensic index"
+curl -u "$zinccredentials" -XPUT -d '{}' "http://$IP:9200/dmarc_forensic" | jq .acknowledged
+
 # create virtualenv
 sudo -u parsedmarc virtualenv /opt/parsedmarc/venv || true
 
