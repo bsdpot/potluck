@@ -12,6 +12,7 @@
 * Enable prometheus monitoring for zincsearch
 * Proxy_pass to elasticsearch compatible API bulk endpoint
 * Adjust proxy_pass to /es/
+* Fixup changes to parsedmarc ini for fake elasticsearch
 
 ---
 
