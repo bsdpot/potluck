@@ -24,12 +24,11 @@ chown -R parsedmarc "/mnt/$OUTPUTFOLDER"
 # this should address the error:
 # 'core.MultiSearchV2: error accessing reader: no index found'
 #
-zinccredentials="$ZINCUSER:$ZINCPASS"
 echo "Creating dmarc_aggregate index"
-curl -u "$zinccredentials" -XPUT -d '{}' "http://$IP:9200/dmarc_aggregate" | jq .acknowledged
+/usr/local/bin/curl --user "$ZINCUSER:$ZINCPASS" -X PUT -d '{}' "http://$IP:9200/dmarc_aggregate" || true
 
 echo "Creating dmarc_forensic index"
-curl -u "$zinccredentials" -XPUT -d '{}' "http://$IP:9200/dmarc_forensic" | jq .acknowledged
+/usr/local/bin/curl --user "$ZINCUSER:$ZINCPASS" -X PUT -d '{}' "http://$IP:9200/dmarc_forensic" || true
 
 # create virtualenv
 sudo -u parsedmarc virtualenv /opt/parsedmarc/venv || true
