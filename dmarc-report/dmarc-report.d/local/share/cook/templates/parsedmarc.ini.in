@@ -22,8 +22,10 @@ server = localhost
 port = 514
 
 [elasticsearch]
-hosts = %%zincuser%%:%%zincpass%%@%%ip%%:9200
+hosts = %%ip%%:9200
 ssl = False
+username = %%zincuser%%
+password = %%zincpass%%
 
 #[s3]
 #bucket = my-bucket
