@@ -11,6 +11,10 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
+# Adapt config files
+SCRIPT=$(readlink -f "$0")
+TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+
 # add parsedmarc user
 if ! id -u "parsedmarc" >/dev/null 2>&1; then
   /usr/sbin/pw useradd -n parsedmarc -c 'parsedmarc user' -m -d /opt/parsedmarc -s /bin/sh -h -
@@ -60,10 +64,6 @@ deactivate
 # make sure the process can write to log file
 touch /var/log/python-parsedmarc.log
 chown parsedmarc:parsedmarc /var/log/python-parsedmarc.log
-
-# Adapt config files
-SCRIPT=$(readlink -f "$0")
-TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
