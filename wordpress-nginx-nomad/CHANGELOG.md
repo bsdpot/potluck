@@ -1,3 +1,10 @@
+2.6
+
+* Version bump for new base image
+* mariadb106-client
+
+---
+
 2.5
 
 * Version bump for new base image
