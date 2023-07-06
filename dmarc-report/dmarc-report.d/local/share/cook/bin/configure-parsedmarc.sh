@@ -24,16 +24,24 @@ chown -R parsedmarc "/mnt/$OUTPUTFOLDER"
 # this should address the error:
 # 'core.MultiSearchV2: error accessing reader: no index found'
 # Any index will do, just needs to be an existing index before parsedmarc will import correctly
-#
+
 # check zincsearch responding
 zinclivecheck=$(/usr/local/bin/curl -s "http://localhost:9200/" | jq -r .name )
+
+# copy json file with sample index to /tmp (might be redundant)
+cp -f "$TEMPLATEPATH/sampleindex.json.in" /tmp/sampleindex.json
+
+# set credentials
 mycreds="$ZINCUSER:$ZINCPASS"
+
+# if zincsearch is up, use curl to create a sample index using local json file
 if [ "$zinclivecheck" = "zinc" ]; then
 	# create default index
 	echo "Creating a default zincsearch index"
-	/usr/local/bin/curl --user $mycreds -X PUT -d '{}' http://localhost:9200/sampleindex || true
+	/usr/local/bin/curl --retry 5 --retry-delay 5 --retry-all-errors --user "$mycreds" \
+	  -X PUT --data-binary @/tmp/sampleindex.json http://localhost:9200/sampleindex || true
 else
-	echo "cannot create index, zincsearch is not live"
+	echo "Cannot create index, zincsearch is not live"
 	exit 1
 fi
 
@@ -51,7 +59,7 @@ deactivate
 
 # make sure the process can write to log file
 touch /var/log/python-parsedmarc.log
-chown parsedmarc /var/log/python-parsedmarc.log
+chown parsedmarc:parsedmarc /var/log/python-parsedmarc.log
 
 # Adapt config files
 SCRIPT=$(readlink -f "$0")
