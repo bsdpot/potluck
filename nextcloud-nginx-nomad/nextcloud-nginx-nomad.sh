@@ -250,8 +250,8 @@ pkg install -y php81-pdo_mysql
 step "Install package php81-pecl-APCu"
 pkg install -y php81-pecl-APCu
 
-step "Install package php81-pecl-memcached"
-pkg install -y php81-pecl-memcached
+step "Install package php81-pecl-memcache"
+pkg install -y php81-pecl-memcache
 
 step "Install package php81-pecl-redis"
 pkg install -y php81-pecl-redis

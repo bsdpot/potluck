@@ -1,3 +1,10 @@
+0.77
+
+* Rebuild for failed build
+* php81-pecl-memcached is now php81-pecl-memcache
+
+---
+
 0.76
 
 * Version bump for new quarterlies
