@@ -1,3 +1,9 @@
+0.76
+
+* Version bump for new quarterlies
+
+---
+
 0.75
 
 * Version bump to rebuild for 13.2

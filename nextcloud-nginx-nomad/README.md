@@ -170,7 +170,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-13_2"
-        tag = "0.75"
+        tag = "0.76"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [

@@ -112,8 +112,8 @@ pkg install -y rsync
 step "Install package nginx"
 pkg install -y nginx
 
-step "Install package mariadb105-client"
-pkg install -y mariadb105-client
+step "Install package mariadb106-client"
+pkg install -y mariadb106-client
 
 step "Install package postgresql13-client"
 pkg install -y postgresql13-client
