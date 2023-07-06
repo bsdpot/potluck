@@ -26,11 +26,11 @@ chown -R parsedmarc "/mnt/$OUTPUTFOLDER"
 # Any index will do, just needs to be an existing index before parsedmarc will import correctly
 #
 # check zincsearch responding
-zinclivecheck=$(/usr/local/bin/curl -s "http://$IP:9200/" | jq -r .name)
-if [ "$zinclivecheck" == "zinc" ]; then
+zinclivecheck=$(/usr/local/bin/curl -s "http://localhost:9200/" | jq -r .name )
+if [ "$zinclivecheck" = "zinc" ]; then
 	# create default index
 	echo "Creating a default zincsearch index"
-	/usr/local/bin/curl --user "$ZINCUSER:$ZINCPASS" -X PUT -d '{}' "http://$IP:9200/sampleindex" || true
+	/usr/local/bin/curl --user "$ZINCUSER:$ZINCPASS" -X PUT -d '{}' http://localhost:9200/sampleindex || true
 else
 	echo "cannot create index, zincsearch is not live"
 	exit 1
