@@ -1,3 +1,10 @@
+0.8
+
+* Version bump for new base image
+* Adjust quarterlies link
+
+---
+
 0.7
 
 * Version bump for new base image
