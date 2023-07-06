@@ -1,3 +1,10 @@
+3.6
+
+* Version bump for new base image
+* mariadb105 to mariadb106
+
+---
+
 3.5
 
 * Version bump for new base image

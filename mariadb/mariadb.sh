@@ -116,7 +116,7 @@ step "Install package rsync"
 pkg install -y rsync
 
 step "Install packages mariadb105"
-pkg install -y mariadb105-server mariadb105-client
+pkg install -y mariadb106-server mariadb106-client
 
 step "Install package node_exporter"
 pkg install -y node_exporter
