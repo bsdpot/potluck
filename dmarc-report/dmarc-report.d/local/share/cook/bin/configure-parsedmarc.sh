@@ -27,10 +27,11 @@ chown -R parsedmarc "/mnt/$OUTPUTFOLDER"
 #
 # check zincsearch responding
 zinclivecheck=$(/usr/local/bin/curl -s "http://localhost:9200/" | jq -r .name )
+mycreds="$ZINCUSER:$ZINCPASS"
 if [ "$zinclivecheck" = "zinc" ]; then
 	# create default index
 	echo "Creating a default zincsearch index"
-	/usr/local/bin/curl --user "$ZINCUSER:$ZINCPASS" -X PUT -d '{}' http://localhost:9200/sampleindex || true
+	/usr/local/bin/curl --user $mycreds -X PUT -d '{}' http://localhost:9200/sampleindex || true
 else
 	echo "cannot create index, zincsearch is not live"
 	exit 1
