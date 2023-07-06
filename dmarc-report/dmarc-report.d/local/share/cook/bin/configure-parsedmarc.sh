@@ -32,8 +32,9 @@ chown -R parsedmarc "/mnt/$OUTPUTFOLDER"
 # check zincsearch responding
 zinclivecheck=$(/usr/local/bin/curl -s "http://localhost:9200/" | jq -r .name )
 
-# copy json file with sample index to /tmp (might be redundant)
-cp -f "$TEMPLATEPATH/sampleindex.json.in" /tmp/sampleindex.json
+# copy empty index json files to /tmp (might be redundant)
+cp -f "$TEMPLATEPATH/dmarc_aggregate.json.in" /tmp/dmarc_aggregate.json
+cp -f "$TEMPLATEPATH/dmarc_forensic.json.in" /tmp/dmarc_forensic.json
 
 # set credentials
 mycreds="$ZINCUSER:$ZINCPASS"
@@ -41,9 +42,12 @@ mycreds="$ZINCUSER:$ZINCPASS"
 # if zincsearch is up, use curl to create a sample index using local json file
 if [ "$zinclivecheck" = "zinc" ]; then
 	# create default index
-	echo "Creating a default zincsearch index"
+	echo "Creating a default zincsearch aggregate index"
 	/usr/local/bin/curl --retry 5 --retry-delay 5 --retry-all-errors --user "$mycreds" \
-	  -X PUT --data-binary @/tmp/sampleindex.json http://localhost:9200/sampleindex || true
+	  -X PUT --data-binary @/tmp/dmarc_aggregate.json http://localhost:9200/dmarc_aggregate || true
+	echo "Creating a default zincsearch forensic index"
+	/usr/local/bin/curl --retry 5 --retry-delay 5 --retry-all-errors --user "$mycreds" \
+	  -X PUT --data-binary @/tmp/dmarc_forensic.json http://localhost:9200/dmarc_forensic || true
 else
 	echo "Cannot create index, zincsearch is not live"
 	exit 1
