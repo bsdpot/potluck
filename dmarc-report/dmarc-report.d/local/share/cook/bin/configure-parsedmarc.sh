@@ -23,12 +23,18 @@ chown -R parsedmarc "/mnt/$OUTPUTFOLDER"
 # create index via fake elasticsearch
 # this should address the error:
 # 'core.MultiSearchV2: error accessing reader: no index found'
+# Any index will do, just needs to be an existing index before parsedmarc will import correctly
 #
-echo "Creating dmarc_aggregate index"
-/usr/local/bin/curl --user "$ZINCUSER:$ZINCPASS" -X PUT -d '{}' "http://$IP:9200/dmarc_aggregate" || true
-
-echo "Creating dmarc_forensic index"
-/usr/local/bin/curl --user "$ZINCUSER:$ZINCPASS" -X PUT -d '{}' "http://$IP:9200/dmarc_forensic" || true
+# check zincsearch responding
+zinclivecheck=$(/usr/local/bin/curl -s "http://$IP:9200/" | jq -r .name)
+if [ "$zinclivecheck" == "zinc" ]; then
+	# create default index
+	echo "Creating a default zincsearch index"
+	/usr/local/bin/curl --user "$ZINCUSER:$ZINCPASS" -X PUT -d '{}' "http://$IP:9200/sampleindex" || true
+else
+	echo "cannot create index, zincsearch is not live"
+	exit 1
+fi
 
 # create virtualenv
 sudo -u parsedmarc virtualenv /opt/parsedmarc/venv || true

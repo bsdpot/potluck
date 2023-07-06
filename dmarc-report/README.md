@@ -15,7 +15,7 @@ This information can be submitted to the local `zincsearch` instance, a low foot
 
 It is currently expected that this jail will run on an internal IP with no remote access.
 
-The display of the report using `zincsearch` data is pending.
+The display of the report using `zincsearch` data is pending, likely local Grafana with imported dashboard.
 
 The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. You can also connect to this host and ```service consul restart``` manually.
 

@@ -15,6 +15,7 @@
 * Fixup changes to parsedmarc ini for fake elasticsearch
 * Force zincsearch index creation for 'dmarc_aggregate' and 'dmarc_forensic' before parsedmarc setup
 * Fix stall in index creation
+* Create a default index after checking zincsearch is responding. Don't create 'dmarc_aggregate' and 'dmarc_forensic'.
 
 ---
 
