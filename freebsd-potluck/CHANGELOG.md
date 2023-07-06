@@ -1,3 +1,9 @@
+0.0.15
+
+* Version bump for new quarterly packages
+
+---
+
 0.0.14
 
 * New base image for FreeBSD-13.2 (second attempt)
