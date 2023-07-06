@@ -1,3 +1,9 @@
+0.5
+
+* Version bump for new quarterlies
+
+---
+
 0.4
 
 * Version bump for new kernel
