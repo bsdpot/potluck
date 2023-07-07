@@ -97,6 +97,12 @@ timeout --foreground 10 \
   service consul onestop || service consul onestop || true
 killall -9 consul || true
 
+# setup directories for local logs
+mkdir -p /mnt/applog/grafana
+
+# setup directories for persistent storage
+mkdir -p /mnt/grafana
+
 export PATH=/usr/local/share/cook/bin:$PATH
 
 if [ -n "${REMOTELOG}" ]; then
@@ -130,6 +136,12 @@ service nginx start || true
 
 log "Create default indices for zincsearch"
 configure-index.sh
+
+log "Configure grafana"
+configure-grafana.sh
+
+log "Start grafana"
+service grafana start
 
 log "Configure and start parsedmarc. This takes a while for the virtual environment."
 configure-parsedmarc.sh

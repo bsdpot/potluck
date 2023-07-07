@@ -35,15 +35,15 @@ zinclivecheck=$(/usr/local/bin/curl -s "http://127.0.0.1:9200/" | jq -r .name )
 if [ "$zinclivecheck" = "zinc" ]; then
 	echo "Creating a default zincsearch aggregate index"
 	/usr/local/bin/curl --silent --retry 5 --retry-delay 5 --retry-all-errors --netrc \
-	  -X PUT --data-binary @/tmp/dmarc_aggregate.json http://127.0.0.1:9200/dmarc_aggregate | jq -r .acknowledged
+	  -X PUT --data-binary @/tmp/dmarc_aggregate.json http://127.0.0.1:9200/dmarc_aggregate || true
 
 	echo "Creating a default zincsearch forensic index"
 	/usr/local/bin/curl --silent --retry 5 --retry-delay 5 --retry-all-errors --netrc \
-	  -X PUT --data-binary @/tmp/dmarc_forensic.json http://127.0.0.1:9200/dmarc_forensic | jq -r .acknowledged
+	  -X PUT --data-binary @/tmp/dmarc_forensic.json http://127.0.0.1:9200/dmarc_forensic || true
 
 	# delete temporary files
 	echo "Deleting temp index json files"
-	rm -r /tmp/dmarc_aggregate.json /tmp/dmarc_forensic.json
+	rm -rf /tmp/dmarc_aggregate.json /tmp/dmarc_forensic.json
 else
 	echo "Cannot create index, zincsearch is not live"
 	exit 1

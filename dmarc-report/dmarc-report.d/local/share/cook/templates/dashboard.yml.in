@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+- name: 'Zincsearch'
+  orgId: 1
+  folder: ''
+  type: file
+  disableDeletion: false
+  editable: true
+  options:
+    path: /mnt/grafana/provisioning/dashboards
