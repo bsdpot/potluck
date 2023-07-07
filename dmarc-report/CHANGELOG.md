@@ -23,6 +23,7 @@
 * Add grafana8 to use with custom dashboard for parsedmarc, suitable dashboard to be tested still
 * Further adjustments to index creation
 * Add grafana variables, simplify index creation script
+* Fix missing grafana.ini
 
 ---
 
