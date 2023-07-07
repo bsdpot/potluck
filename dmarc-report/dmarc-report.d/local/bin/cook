@@ -141,7 +141,7 @@ log "Configure grafana"
 configure-grafana.sh
 
 log "Start grafana"
-service grafana start
+service grafana start || true
 
 log "Configure and start parsedmarc. This takes a while for the virtual environment."
 configure-parsedmarc.sh

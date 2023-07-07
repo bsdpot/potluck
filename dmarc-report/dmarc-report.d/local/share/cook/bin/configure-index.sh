@@ -29,21 +29,22 @@ echo "machine 127.0.0.1 login ${ZINCUSER} password ${ZINCPASS}" > /root/.netrc
 
 # check zincsearch responding
 # localhost:9200 is the fake elasticsearch reverse proxy to zincsearch
-zinclivecheck=$(/usr/local/bin/curl -s "http://127.0.0.1:9200/" | jq -r .name )
+zinclivecheck=$(/usr/local/bin/curl -s "http://127.0.0.1:9200/" | jq -r .name | grep -c zinc)
 
 # if zincsearch is up, use curl to create a sample index using local json file
-if [ "$zinclivecheck" = "zinc" ]; then
+if [ "$zinclivecheck" -eq 1 ]; then
 	echo "Creating a default zincsearch aggregate index"
 	/usr/local/bin/curl --silent --retry 5 --retry-delay 5 --retry-all-errors --netrc \
-	  -X PUT --data-binary @/tmp/dmarc_aggregate.json http://127.0.0.1:9200/dmarc_aggregate || true
+	  -X PUT --data-binary "@/tmp/dmarc_aggregate.json" http://127.0.0.1:9200/dmarc_aggregate || true
 
 	echo "Creating a default zincsearch forensic index"
 	/usr/local/bin/curl --silent --retry 5 --retry-delay 5 --retry-all-errors --netrc \
-	  -X PUT --data-binary @/tmp/dmarc_forensic.json http://127.0.0.1:9200/dmarc_forensic || true
+	  -X PUT --data-binary "@/tmp/dmarc_forensic.json" http://127.0.0.1:9200/dmarc_forensic || true
 
 	# delete temporary files
 	echo "Deleting temp index json files"
-	rm -rf /tmp/dmarc_aggregate.json /tmp/dmarc_forensic.json
+	rm -f /tmp/dmarc_aggregate.json
+	rm -f /tmp/dmarc_forensic.json
 else
 	echo "Cannot create index, zincsearch is not live"
 	exit 1
