@@ -41,13 +41,13 @@ mycreds="$ZINCUSER:$ZINCPASS"
 
 # if zincsearch is up, use curl to create a sample index using local json file
 if [ "$zinclivecheck" = "zinc" ]; then
-	# create default index
 	echo "Creating a default zincsearch aggregate index"
 	/usr/local/bin/curl --retry 5 --retry-delay 5 --retry-all-errors --user "$mycreds" \
-	  -X PUT --data-binary @/tmp/dmarc_aggregate.json http://localhost:9200/dmarc_aggregate || true
+	  -X PUT --data-binary @/tmp/dmarc_aggregate.json http://localhost:9200/dmarc_aggregate | jq -r .acknowledged
+
 	echo "Creating a default zincsearch forensic index"
 	/usr/local/bin/curl --retry 5 --retry-delay 5 --retry-all-errors --user "$mycreds" \
-	  -X PUT --data-binary @/tmp/dmarc_forensic.json http://localhost:9200/dmarc_forensic || true
+	  -X PUT --data-binary @/tmp/dmarc_forensic.json http://localhost:9200/dmarc_forensic | jq -r .acknowledged
 else
 	echo "Cannot create index, zincsearch is not live"
 	exit 1
