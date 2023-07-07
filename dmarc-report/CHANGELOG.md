@@ -18,6 +18,8 @@
 * Create a default index after checking zincsearch is responding. Don't create 'dmarc_aggregate' and 'dmarc_forensic'.
 * Bugfixing index creation step
 * Revert to forcing zincsearch index creation for 'dmarc_aggregate' and 'dmarc_forensic' before parsedmarc setup
+* Split index creation to own script before parsedmarc install
+* Use 127.0.0.1 instead of localhost
 
 ---
 

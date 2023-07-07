@@ -128,6 +128,9 @@ configure-nginx.sh
 log "Start nginx"
 service nginx start || true
 
+log "Create default indices for zincsearch"
+configure-index.sh
+
 log "Configure and start parsedmarc. This takes a while for the virtual environment."
 configure-parsedmarc.sh
 
