@@ -27,25 +27,16 @@ cp -f "$TEMPLATEPATH/dmarc_forensic.json.in" /tmp/dmarc_forensic.json
 # set credentials
 echo "machine 127.0.0.1 login ${ZINCUSER} password ${ZINCPASS}" > /root/.netrc
 
-# check zincsearch responding
-# localhost:9200 is the fake elasticsearch reverse proxy to zincsearch
-zinclivecheck=$(/usr/local/bin/curl -s "http://127.0.0.1:9200/" | jq -r .name | grep -c zinc)
+# create default index - parsedmarc will use dmarc_aggregate-YYYY-MM-DD
+echo "Creating a default zincsearch aggregate index"
+/usr/local/bin/curl --silent --retry 5 --retry-delay 5 --retry-all-errors --netrc \
+  -X PUT --data-binary "@/tmp/dmarc_aggregate.json" http://127.0.0.1:9200/dmarc_aggregate || true
 
-# if zincsearch is up, use curl to create a sample index using local json file
-if [ "$zinclivecheck" -eq 1 ]; then
-	echo "Creating a default zincsearch aggregate index"
-	/usr/local/bin/curl --silent --retry 5 --retry-delay 5 --retry-all-errors --netrc \
-	  -X PUT --data-binary "@/tmp/dmarc_aggregate.json" http://127.0.0.1:9200/dmarc_aggregate || true
+echo "Creating a default zincsearch forensic index"
+/usr/local/bin/curl --silent --retry 5 --retry-delay 5 --retry-all-errors --netrc \
+  -X PUT --data-binary "@/tmp/dmarc_forensic.json" http://127.0.0.1:9200/dmarc_forensic || true
 
-	echo "Creating a default zincsearch forensic index"
-	/usr/local/bin/curl --silent --retry 5 --retry-delay 5 --retry-all-errors --netrc \
-	  -X PUT --data-binary "@/tmp/dmarc_forensic.json" http://127.0.0.1:9200/dmarc_forensic || true
-
-	# delete temporary files
-	echo "Deleting temp index json files"
-	rm -f /tmp/dmarc_aggregate.json
-	rm -f /tmp/dmarc_forensic.json
-else
-	echo "Cannot create index, zincsearch is not live"
-	exit 1
-fi
+# delete temporary files
+echo "Deleting temp index json files"
+rm -f /tmp/dmarc_aggregate.json
+rm -f /tmp/dmarc_forensic.json

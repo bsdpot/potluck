@@ -46,6 +46,8 @@ There is no progress indicator when complete. When your dmarc folder empties, th
     -E ZINCUSER=<zincsearch admin user> \
     -E ZINCPASS=<zincsearch admin pass> \
     -E ZINCDATA=<path to store zincsearch files, default /mnt/zinc/data> \
+    -E GRAFANAUSER=<username> \
+    -E GRAFANAPASSWORD=<password> \
     [ -E ZINCPORT=<zincsearch port, default 4080> ] \
     [ -E REMOTELOG=<IP address> ]
   ```
@@ -75,6 +77,8 @@ The OUTPUTFOLDER parameter is the folder to create in /mnt, which should be moun
 The ZINCUSER and ZINCPASS parameters set the `zincsearch` admin user and password.
 
 The ZINCDATA parameter is the directory to save `zincsearch` data files. Defaults to `/mnt/zinc/data`.
+
+The GRAFANAUSER and GRAFANAPASSWORD parameters are for login to the Grafana interface and must be set.
 
 ## Optional Parameters
 

@@ -52,7 +52,7 @@ fi
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args ZINCUSER ZINCPASS ZINCDATA ZINCPORT"
 required_args="$required_args IMAPSERVER IMAPUSER IMAPPASS IMAPFOLDER"
-required_args="$required_args OUTPUTFOLDER"
+required_args="$required_args OUTPUTFOLDER GRAFANAUSER GRAFANAPASSWORD"
 optional_args="REMOTELOG"
 
 for var in $required_args; do
