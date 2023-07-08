@@ -47,10 +47,12 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
     # make sure permissions are good for /mnt/grafana
     chown -R grafana:grafana /mnt/grafana
 
+	# this seems to be fixed, to-do: remove the edited rc file from sources
     # overwrite the rc file with a fixed one as per
     # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
-    cp "$TEMPLATEPATH/grafana.rc.in" /usr/local/etc/rc.d/grafana
-    chmod 755 /usr/local/etc/rc.d/grafana
+    #cp "$TEMPLATEPATH/grafana.rc.in" /usr/local/etc/rc.d/grafana
+    #chmod 755 /usr/local/etc/rc.d/grafana
+
     # this seems to be required, grafana still crashes without it
     chmod 755 /root
 
@@ -106,10 +108,12 @@ else
     # make sure permissions are good for /mnt/grafana
     chown -R grafana:grafana /mnt/grafana
 
+	# this seems to fixed, see to-do above
     # overwrite the rc file with a fixed one as per
     # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
-    cp "$TEMPLATEPATH/grafana.rc.in" /usr/local/etc/rc.d/grafana
-    chmod 755 /usr/local/etc/rc.d/grafana
+    #cp "$TEMPLATEPATH/grafana.rc.in" /usr/local/etc/rc.d/grafana
+    #chmod 755 /usr/local/etc/rc.d/grafana
+
     # this seems to be required, grafana still crashes without it
     chmod 755 /root
 

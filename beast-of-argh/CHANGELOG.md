@@ -1,6 +1,7 @@
 0.7
 
 * Version bump for new base image
+* Upgrade to grafana9
 
 ---
 

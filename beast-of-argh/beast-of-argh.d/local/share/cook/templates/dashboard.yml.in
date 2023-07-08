@@ -6,6 +6,7 @@ providers:
   folder: ''
   type: file
   disableDeletion: false
+  allowUiUpdates: true
   editable: true
   options:
     path: /mnt/grafana/provisioning/dashboards
@@ -14,6 +15,7 @@ providers:
   folder: ''
   type: file
   disableDeletion: false
+  allowUiUpdates: true
   editable: true
   options:
     path: /mnt/grafana/provisioning/dashboards
@@ -22,6 +24,7 @@ providers:
   folder: ''
   type: file
   disableDeletion: false
+  allowUiUpdates: true
   editable: true
   options:
     path: /mnt/grafana/provisioning/dashboards
