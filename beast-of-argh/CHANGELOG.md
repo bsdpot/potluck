@@ -2,6 +2,8 @@
 
 * Version bump for new base image
 * Upgrade to grafana9
+* Remove old nomad dashboards, replace with hashicorp one
+* Tweak titles in dashboards
 
 ---
 

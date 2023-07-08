@@ -31,9 +31,13 @@ chown -R grafana:grafana /mnt/applog/grafana
 
 # dashboard sources
 # https://raw.githubusercontent.com/lux4rd0/grafana-loki-syslog-aio/main/config/grafana/dashboards/no_folder/loki_syslog_aio_overview.json
+# https://grafana.com/grafana/dashboards/15764-nomad/
+#
+# removed as no longer working
 # https://raw.githubusercontent.com/mr-karan/nomad-monitoring/main/dashboards/allocations.json
 # https://raw.githubusercontent.com/mr-karan/nomad-monitoring/main/dashboards/clients.json
 # https://raw.githubusercontent.com/mr-karan/nomad-monitoring/main/dashboards/server.json
+#
 # Todo: pull these in from source
 
 # if /mnt/grafana is empty, copy in /var/db/grafana
@@ -86,12 +90,6 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
       /mnt/grafana/provisioning/dashboards/newhomelogs.json
     cp "$TEMPLATEPATH/vault.json.in" \
       /mnt/grafana/provisioning/dashboards/vault.json
-    cp "$TEMPLATEPATH/nomadallocations.json.in" \
-      /mnt/grafana/provisioning/dashboards/nomadallocations.json
-    cp "$TEMPLATEPATH/nomadclient.json.in" \
-      /mnt/grafana/provisioning/dashboards/nomadclient.json
-    cp "$TEMPLATEPATH/nomadservers.json.in" \
-      /mnt/grafana/provisioning/dashboards/nomadservers.json
     cp "$TEMPLATEPATH/consulcluster.json.in" \
       /mnt/grafana/provisioning/dashboards/consulcluster.json
     cp "$TEMPLATEPATH/postgres.json.in" \
@@ -100,6 +98,17 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
       /mnt/grafana/provisioning/dashboards/mysql.json
     cp "$TEMPLATEPATH/minio.json.in" \
       /mnt/grafana/provisioning/dashboards/minio.json
+	# removing as not working any more, using hashicorp supplied dashboard now
+    #cp "$TEMPLATEPATH/nomadallocations.json.in" \
+    #  /mnt/grafana/provisioning/dashboards/nomadallocations.json
+    #cp "$TEMPLATEPATH/nomadclient.json.in" \
+    #  /mnt/grafana/provisioning/dashboards/nomadclient.json
+    #cp "$TEMPLATEPATH/nomadservers.json.in" \
+    #  /mnt/grafana/provisioning/dashboards/nomadservers.json
+	# hashicorp supplied from https://grafana.com/grafana/dashboards/15764-nomad/
+	# add manually as file
+    cp "$TEMPLATEPATH/nomadcluster.json.in" \
+      /mnt/grafana/provisioning/dashboards/nomadcluster.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/
@@ -147,12 +156,6 @@ else
       /mnt/grafana/provisioning/dashboards/newhomelogs.json
     cp "$TEMPLATEPATH/vault.json.in" \
       /mnt/grafana/provisioning/dashboards/vault.json
-    cp "$TEMPLATEPATH/nomadallocations.json.in" \
-      /mnt/grafana/provisioning/dashboards/nomadallocations.json
-    cp "$TEMPLATEPATH/nomadclient.json.in" \
-      /mnt/grafana/provisioning/dashboards/nomadclient.json
-    cp "$TEMPLATEPATH/nomadservers.json.in" \
-      /mnt/grafana/provisioning/dashboards/nomadservers.json
     cp "$TEMPLATEPATH/consulcluster.json.in" \
       /mnt/grafana/provisioning/dashboards/consulcluster.json
     cp "$TEMPLATEPATH/postgres.json.in" \
@@ -161,6 +164,17 @@ else
       /mnt/grafana/provisioning/dashboards/mysql.json
     cp "$TEMPLATEPATH/minio.json.in" \
       /mnt/grafana/provisioning/dashboards/minio.json
+	# removing as not working any more, using hashicorp supplied dashboard now
+    #cp "$TEMPLATEPATH/nomadallocations.json.in" \
+    #  /mnt/grafana/provisioning/dashboards/nomadallocations.json
+    #cp "$TEMPLATEPATH/nomadclient.json.in" \
+    #  /mnt/grafana/provisioning/dashboards/nomadclient.json
+    #cp "$TEMPLATEPATH/nomadservers.json.in" \
+    #  /mnt/grafana/provisioning/dashboards/nomadservers.json
+	# hashicorp supplied from https://grafana.com/grafana/dashboards/15764-nomad/
+	# add manually as file
+    cp "$TEMPLATEPATH/nomadcluster.json.in" \
+      /mnt/grafana/provisioning/dashboards/nomadcluster.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/

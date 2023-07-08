@@ -430,7 +430,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Loki Syslog AIO - Overview",
+  "title": "Loki Syslog AIO - Search logs (new)",
   "uid": "lux4rd0labs_loki_syslog_aio_01",
   "version": 4
 }

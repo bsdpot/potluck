@@ -1516,7 +1516,7 @@
       },
       "id": 14,
       "panels": [],
-      "title": "Evaluations",
+      "title": "More Evaluations",
       "type": "row"
     },
     {
@@ -2211,7 +2211,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Server",
+  "title": "Nomad Server",
   "uid": "xDnB_0G4z",
   "version": 1,
   "weekStart": ""

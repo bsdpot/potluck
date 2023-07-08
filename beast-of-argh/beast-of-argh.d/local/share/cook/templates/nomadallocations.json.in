@@ -170,7 +170,7 @@
           "refId": "A"
         }
       ],
-      "title": "CPU %",
+      "title": "% CPU",
       "type": "timeseries"
     },
     {
@@ -478,7 +478,7 @@
           "refId": "A"
         }
       ],
-      "title": "Memory %",
+      "title": "% Memory",
       "type": "timeseries"
     }
   ],
@@ -608,7 +608,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Allocations",
+  "title": "Nomad Allocations",
   "uid": "5XxwU0GVz",
   "version": 1,
   "weekStart": ""

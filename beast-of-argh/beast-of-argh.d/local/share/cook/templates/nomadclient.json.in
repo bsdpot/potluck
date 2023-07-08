@@ -770,7 +770,7 @@
           "refId": "E"
         }
       ],
-      "title": "Clients",
+      "title": "Nomad Client",
       "transformations": [
         {
           "id": "seriesToColumns",
@@ -1146,7 +1146,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Clients",
+  "title": "Nomad Clients",
   "uid": "Y72kP0G4z",
   "version": 1,
   "weekStart": ""
