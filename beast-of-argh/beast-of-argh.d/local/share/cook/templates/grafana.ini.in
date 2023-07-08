@@ -411,7 +411,7 @@ x_xss_protection = true
 ;min_refresh_interval = 5s
 
 # Path to the default home dashboard. If this value is empty, then Grafana uses StaticRootPath + "dashboards/home.json"
-;default_home_dashboard_path =
+default_home_dashboard_path = /mnt/grafana/provisioning/dashboards/home.json
 
 #################################### Users ###############################
 [users]

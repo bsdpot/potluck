@@ -4,6 +4,7 @@
 * Upgrade to grafana9
 * Remove old nomad dashboards, replace with hashicorp one
 * Tweak titles in dashboards
+* Fixup nomad dashboard
 
 ---
 
