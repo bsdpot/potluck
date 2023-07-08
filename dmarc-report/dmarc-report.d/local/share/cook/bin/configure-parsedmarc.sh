@@ -34,7 +34,8 @@ echo "Activating virtual environment"
 
 # install parsedmarc
 echo "Installing parsedmarc as user parsedmarc"
-sudo -u parsedmarc /opt/parsedmarc/venv/bin/pip install -U parsedmarc || true
+#sudo -u parsedmarc /opt/parsedmarc/venv/bin/pip install -U parsedmarc || true
+sudo -u parsedmarc /opt/parsedmarc/venv/bin/pip install -U git+https://github.com/domainaware/parsedmarc.git || true
 
 # deactivate the virtual environment
 echo "Deactivating the virtual environment"
@@ -57,6 +58,7 @@ echo "Creating parsedmarc.ini file"
   sed "s${sep}%%imappass%%${sep}$IMAPPASS${sep}g" | \
   sed "s${sep}%%imapfolder%%${sep}$IMAPFOLDER${sep}g" | \
   sed "s${sep}%%outputfolder%%${sep}$OUTPUTFOLDER${sep}g" | \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%zincuser%%${sep}$ZINCUSER${sep}g" | \
   sed "s${sep}%%zincpass%%${sep}$ZINCPASS${sep}g" | \
   sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" \
