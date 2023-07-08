@@ -42,7 +42,8 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
     < "$TEMPLATEPATH/datasources.yml.in" \
       sed "s${sep}%%zincuser%%${sep}$ZINCUSER${sep}g" | \
       sed "s${sep}%%zincpass%%${sep}$ZINCPASS${sep}g" | \
-      sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" \
+      sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" | \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
 
     chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
@@ -50,6 +51,10 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
     # copy in the dashboard.yml file to /mnt/grafana/provisioning/dashboards
     cp "$TEMPLATEPATH/dashboard.yml.in" \
       /mnt/grafana/provisioning/dashboards/default.yml
+
+	# including default dmarc dashboard (WIP)
+    cp "$TEMPLATEPATH/home.json.in" \
+      /mnt/grafana/provisioning/dashboards/home.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/
@@ -65,7 +70,8 @@ else
     < "$TEMPLATEPATH/datasources.yml.in" \
       sed "s${sep}%%zincuser%%${sep}$ZINCUSER${sep}g" | \
       sed "s${sep}%%zincpass%%${sep}$ZINCPASS${sep}g" | \
-      sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" \
+      sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" | \
+      sed "s${sep}%%ip%%${sep}$IP${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
 
     chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
@@ -73,6 +79,10 @@ else
     # copy in the dashboard.yml file to /mnt/grafana/provisioning/dashboards
     cp "$TEMPLATEPATH/dashboard.yml.in" \
       /mnt/grafana/provisioning/dashboards/default.yml
+
+	# including default dmarc dashboard (WIP)
+    cp "$TEMPLATEPATH/home.json.in" \
+      /mnt/grafana/provisioning/dashboards/home.json
 
     # set ownership
     chown -R grafana:grafana /mnt/grafana/provisioning/dashboards/

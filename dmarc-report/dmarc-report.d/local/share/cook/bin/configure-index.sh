@@ -12,8 +12,8 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 # Adapt config files
-SCRIPT=$(readlink -f "$0")
-TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+#SCRIPT=$(readlink -f "$0")
+#TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # create index via fake elasticsearch
 # this should address the error:

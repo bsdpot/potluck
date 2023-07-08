@@ -1,40 +1,22 @@
 apiVersion: 1
 
 deleteDatasources:
-  - name: dmarc_aggregate
-    orgId: 1
-  - name: dmarc_forensic
+  - name: Elasticsearch
     orgId: 1
 
 datasources:
-  - name: dmarc_aggregate
+  - name: Elasticsearch
     type: elasticsearch
     access: proxy
     orgId: 1
-    url: http://127.0.0.1:%%zincport%%
-    path: "/es/"
+    url: http://%%ip%%:9200
     user: %%zincuser%%
-    secureJsonData:
-      password: %%zincpass%%
     isDefault: 1
     version: 1
     editable: false
     jsonData:
-      index: '[dmarc_aggregate-]YYYY.MM.DD'
+      index: '[dmarc_aggregate-]YYYY-MM-DD'
       interval: Daily
       timeField: '@timestamp'
-  - name: dmarc_forensic
-    type: elasticsearch
-    access: proxy
-    orgId: 1
-    url: http://127.0.0.1:%%zincport%%
-    path: "/es/"
-    user: %%zincuser%%
     secureJsonData:
       password: %%zincpass%%
-    version: 1
-    editable: false
-    jsonData:
-      index: '[dmarc_forensic-]YYYY.MM.DD'
-      interval: Daily
-      timeField: '@timestamp'

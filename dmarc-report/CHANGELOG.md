@@ -27,6 +27,7 @@
 * Update to Grafana9
 * Remove fake elasticsearch proxy_pass for testing direct
 * Tweaks to parsedmarc elasticsearch config, add back fake elasticsearch for parsedmarc ingestion
+* Fix Grafana datasource and add first dashboard
 
 ---
 
