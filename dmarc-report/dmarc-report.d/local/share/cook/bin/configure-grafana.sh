@@ -35,17 +35,14 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
     # make sure permissions are good for /mnt/grafana
     chown -R grafana:grafana /mnt/grafana
 
-    # overwrite the rc file with a fixed one as per
-    # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
-    cp "$TEMPLATEPATH/grafana.rc.in" /usr/local/etc/rc.d/grafana
-    chmod 755 /usr/local/etc/rc.d/grafana
     # this seems to be required, grafana still crashes without it
     chmod 755 /root
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     < "$TEMPLATEPATH/datasources.yml.in" \
       sed "s${sep}%%zincuser%%${sep}$ZINCUSER${sep}g" | \
-      sed "s${sep}%%zincpass%%${sep}$ZINCPASS${sep}g" \
+      sed "s${sep}%%zincpass%%${sep}$ZINCPASS${sep}g" | \
+      sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
 
     chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml
@@ -61,17 +58,14 @@ else
     # make sure permissions are good for /mnt/grafana
     chown -R grafana:grafana /mnt/grafana
 
-    # overwrite the rc file with a fixed one as per
-    # https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=255676
-    cp "$TEMPLATEPATH/grafana.rc.in" /usr/local/etc/rc.d/grafana
-    chmod 755 /usr/local/etc/rc.d/grafana
     # this seems to be required, grafana still crashes without it
     chmod 755 /root
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     < "$TEMPLATEPATH/datasources.yml.in" \
       sed "s${sep}%%zincuser%%${sep}$ZINCUSER${sep}g" | \
-      sed "s${sep}%%zincpass%%${sep}$ZINCPASS${sep}g" \
+      sed "s${sep}%%zincpass%%${sep}$ZINCPASS${sep}g" | \
+      sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
 
     chown grafana:grafana /mnt/grafana/provisioning/datasources/datasources.yml

@@ -11,9 +11,11 @@ datasources:
     type: elasticsearch
     access: proxy
     orgId: 1
-    url: http://127.0.0.1:9200
-    user: "%%zincuser%%"
-    password: "%%zincpass%%"
+    url: http://127.0.0.1:%%zincport%%
+    path: "/es/"
+    user: %%zincuser%%
+    secureJsonData:
+      password: %%zincpass%%
     isDefault: 1
     version: 1
     editable: false
@@ -25,10 +27,11 @@ datasources:
     type: elasticsearch
     access: proxy
     orgId: 1
-    url: http://127.0.0.1:9200
-    user: "%%zincuser%%"
-    password: "%%zincpass%%"
-    isDefault: 1
+    url: http://127.0.0.1:%%zincport%%
+    path: "/es/"
+    user: %%zincuser%%
+    secureJsonData:
+      password: %%zincpass%%
     version: 1
     editable: false
     jsonData:

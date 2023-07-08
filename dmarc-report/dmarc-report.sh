@@ -151,8 +151,8 @@ pkg install -y libxslt
 step "Install package rust"
 pkg install -y rust
 
-step "Install package grafana8"
-pkg install -y grafana8
+step "Install package grafana9"
+pkg install -y grafana9
 
 step "Clean package installation"
 pkg clean -y

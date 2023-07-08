@@ -24,6 +24,8 @@
 * Further adjustments to index creation
 * Add grafana variables, simplify index creation script
 * Fix missing grafana.ini
+* Update to Grafana9
+* Remove fake elasticsearch proxy_pass for testing direct
 
 ---
 

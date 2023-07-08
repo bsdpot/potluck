@@ -30,11 +30,11 @@ echo "machine 127.0.0.1 login ${ZINCUSER} password ${ZINCPASS}" > /root/.netrc
 # create default index - parsedmarc will use dmarc_aggregate-YYYY-MM-DD
 echo "Creating a default zincsearch aggregate index"
 /usr/local/bin/curl --silent --retry 5 --retry-delay 5 --retry-all-errors --netrc \
-  -X PUT --data-binary "@/tmp/dmarc_aggregate.json" http://127.0.0.1:9200/dmarc_aggregate || true
+  -X PUT --data-binary "@/tmp/dmarc_aggregate.json" "http://127.0.0.1:$ZINCPORT/es/dmarc_aggregate" || true
 
 echo "Creating a default zincsearch forensic index"
 /usr/local/bin/curl --silent --retry 5 --retry-delay 5 --retry-all-errors --netrc \
-  -X PUT --data-binary "@/tmp/dmarc_forensic.json" http://127.0.0.1:9200/dmarc_forensic || true
+  -X PUT --data-binary "@/tmp/dmarc_forensic.json" "http://127.0.0.1:$ZINCPORT/es/dmarc_forensic" || true
 
 # delete temporary files
 echo "Deleting temp index json files"

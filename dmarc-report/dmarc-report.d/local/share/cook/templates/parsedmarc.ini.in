@@ -22,7 +22,7 @@ server = localhost
 port = 514
 
 [elasticsearch]
-hosts = http://%%zincuser%%:%%zincpass%%@%%ip%%:9200
+hosts = http://%%zincuser%%:%%zincpass%%@127.0.0.1:%%zincport%%/es/
 ssl = False
 
 #[s3]
