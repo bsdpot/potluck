@@ -5,6 +5,7 @@
 * Remove old nomad dashboards, replace with hashicorp one
 * Tweak titles in dashboards
 * Fixup nomad dashboard
+* Fix syslog-ng problems for 4.2 version, remove stats_freq option
 
 ---
 
