@@ -1,6 +1,7 @@
 0.10
 
 * Version bump for new base image
+* Fix syslog-ng problems for 4.2 version, remove stats_freq option
 
 ---
 
