@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Adjust quarterlies link
+* Fix syslog-ng problems for 4.2 version, remove stats_freq option
 
 ---
 
