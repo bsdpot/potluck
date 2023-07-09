@@ -11,7 +11,6 @@ options {
  flush_lines(0);
  threaded(yes);
  log-fifo-size(2000);
- stats(freq(0));
  time_reopen(120);
  ts_format(iso);
 };
