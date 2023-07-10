@@ -166,7 +166,7 @@
       ],
       "title": "SPF Alignment",
       "transparent": true,
-      "type": "grafana-piechart-panel",
+      "type": "piechart",
       "valueName": "total"
     },
     {
@@ -244,7 +244,7 @@
       ],
       "title": "DKIM Alignment",
       "transparent": true,
-      "type": "grafana-piechart-panel",
+      "type": "piechart",
       "valueName": "total"
     },
     {
@@ -327,7 +327,7 @@
       ],
       "title": "DMARC Passage",
       "transparent": true,
-      "type": "grafana-piechart-panel",
+      "type": "piechart",
       "valueName": "total"
     },
     {
@@ -1733,7 +1733,7 @@
       ],
       "thresholds": "10,500",
       "title": "Map of Message Source Countries",
-      "type": "grafana-worldmap-panel",
+      "type": "geomap",
       "unitPlural": "",
       "unitSingle": "",
       "unitSingular": "",
@@ -3692,7 +3692,7 @@
       ],
       "thresholds": "100,0",
       "title": "Forensic Sample Sources by Country",
-      "type": "grafana-worldmap-panel",
+      "type": "geomap",
       "unitPlural": "",
       "unitSingle": "",
       "valueName": "total"

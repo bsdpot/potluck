@@ -12,8 +12,8 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 # Adapt config files
-#SCRIPT=$(readlink -f "$0")
-#TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+SCRIPT=$(readlink -f "$0")
+TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # create index via fake elasticsearch
 # this should address the error:
@@ -25,7 +25,7 @@ export PATH=/usr/local/bin:$PATH
 #cp -f "$TEMPLATEPATH/dmarc_aggregate.json.in" /tmp/dmarc_aggregate.json
 #cp -f "$TEMPLATEPATH/dmarc_forensic.json.in" /tmp/dmarc_forensic.json
 
-# testing something
+# create basic json tmp files
 echo "{}" > /tmp/dmarc_aggregate.json
 echo "{}" > /tmp/dmarc_forensic.json
 
@@ -46,3 +46,15 @@ echo "Creating a default zincsearch forensic index"
 echo "Deleting temp index json files"
 rm -f /tmp/dmarc_aggregate.json
 rm -f /tmp/dmarc_forensic.json
+
+# setup /root/create-alias.sh
+mkdir -p /root/bin
+cp -f "$TEMPLATEPATH/create-alias.sh.in" /root/bin/create-alias.sh
+chmod +x /root/bin/create-alias.sh
+
+# create the alias
+createalias=$(/root/bin/create-alias.sh)
+echo "$createalias"
+
+# Add to cron, not sure if this is ideal approach
+#echo "5 0 * * *  /root/bin/create-alias.sh" >> /etc/crontab

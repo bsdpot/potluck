@@ -10,13 +10,17 @@ datasources:
     access: proxy
     orgId: 1
     url: http://%%ip%%:9200
+    database: 'dmarc_aggregate'
     user: %%zincuser%%
     isDefault: 1
     version: 1
-    editable: false
+    editable: true
     jsonData:
-      index: '[dmarc_aggregate-]YYYY-MM-DD'
+      esVersion: 8.0.0
       interval: Daily
       timeField: '@timestamp'
+      tlsSkipVerify: true
+      MaxConcurrentShardRequests: 10
+      xpack: true
     secureJsonData:
       password: %%zincpass%%

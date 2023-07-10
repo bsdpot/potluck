@@ -29,6 +29,10 @@
 * Tweaks to parsedmarc elasticsearch config, add back fake elasticsearch for parsedmarc ingestion
 * Fix Grafana datasource and add first dashboard
 * Fix syslog-ng problems for 4.2 version, remove stats_freq option
+* Updates to make Grafana play nice with fake elasticsearch
+* Create alias for index creation, configure Grafana to use alias
+* Add cron job to update alias
+* Change to monthly instead of daily
 
 ---
 
