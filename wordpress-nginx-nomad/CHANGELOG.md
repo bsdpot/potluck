@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * mariadb106-client
+* Remove legacy newwww group commands
 
 ---
 
