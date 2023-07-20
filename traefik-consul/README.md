@@ -44,6 +44,8 @@ The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're usi
 
 ## Optional Parameters
 
+The DISABLEUI parameter will disable the web UI if set to any value. The UI is enabled by default.
+
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 
 # Usage

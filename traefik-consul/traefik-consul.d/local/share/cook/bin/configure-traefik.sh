@@ -19,7 +19,8 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 sep=$'\001'
 
 < "$TEMPLATEPATH/traefik.toml.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+  sed "s${sep}%%uiflag%%${sep}$UIFLAG${sep}g" \
   > /usr/local/etc/traefik.toml
 
 touch /var/log/traefik/traefik.log

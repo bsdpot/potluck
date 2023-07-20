@@ -31,7 +31,7 @@
     ]
 
 [api]
-  dashboard = true
+  dashboard = %%uiflag%%
   insecure = true
 
 [log]
