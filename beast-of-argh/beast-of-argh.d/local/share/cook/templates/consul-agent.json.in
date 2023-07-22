@@ -31,6 +31,26 @@
     "tags": ["_app=beastserver", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
     "port": 9100
   },
+  "service": {
+    "name": "alertmanager",
+    "tags": ["_app=beastserver", "_service=alertmanager", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+    "port": 9093
+  },
+  "service": {
+    "name": "prometheus",
+    "tags": ["_app=beastserver", "_service=promethues", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+    "port": 9090
+  },
+  "service": {
+    "name": "grafana",
+    "tags": ["_app=beastserver", "_service=grafana", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+    "port": 3000
+  },
+  "service": {
+    "name": "syslog-ng",
+    "tags": ["_app=beastserver", "_service=syslog-ng", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+    "port": 514
+  },
   "telemetry": {
     "prometheus_retention_time": "24h"
   }

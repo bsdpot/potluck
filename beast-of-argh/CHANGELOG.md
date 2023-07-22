@@ -8,6 +8,7 @@
 * Fix syslog-ng problems for 4.2 version, remove stats_freq option
 * Add local unbound for consul DNS resolution
 * Update to Loki 2.8.3 and Promtail 2.8.3
+* Add services to consul setup
 
 ---
 
