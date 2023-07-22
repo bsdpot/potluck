@@ -5,6 +5,7 @@
 * Add DISABLEGUI option, defaults to unset
 * Add local unbound for consul DNS resolution
 * Minor change to consul agent config to use retry_join instead of start_join
+* Add services to consul setup
 
 ---
 
