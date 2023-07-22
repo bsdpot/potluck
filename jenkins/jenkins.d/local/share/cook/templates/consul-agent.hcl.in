@@ -21,7 +21,7 @@ tls {
 log_file = "/var/log/consul/consul.log"
 log_level = "INFO"
 encrypt = "%%gossipkey%%"
-start_join = [ %%consulservers%% ]
+retry_join = [ %%consulservers%% ]
 services = {
   name = "node-exporter"
   tags = ["_app=jenkins", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
