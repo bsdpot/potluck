@@ -26,27 +26,27 @@
   "enable_syslog": true,
   "leave_on_terminate": true,
   "retry_join": [ %%consulservers%% ],
-  "service": {
+  "services": {
     "name": "node-exporter",
     "tags": ["_app=beastserver", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
     "port": 9100
   },
-  "service": {
+  "services": {
     "name": "alertmanager",
     "tags": ["_app=beastserver", "_service=alertmanager", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
     "port": 9093
   },
-  "service": {
+  "services": {
     "name": "prometheus",
     "tags": ["_app=beastserver", "_service=promethues", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
     "port": 9090
   },
-  "service": {
+  "services": {
     "name": "grafana",
     "tags": ["_app=beastserver", "_service=grafana", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
     "port": 3000
   },
-  "service": {
+  "services": {
     "name": "syslog-ng",
     "tags": ["_app=beastserver", "_service=syslog-ng", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
     "port": 514

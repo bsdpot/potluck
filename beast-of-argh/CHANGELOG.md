@@ -9,6 +9,8 @@
 * Add local unbound for consul DNS resolution
 * Update to Loki 2.8.3 and Promtail 2.8.3
 * Add services to consul setup
+* Fix addition of services
+* Add consul DNS info to README
 
 ---
 
