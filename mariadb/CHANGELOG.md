@@ -5,6 +5,7 @@
 * Fix syslog-ng problems for 4.2 version, remove stats_freq option
 * Add local unbound for consul DNS resolution
 * Minor change to consul agent config to use retry_join instead of start_join
+* Add service to consul setup
 
 ---
 

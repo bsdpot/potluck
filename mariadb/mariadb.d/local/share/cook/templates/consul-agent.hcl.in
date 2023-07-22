@@ -27,6 +27,16 @@ service = {
   tags = ["_app=mariadb", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
+service = {
+  name = "mariadb"
+  tags = ["_app=mariadb", "_service=mariadb", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 3306
+}
+service = {
+  name = "mysql-exporter"
+  tags = ["_app=mariadb", "_service=mysql-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 9104
+}
 telemetry = {
   prometheus_retention_time = "24h"
 }
