@@ -23,6 +23,16 @@ service = {
   tags = ["_app=openldap", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
+service = {
+  name = "ldap"
+  tags = ["_app=openldap", "_service=ldap", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 389
+}
+service = {
+  name = "ldap-account-manager"
+  tags = ["_app=openldap", "_service=ldap-accout-manager", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 80
+}
 telemetry = {
   prometheus_retention_time = "24h"
 }
