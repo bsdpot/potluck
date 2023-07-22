@@ -120,3 +120,21 @@ Success!
 ```
 
 The shared secret (-k) is defined in the homeserver.yaml configuration via the MYSHAREDSECRET parameter. The command asks for a password which should be unused as authentication should happen against LDAP.
+
+# Consul DNS
+
+Consul DNS works in the format `servicename.service.consul` or `nodename.node.consul`.
+
+Consul DNS is integrated with local unbound in this image. You can query consul DNS like any normal DNS query directly to localhost.
+
+To get a list of services listed in `consul` you can do the following:
+
+```
+curl -s "http://127.0.0.1:8500/v1/catalog/services" | jq
+```
+
+You can query the IP address of a service with
+
+```
+drill servicename.service.consul
+```

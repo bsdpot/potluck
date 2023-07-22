@@ -118,6 +118,9 @@ timeout --foreground 120 \
     service consul start || true; sleep 5;
   done'
 
+log "Set up local unbound using local consul once consul running"
+configure-local-unbound.sh
+
 log "Start node_exporter"
 service node_exporter start
 
