@@ -436,7 +436,8 @@ SyslogFacility mail
 #
 # TrustedAuthservIDs HOSTNAME
 
-TrustedAuthservIDs %%mailhost%%
+# removing as not used
+#TrustedAuthservIDs %%mailhost%%
 
 ##  UMask mask
 ##      default (none)

@@ -3,6 +3,9 @@
 * Version bump for new base image
 * Adjust quarterlies link
 * Fix syslog-ng problems for 4.2 version, remove stats_freq option
+* Removed TrustedAuthservIDs setting in opendmarc config
+* Add local unbound and consul DNS services
+* Update README with consul DNS info
 
 ---
 
