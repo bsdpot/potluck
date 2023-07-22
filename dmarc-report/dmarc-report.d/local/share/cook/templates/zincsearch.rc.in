@@ -56,6 +56,7 @@ command_args="-f ${zincsearch_syslog_output_flags} -p ${pidfile} -t ${name} \
         /usr/bin/env ${zincsearch_env} ZINC_FIRST_ADMIN_USER=%%zincuser%% \
         ZINC_FIRST_ADMIN_PASSWORD=%%zincpass%% ZINC_DATA_PATH=%%zincdata%% \
         ZINC_SERVER_PORT=%%zincport%% ZINC_PROMETHEUS_ENABLE=True \
+		ZINC_PLUGIN_ES_VERSION=8.8 \
         ${procname} ${zincsearch_args}"
 
 start_precmd="zincsearch_start_precmd"

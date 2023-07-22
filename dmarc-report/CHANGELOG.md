@@ -33,6 +33,9 @@
 * Create alias for index creation, configure Grafana to use alias
 * Add cron job to update alias (commented out)
 * Fix grafana database pattern, separate datasources for aggregate and forensic
+* Manually set elasticsearch version in zincsearch rc
+* Add local unbound and consul DNS services
+* Update README with consul DNS info
 
 ---
 
