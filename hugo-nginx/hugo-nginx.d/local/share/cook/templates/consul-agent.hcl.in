@@ -22,10 +22,15 @@ log_file = "/var/log/consul/consul.log"
 log_level = "WARN"
 encrypt = "%%gossipkey%%"
 start_join = [ %%consulservers%% ]
-service = {
+services = {
   name = "node-exporter"
-  tags = ["_app=beast", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=hugo-nginx", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
+}
+services = {
+  name = "www"
+  tags = ["_app=hugo-nginx", "_service=www", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 80
 }
 telemetry = {
   prometheus_retention_time = "24h"
