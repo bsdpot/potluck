@@ -95,3 +95,21 @@ This development version simply sets up `parsedmarc` and runs the python process
 It still needs a way to store the reports long term, and show pretty charts. Possibly `elasticsearch` and `kibana` or something lighter.
 
 Note: there is very little feedback that process a mailbox has happened. Check the folders under `Archive` called `Aggregate`, `Foresic`, and `Invalid`. You might need to subscribe to the folders in an IMAP client to see. When mails are processed from the identified `dmarc` mail folder, they are transferred to the `Archive` subfolders.
+
+# Consul DNS
+
+Consul DNS works in the format `servicename.service.consul` or `nodename.node.consul`.
+
+Consul DNS is integrated with local unbound in this image. You can query consul DNS like any normal DNS query directly to localhost.
+
+To get a list of services listed in `consul` you can do the following:
+
+```
+curl -s "http://127.0.0.1:8500/v1/catalog/services" | jq
+```
+
+You can query the IP address of a service with
+
+```
+drill servicename.service.consul
+```
