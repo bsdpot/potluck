@@ -36,13 +36,13 @@ telemetry = {
   disable_hostname = true
   prometheus_retention_time = "24h"
 }
-service = {
+services = {
   name = "node-exporter"
   tags = ["_app=consul", "_service=node-exporter",
           "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
-service = {
+services = {
   name = "consul"
   tags = ["_app=consul", "_service=consul",
           "_hostname=%%nodename%%.%%datacenter%%.consul"]
