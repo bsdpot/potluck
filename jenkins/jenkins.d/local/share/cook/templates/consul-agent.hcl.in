@@ -22,10 +22,15 @@ log_file = "/var/log/consul/consul.log"
 log_level = "INFO"
 encrypt = "%%gossipkey%%"
 start_join = [ %%consulservers%% ]
-service = {
+services = {
   name = "node-exporter"
-  tags = ["_app=beast", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=jenkins", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
+}
+services = {
+  name = "jenkins"
+  tags = ["_app=jenkins", "_service=jenkins", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 8080
 }
 telemetry = {
   prometheus_retention_time = "24h"
