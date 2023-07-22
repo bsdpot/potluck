@@ -42,3 +42,9 @@ service = {
           "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
+service = {
+  name = "consul"
+  tags = ["_app=consul", "_service=consul",
+          "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 8500
+}

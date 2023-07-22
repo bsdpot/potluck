@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Fix syslog-ng problems for 4.2 version, remove stats_freq option
 * Add local unbound for consul DNS resolution
+* Add services to consul setup
 
 ---
 
