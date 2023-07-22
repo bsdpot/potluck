@@ -26,16 +26,18 @@
   "enable_syslog": true,
   "leave_on_terminate": true,
   "retry_join": [ %%consulservers%% ],
-  "services": {
-    "name": "node-exporter",
-    "tags": ["_app=nomadserver", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
-    "port": 9100
-  },
-  "services": {
-    "name": "nomad",
-    "tags": ["_app=nomadserver", "_service=nomad", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
-    "port": 4646
-  },
+  "services": [
+    {
+      "name": "node-exporter",
+      "tags": ["_app=nomadserver", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+      "port": 9100
+    },
+    {
+      "name": "nomad",
+      "tags": ["_app=nomadserver", "_service=nomad", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+      "port": 4646
+    }
+  ],
   "telemetry": {
     "prometheus_retention_time": "24h"
   }
