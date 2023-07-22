@@ -22,17 +22,17 @@ log_file = "/var/log/consul/consul.log"
 log_level = "WARN"
 encrypt = "%%gossipkey%%"
 retry_join = [ %%consulservers%% ]
-service = {
+services = {
   name = "node-exporter"
   tags = ["_app=mariadb", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
-service = {
+services = {
   name = "mariadb"
   tags = ["_app=mariadb", "_service=mariadb", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 3306
 }
-service = {
+services = {
   name = "mysql-exporter"
   tags = ["_app=mariadb", "_service=mysql-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9104
