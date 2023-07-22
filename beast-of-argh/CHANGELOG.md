@@ -11,6 +11,7 @@
 * Add services to consul setup
 * Fix addition of services
 * Add consul DNS info to README
+* Fix JSON consul agent config for multiple services
 
 ---
 

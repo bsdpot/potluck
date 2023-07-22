@@ -26,31 +26,33 @@
   "enable_syslog": true,
   "leave_on_terminate": true,
   "retry_join": [ %%consulservers%% ],
-  "services": {
-    "name": "node-exporter",
-    "tags": ["_app=beastserver", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
-    "port": 9100
-  },
-  "services": {
-    "name": "alertmanager",
-    "tags": ["_app=beastserver", "_service=alertmanager", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
-    "port": 9093
-  },
-  "services": {
-    "name": "prometheus",
-    "tags": ["_app=beastserver", "_service=promethues", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
-    "port": 9090
-  },
-  "services": {
-    "name": "grafana",
-    "tags": ["_app=beastserver", "_service=grafana", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
-    "port": 3000
-  },
-  "services": {
-    "name": "syslog-ng",
-    "tags": ["_app=beastserver", "_service=syslog-ng", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
-    "port": 514
-  },
+  "services": [
+    {
+      "name": "node-exporter",
+      "tags": ["_app=beastserver", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+      "port": 9100
+    },
+    {
+      "name": "alertmanager",
+      "tags": ["_app=beastserver", "_service=alertmanager", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+      "port": 9093
+    },
+    {
+      "name": "prometheus",
+      "tags": ["_app=beastserver", "_service=promethues", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+      "port": 9090
+    },
+    {
+      "name": "grafana",
+      "tags": ["_app=beastserver", "_service=grafana", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+      "port": 3000
+    },
+    {
+      "name": "syslog-ng",
+      "tags": ["_app=beastserver", "_service=syslog-ng", "_hostname=%%nodename%%.%%datacenter%%.consul", "_datacenter=%%datacenter%%"],
+      "port": 514
+    }
+  ],
   "telemetry": {
     "prometheus_retention_time": "24h"
   }
