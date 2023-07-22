@@ -21,12 +21,19 @@
   "encrypt": "%%gossipkey%%",
   "enable_syslog": true,
   "leave_on_terminate": true,
-  "start_join": [ %%consulservers%% ],
-  "service": {
-    "name": "node-exporter",
-    "tags": ["_app=host-server", "_service=node-exporter", "_hostname=%%nodename%%", "_datacenter=%%datacenter%%"],
-    "port": 9100
-  },
+  "retry_join": [ %%consulservers%% ],
+  "services": [
+    {
+      "name": "node-exporter",
+      "tags": ["_app=rbldnsd", "_service=node-exporter", "_hostname=%%nodename%%", "_datacenter=%%datacenter%%"],
+      "port": 9100
+    },
+    {
+      "name": "rbldnsd",
+      "tags": ["_app=rbldnsd", "_service=rbldnsd", "_hostname=%%nodename%%", "_datacenter=%%datacenter%%"],
+      "port": 53
+    },
+  ],
   "telemetry": {
     "prometheus_retention_time": "24h"
   }

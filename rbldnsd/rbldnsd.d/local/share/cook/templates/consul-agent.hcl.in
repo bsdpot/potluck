@@ -21,11 +21,16 @@ tls {
 log_file = "/var/log/consul/consul.log"
 log_level = "INFO"
 encrypt = "%%gossipkey%%"
-start_join = [ %%consulservers%% ]
-service = {
+retry_join = [ %%consulservers%% ]
+services = {
   name = "node-exporter"
-  tags = ["_app=beast", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=rbldnsd", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
+}
+services = {
+  name = "rbldnsd"
+  tags = ["_app=rbldnsd", "_service=rbldnsd", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 53
 }
 telemetry = {
   prometheus_retention_time = "24h"
