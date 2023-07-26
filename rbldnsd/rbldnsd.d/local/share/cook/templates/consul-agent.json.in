@@ -32,7 +32,7 @@
       "name": "rbldnsd",
       "tags": ["_app=rbldnsd", "_service=rbldnsd", "_hostname=%%nodename%%", "_datacenter=%%datacenter%%"],
       "port": 53
-    },
+    }
   ],
   "telemetry": {
     "prometheus_retention_time": "24h"

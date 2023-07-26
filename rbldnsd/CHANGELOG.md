@@ -4,6 +4,7 @@
 * Fix syslog-ng problems for 4.2 version, remove stats_freq option
 * Add local unbound and consul DNS services
 * Update README with consul DNS info
+* Fix error in consul agent config
 
 ---
 
