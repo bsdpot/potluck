@@ -8,6 +8,7 @@
 * Fix addition of services
 * Add consul DNS info to README
 * Fix JSON consul agent config for multiple services
+* fix local_unbound dns resolution with missing parameters for access control
 
 ---
 
