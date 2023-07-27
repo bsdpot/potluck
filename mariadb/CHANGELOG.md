@@ -8,6 +8,7 @@
 * Add service to consul setup
 * Fix addition of services
 * Add consul DNS info to README
+* fix local_unbound dns resolution with missing parameters for access control
 
 ---
 
