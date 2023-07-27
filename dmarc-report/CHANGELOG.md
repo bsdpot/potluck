@@ -36,6 +36,7 @@
 * Manually set elasticsearch version in zincsearch rc
 * Add local unbound and consul DNS services
 * Update README with consul DNS info
+* fix local_unbound dns resolution with missing parameters for access control
 
 ---
 
