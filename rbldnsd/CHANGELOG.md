@@ -5,6 +5,7 @@
 * Add local unbound and consul DNS services
 * Update README with consul DNS info
 * Fix error in consul agent config
+* fix local_unbound dns resolution with missing parameters for access control
 
 ---
 
