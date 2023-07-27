@@ -13,6 +13,7 @@
 * Add consul DNS info to README
 * Fix JSON consul agent config for multiple services
 * Adjust local_unbound resolution problems
+* Another approach to local_unbound resolution problems
 
 ---
 
