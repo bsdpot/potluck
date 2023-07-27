@@ -6,6 +6,7 @@
 * Removed TrustedAuthservIDs setting in opendmarc config
 * Add local unbound and consul DNS services
 * Update README with consul DNS info
+* Comment out local_unbound consul dns as fails to work with unbound dependency
 
 ---
 
