@@ -50,7 +50,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
-optional_args="REMOTELOG"
+optional_args="REMOTELOG DISABLEUNBOUNDV6"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -104,8 +104,10 @@ timeout --foreground 120 \
     service consul start || true; sleep 5;
   done'
 
-log "Set up local unbound using local consul once consul running"
-configure-local-unbound.sh
+# Disabling, only practical in VNET jails
+# In future a parameter can be added to enable on VNET jails.
+#log "Set up local unbound using local consul once consul running"
+#configure-local-unbound.sh
 
 log "Start node_exporter"
 service node_exporter start

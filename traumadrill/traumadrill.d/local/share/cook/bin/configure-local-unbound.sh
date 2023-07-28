@@ -25,6 +25,8 @@ echo 'server:
   interface: 0.0.0.0
   access-control: 10.0.0.0/8 allow
   access-control: 127.0.0.0/8 allow
+  do-ip6: no
+  prefer-ip6: no
 ' >/etc/unbound/conf.d/server.conf
 
 service local_unbound enable || true
