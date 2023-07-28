@@ -171,21 +171,3 @@ mysql -u root -p
 # Usage
 
 Usage documentation pending.
-
-# Consul DNS
-
-Consul DNS works in the format `servicename.service.consul` or `nodename.node.consul`.
-
-Consul DNS is integrated with local unbound in this image. You can query consul DNS like any normal DNS query directly to localhost.
-
-To get a list of services listed in `consul` you can do the following:
-
-```
-curl -s "http://127.0.0.1:8500/v1/catalog/services" | jq
-```
-
-You can query the IP address of a service with
-
-```
-drill servicename.service.consul
-```

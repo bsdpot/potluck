@@ -8,6 +8,7 @@
 * Update README with consul DNS info
 * Comment out local_unbound consul dns as fails to work with unbound dependency
 * fix local_unbound dns resolution with missing parameters for access control
+* Disable consul DNS option with local_unbound as is only practical in VNET jails with a localhost
 
 ---
 
