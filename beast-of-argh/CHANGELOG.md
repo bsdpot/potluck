@@ -14,6 +14,7 @@
 * Fix JSON consul agent config for multiple services
 * Adjust local_unbound resolution problems
 * Another approach to local_unbound resolution problems
+* Disable consul DNS option with local_unbound as is only practical in VNET jails with a localhost
 
 ---
 
