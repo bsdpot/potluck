@@ -19,7 +19,7 @@ Deploying the image or flavour should be quite straight forward and not take mor
 * This jail does not work with a public bridge, so clone it to use an IP address directly on your host:
   ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```
   e.g.
-  ```sudo pot clone -P jitsi-meet-amd64-13_1_0_10_3 -p jitsi-meet -N alias -i "em0|10.10.10.11"```
+  ```sudo pot clone -P jitsi-meet-amd64-13_1_0_10_5 -p jitsi-meet -N alias -i "em0|10.10.10.11"```
 * Copy in any supporting files such as image file for customisation
   ```sudo pot copy-in -p <clonejailname> -s <source image> -d /usr/local/www/jitsi-meet/images/<destination filename>```
 * Adjust to your environment:
@@ -83,21 +83,3 @@ The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` serve
 The IMAGE parameter is the filename of an image copied in to `/usr/local/www/jitsi-meet/images/{filename}` if using a custom logo image. You must copy this file in as part of the steps above.
 
 The LINK parameter is the full URL with `https://full.url/path` which someone will go to when clicking the custom logo image.
-
-# Consul DNS
-
-Consul DNS works in the format `servicename.service.consul` or `nodename.node.consul`.
-
-Consul DNS is integrated with local unbound in this image. You can query consul DNS like any normal DNS query directly to localhost.
-
-To get a list of services listed in `consul` you can do the following:
-
-```
-curl -s "http://127.0.0.1:8500/v1/catalog/services" | jq
-```
-
-You can query the IP address of a service with
-
-```
-drill servicename.service.consul
-```
