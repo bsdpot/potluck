@@ -23,7 +23,7 @@ Please note that a specific network configuration is suggested (see Installation
 * This jail does not work with a public bridge, so clone it to use an IP address directly on your host:
   ```sudo pot clone -P <nameofimportedjail> -p <clonejailname> -N alias -i "<interface>|<ipaddress>"```
   e.g.
-  ```sudo pot clone -P nomad-server-amd64-13_2_3_8_7 -p my-nomad-server -N alias -i "em0|10.10.10.11"```
+  ```sudo pot clone -P nomad-server-amd64-13_2_3_8_8 -p my-nomad-server -N alias -i "em0|10.10.10.11"```
 * Optionally copy-in job files in `jobname.nomad` filenaming convention to /root/nomadjobs, repeat for multiple files
   ```sudo pot -p <clonejailname> copy-in -s /root/nomadjobs/jobname.nomad -d /root/nomadjobs/jobname.nomad```
 * Adjust to your environment:
@@ -56,21 +56,3 @@ The optional DISABLEUI parameter will disable the web UI if set to any value. Th
 You can connect to the dashboard on port 4646 of your jail IP address.
 
 To run a new job, connect to the jail via ```pot term <jailname>``` and run a ```nomad``` job description via ```nomad run -address=http://<jailip>:4646 <jobfile>``` or place the job via the dashboard.
-
-# Consul DNS
-
-Consul DNS works in the format `servicename.service.consul` or `nodename.node.consul`.
-
-Consul DNS is integrated with local unbound in this image. You can query consul DNS like any normal DNS query directly to localhost.
-
-To get a list of services listed in `consul` you can do the following:
-
-```
-curl -s "http://127.0.0.1:8500/v1/catalog/services" | jq
-```
-
-You can query the IP address of a service with
-
-```
-drill servicename.service.consul
-```
