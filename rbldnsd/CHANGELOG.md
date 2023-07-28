@@ -6,6 +6,7 @@
 * Update README with consul DNS info
 * Fix error in consul agent config
 * fix local_unbound dns resolution with missing parameters for access control
+* Disable consul DNS option with local_unbound as is only practical in VNET jails with a localhost
 
 ---
 
