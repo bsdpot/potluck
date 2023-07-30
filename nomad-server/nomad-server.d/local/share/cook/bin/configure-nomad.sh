@@ -31,6 +31,7 @@ sep=$'\001'
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%region%%${sep}$REGION${sep}g" | \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%bootstrap%%${sep}$BOOTSTRAP${sep}g" | \
   sed "s${sep}%%raftmultiplier%%${sep}$RAFTMULTIPLIER${sep}g" | \
   sed "s${sep}%%uiflag%%${sep}$UIFLAG${sep}g" \
