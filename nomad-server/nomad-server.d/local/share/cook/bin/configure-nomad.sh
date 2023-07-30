@@ -30,7 +30,6 @@ sep=$'\001'
 < "$TEMPLATEPATH/nomad-server.hcl.in" \
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%region%%${sep}$REGION${sep}g" | \
   sed "s${sep}%%bootstrap%%${sep}$BOOTSTRAP${sep}g" | \
   sed "s${sep}%%raftmultiplier%%${sep}$RAFTMULTIPLIER${sep}g" | \

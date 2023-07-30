@@ -10,6 +10,7 @@
 * Fix JSON consul agent config for multiple services
 * fix local_unbound dns resolution with missing parameters for access control
 * Disable consul DNS option with local_unbound as is only practical in VNET jails with a localhost
+* Make nomad server config query consul on localhost
 
 ---
 
