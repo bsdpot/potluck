@@ -48,8 +48,7 @@ sep=$'\001'
  sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" \
 > /usr/local/www/lam/config/windows_samba4.conf
 
-
-# update permissions
+# update permissions in web folder
 chown -R www:wheel /usr/local/www/lam/config/
-
-
+chown -R www:wheel /usr/local/www/lam/sess/
+chown -R www:wheel /usr/local/www/lam/tmp/
