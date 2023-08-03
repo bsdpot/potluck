@@ -162,4 +162,3 @@ scrape_configs:
     file_sd_configs:
     - files:
       - '/mnt/prometheus/targets.d/postgres.yml'
-

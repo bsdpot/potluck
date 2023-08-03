@@ -3,10 +3,26 @@ auth_enabled: false
 server:
   http_listen_address: %%ip%%
   http_listen_port: 3100
+  http_server_read_timeout: 60s
+  http_server_write_timeout: 60s
   grpc_listen_address: %%ip%%
   grpc_listen_port: 9096
+  grpc_server_max_recv_msg_size: 33554432 # 32MiB (int bytes), default 4MB
+  grpc_server_max_send_msg_size: 33554432 # 32MiB (int bytes), default 4MB
   log_format: logfmt
   log_level: warn
+
+limits_config:
+  retention_period: 91d
+  enforce_metric_name: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+  ingestion_rate_mb: 8 # <float> | default = 4]
+  ingestion_burst_size_mb: 16 # <int> | default = 6]
+  per_stream_rate_limit: 5MB # <string|int> | default = "3MB"
+  per_stream_rate_limit_burst: 15MB # <string|int> | default = "15MB"
+  max_query_length: 2165h # <duration> | default = 721h
+  max_query_lookback: 90d
 
 querier:
   multi_tenant_queries_enabled: false
@@ -24,6 +40,7 @@ query_range:
         max_size_mb: 100
 
 common:
+  instance_addr: %%ip%%
   path_prefix: /tmp/loki
   storage:
     filesystem:
@@ -31,7 +48,6 @@ common:
       rules_directory: /mnt/loki/rules
   replication_factor: 1
   ring:
-    instance_addr: 127.0.0.1
     kvstore:
       store: inmemory
 
