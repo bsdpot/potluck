@@ -1,4 +1,5 @@
-ServerURL: ldap://localhost:389
+#ServerURL: ldap://localhost:389
+ServerURL: ldap://%%ip%%:389
 
 serverDisplayName: 
 
