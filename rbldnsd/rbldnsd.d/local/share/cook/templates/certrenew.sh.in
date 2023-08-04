@@ -1,9 +1,10 @@
 #!/bin/sh
-cd /root
+cd /root || exit 1
 service nginx stop
+mv "/mnt/acme/bl.%%domain%%_ecc/" "/mnt/acme/bl.%%domain%%_ecc.old/"
 /usr/local/sbin/acme.sh --register-account -m "%%sslemail%%" --home /mnt/acme --server zerossl
 /usr/local/sbin/acme.sh --set-default-ca --server zerossl
 /usr/local/sbin/acme.sh --issue -d bl.%%domain%% --server zerossl --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
-cp -Rf "/mnt/acme/bl.%%domain%%/" /usr/local/etc/ssl/
+cp -Rf "/mnt/acme/bl.%%domain%%_ecc/" /usr/local/etc/ssl/
 service nginx start
 service php-fpm restart

@@ -61,28 +61,28 @@ mkdir -p /mnt/acme
 mkdir -p /root/.acme.sh/
 touch /root/.acme.sh/account.conf
 
-if [ ! -d "/mnt/acme/bl.$DOMAIN" ]; then
+if [ ! -d "/mnt/acme/bl.$DOMAIN\_ecc/" ]; then
     /usr/local/sbin/acme.sh --register-account -m "$SSLEMAIL" --home /mnt/acme --server zerossl
     /usr/local/sbin/acme.sh --set-default-ca --server zerossl
     /usr/local/sbin/acme.sh --issue -d "bl.$DOMAIN" --server zerossl \
       --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log || true
-    if [ ! -f "/mnt/acme/bl.$DOMAIN/bl$DOMAIN.cer" ]; then
+    if [ ! -f "/mnt/acme/bl.$DOMAIN\_ecc/bl$DOMAIN.cer" ]; then
         echo "Trying to register cert again, sleeping 30"
         sleep 30
         /usr/local/sbin/acme.sh --issue -d "bl.$DOMAIN" --server zerossl \
           --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log || true
-        if [ ! -f "/mnt/acme/bl.$DOMAIN/bl.$DOMAIN.cer" ]; then
+        if [ ! -f "/mnt/acme/bl.$DOMAIN\_ecc/bl.$DOMAIN.cer" ]; then
             echo "missing bl.$DOMAIN.cer, certificate not registered"
             exit 1
         fi
     fi
     # copy files to ssl dir
     # option -R and trailing / will copy files inside the directory
-    cp -Rf "/mnt/acme/bl.$DOMAIN/" /usr/local/etc/ssl/
+    cp -Rf "/mnt/acme/bl.$DOMAIN\_ecc/" /usr/local/etc/ssl/
 else
-    echo "/mnt/acme/bl.$DOMAIN exists, not creating certificates, copying to SSL dir"
+    echo "/mnt/acme/bl.$DOMAIN\_ecc exists, not creating certificates, copying to SSL dir"
     # try continue, with a cert hopefully
-    cp -Rf "/mnt/acme/bl.$DOMAIN/" /usr/local/etc/ssl/
+    cp -Rf "/mnt/acme/bl.$DOMAIN\_ecc/" /usr/local/etc/ssl/
 fi
 
 # enable nginx
