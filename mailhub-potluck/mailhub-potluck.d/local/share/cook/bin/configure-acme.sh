@@ -35,25 +35,25 @@ sep=$'\001'
 chmod 750 /root/bin/update-mail-certs.sh
 
 # check if no existing $MAILCERTDOMAIN and create certificates if not
-if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
+if [ ! -d /mnt/acme/"$MAILCERTDOMAIN"_ecc ]; then
     service postfix onestop || true
     #/usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --home /mnt/acme --server zerossl
     /usr/local/sbin/acme.sh --register-account -m "$POSTMASTERADDRESS" --home /mnt/acme --server letsencrypt
     /usr/local/sbin/acme.sh --set-default-ca --server letsencrypt
     /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --server letsencrypt \
       --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log || true
-    if [ ! -f "/mnt/acme/$MAILCERTDOMAIN/$MAILCERTDOMAIN.cer" ]; then
+    if [ ! -f /mnt/acme/"$MAILCERTDOMAIN"_ecc/"$MAILCERTDOMAIN".cer ]; then
         echo "Trying to register cert again, sleeping 30"
         sleep 30
         /usr/local/sbin/acme.sh --issue -d "$MAILCERTDOMAIN" --server letsencrypt \
           --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log || true
-        if [ ! -f "/mnt/acme/$MAILCERTDOMAIN/$MAILCERTDOMAIN.cer" ]; then
+        if [ ! -f /mnt/acme/"$MAILCERTDOMAIN"_ecc/"$MAILCERTDOMAIN".cer ]; then
             echo "missing $MAILCERTDOMAIN.cer, certificate not registered"
             exit 1
         fi
     fi
     # try continue, with a cert hopefully
-    cd /mnt/acme/"$MAILCERTDOMAIN"/ || exit 1
+    cd /mnt/acme/"$MAILCERTDOMAIN"_ecc/ || exit 1
     if [ -d /usr/local/etc/postfix/keys/ ]; then
         cp -f ./* /usr/local/etc/postfix/keys/
         cd /usr/local/etc/postfix/keys/
@@ -74,9 +74,9 @@ if [ ! -d /mnt/acme/"$MAILCERTDOMAIN" ]; then
         exit 1
     fi
 else
-    echo "/mnt/acme/$MAILCERTDOMAIN exists, not creating certificates, importing existing certs to postfix"
+    echo "/mnt/acme/$MAILCERTDOMAIN _ecc exists, not creating certificates, importing existing certs to postfix"
     # try continue, with a cert hopefully
-    cd /mnt/acme/"$MAILCERTDOMAIN"/ || exit 1
+    cd /mnt/acme/"$MAILCERTDOMAIN"_ecc/ || exit 1
     if [ -d /usr/local/etc/postfix/keys/ ]; then
         cp -f ./* /usr/local/etc/postfix/keys/
         cd /usr/local/etc/postfix/keys/

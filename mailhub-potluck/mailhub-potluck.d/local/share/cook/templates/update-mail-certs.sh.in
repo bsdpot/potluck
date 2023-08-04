@@ -3,14 +3,14 @@
 mydomain="%%mailcertdomain%%"
 registermail="%%postmasteraddress%%"
 
-if [ -d /mnt/acme/"$mydomain" ]; then
+if [ -d /mnt/acme/"$mydomain"_ecc/ ]; then
     service postfix onestop
     sleep 5
-    mv /mnt/acme/"$mydomain" /mnt/acme/"$mydomain".old
+    mv "/mnt/acme/$mydomain_ecc" "/mnt/acme/$mydomain_ecc.old"
     /usr/local/sbin/acme.sh --register-account -m "$registermail" --home /mnt/acme --server letsencrypt
     /usr/local/sbin/acme.sh --set-default-ca --server letsencrypt
     /usr/local/sbin/acme.sh --issue -d "$mydomain" --home /mnt/acme --standalone --server letsencrypt --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
-    cd /mnt/acme/"$mydomain"/
+    cd "/mnt/acme/$mydomain_ecc/"
     cp -f * /usr/local/etc/postfix/keys/
     cd /usr/local/etc/postfix/keys/
     mv -f "$mydomain".cer "$mydomain".crt
@@ -19,6 +19,6 @@ if [ -d /mnt/acme/"$mydomain" ]; then
     service dovecot onerestart
     exit 0
 else
-    echo "There is no /mnt/acme/$mydomain directory"
+    echo "There is no /mnt/acme/$mydomain _ecc directory"
     exit 1
 fi
