@@ -4,6 +4,7 @@ providers:
 - name: 'Prometheus'
   orgId: 1
   folder: ''
+  folderUid: ''
   type: file
   disableDeletion: false
   allowUiUpdates: true
@@ -13,6 +14,7 @@ providers:
 - name: 'Loki'
   orgId: 1
   folder: ''
+  folderUid: ''
   type: file
   disableDeletion: false
   allowUiUpdates: true
@@ -22,6 +24,7 @@ providers:
 - name: 'InfluxDB'
   orgId: 1
   folder: ''
+  folderUid: ''
   type: file
   disableDeletion: false
   allowUiUpdates: true

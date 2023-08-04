@@ -24,7 +24,7 @@ scrape_configs:
     #  key_file: /mnt/metricscerts/metrics.key
     metrics_path: '/metrics'
     consul_sd_configs:
-    - server: '%%ip%%:8500'
+    - server: '127.0.0.1:8500'
       services: ["node-exporter"]
       datacenter: '%%datacenter%%'
     relabel_configs:

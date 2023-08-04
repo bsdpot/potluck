@@ -16,6 +16,7 @@
 * Another approach to local_unbound resolution problems
 * Disable consul DNS option with local_unbound as is only practical in VNET jails with a localhost
 * Loki config updates, set localhost options to jail IP, as failing in VNET jails
+* Set prometheus consul sd config to use 127.0.0.1
 
 ---
 
