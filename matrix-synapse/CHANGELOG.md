@@ -7,6 +7,7 @@
 * fix local_unbound dns resolution with missing parameters for access control
 * Disable consul DNS option with local_unbound as is only practical in VNET jails with a localhost
 * Adjust acme.sh setup and renew scripts for '$domain_ecc' suffix which is default now
+* Bug-fixing acme.sh changes
 
 ---
 
