@@ -30,10 +30,12 @@ then
 else
     echo "Creating exporter user"
     # setup mysql exporter user
+    # VNET jails require access control from IP, 127.0.0.1, and ::1
     /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'exporter'@'${IP}' IDENTIFIED BY '${DBSCRAPEPASS}' WITH MAX_USER_CONNECTIONS 3;"
-    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'exporter'@'localhost' IDENTIFIED BY '${DBSCRAPEPASS}' WITH MAX_USER_CONNECTIONS 3;"
+    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'exporter'@'127.0.0.1' IDENTIFIED BY '${DBSCRAPEPASS}' WITH MAX_USER_CONNECTIONS 3;"
+    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'exporter'@'::1' IDENTIFIED BY '${DBSCRAPEPASS}' WITH MAX_USER_CONNECTIONS 3;"
     # and grant required permissions
-    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "GRANT PROCESS, REPLICATION CLIENT, SELECT, SLAVE MONITOR ON *.* TO 'exporter'@'${IP}', 'exporter'@'localhost';"
+    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "GRANT PROCESS, REPLICATION CLIENT, SELECT, SLAVE MONITOR ON *.* TO 'exporter'@'${IP}', 'exporter'@'127.0.0.1', 'exporter'@'::1';"
     # flush perms
     /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "FLUSH PRIVILEGES;"
 fi
