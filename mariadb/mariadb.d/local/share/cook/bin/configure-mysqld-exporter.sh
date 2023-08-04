@@ -31,8 +31,9 @@ else
     echo "Creating exporter user"
     # setup mysql exporter user
     /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'exporter'@'${IP}' IDENTIFIED BY '${DBSCRAPEPASS}' WITH MAX_USER_CONNECTIONS 3;"
+    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'exporter'@'localhost' IDENTIFIED BY '${DBSCRAPEPASS}' WITH MAX_USER_CONNECTIONS 3;"
     # and grant required permissions
-    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "GRANT PROCESS, REPLICATION CLIENT, SELECT, SLAVE MONITOR ON *.* TO 'exporter'@'${IP}';"
+    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "GRANT PROCESS, REPLICATION CLIENT, SELECT, SLAVE MONITOR ON *.* TO 'exporter'@'${IP}', 'exporter'@'localhost';"
     # flush perms
     /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "FLUSH PRIVILEGES;"
 fi
