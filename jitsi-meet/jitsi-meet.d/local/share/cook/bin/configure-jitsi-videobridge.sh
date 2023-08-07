@@ -75,15 +75,22 @@ fi
   sed "s${sep}%%link%%${sep}$LINK${sep}g" \
   > /usr/local/www/jitsi-meet/interface_config.js
 
-## update rc script for jitsi-videobridge
-## see https://honeyguide.eu/posts/jitsi-freebsd/
-< "$TEMPLATEPATH/rc-jitsi-videobridge.in" \
-  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
-  > /usr/local/etc/rc.d/jitsi-videobridge
-
-# set execute permission
-chmod +x /usr/local/etc/rc.d/jitsi-videobridge
+# Disabling custom RC file running as root, using default running as user jvb
+#disable## make a backup any existing RC file
+#disable#if [ -f /usr/local/etc/rc.d/jitsi-videobridge ]; then
+#disable#  cp -f /usr/local/etc/rc.d/jitsi-videobridge /usr/local/etc/rc.d/jitsi-videobridge.bak
+#disable#  chmod -x /usr/local/etc/rc.d/jitsi-videobridge.bak
+#disable#fi
+#
+#disable### update rc script for jitsi-videobridge
+#disable### see https://honeyguide.eu/posts/jitsi-freebsd/
+#disable#< "$TEMPLATEPATH/rc-jitsi-videobridge.in" \
+#disable#  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+#disable#  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
+#disable#  > /usr/local/etc/rc.d/jitsi-videobridge
+#
+#disable## set execute permission
+#disable#chmod +x /usr/local/etc/rc.d/jitsi-videobridge
 
 # copy over manifest.json
 cp -f "$TEMPLATEPATH/manifest.json.in" /usr/local/www/jitsi-meet/manifest.json

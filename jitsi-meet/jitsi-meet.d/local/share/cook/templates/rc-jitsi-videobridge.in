@@ -18,7 +18,7 @@ rcvar=${name}_enable
 
 jitsi_videobridge_config="/usr/local/etc/jitsi/videobridge/jitsi-videobridge.conf"
 jitsi_videobridge_jar="/usr/local/share/java/classes/jitsi-videobridge.jar"
-jitsi_videobridge_logging_config="/usr/local/share/java/jitsi-videobridge-2.1.681/lib/logging.properties"
+jitsi_videobridge_logging_config="/usr/local/share/java/jitsi-videobridge-2.2.79/lib/logging.properties"
 jitsi_videobridge_user="jvb"
 
 load_rc_config "${name}"
@@ -42,7 +42,6 @@ jitsi_videobridge_start()
 #	daemon -u ${jitsi_videobridge_user} -p ${pidfile} -o /var/log/jitsi-videobridge.log \
 	daemon -p ${pidfile} -o /var/log/jitsi-videobridge.log \
 		${command} -Xmx${jitsi_videobridge_maxmem} \
-		-XX:+UseConcMarkSweepGC \
 		-XX:+HeapDumpOnOutOfMemoryError \
 		-XX:HeapDumpPath=/tmp \
 		-Djava.util.logging.config.file=${jitsi_videobridge_logging_config} \

@@ -134,6 +134,7 @@ pkg install -y prosody
 step "Install package turnserver"
 pkg install -y turnserver
 
+# Be aware this installs unbound from ports which overwrites local_unbound
 step "Install package jitsi-meet"
 pkg install -y jitsi-meet-full
 

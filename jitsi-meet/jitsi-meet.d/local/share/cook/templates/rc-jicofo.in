@@ -43,17 +43,17 @@ jicofo_start()
 #	daemon -u ${jicofo_user} -p ${pidfile} -o /var/log/${name}.log \
 	daemon -p ${pidfile} -o /var/log/${name}.log \
 		${command} -Xmx${jicofo_maxmem} \
-                -XX:+HeapDumpOnOutOfMemoryError \
-                -XX:HeapDumpPath=/tmp \
-                -Djava.util.logging.config.file=${jicofo_logging_config} \
-                -Dnet.java.sip.communicator.SC_HOME_DIR_LOCATION=/usr/local/etc/jitsi \
-                -Dnet.java.sip.communicator.SC_HOME_DIR_NAME=jicofo \
-                -Dnet.java.sip.communicator.SC_LOG_DIR_LOCATION=/var/log/ \
+		-XX:+HeapDumpOnOutOfMemoryError \
+		-XX:HeapDumpPath=/tmp \
+		-Djava.util.logging.config.file=${jicofo_logging_config} \
+		-Dnet.java.sip.communicator.SC_HOME_DIR_LOCATION=/usr/local/etc/jitsi \
+		-Dnet.java.sip.communicator.SC_HOME_DIR_NAME=jicofo \
+		-Dnet.java.sip.communicator.SC_LOG_DIR_LOCATION=/var/log/ \
 		-Dconfig.file=${jicofo_config} \
 		-Djavax.net.ssl.trustStore=${jicofo_trust_store} \
-            -cp ${jicofo_jar} \
-            org.jitsi.jicofo.Main \
-            ${jicofo_flags}
+		-cp ${jicofo_jar} \
+		org.jitsi.jicofo.Main \
+		${jicofo_flags}
 
 	echo "Starting ${name}"
 }

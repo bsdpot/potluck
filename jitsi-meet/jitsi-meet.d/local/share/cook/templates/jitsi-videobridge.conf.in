@@ -3,6 +3,7 @@ videobridge {
   cc {
       trust-bwe = false
   }
+
   http-servers {
       public {
           port = 9090

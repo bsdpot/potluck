@@ -11,6 +11,9 @@
 * Fix error with prosody setup
 * Change password generation for turnserver
 * Trim turnadmin output for final line only
+* Fix jitsi-videobridge rc script to remove -XX:+UseConcMarkSweepGC
+* Make backups of rc scripts if exist
+* Use default RC files with user perms instead of custom running services as root
 
 ---
 

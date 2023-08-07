@@ -27,16 +27,27 @@ sep=$'\001'
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/etc/jitsi/jicofo/jicofo.conf
 
-## update rc script for jicofo
-## see https://honeyguide.eu/posts/jitsi-freebsd/
-## also need -Djavax.net.ssl.trustStorePassword=changeit
-< "$TEMPLATEPATH/rc-jicofo.in" \
-  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
-  > /usr/local/etc/rc.d/jicofo
+# Disable updating the RC file, the default should work fine but runs as user jicofo
+#disable## make a backup any existing RC file
+#disable#if [ -f /usr/local/etc/rc.d/jicofo ]; then
+#disable#  cp -f /usr/local/etc/rc.d/jicofo /usr/local/etc/rc.d/jicofo.bak
+#disable#  chmod -x /usr/local/etc/rc.d/jicofo.bak
+#disable#fi
+#
+#disable### update rc script for jicofo
+#disable### see https://honeyguide.eu/posts/jitsi-freebsd/
+#disable### also need -Djavax.net.ssl.trustStorePassword=changeit
+#disable#< "$TEMPLATEPATH/rc-jicofo.in" \
+#disable#  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
+#disable#  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
+#disable#  > /usr/local/etc/rc.d/jicofo
 #
 ## set execute permissions
-chmod +x /usr/local/etc/rc.d/jicofo
+#disable#chmod +x /usr/local/etc/rc.d/jicofo
+
+# eliminate a log error
+touch /usr/local/etc/jitsi/jicofo/sip-communicator.properties
+chown jicofo:jicofo /usr/local/etc/jitsi/jicofo/sip-communicator.properties
 
 # copy over jicofostatus.sh, runs:
 # [ curl -s "http://localhost:8080/debug?full=true" | jq . ]
