@@ -115,8 +115,10 @@ KEYPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; 
 export KEYPASSWORD
 
 # Generate a password for the turnserver and then hash it with turnadmin
+# shellcheck disable=SC2002
 TURNPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
-HASHTURNPASSWORD=$(/usr/local/bin/turnadmin -P -p "$TURNPASSWORD")
+# make sure to get only the final line output as turnadmin produces several lines now
+HASHTURNPASSWORD=$(/usr/local/bin/turnadmin -P -p "$TURNPASSWORD" | tail -1)
 export HASHTURNPASSWORD
 
 log "Configure acme.sh"

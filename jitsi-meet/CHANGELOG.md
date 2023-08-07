@@ -10,6 +10,7 @@
 * Bug-fixing acme.sh change
 * Fix error with prosody setup
 * Change password generation for turnserver
+* Trim turnadmin output for final line only
 
 ---
 
