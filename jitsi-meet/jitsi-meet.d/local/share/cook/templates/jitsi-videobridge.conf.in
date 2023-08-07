@@ -45,6 +45,7 @@ videobridge {
   }
 
   ice {
+    advertise-private-candidates = false
     tcp {
       enabled = false
       port = 4443

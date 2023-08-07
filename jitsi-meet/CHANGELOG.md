@@ -14,6 +14,7 @@
 * Fix jitsi-videobridge rc script to remove -XX:+UseConcMarkSweepGC
 * Make backups of rc scripts if exist
 * Use default RC files with user perms instead of custom running services as root
+* Prevent jitsi-videobridge from advertising private ranges, set xmpp-domain
 
 ---
 

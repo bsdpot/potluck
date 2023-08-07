@@ -2,7 +2,6 @@ jicofo {
   bridge {
     brewery-jid = "JvbBrewery@internal.auth.%%domain%%"
   }
-
   sctp {
     enabled = false
   }
@@ -12,6 +11,7 @@ jicofo {
       hostname = "localhost"
       port = 5222
       domain = "auth.%%domain%%"
+      xmpp-domain = "%%domain%%"
       username = "jvb"
       password = "%%keypassword%%"
       conference-muc-jid = "conference.%%domain%%"
