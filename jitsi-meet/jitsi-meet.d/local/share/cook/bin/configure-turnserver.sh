@@ -18,10 +18,6 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 sep=$'\001'
 
-# moved to cook script so HASHTURNPASSWORD variable is available to prosody
-#TURNPASSWORD=$(date | md5sum)
-#HASHTURNPASSWORD=$(/usr/local/bin/turnadmin -P -p "$TURNPASSWORD")
-
 # copy over turnserver.conf
 < "$TEMPLATEPATH/turnserver.conf.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
