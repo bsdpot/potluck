@@ -8,6 +8,7 @@
 * Disable consul DNS option with local_unbound as is only practical in VNET jails with a localhost
 * Adjust acme.sh setup and renew scripts for '$domain_ecc' suffix which is default now
 * Bug-fixing acme.sh change
+* Fix error with prosody setup
 
 ---
 

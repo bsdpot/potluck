@@ -35,7 +35,6 @@ sep=$'\001'
 < "$TEMPLATEPATH/prosody.cfg.lua.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%email%%${sep}$EMAIL${sep}g" | \
-  sed "s${sep}%%turnpassword%%${sep}$HASHTURNPASSWORD${sep}g" | \
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/etc/prosody/prosody.cfg.lua
 
