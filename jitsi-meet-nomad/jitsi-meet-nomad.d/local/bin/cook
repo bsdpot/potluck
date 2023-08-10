@@ -28,6 +28,10 @@ log() {
     echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
 }
 
+convert_to_required_format() {
+    echo "$1" | sed 's/\([^,]*\)/"\1"/g'
+}
+
 set -e
 export HOME=/root
 
@@ -45,7 +49,7 @@ fi
 ########################################################################
 
 OPTIND=1
-while getopts "d:e:p:q:" option
+while getopts "d:e:i:l:n:p:q:r:" option
 do
     case "${option}"
     in
@@ -55,11 +59,23 @@ do
       e) EMAIL=${OPTARG}
          export EMAIL
          ;;
+      i) IMAGE=${OPTARG}
+         export IMAGE
+         ;;
+      l) LINK=${OPTARG}
+         export LINK
+         ;;
+      n) NODENAME=${OPTARG}
+         export NODENAME
+         ;;
       p) PUBLICIP=${OPTARG}
          export PUBLICIP
          ;;
       q) PRIVATEIP=${OPTARG}
          export PRIVATEIP
+         ;;
+      r) RESOLUTION=${OPTARG}
+         export RESOLUTION
          ;;
     esac
 done
@@ -69,8 +85,8 @@ shift "$((OPTIND-1))"
 ## Check config
 ########################################################################
 
-required_args="DOMAIN EMAIL PUBLICIP PRIVATEIP"
-optional_args=""
+required_args="NODENAME DOMAIN EMAIL PUBLICIP PRIVATEIP"
+optional_args="IMAGE LINK RESOLUTION"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -92,35 +108,61 @@ done
 export PATH=/usr/local/share/cook/bin:$PATH
 
 # Generate a password for stitching up the various parts of the configuration
-KEYPASSWORD="$(dd if=/dev/urandom count=1 2> /dev/null | uuencode -m - | sed -ne 2p | cut -c-12)"
+# shellcheck disable=SC2002
+KEYPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
 export KEYPASSWORD
 
-log "Configure acme.sh"
-configure-acme.sh
+# Generate a password for the turnserver and then hash it with turnadmin
+# shellcheck disable=SC2002
+TURNPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
+# make sure to get only the final line output as turnadmin produces several lines now
+HASHTURNPASSWORD=$(/usr/local/bin/turnadmin -P -p "$TURNPASSWORD" | tail -1)
+export HASHTURNPASSWORD
+
+#log "Configure acme.sh"
+#configure-acme.sh
 
 log "Configure prosody"
 configure-prosody.sh
 
-log "Configure jitsi-videobridge"
-configure-jitsi-videobridge.sh
-
 log "Configure nginx"
 configure-nginx.sh
+
+#disabling as needs certificates
+#log "Configure turnserver"
+#configure-turnserver.sh
+
+log "Configure jitsi-videobridge"
+configure-jitsi-videobridge.sh
 
 log "Configure jicofo"
 configure-jicofo.sh
 
-log "Start jitsi-videobridge"
-service jitsi-videobridge start
+# Startup ordering as outlined in  https://youtu.be/LJOpSDcwWIA
+# 1. web
+# 2. turnserver
+# 2. prosody
+# 3. jicofo
+# 4. jitsi-videobridge
+
+log "Start nginx"
+service nginx start
+
+# disablign turnserver as needs certificates
+#log "Start turnserver"
+#service turnserver start
 
 log "Start prosody"
 service prosody start
 
+log "first pause"
+sleep 5 || true
+
 log "Start jicofo"
 service jicofo start
 
-log "Start nginx"
-service nginx start
+log "Start jitsi-videobridge"
+service jitsi-videobridge start
 
 # end script placement
 log "Exit seasoned"

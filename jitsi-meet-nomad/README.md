@@ -15,33 +15,94 @@ NGINX is started as blocking task when the jail is started, all other services a
 
 Deploying the image or flavour should be quite straight forward and not take more than a few minutes.
 
-# Installation
+## Installation
 
-* Create your local jail from the image or the flavour files as with every other jail (see documentation below).
-* Adjust to your environment: ```pot set-env -p <yourjailname> -E DOMAINNAME=<yourdomain> -E PUBLICIP=<yourpublicip> -E PRIVATEIP=<yourpotip>```
-  * &lt;yourjailname&gt; is the name of the newly created/imported jail, e.g. jitsi-meet-nomad-fbsd-amd64-12_1_0_9
-  * &lt;yourdomain&gt; should be the FQDN of your server that users can connect to in their web browser, e.g. jitsi.honeyguide.net
-  * &lt;yourpublicip&gt; is the public IP address associated with the server behind this domain name
-  * &lt;yourpotip&gt; is the IP address that has been created by '''pot''' when importing/creating the jail (see the output of ```pot import``` or ```pot create```, e.g. 10.192.0.3.
-* Forward the needed ports: ```pot export-ports -p <yourjailname> -e 80:80 -e 443:443 -e 10000:10000 -e 4443:4443``` with &lt;yourjailname&gt; again being the name of your newly created/imported jail.
-* Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.
-  If it would not be for the following one workaround step, you could now use your video conference platform.
+* Create a ZFS data set on the parent system beforehand
+  ```zfs create -o mountpoint=/mnt/jitsidata zroot/jitsidata```
+* Add an adjusted nomad job file to nomad to run
 
-**Workaround for missing UDP port forwarding:**
-```pot``` at the moment only forwards TCP ports, not UDP ports. Therefore you need to fix the port forward *each time you start the jail* manually with a command like this:
+## Parameters
 
-```bash
-echo "
-rdr pass on em0 inet proto tcp from any to <yourhostip> port = http -> <yourpotip> port 80
-rdr pass on em0 inet proto tcp from any to <yourhostip> port = https -> <yourpotip>  port 443
-rdr pass on em0 inet proto udp from any to <yourhostip> port = 10000 -> <yourpotip>  port 10000
-rdr pass on em0 inet proto tcp from any to <yourhostip> port = 4443 -> <yourpotip>  port 4443
-" | pfctl -a pot-rdr/<yourjailname> -f -
+NODENAME is the name of this node (-n name)
+
+DOMAIN is the domain name of the jitsi instance (-d jitsi.honeyguide.net)
+
+PUBLICIP is the public IP address of the jitsi instance (-p 1.2.3.4)
+
+PRIVATEIP is the local interface the jail is running on (-q 10.0.0.2)
+
+RESOLUTION is one of the valid [jitsi-meet resolution settings](https://github.com/jitsi/lib-jitsi-meet/blob/master/service/RTC/Resolutions.js) such as `180`, `240`, `360`, `480`, `720`, `fullhd` etc. (-r 360)
+
+## Optional Parameters
+
+IMAGE is the filename of an image copied in to `/usr/local/www/jitsi-meet/images/{filename}` (-i filename.jpg)
+
+LINK is the full URL with `https://full.url/path` to link the custom logo to.
+
+## Nomad Job Description Example
+This is a nomad job file to use as a starting point.
+
 ```
-&lt;yourhostip&gt; is the IP address users will connect to, &lt;yourpotip&gt; is the ```pot``` generated IP address (e.g. 10.192.0.3), &lt;yourjailname&gt; is the name you have given your jail.
+job "example" {
+  datacenters = ["datacenter"]
+  type        = "service"
 
-For more details about ```nomad```images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
+  group "group1" {
+    count = 1
 
-# Sample job file
+    task "wwwjitsi" {
+      driver = "pot"
 
-todo
+      service {
+        tags = ["nginx", "www", "jiti-meet"]
+        name = "jitsi"
+        port = "http"
+
+         check {
+            type     = "tcp"
+            name     = "tcp"
+            interval = "60s"
+            timeout  = "30s"
+          }
+          check_restart {
+            limit = 5
+            grace = "120s"
+            ignore_warnings = false
+          }
+      }
+
+      env {
+        DOMAIN = "jitsi.honeyguide.net"
+        ALERTEMAIL = "user@example.com"
+      }
+      config {
+        image = "https://potluck.honeyguide.net/jitsi-meet-nomad/"
+        pot = "jitsi-meet-nomad-amd64-13_2"
+        tag = "2.1.1"
+        command = "/usr/local/bin/cook"
+        args = [""]
+
+        copy = [
+         "/path/to/image.jpg:/root/image.png"
+        ]
+        mount = [
+         "/mnt/jitsidata:/mnt"
+        ]
+        port_map = {
+          http = "80"
+        }
+      }
+
+      resources {
+        cpu = 1000
+        memory = 1024
+
+        network {
+          mbits = 10
+          port "http" {}
+        }
+      }
+    }
+  }
+}
+```

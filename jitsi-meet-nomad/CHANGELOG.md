@@ -1,3 +1,18 @@
+2.1
+
+* 13.2 image
+* Update jitsi-meet-nomad image to match jitsi-meet
+* No turnserver as needs certificate
+* No acme.sh as using separate frontend with certificates
+
+---
+
+2.0
+
+* Import jitsi-meet image to nomad version
+
+---
+
 1.1
 
 * Rebuild for new pot format

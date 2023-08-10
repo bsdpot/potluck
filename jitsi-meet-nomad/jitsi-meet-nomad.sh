@@ -83,23 +83,47 @@ service sendmail onedisable || true
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
-step "Install package acme.sh"
-pkg install -y acme.sh
+step "Install package openssl"
+pkg install -y openssl
 
+step "Install package sudo"
+pkg install -y sudo
+
+# necessary if installing curl now
+step "Install package ca_root_nss"
+pkg install -y ca_root_nss
+
+step "Install package curl"
+pkg install -y curl
+
+step "Install package jq"
+pkg install -y jq
+
+step "Install package jo"
+pkg install -y jo
+
+step "Install package nano"
+pkg install -y nano
+
+step "Install package bash"
+pkg install -y bash
+
+step "Install package rsync"
+pkg install -y rsync
+
+# nginx-full has conflicts and will remove any nginx
 step "Install package nginx"
 pkg install -y nginx
 
 step "Install package prosody"
 pkg install -y prosody
 
-step "Install package jicofo"
-pkg install -y jicofo
+# disabling turnserver as needs certificates
+#step "Install package turnserver"
+#pkg install -y turnserver
 
 step "Install package jitsi-meet"
-pkg install -y jitsi-meet
-
-step "Install package jitsi-videobridge"
-pkg install -y jitsi-videobridge
+pkg install -y jitsi-meet-full
 
 step "Clean package installation"
 pkg clean -y

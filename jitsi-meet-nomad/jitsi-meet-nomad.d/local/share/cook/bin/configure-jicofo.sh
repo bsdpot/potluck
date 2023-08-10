@@ -14,13 +14,6 @@ export PATH=/usr/local/bin:$PATH
 # make directories
 mkdir -p /usr/local/etc/jitsi/jicofo/
 
-# Set up jicofo
-keytool \
-  -noprompt \
-  -keystore /usr/local/etc/jitsi/jicofo/truststore.jks \
-  -storepass "$KEYPASSWORD" \
-  -importcert -alias prosody -file "/var/db/prosody/auth.$DOMAIN.crt"
-
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
@@ -34,5 +27,16 @@ sep=$'\001'
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/etc/jitsi/jicofo/jicofo.conf
 
+# eliminate a log error
+touch /usr/local/etc/jitsi/jicofo/sip-communicator.properties
+chown jicofo:jicofo /usr/local/etc/jitsi/jicofo/sip-communicator.properties
+
+# copy over jicofostatus.sh, runs:
+# [ curl -s "http://localhost:8080/debug?full=true" | jq . ]
+mkdir -p /root/bin
+cp -f "$TEMPLATEPATH/jicofostatus.sh.in" /root/bin/jicofostatus.sh
+chmod +x /root/bin/jicofostatus.sh
+
 # enable service
-service jicofo enable
+sysrc jicofo_maxmem="3072m"
+service jicofo enable || true

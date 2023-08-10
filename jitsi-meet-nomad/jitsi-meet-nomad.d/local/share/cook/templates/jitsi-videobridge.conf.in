@@ -1,5 +1,57 @@
-JVB_XMPP_HOST=localhost
-JVB_XMPP_DOMAIN=%%domain%%
-JVB_XMPP_PORT=5347
-JVB_XMPP_SECRET=%%keypassword%%
-VIDEOBRIDGE_MAX_MEMORY=3072m
+videobridge {
+
+  cc {
+      trust-bwe = false
+  }
+
+  http-servers {
+      public {
+          port = 9090
+      }
+  }
+
+  websockets {
+    enabled = true
+    server-id = "default-id"
+    domain = "%%domain%%:443"
+    tls = true
+  }
+
+  sctp {
+    enabled = false
+  }
+
+  stats {
+    enabled = true
+    transports = [
+      { type = "colibri" }
+    ]
+  }
+
+  apis {
+    xmpp-client {
+      configs {
+        xmpp-server-1 {
+          hostname="localhost"
+          domain = "auth.%%domain%%"
+          username = "jvb"
+          password = "%%keypassword%%"
+          muc_jids = "JvbBrewery@internal.auth.%%domain%%"
+          muc_nickname = "unique-instance-id"
+          disable_certificate_verification = true
+        }
+      }
+    }
+  }
+
+  ice {
+    advertise-private-candidates = false
+    tcp {
+      enabled = false
+      port = 4443
+    }
+    udp {
+      port = 10000
+    }
+  }
+}

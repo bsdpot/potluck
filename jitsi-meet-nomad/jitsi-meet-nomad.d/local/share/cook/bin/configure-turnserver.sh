@@ -11,9 +11,6 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
-# make directories
-mkdir -p /usr/local/www/jitsi-meet
-
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
@@ -21,12 +18,14 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 sep=$'\001'
 
-# copy over jitsi-videobridge.conf
-< "$TEMPLATEPATH/config.js.in" \
+# copy over turnserver.conf
+< "$TEMPLATEPATH/turnserver.conf.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
-  > /usr/local/www/jitsi-meet/config.js
+  sed "s${sep}%%privateip%%${sep}$PRIVATEIP${sep}g" | \
+  sed "s${sep}%%publicip%%${sep}$PUBLICIP${sep}g" | \
+  sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" | \
+  sed "s${sep}%%turnpassword%%${sep}$HASHTURNPASSWORD${sep}g" \
+  > /usr/local/etc/turnserver.conf
 
 # enable service
-sysrc jitsi_videobridge_flags="--apis=rest,xmpp"
-service jitsi_videobridge enable
+service turnserver enable || true
