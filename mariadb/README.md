@@ -36,11 +36,8 @@ To ensure that software and database file versions match, ```mysql_upgrade``` is
     -E DBROOTPASS=<database root password> \
     -E DBSCRAPEPASS=<mysqld exporter user password> \
     [ -E DUMPSCHEDULE="<cronschedule>" -E DUMPUSER=<backupuser> -E DUMPFILE=</insidejail/dumpfile.sql> ] \
+    [ -E SERVERID=<unique number> -E REPLICATEUSER=<replication username> -E REPLICATEPASS=<replication password> ] \
     [ -E REMOTELOG=<IP address of syslog-ng server> ]
-  ```
-* Optionally copy-in your own server.cnf file:
-  ```
-  pot copy-in -p <jailname> -s <host/configdirectory/>server.cnf -d /usr/local/etc/mysql/conf.d/server.cnf
   ```
 
 ## Required Paramaters
@@ -67,8 +64,38 @@ DUMPSCHEDULE is a cron schedule is in the scheduling format of crontab, e.g. "*/
 
 DUMPUSER defaults to ```root``` and DUMPFILE defaults to ```/var/db/mysql/full_mariadb_backup.sql``` if you set a DUMPSCHEDULE but do not specify one or both of these parameters.
 
+SERVERID is a unique identifier. It defaults to `1` if not set. If setting up a second master, or a slave instance, this must be different, such as `2`.
+
+REPLICATEUSER is the username for replication user and REPLICATEPASS is the password.
+
 REMOTELOG is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 
 # Usage
 
-You can connect to the database server with a ```mariadb``` client according to the configuration you have copied in (or the default ```mariadb``` configuration).
+You can connect to the database server with a ```mariadb``` client.
+
+## Master-Slave Replication
+
+To enable master-slave replication, import a backup of the databases to the slave instance. 
+
+Then on the master server, run `/root/bin/check-master-status.sh` to get the binlog filename and position to use on the slave.
+
+On the slave server, run `/root/bin/configure-mariadb-slave.sh` with the parameters for master server, replication user and pass, binlog name and position.
+
+## Master-Master Replication
+
+To enable master-master replication, setup the first server, then import a backup of the databases to the second server.
+
+Then on the first server, run `/root/bin/check-master-status.sh` to get the binlog filename and position to use on the second server.
+
+On the second server, run `/root/bin/configure-mariadb-slave.sh` with the parameters for first server IP, replication user and pass, binlog name and position.
+
+Ensure replication is taking place.
+
+Then on the second server, run `/root/bin/check-master-status.sh` to get the binlog filename and position to use on the first server.
+
+Back on the the first server, run `/root/bin/configure-mariadb-slave.sh` with the parameters for second server, replication user and pass, binlog name and position.
+
+(untested, do not run in production environment yet)
+
+You can use a loadbalancing/failover TCP proxy to make use of this.

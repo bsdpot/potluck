@@ -1,3 +1,10 @@
+3.7
+
+* Version bump for introduction of replication
+* Add parameters to setup server_id, replication credentials, and scripts for easy slave configuration
+
+---
+
 3.6
 
 * Version bump for new base image

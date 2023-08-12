@@ -52,6 +52,7 @@ fi
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args DBROOTPASS DBSCRAPEPASS"
 optional_args="DUMPSCHEDULE DUMPUSER DUMPFILE REMOTELOG"
+optional_args="$optional_args SERVERID REPLICATEUSER REPLICATEPASS"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -86,6 +87,28 @@ fi
 if [ -n "${CONSULSERVERS+x}" ]; then
     FIXCONSULSERVERS=$(convert_to_required_format "$CONSULSERVERS")
     export FIXCONSULSERVERS
+fi
+
+if [ -n "${SERVERID+x}" ]; then
+	SERVERID="$SERVERID"
+	export SERVERID
+	if [ -n "${REPLICATEUSER+x}" ]; then
+		REPLICATEUSER="$REPLICATEUSER"
+		export REPLICATEUSER
+	else
+		log "Error: missing replication user. Please pass in REPLICATEUSER username."
+		exit 1
+	fi
+	if [ -n "${REPLICATEPASS+x}" ]; then
+		REPLICATEPASS="$REPLICATEPASS"
+		export REPLICATEPASS
+	else
+		log "Error: missing replication password. Please pass in REPLICATEPASS password."
+		exit 1
+	fi
+else
+	SERVERID=1
+	export SERVERID
 fi
 
 # stop services
@@ -128,6 +151,15 @@ configure-mysqld-exporter.sh
 
 log "Start mysqld_exporter"
 service mysqld_exporter start
+
+# setup replication if a replication username is set
+if [ -n "${REPLICATEUSER}" ]; then
+	log "Configuring replication"
+	configure-replication.sh
+fi
+
+log "Adding admin scripts"
+configure-admin-tools.sh
 
 log "Exit seasoned"
 pot_seasoned_exit

@@ -1,0 +1,99 @@
+#!/usr/local/bin/bash
+
+# this is here for pot image purposes: serverid %%serverid%%
+
+# this script must be run as root
+if [ "$EUID" -ne 0 ]; then
+	echo "Please run this script as root. Root is automatically configured for mariadb access."
+	exit
+fi
+
+set -eo pipefail
+
+exit_error() {
+	echo "$*" 1>&2
+	exit 1;
+}
+
+usage() {
+	cat <<-EOF
+	Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-a logfile -b position -s server -u username -p password]
+
+	  -h Show help
+	  -a logfile file name
+	  -b position in log file
+	  -s server IP or hostname
+	  -u replication username
+	  -p replication password
+
+	Important: make sure you have restored a backup of the databases before initiating slave replication.
+	EOF
+}
+
+while getopts "ha:b:s:u:p:" flags; do
+	case "${flags}" in
+	h)
+		usage
+		exit 0
+		;;
+	a)
+		LOGFILE="${OPTARG}"
+		;;
+	b)
+		POSITION="${OPTARG}"
+		;;
+	s)
+		SERVER="${OPTARG}"
+		;;
+	u)
+		REPLICATEUSER="${OPTARG}"
+		;;
+	p)
+		REPLICATEPASS="${OPTARG}"
+		;;
+	*)
+		exit_error "$(usage)"
+		;;
+	esac
+done
+shift "$((OPTIND-1))"
+
+if [ -z "${LOGFILE+x}" ]; then
+	echo "You need to pass in a log file name with -a. Run 'check-master-status.sh' on the master server."
+	exit_error
+fi
+
+if [ -z "${POSITION+x}" ]; then
+	echo "You must pass in the position in the log file with -b. Run 'check-master-status.sh' on the master server."
+	exit_error
+fi
+
+if [ -z "${SERVER+x}" ]; then
+	echo "You must pass in the IP or hostname of the master server with -s."
+	exit_error
+fi
+
+if [ -z "${REPLICATEUSER+x}" ]; then
+	echo "You must pass in replication username with -u."
+	exit_error
+fi
+
+if [ -z "${REPLICATEPASS+x}" ]; then
+	echo "You must pass in replication password with -p."
+	exit_error
+fi
+
+# stop the slave proces
+/usr/local/bin/mysql -e "STOP SLAVE;"
+
+# change the master using parameters passed in
+/usr/local/bin/mysql -e "CHANGE MASTER TO MASTER_HOST='$SERVER', MASTER_USER='$REPLICATEUSER', MASTER_PASSWORD='$REPLICATEPASS', MASTER_PORT=3306, MASTER_LOG_FILE='$LOGFILE', MASTER_LOG_POS=$POSITION, MASTER_CONNECT_RETRY=10;"
+
+# start the slave
+/usr/local/bin/mysql -e "START SLAVE;"
+
+# sleep a few seconds
+sleep 5
+
+# check the slave status
+/usr/local/bin/mysql -e "SHOW SLAVE STATUS\G;"

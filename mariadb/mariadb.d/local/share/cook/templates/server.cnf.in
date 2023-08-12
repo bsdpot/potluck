@@ -1,5 +1,6 @@
 [mysqld]
-innodb_file_per_table=1
+server_id = %%serverid%%
+innodb_file_per_table = 1
 transaction_isolation = READ-COMMITTED
 log-bin = bin.log
 log-bin-index = bin-log.index

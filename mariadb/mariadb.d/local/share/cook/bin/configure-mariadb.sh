@@ -14,18 +14,18 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-## shellcheck disable=SC3003,SC2039
-## safe(r) separator for sed
-##sep=$'\001'
-#
-# copy in mysqld server.cnf
-#< "$TEMPLATEPATH/server.cnf.in" \
-#  sed "s${sep}%%config_version%%${sep}$config_version${sep}g" | \
-#  sed "s${sep}%%remotelogip%%${sep}$REMOTELOG${sep}g" \
-#  > /usr/local/etc/mysql/conf.d/server.cnf
+# shellcheck disable=SC3003,SC2039
+# safe(r) separator for sed
+sep=$'\001'
 
+# copy in mysqld server.cnf
+< "$TEMPLATEPATH/server.cnf.in" \
+  sed "s${sep}%%serverid%%${sep}$SERVERID${sep}g" \
+  > /usr/local/etc/mysql/conf.d/server.cnf
+
+# replaced, need to automate server_id
 # direct copy, no variable replacements yet
-cp -f "$TEMPLATEPATH/server.cnf.in" /usr/local/etc/mysql/conf.d/server.cnf
+#cp -f "$TEMPLATEPATH/server.cnf.in" /usr/local/etc/mysql/conf.d/server.cnf
 
 # Configure dump cronjob
 if [ -n "${DUMPSCHEDULE+x}" ];
