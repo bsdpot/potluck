@@ -33,7 +33,7 @@ sep=$'\001'
 #
 # Fix involves passing --disable-log-bin in mysql_install_db_args
 #
-sed -i '' 's${sep}basedir=/usr/local${sep}basedir=/usr/local --disable-log-bin${sep}' /usr/local/etc/rc.d/mysql-server
+sed -i '' "s${sep}basedir=/usr/local${sep}basedir=/usr/local --disable-log-bin${sep}" /usr/local/etc/rc.d/mysql-server
 
 # Configure dump cronjob
 if [ -n "${DUMPSCHEDULE+x}" ];

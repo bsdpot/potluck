@@ -4,6 +4,7 @@
 * Add parameters to setup server_id, replication credentials, and scripts for easy slave configuration
 * Minor tweaks to ignore minor errors, also testing master-slave and master-master works
 * Add --disable-log-bin in mysql_install_db_args in mysql-server rc script
+* Fix error in changing mysql-server rc script
 
 ---
 
