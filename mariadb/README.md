@@ -96,6 +96,4 @@ Then on the second server, run `/root/bin/check-master-status.sh` to get the bin
 
 Back on the the first server, run `/root/bin/configure-mariadb-slave.sh` with the parameters for second server, replication user and pass, binlog name and position.
 
-(untested, do not run in production environment yet)
-
 You can use a loadbalancing/failover TCP proxy to make use of this.

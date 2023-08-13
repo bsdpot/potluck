@@ -27,6 +27,14 @@ sep=$'\001'
 # direct copy, no variable replacements yet
 #cp -f "$TEMPLATEPATH/server.cnf.in" /usr/local/etc/mysql/conf.d/server.cnf
 
+# fix error on startup with new system
+#  [Warning] Failed to load slave replication state from table mysql.gtid_slave_pos:
+#  1017: Can't find file: './mysql/' (errno: 2 "No such file or directory")
+#
+# Fix involves passing --disable-log-bin in mysql_install_db_args
+#
+sed -i '' 's${sep}basedir=/usr/local${sep}basedir=/usr/local --disable-log-bin${sep}' /usr/local/etc/rc.d/mysql-server
+
 # Configure dump cronjob
 if [ -n "${DUMPSCHEDULE+x}" ];
 then

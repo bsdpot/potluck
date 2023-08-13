@@ -60,27 +60,32 @@ shift "$((OPTIND-1))"
 
 if [ -z "${LOGFILE+x}" ]; then
 	echo "You need to pass in a log file name with -a. Run 'check-master-status.sh' on the master server."
-	exit_error
+	echo ""
+	exit_error "$(usage)"
 fi
 
 if [ -z "${POSITION+x}" ]; then
 	echo "You must pass in the position in the log file with -b. Run 'check-master-status.sh' on the master server."
-	exit_error
+	echo ""
+	exit_error "$(usage)"
 fi
 
 if [ -z "${SERVER+x}" ]; then
 	echo "You must pass in the IP or hostname of the master server with -s."
-	exit_error
+	echo ""
+	exit_error "$(usage)"
 fi
 
 if [ -z "${REPLICATEUSER+x}" ]; then
 	echo "You must pass in replication username with -u."
-	exit_error
+	echo ""
+	exit_error "$(usage)"
 fi
 
 if [ -z "${REPLICATEPASS+x}" ]; then
 	echo "You must pass in replication password with -p."
-	exit_error
+	echo ""
+	exit_error "$(usage)"
 fi
 
 # stop the slave proces

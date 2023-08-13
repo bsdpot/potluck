@@ -4,7 +4,7 @@ set -e
 set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
-# server_id = %%serverid%%
+# this is here for pot image purposes: server_id = %%serverid%%
 
 # run the mysql command to check master status and pretty-print the results, then search for what we need
 /usr/local/bin/mysql -e "SHOW MASTER STATUS\G;" | grep -e "File:" -e "Position:"
