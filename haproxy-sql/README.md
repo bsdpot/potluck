@@ -19,7 +19,7 @@ on this site to run `consul`.
 # Setup
 You must be running 2 or 3 `mariadb` servers, such as the pot mariadb images, configured for replication on all servers in a MASTER-MASTER configuration.
 
-The `mariadb` pot images must have been started with the GALERAHOST parameter set to the IP address of this jail. This will setup access control and allow haproxy checks from this host.
+The `mariadb` pot images must already be started with the LOADBALANCER parameter set to the IP address of this jail. This will setup access control and allow haproxy checks from this host.
 
 ## Installation
 

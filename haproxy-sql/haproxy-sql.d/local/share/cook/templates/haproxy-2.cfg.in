@@ -22,6 +22,6 @@ listen sqlloadbalancer
   balance leastconn
   option tcpka
   option tcplog
-  option mysql-check user galera
+  option mysql-check user haproxy
   server db1 %%serverone%%:3306 check
   server db2 %%servertwo%%:3306 check
