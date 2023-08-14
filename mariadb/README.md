@@ -37,6 +37,7 @@ To ensure that software and database file versions match, ```mysql_upgrade``` is
     -E DBSCRAPEPASS=<mysqld exporter user password> \
     [ -E DUMPSCHEDULE="<cronschedule>" -E DUMPUSER=<backupuser> -E DUMPFILE=</insidejail/dumpfile.sql> ] \
     [ -E SERVERID=<unique number> -E REPLICATEUSER=<replication username> -E REPLICATEPASS=<replication password> ] \
+    [ -E GALERAHOST=<IP address of haproxy-sql image> ] \
     [ -E REMOTELOG=<IP address of syslog-ng server> ]
   ```
 
@@ -68,6 +69,8 @@ SERVERID is a unique identifier. It defaults to `1` if not set. If setting up a 
 
 REPLICATEUSER is the username for replication user and REPLICATEPASS is the password.
 
+GALERAHOST is the IP address of a `haproxy-sql` instance which will provide loadbalancing between two or three `mariadb` instances. A user called `galera` is created with no password and no access to databases.
+
 REMOTELOG is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 
 # Usage
@@ -96,4 +99,5 @@ Then on the second server, run `/root/bin/check-master-status.sh` to get the bin
 
 Back on the the first server, run `/root/bin/configure-mariadb-slave.sh` with the parameters for second server, replication user and pass, binlog name and position.
 
-You can use a loadbalancing/failover TCP proxy to make use of this.
+You can use a loadbalancing/failover TCP proxy such as the `haproxy-sql` pot image to make use of this. Make sure to set the GALERAHOST parameter to the IP of the loadbalancer well in advance. 
+
