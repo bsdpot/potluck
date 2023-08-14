@@ -18,14 +18,14 @@ export PATH=/usr/local/bin:$PATH
 # safe(r) separator for sed
 #sep=$'\001'
 
-# This will create a galera host for the specified IP passed in
-# for the GALERAHOST parameter.
+# This will create a haproxy user for the specified IP passed in
+# for the LOADBALANCER parameter.
 # There is not password set, but also no access to databases granted.
 # This is strictly to allow haproxy mysql-check to function correctly
 # from the haproxy-sql pot image.
 
-echo "Creating galera user"
-/usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'galera'@'${GALERAHOST}';"
+echo "Creating haproxy user"
+/usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'haproxy'@'${LOADBALANCER}';"
 
 # flush perms
 /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "FLUSH PRIVILEGES;"

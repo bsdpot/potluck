@@ -6,6 +6,7 @@
 * Add --disable-log-bin in mysql_install_db_args in mysql-server rc script
 * Fix error in changing mysql-server rc script
 * Add GALERAHOST parameter to set an access rule for a loadbalancer host
+* Rename GALERAHOST to LOADBALANCER, galera user to haproxy, to avoid confusion with galera package
 
 ---
 

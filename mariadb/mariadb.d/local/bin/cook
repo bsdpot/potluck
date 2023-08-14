@@ -53,7 +53,7 @@ required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args DBROOTPASS DBSCRAPEPASS"
 optional_args="DUMPSCHEDULE DUMPUSER DUMPFILE REMOTELOG"
 optional_args="$optional_args SERVERID REPLICATEUSER REPLICATEPASS"
-optional_args="$optional_args GALERAHOST"
+optional_args="$optional_args LOADBALANCER"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -159,9 +159,11 @@ if [ -n "${REPLICATEUSER}" ]; then
 	configure-replication.sh
 fi
 
-# setup galera user with IP access if enabled
-if [ -n "${GALERAHOST}" ]; then
-	log "Configuring galera user for loadbalancer"
+# setup haproxy user with IP access if enabled
+# configure filename is still legacy setting, adjusted things
+# since to remove confusion with galera package
+if [ -n "${LOADBALANCER}" ]; then
+	log "Configuring haproxy user for loadbalancer"
 	configure-galerauser.sh
 fi
 
