@@ -2,6 +2,7 @@
 
 * Setup haproxy pre-configured for 2 or 3 mariadb instances
 * Update for haproxy user instead of galera user, to remove confusion with galera package
+* Update README with example of usage working
 
 ---
 

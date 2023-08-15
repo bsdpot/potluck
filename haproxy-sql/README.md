@@ -19,7 +19,7 @@ on this site to run `consul`.
 # Setup
 You must be running 2 or 3 `mariadb` servers, such as the pot mariadb images, configured for replication on all servers in a MASTER-MASTER configuration.
 
-The `mariadb` pot images must already be started with the LOADBALANCER parameter set to the IP address of this jail. This will setup access control and allow haproxy checks from this host.
+The `mariadb` pot images must already be started with the LOADBALANCER parameter set to the IP address of this jail. This will setup access control and allow haproxy checks from this host for the user `haproxy`.
 
 ## Installation
 
@@ -70,3 +70,21 @@ REMOTELOG is an optional parameter for a remote syslog service, such as via the 
 ## Usage
 
 Configure your application database settings to use the IP address of this jail, port 3306 and the applicable `mariadb` username and password. 
+
+This is an example of a two server MASTER-MASTER setup showing alternate `server_id` values:
+
+```
+user@host:$ mysql -h haproxy-sql.ip -u haproxy --execute="SELECT VERSION(), @@server_id"
++---------------------+-------------+
+| VERSION()           | @@server_id |
++---------------------+-------------+
+| 10.6.14-MariaDB-log |           2 |
++---------------------+-------------+
+
+user@host:$ mysql -h haproxy-sql.ip -u haproxy --execute="SELECT VERSION(), @@server_id"
++---------------------+-------------+
+| VERSION()           | @@server_id |
++---------------------+-------------+
+| 10.6.14-MariaDB-log |           1 |
++---------------------+-------------+
+```
