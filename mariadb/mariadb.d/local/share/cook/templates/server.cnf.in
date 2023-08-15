@@ -4,6 +4,7 @@ innodb_file_per_table = 1
 transaction_isolation = READ-COMMITTED
 log-bin = bin.log
 log-bin-index = bin-log.index
+relay-log = mysqld-relay-bin
 max_binlog_size = 100M
 binlog_format = ROW
 character-set-server = utf8mb4
