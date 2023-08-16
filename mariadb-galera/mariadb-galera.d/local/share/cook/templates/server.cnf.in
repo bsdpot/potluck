@@ -1,0 +1,58 @@
+[mysqld]
+server_id = %%serverid%%
+default-storage-engine = innodb
+innodb_file_per_table = 1
+innodb_autoinc_lock_mode = 2
+transaction_isolation = READ-COMMITTED
+log-bin = bin.log
+log-bin-index = bin-log.index
+relay-log = mysqld-relay-bin
+max_binlog_size = 100M
+binlog_format = ROW
+character-set-server = utf8mb4
+collation-server = utf8mb4_general_ci
+wsrep_on = 1
+wsrep_provider = /usr/local/lib/libgalera_smm.so
+wsrep_provider_options = "gmcast.segment=1;pc.weight=1"
+wsrep_cluster_name = "mycluster"
+wsrep_cluster_address = "gcomm://%%galeracluster%%"
+wsrep_sst_method = rsync
+wsrep_node_address = "%%ip%%"
+wsrep_node_name = "%%nodename%%"
+wsrep_slave_threads = 1
+wsrep_certify_nonPK = 1
+wsrep_max_ws_rows = 0
+wsrep_max_ws_size = 2147483647
+wsrep_debug = 0
+wsrep_convert_LOCK_to_trx = 0
+wsrep_retry_autocommit = 1
+wsrep_auto_increment_control = 1
+wsrep_drupal_282555_workaround = 0
+wsrep_causal_reads = 0
+# Command to call when node status or cluster membership changes.
+# Will be passed all or some of the following options:
+# --status  - new status of this node
+# --uuid    - UUID of the cluster
+# --primary - whether the component is primary or not ("yes"/"no")
+# --members - comma-separated list of members
+# --index   - index of this node in the list
+wsrep_notify_cmd=
+
+[client]
+default-character-set = utf8mb4
+
+[server]
+skip-name-resolve
+innodb_buffer_pool_size = 128M
+innodb_flush_log_at_trx_commit = 2
+innodb_log_buffer_size = 32M
+innodb_max_dirty_pages_pct = 90
+query_cache_type = 1
+query_cache_limit = 2M
+query_cache_min_res_unit = 2k
+query_cache_size = 64M
+tmp_table_size= 64M
+max_heap_table_size= 64M
+slow-query-log = 1
+slow-query-log-file = /var/db/mysql/slow.log
+long_query_time = 1

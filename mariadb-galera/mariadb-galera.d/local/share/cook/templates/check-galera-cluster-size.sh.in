@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+export PATH=/usr/local/bin:$PATH
+
+# this is here for pot image purposes: server_id = %%serverid%%
+
+# run the mysql command to check galera wsrep cluster size and pretty-print the results
+# to-do: limit to just what we need
+/usr/local/bin/mysql -e "SHOW STATUS LIKE 'wsrep_cluster_size'\G;"
