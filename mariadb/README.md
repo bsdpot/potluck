@@ -99,5 +99,5 @@ Then on the second server, run `/root/bin/check-master-status.sh` to get the bin
 
 Back on the the first server, run `/root/bin/configure-mariadb-slave.sh` with the parameters for second server, replication user and pass, binlog name and position.
 
-You can use a loadbalancing/failover TCP proxy such as the `haproxy-sql` pot image to make use of this. Make sure to set the GALERAHOST parameter to the IP of the loadbalancer well in advance. 
+You can use a loadbalancing/failover TCP proxy such as the `haproxy-sql` pot image to make use of this. Make sure to set the LOADBALANCER parameter to the IP of the loadbalancer well in advance. 
 

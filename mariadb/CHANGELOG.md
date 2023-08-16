@@ -9,6 +9,7 @@
 * Rename GALERAHOST to LOADBALANCER, galera user to haproxy, to avoid confusion with galera package
 * Add relay-log to avoid replication problems on hostname change
 * Rename configure-galerauser.sh file and fix typos
+* Fix parameter names in README
 
 ---
 
