@@ -160,11 +160,9 @@ if [ -n "${REPLICATEUSER}" ]; then
 fi
 
 # setup haproxy user with IP access if enabled
-# configure filename is still legacy setting, adjusted things
-# since to remove confusion with galera package
 if [ -n "${LOADBALANCER}" ]; then
 	log "Configuring haproxy user for loadbalancer"
-	configure-galerauser.sh
+	configure-haproxyuser.sh
 fi
 
 log "Adding admin scripts"

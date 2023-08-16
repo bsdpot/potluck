@@ -20,9 +20,11 @@ export PATH=/usr/local/bin:$PATH
 
 # This will create a haproxy user for the specified IP passed in
 # for the LOADBALANCER parameter.
-# There is not password set, but also no access to databases granted.
+# There is no password set, but also no access to databases granted.
 # This is strictly to allow haproxy mysql-check to function correctly
 # from the haproxy-sql pot image.
+#
+# needs review, allows query for version and server_id from other IPs
 
 echo "Creating haproxy user"
 /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'haproxy'@'${LOADBALANCER}';"
