@@ -23,23 +23,6 @@ sep=$'\001'
   sed "s${sep}%%dbscrapepass%%${sep}${DBSCRAPEPASS}${sep}g" \
   > /usr/local/etc/mysqld_exporter.cnf
 
-# if no exporter user exists, create it
-if [ "$(echo "SELECT COUNT(*) FROM mysql.user WHERE user = 'exporter'" | /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" | tail -n1)" -gt 0 ]
-then
-    echo "Not creating exporter user as already exists"
-else
-    echo "Creating exporter user"
-    # setup mysql exporter user
-    # VNET jails require access control from IP, 127.0.0.1, and ::1
-    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'exporter'@'${IP}' IDENTIFIED BY '${DBSCRAPEPASS}' WITH MAX_USER_CONNECTIONS 3;"
-    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'exporter'@'127.0.0.1' IDENTIFIED BY '${DBSCRAPEPASS}' WITH MAX_USER_CONNECTIONS 3;"
-    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "CREATE USER 'exporter'@'::1' IDENTIFIED BY '${DBSCRAPEPASS}' WITH MAX_USER_CONNECTIONS 3;"
-    # and grant required permissions
-    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "GRANT PROCESS, REPLICATION CLIENT, SELECT, SLAVE MONITOR ON *.* TO 'exporter'@'${IP}', 'exporter'@'127.0.0.1', 'exporter'@'::1';"
-    # flush perms
-    /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" -e "FLUSH PRIVILEGES;"
-fi
-
 # enable mysql_exporter service
 service mysqld_exporter enable || true
 sysrc mysqld_exporter_conffile="/usr/local/etc/mysqld_exporter.cnf"

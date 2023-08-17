@@ -129,16 +129,24 @@ else
 	configure-mariadb.sh
 fi
 
-log "Configure mysqld_exporter"
-configure-mysqld-exporter.sh
+if [ -n "${GALERAPRIMARY}" ]; then
+	log "Configure mysqld_exporter and create mysql user"
+	configure-mysqld-exporter-primary.sh
+else
+	log "Configure mysqld_exporter"
+	configure-mysqld-exporter.sh
+fi
 
 log "Start mysqld_exporter"
 service mysqld_exporter start || true
 
 # setup haproxy user with IP access if enabled
-if [ -n "${LOADBALANCER}" ]; then
-	log "Configuring haproxy user for loadbalancer"
-	configure-haproxyuser.sh
+# only do this on primary
+if [ -n "${GALERAPRIMARY}" ]; then
+	if [ -n "${LOADBALANCER}" ]; then
+		log "Configuring haproxy user for loadbalancer"
+		configure-haproxyuser.sh
+	fi
 fi
 
 log "Adding admin scripts"
