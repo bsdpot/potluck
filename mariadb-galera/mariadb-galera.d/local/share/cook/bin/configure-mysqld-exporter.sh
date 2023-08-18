@@ -23,6 +23,9 @@ sep=$'\001'
   sed "s${sep}%%dbscrapepass%%${sep}${DBSCRAPEPASS}${sep}g" \
   > /usr/local/etc/mysqld_exporter.cnf
 
+# mysqld_exporter runs as user nobody and needs everybody read access to config file
+chmod 644 /usr/local/etc/mysqld_exporter.cnf
+
 # enable mysql_exporter service
 service mysqld_exporter enable || true
 sysrc mysqld_exporter_conffile="/usr/local/etc/mysqld_exporter.cnf"
