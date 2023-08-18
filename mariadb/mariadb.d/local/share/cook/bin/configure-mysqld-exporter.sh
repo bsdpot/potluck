@@ -23,6 +23,9 @@ sep=$'\001'
   sed "s${sep}%%dbscrapepass%%${sep}${DBSCRAPEPASS}${sep}g" \
   > /usr/local/etc/mysqld_exporter.cnf
 
+# mysqld_exporter runs as user nobody and needs everybody read access to config file
+chmod 644 /usr/local/etc/mysqld_exporter.cnf
+
 # if no exporter user exists, create it
 if [ "$(echo "SELECT COUNT(*) FROM mysql.user WHERE user = 'exporter'" | /usr/local/bin/mysql -uroot -p"${DBROOTPASS}" | tail -n1)" -gt 0 ]
 then

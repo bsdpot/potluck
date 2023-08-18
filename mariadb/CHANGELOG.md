@@ -10,6 +10,7 @@
 * Add relay-log to avoid replication problems on hostname change
 * Rename configure-galerauser.sh file and fix typos
 * Fix parameter names in README
+* mysqld_exporter runs as user nobody but config file with password has restrictive permissions, fixed
 
 ---
 
