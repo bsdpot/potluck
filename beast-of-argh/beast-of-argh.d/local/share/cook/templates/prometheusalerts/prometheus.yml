@@ -2,15 +2,16 @@
 groups:
 - name: prometheus-alerts
   rules:
-  # Prometheus job missing
-  - alert: PrometheusJobMissing
-    expr: absent(up{job="prometheus"})
-    for: 0m
-    labels:
-      severity: warning
-    annotations:
-      summary: Prometheus job missing (instance {{ $labels.instance }})
-      description: "A Prometheus job has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  ## this needs to specify a job
+  ## Prometheus job missing
+  #- alert: PrometheusJobMissing
+  #  expr: absent(up{job="prometheus"})
+  #  for: 0m
+  #  labels:
+  #    severity: warning
+  #  annotations:
+  #    summary: Prometheus job missing (instance {{ $labels.instance }})
+  #    description: "A Prometheus job has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   # Prometheus target missing
   - alert: PrometheusTargetMissing
     expr: up == 0
@@ -52,15 +53,16 @@ groups:
   #    summary: Prometheus too many restarts (instance {{ $labels.instance }})
   #    description: "Prometheus has restarted more than twice in the last 15 minutes. It might be crashlooping.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   ##
-  # Prometheus alertmanager job missing
-  - alert: PrometheusAlertmanagerJobMissing
-    expr: absent(up{job="alertmanager"})
-    for: 0m
-    labels:
-      severity: warning
-    annotations:
-      summary: Prometheus AlertManager job missing (instance {{ $labels.instance }})
-      description: "A Prometheus AlertManager job has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  ## this needs to specify a job
+  ## Prometheus alertmanager job missing
+  #- alert: PrometheusAlertmanagerJobMissing
+  #  expr: absent(up{job="alertmanager"})
+  #  for: 0m
+  #  labels:
+  #    severity: warning
+  #  annotations:
+  #    summary: Prometheus AlertManager job missing (instance {{ $labels.instance }})
+  #    description: "A Prometheus AlertManager job has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   ## Invalid rule
   # Prometheus alertmanager reload failure
   #- alert: PrometheusAlertmanagerConfigurationReloadFailure
