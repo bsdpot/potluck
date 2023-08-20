@@ -130,6 +130,7 @@ These files need to in the format:
 ```
 
 ## Scraping minio metrics
+
 This image is setup with the assumption of a self-signed certificate for minio, and env ```MINIO_PROMETHEUS_AUTH_TYPE=public``` configured on minio start.
 
 Test metrics scraping with ```curl -k https://your-minio-host:9000/minio/v2/metrics/cluster``` and if successful, add targets to the file ```/mnt/prometheus/targets.d/minio.yml``` in the format:
@@ -143,7 +144,8 @@ Test metrics scraping with ```curl -k https://your-minio-host:9000/minio/v2/metr
 
 If you require authentication, you can adjust the ```minio``` scrape job in the file ```/usr/local/etc/prometheus.yml```, via external script, after image boot and with a reload of ```prometheus```, to include the relevant token option and optional SSL config.
 
-# Persistent Storage
+# Persistent storage
+
 Persistent storage will be in the ZFS dataset zroot/beastdata, available inside the image at /mnt
 
 If you stop the image, the data will still exist, and a new image can be started up and still use it.
@@ -153,6 +155,7 @@ If you need to change the directory parameters for the ZFS dataset, adjust the `
 Do not adjust the image destination mount point at /mnt because the included applications are configured to use this directory for data.
 
 # Client-side syslog-ng configuration
+
 Please see the included file `client-syslog-ng.conf.sample` and configure:
 
 `%%config_version%%` is the syslog-ng config version in X.YY (not X.YY.Z). You can extract a suitable value to update in scripts using:
@@ -165,3 +168,18 @@ Please see the included file `client-syslog-ng.conf.sample` and configure:
 
 Update manually or via `sed` in scripts.
 
+# Alertmanager Silences
+
+Some alerts will trigger automatically. 
+
+For example, if there is no Mariadb Galera cluster, there will be an alert about the Galera cluster not being ready.
+
+Add a silence to this alert with an expiry of 52 weeks, and leave a comment of 52 weeks. Then do it again in a year.
+
+There is also a Dead Man's Switch alert, which needs to be silenced in a similar manner. 
+
+The purpose of this alert is to verify processes are functioning correctly for alerting and response.
+
+Out of memory alerts may also crop up and can be silenced for a few weeks. Pot jails can utilise most of the memory allocated to them, and this will trigger an alert. However everything will be functioning normally.
+
+It's useful to leave a comment with the delay time set.

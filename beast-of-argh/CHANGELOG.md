@@ -18,6 +18,9 @@
 * Loki config updates, set localhost options to jail IP, as failing in VNET jails
 * Set prometheus consul sd config to use 127.0.0.1
 * Update prometheus alerts to fix broken alerts
+* Update README with info on silences
+* Adjust out of memory alert to trigger if less than 5% available
+* Update Loki and Promtail to 2.8.4 versions
 
 ---
 

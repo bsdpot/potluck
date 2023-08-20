@@ -138,23 +138,23 @@ pkg clean -y
 
 step "Download loki release from github"
 fetch -qo - https://github.com/grafana/loki/releases/download/\
-v2.8.3/loki-freebsd-amd64.zip | unzip -p - loki-freebsd-amd64 \
+v2.8.4/loki-freebsd-amd64.zip | unzip -p - loki-freebsd-amd64 \
   >/usr/local/bin/loki
 chmod 755 /usr/local/bin/loki
 
 if [ "$(sha256 -q /usr/local/bin/loki)" != \
-  "fbe997fc6518f41ec4c5e7c3ffb19e711979c1a02151af6eeb201d8d4082a1df" ]; then
+  "26cfa1182fce01c35cd908fc9c3666840260780c3217b75991f3c0f6c3c2e37b" ]; then
   exit_error "/usr/local/bin/loki checksum mismatch!"
 fi
 
 step "Download promtail release from github"
 fetch -qo - https://github.com/grafana/loki/releases/download/\
-v2.8.3/promtail-freebsd-amd64.zip | unzip -p - promtail-freebsd-amd64 \
+v2.8.4/promtail-freebsd-amd64.zip | unzip -p - promtail-freebsd-amd64 \
   >/usr/local/bin/promtail
 chmod 755 /usr/local/bin/promtail
 
 if [ "$(sha256 -q /usr/local/bin/promtail)" != \
-  "6e04b7669e5e7635f1323f8a7803a4561da277bed4267dd09dec25eee044e727" ]; then
+  "4c8267504d7837a83b46a99d1d01646e1e58f4a14d69d208fcf65e90653827ef" ]; then
   exit_error "/usr/local/bin/promtail checksum mismatch!"
 fi
 
