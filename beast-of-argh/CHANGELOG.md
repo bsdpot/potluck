@@ -21,6 +21,7 @@
 * Update README with info on silences
 * Adjust out of memory alert to trigger if less than 5% available
 * Update Loki and Promtail to 2.8.4 versions
+* Addressing potential errors causing hangs during orchestration scripts, start syslog-ng later
 
 ---
 

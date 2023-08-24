@@ -14,9 +14,9 @@ if ! id -u "nodeexport" >/dev/null 2>&1; then
 fi
 
 # enable node_exporter service
-service node_exporter enable
-sysrc node_exporter_args="--log.level=warn"
-sysrc node_exporter_user=nodeexport
-sysrc node_exporter_group=nodeexport
+service node_exporter enable || true
+sysrc node_exporter_args="--log.level=warn" || true
+sysrc node_exporter_user=nodeexport || true
+sysrc node_exporter_group=nodeexport || true
 echo "node_exporter_listen_address=\"$IP:9100\"" >> /etc/rc.conf
 

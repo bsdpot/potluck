@@ -52,8 +52,8 @@ sep=$'\001'
 
 # enable prometheus service
 service prometheus enable || true
-sysrc prometheus_data_dir="/mnt/prometheus"
-sysrc prometheus_syslog_output_enable="YES"
+sysrc prometheus_data_dir="/mnt/prometheus" || true
+sysrc prometheus_syslog_output_enable="YES" || true
 echo "prometheus_args=\"--web.listen-address=$IP:9090\"" >> /etc/rc.conf
 
 ## end prometheus config
@@ -70,7 +70,7 @@ echo "prometheus_args=\"--web.listen-address=$IP:9090\"" >> /etc/rc.conf
   > /usr/local/etc/alertmanager/alertmanager.yml
 
 service alertmanager enable || true
-sysrc alertmanager_data_dir="/mnt/alertmanager"
+sysrc alertmanager_data_dir="/mnt/alertmanager" || true
 echo "alertmanager_args=\"--web.listen-address=$IP:9093 --cluster.listen-address=''\"" >> /etc/rc.conf
 
 # if /mnt/altermanager does not exist, create it and set permissions

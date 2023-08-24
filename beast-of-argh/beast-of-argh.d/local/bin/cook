@@ -96,10 +96,12 @@ if [ -n "${TRAEFIKSERVER+x}" ]; then
     export FIXTRAEFIKSERVER
 fi
 
-# stop services
-timeout --foreground 10 \
-  service consul onestop || service consul onestop || true
-killall -9 consul || true
+# stop services if pid exists
+if [ -f /var/run/consul.pid ]; then
+	timeout --foreground 10 \
+	  service consul onestop || service consul onestop || true
+	killall -9 consul || true
+fi
 
 # setup directories for local logs
 mkdir -p /mnt/applog
@@ -113,9 +115,6 @@ mkdir -p /mnt/grafana
 mkdir -p /mnt/loki
 
 export PATH=/usr/local/share/cook/bin:$PATH
-
-log "Configure and start syslog-ng server"
-configure-syslog-ng.sh
 
 log "Setup node_exporter"
 configure-node-exporter.sh
@@ -150,23 +149,27 @@ timeout --foreground 120 \
     service promtail start || true; sleep 5;
   done'
 
+# moving syslog-ng configuration to after loki/promtail started
+log "Configure and start syslog-ng server"
+configure-syslog-ng.sh
+
 log "Setup prometheus"
 configure-prometheus.sh
 
 log "Start prometheus"
-service prometheus start
+service prometheus start || true
 
 log "Start alertmanager"
-service alertmanager start
+service alertmanager start || true
 
 log "Setup grafana"
 configure-grafana.sh
 
 log "Start grafana"
-service grafana start
+service grafana start || true
 
 log "Start node_exporter"
-service node_exporter start
+service node_exporter start || true
 
 log "Exit seasoned"
 pot_seasoned_exit

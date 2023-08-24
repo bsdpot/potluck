@@ -28,10 +28,10 @@ mkdir -p /tmp/loki
 sep=$'\001'
 
 # copy in loki rc
-cp "$TEMPLATEPATH/loki.rc.in" /usr/local/etc/rc.d/loki
+cp -f "$TEMPLATEPATH/loki.rc.in" /usr/local/etc/rc.d/loki
 chmod +x /usr/local/etc/rc.d/loki
 service loki enable || true
-sysrc loki_syslog_output_enable="YES"
+sysrc loki_syslog_output_enable="YES" || true
 # not specifically needed if permissions on /tmp/loki and loki-local-config.yaml
 # are correct
 #sysrc loki_user="loki"
@@ -54,7 +54,7 @@ chown -R loki:loki /tmp/loki
 cp "$TEMPLATEPATH/promtail.rc.in" /usr/local/etc/rc.d/promtail
 chmod +x /usr/local/etc/rc.d/promtail
 service promtail enable || true
-sysrc promtail_syslog_output_enable="YES"
+sysrc promtail_syslog_output_enable="YES" || true
 
 # copy in the promtail config file
 < "$TEMPLATEPATH/promtail-local-config.yaml.in" \

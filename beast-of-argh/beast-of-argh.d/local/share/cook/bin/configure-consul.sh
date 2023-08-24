@@ -61,8 +61,8 @@ service consul enable || true
 
 # set load parameter for consul config
 #sysrc consul_args="-config-file=/usr/local/etc/consul.d/agent.hcl"
-sysrc consul_args="-config-file=/usr/local/etc/consul.d/agent.json"
-sysrc consul_syslog_output_priority="warn"
+sysrc consul_args="-config-file=/usr/local/etc/consul.d/agent.json" || true
+sysrc consul_syslog_output_priority="warn" || true
 #sysrc consul_datadir="/var/db/consul"
 #sysrc consul_group="wheel"
 
