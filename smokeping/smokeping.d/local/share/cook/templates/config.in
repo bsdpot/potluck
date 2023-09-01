@@ -12,8 +12,8 @@ imgurl   = cache
 datadir  = /mnt/smokeping/data
 piddir  = /usr/local/var
 cgiurl   = http://%%hostname%%/smokeping.cgi
-smokemail = /usr/local/etc/smokemail.sample
-tmail = /usr/local/etc/tmail.sample
+smokemail = /usr/local/etc/smokeping/smokemail.sample
+tmail = /usr/local/etc/smokeping/tmail.sample
 # specify this to get syslog logging
 syslogfacility = local0
 # each probe is now run in its own process
