@@ -14,6 +14,11 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
+# make necessary directories second time, related to altnetwork testing
+mkdir -p /mnt/smokeping/data
+mkdir -p /mnt/smokeping/imagecache
+chown -R smokeping:smokeping /mnt/smokeping
+
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'

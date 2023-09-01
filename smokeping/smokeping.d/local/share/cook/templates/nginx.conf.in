@@ -61,5 +61,5 @@ http {
 	location / {
 		return 301 http://$server_name/smokeping/smokeping.cgi;
 	}
-    }
+  }
 }
