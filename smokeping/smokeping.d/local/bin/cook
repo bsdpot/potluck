@@ -46,7 +46,7 @@ fi
 ########################################################################
 
 OPTIND=1
-while getopts "a:e:h:i:m:n:" option
+while getopts "a:e:h:i:m:n:z:" option
 do
     case "${option}"
     in
@@ -68,6 +68,9 @@ do
       n) NODENAME=${OPTARG}
          export NODENAME
          ;;
+      z) ALTNETWORK=${OPTARG}
+         export ALTNETWORK
+         ;;
     esac
 done
 shift "$((OPTIND-1))"
@@ -77,7 +80,7 @@ shift "$((OPTIND-1))"
 ########################################################################
 
 required_args="ALERTEMAIL EMAIL HOSTNAME IP MAILHOST NODENAME"
-optional_args=""
+optional_args="ALTNETWORK"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -103,6 +106,12 @@ chown -R smokeping:smokeping /mnt/smokeping
 
 # set path
 export PATH=/usr/local/share/cook/bin:$PATH
+
+# check if ALTNETWORK set
+if [ -n "$ALTNETWORK" ]; then
+	log "Configuring an epair0b interface for alternate networking"
+	configure-altnetwork.sh
+fi
 
 log "Configure fcgiwrap"
 configure-fcgiwrap.sh

@@ -1,6 +1,7 @@
 0.5
 
 * Version bump for new quarterlies
+* Add parameter to enable alternate networking
 
 ---
 

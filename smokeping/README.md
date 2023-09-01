@@ -28,8 +28,9 @@ By default it will monitor predefined hosts, but you can copy in a replacement `
   -E EMAIL=<from email> \
   -E HOSTNAME=<hostname of this system> \
   -E IP=<IP address of this system> \
-  -E MAILHOST=<ip of mail host>
+  -E MAILHOST=<ip of mail host> \
   -E NODENAME=<nodename> \
+  [ -E ALTNETWORK=<any value is true> ]
   ```
 
 You must pass in the following parameters, even if copying in a custom config file. The image expects a value set for IP and NODENAME, and dummy data can be set for the others if using custom config file.
@@ -45,6 +46,8 @@ IP is this node's IP address. If passing as `cook` flag use `-i 1.2.3.4`.
 MAILHOST is the hostname or IP address of a mail server which will accept unauthenticated mail from this system. If passing as `cook` flag use `-m smtp.yourhost.com`.
 
 NODENAME is the name of this node. If passing as `cook` flag use `-n smokeping`.
+
+The optional parameter ALTNETWORK is a gateway IP address. Do not use this if you don't know what it's for. If passing as `cook` flag use something like `-z 172.17.0.1`.
 
 # Custom Targets
 You can create a custom `smokeping` config file in the following format
