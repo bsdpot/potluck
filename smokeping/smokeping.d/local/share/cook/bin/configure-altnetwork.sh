@@ -18,7 +18,6 @@ ifconfig epair0b inet "$IP/16"
 
 # add a route to the passed in gateway
 route -4 add default "$ALTNETWORK"
-add net default: gateway "$ALTNETWORK"
 
 # we should have networking now, pass in default resolver
 # to-do: make this configurable with a parameter
