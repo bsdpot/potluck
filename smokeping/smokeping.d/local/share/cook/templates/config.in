@@ -101,7 +101,7 @@ unison_tolerance = 2
 
 + FPing
 
-binary = /usr/sbin/fping
+binary = /usr/local/sbin/fping
 
 *** Targets ***
 

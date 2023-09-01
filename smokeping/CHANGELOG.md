@@ -3,6 +3,7 @@
 * Version bump for new quarterlies
 * Add parameter to enable alternate networking
 * Fix smokeping config file issues, create directories second time
+* Fix fping location in smokeping config file
 
 ---
 
