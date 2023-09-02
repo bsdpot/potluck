@@ -1,3 +1,9 @@
+0.2
+
+* Version bump for new base image
+
+---
+
 0.1
 
 * Setup haproxy pre-configured for 2 or 3 mariadb instances
