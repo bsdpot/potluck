@@ -4,6 +4,7 @@
 * Add parameter to enable alternate networking
 * Fix smokeping config file issues, create directories second time
 * Fix fping location in smokeping config file
+* Workaround for pid location, update README to match updated smokeping config file
 
 ---
 

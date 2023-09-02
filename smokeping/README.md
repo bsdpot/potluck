@@ -64,10 +64,10 @@ sendmail = /usr/sbin/sendmail
 imgcache = /mnt/smokeping/imagecache
 imgurl   = cache
 datadir  = /mnt/smokeping/data
-piddir  = /usr/local/var
+piddir  = /mnt/smokeping/run
 cgiurl   = http://some.url/smokeping.cgi
-smokemail = /usr/local/etc/smokemail.dist
-tmail = /usr/local/etc/tmail.dist
+smokemail = /usr/local/etc/smokeping/smokemail.sample
+tmail = /usr/local/etc/smokeping/tmail.sample
 # specify this to get syslog logging
 syslogfacility = local0
 # each probe is now run in its own process
@@ -101,7 +101,7 @@ AVERAGE  0.5 144   2400
 
 *** Presentation ***
 
-template = /usr/local/etc/basepage.html.dist
+template = /usr/local/etc/smokeping/basepage.html.sample
 htmltitle = yes
 graphborders = no
 
@@ -155,7 +155,7 @@ unison_tolerance = 2
 
 + FPing
 
-binary = /usr/sbin/fping
+binary = /usr/local/sbin/fping
 
 *** Targets ***
 

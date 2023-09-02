@@ -102,6 +102,7 @@ done
 # make persistent storage and set permissions
 mkdir -p /mnt/smokeping/data
 mkdir -p /mnt/smokeping/imagecache
+mkdir -p /mnt/smokeping/run
 chown -R smokeping:smokeping /mnt/smokeping
 
 # set path
