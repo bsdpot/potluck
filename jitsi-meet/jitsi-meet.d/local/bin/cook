@@ -143,9 +143,6 @@ configure-jitsi-videobridge.sh
 log "Configure jicofo"
 configure-jicofo.sh
 
-log "Configure nginx"
-configure-nginx.sh
-
 # Startup ordering as outlined in  https://youtu.be/LJOpSDcwWIA
 # 1. web
 # 2. turnserver
