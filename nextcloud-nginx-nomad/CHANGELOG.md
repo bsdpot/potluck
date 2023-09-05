@@ -1,3 +1,9 @@
+0.78
+
+* Rebuild for pkg updates
+
+---
+
 0.77
 
 * Rebuild for failed build
