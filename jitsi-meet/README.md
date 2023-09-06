@@ -21,7 +21,7 @@ Deploying the image or flavour should be quite straight forward and not take mor
 * Copy in any supporting files such as image file for customisation
   ```sudo pot copy-in -p <clonejailname> -s <source image> -d /usr/local/www/jitsi-meet/images/<destination filename>```
 * Adjust to your environment:
-  ```sudo pot set-env -p <clonejailname> -E NODENAME=<name> \
+  ```sudo pot set-env -p <clonejailname> \
     -E DATACENTER=<datacentername> \
     -E IP=<IP address of this nomad instance> \
     -E NODENAME=<an internal name for image> \

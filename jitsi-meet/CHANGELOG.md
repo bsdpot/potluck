@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Fix error in ini file
+* Fix README
 
 ---
 
