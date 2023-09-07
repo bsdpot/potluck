@@ -170,7 +170,7 @@ CERT=$(echo "$CERT_JSON" | jq -e ".data.certificate")
 KEY=$(echo "$CERT_JSON" | jq -e ".data.private_key")
 CA=$(echo "$CERT_JSON" | jq -e ".data.issuing_ca")
 CA_CHAIN=$(
-  echo "$CERT_JSON" | jq -ec ".data.ca_chain[]"
+  echo "$CERT_JSON" | jq -e '.data.ca_chain | join("\n")'
 )
 
 STEP="Assemble response"
