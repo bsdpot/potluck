@@ -1,3 +1,9 @@
+0.79
+
+* Rebuild for bsd and package updates
+
+---
+
 0.78
 
 * Rebuild for pkg updates
