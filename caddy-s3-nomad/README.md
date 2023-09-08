@@ -102,7 +102,7 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/caddy-s3-nomad"
         pot = "caddy-s3-nomad-amd64-13_2"
-        tag = "0.0.1"
+        tag = "0.2.1"
         command = "/usr/local/bin/cook"
         args = ["-h","s3.my.host","-b","bucketname","-d","domainname","-u","username","-p","password","-s","yes"]
         port_map = {
