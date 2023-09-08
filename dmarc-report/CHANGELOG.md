@@ -1,3 +1,10 @@
+0.5
+
+* Version bump for new base image
+* New zincsearch
+
+---
+
 0.4
 
 * Version bump for new base image
