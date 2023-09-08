@@ -1,3 +1,10 @@
+0.9
+
+* Version bump for new base image
+* New loki and promtail
+
+---
+
 0.8
 
 * Version bump for new base image
