@@ -1,3 +1,10 @@
+0.0.17
+
+* Version bump for kernel/pkg security patches
+* New version jq
+
+---
+
 0.0.16
 
 * Version bump for kernel/pkg security patches
