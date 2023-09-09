@@ -7,7 +7,7 @@ tags: ["monitoring", "alerting", "logs", "syslog", "prometheus", "alertmanager",
 
 # Overview
 
-![Beast of Argh](beast-of-argh.png)
+![Beast of Argh](beast-of-argh.svg|width=500px)
 
 This is a mega-flavour containing the ```prometheus``` time series database, ```alertmanager``` alert notification queue, ```loki``` log monitoring, ```promtail``` log ingestor,  and ```grafana``` viewer with custom dashboards.
 

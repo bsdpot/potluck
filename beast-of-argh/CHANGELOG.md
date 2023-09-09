@@ -2,6 +2,8 @@
 
 * Version bump for new base image
 * New loki and promtail
+* Start syslog-ng last
+* Add SVG logo
 
 ---
 

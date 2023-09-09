@@ -149,10 +149,6 @@ timeout --foreground 120 \
     service promtail start || true; sleep 5;
   done'
 
-# moving syslog-ng configuration to after loki/promtail started
-log "Configure and start syslog-ng server"
-configure-syslog-ng.sh
-
 log "Setup prometheus"
 configure-prometheus.sh
 
@@ -170,6 +166,10 @@ service grafana start || true
 
 log "Start node_exporter"
 service node_exporter start || true
+
+# moving syslog-ng configuration to end and after loki/promtail started
+log "Configure and start syslog-ng server"
+configure-syslog-ng.sh
 
 log "Exit seasoned"
 pot_seasoned_exit
