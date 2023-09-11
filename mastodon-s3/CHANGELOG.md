@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Fix otp.key in README
+* Fix postgresql-exporter by building inside directory
 
 ---
 

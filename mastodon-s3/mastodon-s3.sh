@@ -217,8 +217,13 @@ step "Download postgres_exporter from github"
   https://github.com/prometheus-community/postgres_exporter.git
 
 # make sure we're at the correct commit
+cd /tmp/postgres_exporter
 /usr/local/bin/git checkout 8c3604b85e38ae7141e84ecdc318b6015a196c97
+
+# build
 /usr/local/bin/gmake build
+
+cd /tmp
 
 step "Install postgres_exporter"
 sed -i '' 's|-web.listen-address|--web.listen-address|g' \
