@@ -1,6 +1,7 @@
 0.1
 
 * Version bump for new base image
+* Fix otp.key in README
 
 ---
 

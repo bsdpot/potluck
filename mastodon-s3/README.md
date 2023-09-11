@@ -91,7 +91,7 @@ On reboot or an upgraded pot image, this file will be read to configure the `mas
 
 ## OTP Key
 
-An OTP key is generated and stored in a file in persistent storage at `/mnt/mastodon/private/opt.key`
+An OTP key is generated and stored in a file in persistent storage at `/mnt/mastodon/private/otp.key`
 
 On reboot or an upgraded pot image, this file will be read to configure the `mastodon` settings.
 
