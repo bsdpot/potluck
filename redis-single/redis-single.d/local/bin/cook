@@ -110,10 +110,7 @@ timeout --foreground 120 \
 #configure-local-unbound.sh
 
 log "Start node_exporter"
-service node_exporter start
-
-log "Configure redis exporter"
-configure-redis-exporter.sh
+service node_exporter start || true
 
 log "Configure redis"
 configure-redis.sh
@@ -124,11 +121,11 @@ timeout --foreground 120 \
     service redis start || true; sleep 5;
   done'
 
+log "Configure redis exporter"
+configure-redis-exporter.sh
+
 log "Start redis exporter"
-timeout --foreground 120 \
-  sh -c 'while ! service redis_exporter status; do
-    service redis_exporter start || true; sleep 5;
-  done'
+service redis_exporter start || true
 
 log "Exit seasoned"
 pot_seasoned_exit

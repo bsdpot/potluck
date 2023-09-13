@@ -27,7 +27,6 @@ sep=$'\001'
 # if an authpass has been set, copy in the config with that parameter enabled
 # if not set, use the default config file
 if [ -n "$AUTHPASS" ]; then
-	# sed to change %%authpass%%
 	< "$TEMPLATEPATH/redispass.conf.in" \
 	  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
 	  sed "s${sep}%%authpass%%${sep}$AUTHPASS${sep}g" \

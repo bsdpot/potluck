@@ -11,3 +11,7 @@ set -e
 service redis_exporter enable || true
 echo "redis_exporter_listen_address=\"$IP:9121\"" >> /etc/rc.conf
 echo "redis_exporter_server=\"$IP\"" >> /etc/rc.conf
+
+if [ -n "$AUTHPASS" ]; then
+	echo "redis_exporter_args=\"-redis.password $AUTHPASS\"" >> /etc/rc.conf
+fi

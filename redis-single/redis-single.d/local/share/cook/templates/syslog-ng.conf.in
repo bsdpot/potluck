@@ -21,8 +21,8 @@ source src {
  internal();
 };
 
-source s_matrix {
- file("/var/log/matrix-synapse/homeserver.log");
+source s_redis {
+ file("/var/log/redis/redis.log");
 };
 
 # destinations
@@ -160,4 +160,4 @@ log { source(src); filter(f_ppp); destination(ppp); };
 #};
 log { source(src); filter(f_all); destination(loghost); };
 # enable otherlogs
-log { source(s_matrix); destination(loghost); };
+log { source(s_redis); destination(loghost); };
