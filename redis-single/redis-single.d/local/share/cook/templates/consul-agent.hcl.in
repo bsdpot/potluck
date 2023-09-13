@@ -22,12 +22,12 @@ log_file = "/var/log/consul/consul.log"
 log_level = "INFO"
 encrypt = "%%gossipkey%%"
 retry_join = [ %%consulservers%% ]
-service = {
+services = {
   name = "node-exporter"
   tags = ["_app=redis", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
-service = {
+services = {
   name = "redis-exporter"
   tags = ["_app=redis", "_service=redis-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9121
