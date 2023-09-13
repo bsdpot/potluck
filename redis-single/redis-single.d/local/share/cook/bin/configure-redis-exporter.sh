@@ -9,6 +9,5 @@ set -e
 
 # enable redis_exporter service
 service redis_exporter enable || true
-sysrc redis_exporter_args="--log.level=warn"
 echo "redis_exporter_listen_address=\"$IP:9121\"" >> /etc/rc.conf
 echo "redis_exporter_server=\"$IP\"" >> /etc/rc.conf
