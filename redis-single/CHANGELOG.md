@@ -5,3 +5,4 @@
 * Remove invalid log level for redis_exporter
 * Add redis log to syslog-ng
 * Set option for redis_exporter if authpass set
+* Fix README

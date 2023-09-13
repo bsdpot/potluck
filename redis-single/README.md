@@ -9,7 +9,7 @@ tags: ["redis", "database", "mastodon"]
 
 This is a Redis jail intended to be run as a single Redis instance and can be started with ```pot```.
 
-The jail exposes parameters that can either be set via the environment.
+The jail exposes parameters that can be set via the environment.
 
 It also contains `node_exporter` and a local `consul` agent instance to be
 available that it can connect to (see configuration below). You can e.g.
