@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+###
+# Sample script to copy into image and run a command
+# For example creating a database user
+#
+# pot copy-in -p POTNAME \
+#  -s /path/to/your/customscript.sh \
+#  -d /root/customscript.sh
+###
+
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+# create a user with password
+sudo -u postgres psql -c "CREATE USER mastodon with encrypted password 'mypass' CREATEDB;" || true
