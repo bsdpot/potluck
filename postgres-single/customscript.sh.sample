@@ -15,5 +15,8 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
+# make sure we're not in /root before running psql commands
+cd /tmp
+
 # create a user with password
 sudo -u postgres psql -c "CREATE USER mastodon with encrypted password 'mypass' CREATEDB;" || true
