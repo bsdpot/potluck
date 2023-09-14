@@ -38,12 +38,11 @@ if [ ! -f /mnt/postgres/data/PG_VERSION ]; then
 fi
 
 # get the timezone
-if [ -f /var/db/zoneinfo ]; then
-	MYTIMEZONE=$(cat /var/db/zoneinfo)
-	export MYTIMEZONE
+if [ -f /mnt/postgres/data/postgresql.conf ]; then
+	MYTIMEZONE=$(grep log_timezone /mnt/postgres/data/postgresql.conf | awk -F\' '{print $2}')
 else
-	MYTIMEZONE="default"
-	export MYTIMEZONE
+	echo "error extracting a timezone value: $MYTIMEZONE"
+	exit 1
 fi
 
 # copy in custom postgresql.conf with network access on 0.0.0.0
