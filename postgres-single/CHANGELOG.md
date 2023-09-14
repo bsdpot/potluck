@@ -5,3 +5,5 @@
 * Remove postgres_exporter legacy fix
 * Change creation postgres_exporter user in database
 * Make sure we're not in /root when running sudo commands as postgres user
+* Tabs and spaces fixes
+* Further adjustments to postgres_exporter user setup

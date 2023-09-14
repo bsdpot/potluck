@@ -24,9 +24,9 @@ sysrc postgresql_data="/mnt/postgres/data/"
 
 # if persistent storage data directory doesn't exist, create it
 if [ ! -d /mnt/postgres/data ]; then
-    mkdir -p /mnt/postgres/data
-    chown -R postgres:postgres /mnt/postgres/
-    chmod -R 750 /mnt/postgres/
+	mkdir -p /mnt/postgres/data
+	chown -R postgres:postgres /mnt/postgres/
+	chmod -R 750 /mnt/postgres/
 fi
 
 # modify postgres user homedir to /mnt/postgres/data
