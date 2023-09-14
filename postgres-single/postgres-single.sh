@@ -165,8 +165,9 @@ cd /tmp/postgres_exporter
 cd /tmp
 
 step "Install postgres_exporter"
-sed -i '' 's|-web.listen-address|--web.listen-address|g' \
-  /tmp/postgres_exporter/postgres_exporter.rc
+# not needed any more, fixed already
+#sed -i '' 's|-web.listen-address|--web.listen-address|g' \
+#  /tmp/postgres_exporter/postgres_exporter.rc
 # shellcheck disable=SC2016
 sed -i '' 's|-p ${pidfile}|-f -p ${pidfile} -T ${name}|g' \
   /tmp/postgres_exporter/postgres_exporter.rc
