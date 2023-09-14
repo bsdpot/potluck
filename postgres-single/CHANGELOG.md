@@ -7,3 +7,4 @@
 * Make sure we're not in /root when running sudo commands as postgres user
 * Tabs and spaces fixes
 * Further adjustments to postgres_exporter user setup
+* Set a password for the postgres_exporter user

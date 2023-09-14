@@ -49,7 +49,7 @@ fi
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY IP4NETWORK"
+required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY IP4NETWORK EXPORTERPASS"
 optional_args="REMOTELOG"
 
 for var in $required_args; do
