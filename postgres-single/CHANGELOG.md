@@ -9,3 +9,4 @@
 * Further adjustments to postgres_exporter user setup
 * Set a password for the postgres_exporter user
 * Add logic to check if postgresql users exist before adding
+* Adjust postgres_exporter password variable
