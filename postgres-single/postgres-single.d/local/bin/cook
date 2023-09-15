@@ -118,20 +118,20 @@ timeout --foreground 120 \
     service postgresql start || true; sleep 5;
   done'
 
+log "Configure postgres_exporter"
+configure-postgres-exporter.sh
+
 log "Configure postgres_exporter user"
 postgres-post-init.sh
+
+log "Start postgres_exporter service"
+service postgres_exporter start || true
 
 # the script copied in and called can be used to create additional
 # postgresql users or perform some other fucntion after postgresql
 # is up
 log "Run custom script at /root/customscript.sh if it exists"
 run-custom.sh
-
-log "Configure postgres_exporter"
-configure-postgres-exporter.sh
-
-log "Start postgres_exporter service"
-service postgres_exporter start || true
 
 log "Exit seasoned"
 pot_seasoned_exit
