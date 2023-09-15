@@ -1,19 +1,23 @@
 ---
 author: "Bretton Vine, Stephan Lichtenauer"
 title: Mastodon S3
-summary: This is an all-in-one Mastodon instance that can be deployed like a regular pot jail.
+summary: This is a Mastodon instance that can be deployed like a regular pot jail.
 tags: ["mastodon", "social media"]
 ---
 
 # Overview
 
-This is an all-in-one ```mastodon``` installation that can be started with ```pot```.
+This is a ```mastodon``` installation that can be started with ```pot```.
 
 The jail configures itself on the first start for your environment (see notes below).
 
-This jail includes local ```postgresql``` and ```redis``` instances, and is dependent on S3 storage.
+Important: this jail is dependent on external ```postgresql``` and ```redis``` instances, along with S3 storage.
 
 Deploying the image or flavour should be quite straight forward and not take more than a few minutes.
+
+# Requirements
+
+Do not startup this jail unless you have running ```postgresql``` and ```redis``` jails, such as Postgres-Single or Redis-Single on the potluck site.
 
 # Installation
 
@@ -30,15 +34,22 @@ Deploying the image or flavour should be quite straight forward and not take mor
     -E DOMAIN=<FQDN for host> \
     -E EMAIL=<email address for letsencrypt setup> \
     -E MAILHOST=<mailserver hostname or IP> \
-    -E MAILPORT=<SMTP port> \
     -E MAILUSER=<SMTP username> \
     -E MAILPASS=<SMTP password> \
     -E MAILFROM=<SMTP from address> \
+    -E DBHOST=<host of postgres jail> \
+    -E DBUSER=<username> \
+    -E DBPASS=<password> \
+    -E DBNAME=<database name> \
+    -E REDISHOST=<IP of redis instance> \
     -E BUCKETHOST=<hostname or IP of S3 storage> \
     -E BUCKETUSER=<S3 access id> \
     -E BUCKETPASS=<S3 password> \
     -E BUCKETALIAS=<web address for files> \
     -E BUCKETREGION=<S3 region> \
+    [ -E MAILPORT=<SMTP port> ] \
+    [ -E DBPORT=<database port> ] \
+    [ -E REDISPORT=<redis port> ] \
     [ -E REMOTELOG="<IP syslog-ng server>" ]```
 * Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.
 
@@ -61,11 +72,19 @@ The EMAIL parameter is the email address to use for letsencrypt registration. SS
 
 The MAILHOST parameter is the hostname or IP address of a mail server to us.
 
-The MAILPORT parameter is the SMTP port to use of the mail server.
-
 The MAILUSER and MAILPASS parameters are the mail user credentials.
 
 The MAILFROM parameter is the from email address to use for notifications.
+
+The DBHOST parameter is the IP address or hostname of the external `postgresql` instance, such as the `postgresql-single` potluck instance.
+
+The DBUSER parameter is the username to use for accessing the external `postgresql` instance. Usually this would be `mastodon`. 
+
+The DBPASS parameter is the password for the user on the external `postgresql` instance.
+
+The DBNAME parameter is the database name on the external `postgresql` instance. Normally this would be `mastodon_production`.
+
+The REDISHOST parameter is the IP address of a LAN-based `redis` host, such as the `redis-single` potluck instance.
 
 The BUCKETHOST paramter is the hostname of your S3 storage.
 
@@ -75,9 +94,15 @@ The BUCKETPASS parameter is the S3 password of your storage.
 
 The BUCKETALIAS parameter is the public hostname for the files storage.
 
-The BUCKETREGION paramter is the S3 region.
+The BUCKETREGION parameter is the S3 region.
 
 ## Optional Parameters
+
+The MAILPORT parameter is the SMTP port to use of the mail server. It defaults to port `25` if not set.
+
+The DBPORT parameter is the port to use for `postgresql`. It defaults to port `5432` if not set.
+
+The REDISPORT parameter is the port to use for `redis`. It defaults to port `6379` if not set.
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 

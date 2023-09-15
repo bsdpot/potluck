@@ -24,7 +24,6 @@ source src {
 source s_mastodon {
  file("/var/log/nginx/access.log");
  file("/var/log/nginx/error.log");
- file("/var/log/redis/redis.log");
 };
 
 # destinations

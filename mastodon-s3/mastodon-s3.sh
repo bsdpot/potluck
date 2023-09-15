@@ -137,9 +137,7 @@ pkg install -y wget
 step "Install package postgresql13-client"
 pkg install -y postgresql13-client
 
-step "Install package postgresql13-server"
-pkg install -y postgresql13-server
-
+# we still install redis, we don't configure or start it
 step "Install package redis"
 pkg install -y redis
 
@@ -204,42 +202,6 @@ step "Clean package installation"
 pkg clean -y
 
 # -------------- END PACKAGE SETUP -------------
-
-# ----------- BEGIN POSTGRES EXPORTER-----------
-#
-# duplicated from postgresql-patroni, updated to latest version
-
-cd /tmp
-
-step "Download postgres_exporter from github"
-
-/usr/local/bin/git clone --depth 1 -b v0.13.2 \
-  https://github.com/prometheus-community/postgres_exporter.git
-
-# make sure we're at the correct commit
-cd /tmp/postgres_exporter
-/usr/local/bin/git checkout 8c3604b85e38ae7141e84ecdc318b6015a196c97
-
-# build
-/usr/local/bin/gmake build
-
-cd /tmp
-
-step "Install postgres_exporter"
-sed -i '' 's|-web.listen-address|--web.listen-address|g' \
-  /tmp/postgres_exporter/postgres_exporter.rc
-# shellcheck disable=SC2016
-sed -i '' 's|-p ${pidfile}|-f -p ${pidfile} -T ${name}|g' \
-  /tmp/postgres_exporter/postgres_exporter.rc
-cp -f /tmp/postgres_exporter/postgres_exporter.rc \
-  /usr/local/etc/rc.d/postgres_exporter
-chmod +x /usr/local/etc/rc.d/postgres_exporter
-cp -f /tmp/postgres_exporter/postgres_exporter \
-  /usr/local/bin/postgres_exporter
-chmod +x /usr/local/bin/postgres_exporter
-
-step "Clean postgres_exporter build"
-rm -rf /tmp/postgres_exporter
 
 # ------------ BEGIN MASTODON CUSTOM -----------
 

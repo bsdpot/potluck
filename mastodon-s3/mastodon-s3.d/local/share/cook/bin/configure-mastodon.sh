@@ -58,8 +58,15 @@ sep=$'\001'
   sed "s${sep}%%otpsecret%%${sep}$OTPSECRET${sep}g" | \
   sed "s${sep}%%vapidprivatekey%%${sep}$VAPIDPRIVATEKEY${sep}g" | \
   sed "s${sep}%%vapidpublickey%%${sep}$VAPIDPUBLICKEY${sep}g" | \
+  sed "s${sep}%%redishost%%${sep}$REDISHOST${sep}g" | \
+  sed "s${sep}%%redisport%%${sep}$SETREDISPORT${sep}g" | \
+  sed "s${sep}%%dbhost%%${sep}$DBHOST${sep}g" | \
+  sed "s${sep}%%dbuser%%${sep}$DBUSER${sep}g" | \
+  sed "s${sep}%%dbpass%%${sep}$DBPASS${sep}g" | \
+  sed "s${sep}%%dbname%%${sep}$DBNAME${sep}g" | \
+  sed "s${sep}%%dbport%%${sep}$SETDBPORT${sep}g" | \
   sed "s${sep}%%mailhost%%${sep}$MAILHOST${sep}g" | \
-  sed "s${sep}%%mailport%%${sep}$MAILPORT${sep}g" | \
+  sed "s${sep}%%mailport%%${sep}$SETMAILPORT${sep}g" | \
   sed "s${sep}%%mailuser%%${sep}$MAILUSER${sep}g" | \
   sed "s${sep}%%mailpass%%${sep}$MAILPASS${sep}g" | \
   sed "s${sep}%%mailfrom%%${sep}$MAILFROM${sep}g" | \
