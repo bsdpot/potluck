@@ -11,3 +11,4 @@
 * Add logic to check if postgresql users exist before adding
 * Adjust postgres_exporter password variable
 * Bugfixing postgres_exporter, changing order of scripts
+* Set path in postgres-post-init because sudo wasn't being found
