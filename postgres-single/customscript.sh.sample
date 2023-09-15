@@ -18,5 +18,12 @@ export PATH=/usr/local/bin:$PATH
 # make sure we're not in /root before running psql commands
 cd /tmp
 
-# create a user with password
-sudo -u postgres psql -c "CREATE USER mastodon with encrypted password 'mypass' CREATEDB;" || true
+# Check if mastodon user exists
+USER_EXISTS=$(sudo -u postgres /usr/local/bin/psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='mastodon'")
+
+# If the mastodon user doesn't exist, create the user with database creation permissions
+if [ -z "$USER_EXISTS" ]; then
+	sudo -u postgres psql -c "CREATE USER mastodon with encrypted password 'mypass' CREATEDB;"
+else
+    echo "User mastodon already exists."
+fi
