@@ -25,7 +25,8 @@ Do not startup this jail unless you have running ```postgresql``` and ```redis``
 * Clone the local jail
 * Mount in persistent storage to /mnt specifically
 * Adjust to your environment:
-  ```sudo pot set-env -p <clonejailname> \
+  ```
+    sudo pot set-env -p <clonejailname> \
     -E DATACENTER=<datacentername> \
     -E IP=<IP address of this nomad instance> \
     -E NODENAME=<an internal name for image> \
@@ -50,7 +51,8 @@ Do not startup this jail unless you have running ```postgresql``` and ```redis``
     [ -E MAILPORT=<SMTP port> ] \
     [ -E DBPORT=<database port> ] \
     [ -E REDISPORT=<redis port> ] \
-    [ -E REMOTELOG="<IP syslog-ng server>" ]```
+    [ -E REMOTELOG="<IP syslog-ng server>" ]
+  ```
 * Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.
 
 ## Required Paramaters
@@ -66,7 +68,7 @@ e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
 
-The DOMAIN parameter is the domain name of the `jitsi-meet` instance.
+The DOMAIN parameter is the domain name of the `mastodon-s3` instance.
 
 The EMAIL parameter is the email address to use for letsencrypt registration. SSL certificates are mandatory, modern browsers won't open camera or microphone unless SSL enabled.
 

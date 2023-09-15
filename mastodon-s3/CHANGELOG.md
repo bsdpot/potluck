@@ -2,6 +2,7 @@
 
 * Remove internal postgresql and redis as now external pot jails
 * Add parameters for external DB and redis
+* Update README
 
 ---
 

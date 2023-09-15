@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# Note: jitsi-meet installs unbound and that overwrites any local_unbound setup
-
 # shellcheck disable=SC1091
 . /root/.env.cook
 
