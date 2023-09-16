@@ -1,3 +1,10 @@
+0.10.16
+
+* Update consul configuration to new version
+* Fix _app label in node-exporter
+
+---
+
 0.10.15
 
 * Disable QNAME minimization in unbound (consul can't handle it)

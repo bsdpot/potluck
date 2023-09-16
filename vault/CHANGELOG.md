@@ -1,3 +1,9 @@
+2.2.15
+
+* Update consul configuration to new version
+
+---
+
 2.2.14
 
 * Disable QNAME minimization in unbound (consul can't handle it)

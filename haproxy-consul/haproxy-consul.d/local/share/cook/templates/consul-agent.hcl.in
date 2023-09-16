@@ -5,20 +5,27 @@ dns_config = {
   a_record_limit = 3
   enable_truncate = true
 }
-verify_incoming = true
-verify_outgoing = true
-verify_server_hostname = true
-verify_incoming_rpc = true
-ca_file = "/mnt/consulcerts/ca_root.crt"
-cert_file = "/mnt/consulcerts/agent.crt"
-key_file = "/mnt/consulcerts/agent.key"
+tls = {
+  defaults = {
+    verify_incoming = true
+    verify_outgoing = true
+    ca_file = "/mnt/consulcerts/ca_root.crt"
+    cert_file = "/mnt/consulcerts/agent.crt"
+    key_file = "/mnt/consulcerts/agent.key"
+  }
+
+  internal_rpc = {
+    verify_incoming = true
+    verify_server_hostname = true
+  }
+}
 log_file = "/mnt/log/consul/consul.log"
 log_level = "WARN"
 encrypt = "%%gossipkey%%"
-start_join = [ %%consulservers%% ]
+retry_join = [ %%consulservers%% ]
 services = {
   name = "node-exporter"
-  tags = ["_app=vault", "_service=node-exporter",
+  tags = ["_app=haproxy", "_service=node-exporter",
           "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
