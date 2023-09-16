@@ -1,3 +1,9 @@
+0.3.2
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
 0.3.1
 
 * Bugfix for grafana9 provisioning

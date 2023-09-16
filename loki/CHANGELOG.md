@@ -1,3 +1,9 @@
+0.2.20
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
 0.2.19
 
 * Move special logs into their own dirs

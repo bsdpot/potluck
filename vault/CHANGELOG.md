@@ -1,3 +1,9 @@
+2.2.14
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
 2.2.13
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured

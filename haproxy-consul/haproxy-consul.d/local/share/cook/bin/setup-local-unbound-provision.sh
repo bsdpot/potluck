@@ -12,6 +12,7 @@ export PATH=/usr/local/bin:$PATH
 echo 'server:
   do-not-query-localhost: no
   domain-insecure: "consul"
+  qname-minimisation: no
 
 #Add consul as a stub-zone
 stub-zone:

@@ -1,3 +1,9 @@
+0.1.9
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
 0.1.8
 
 * Explicitly install ca_root_nss, as it does not come with curl anymore

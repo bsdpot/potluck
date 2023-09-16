@@ -1,3 +1,9 @@
+0.12.3
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
 0.12.2
 
 * Add support from prometheus-json-metrics-exporter (implementation to be provided by user)
