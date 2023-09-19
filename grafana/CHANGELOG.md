@@ -1,3 +1,9 @@
+0.3.4
+
+* Stop using custom rc scripts
+
+---
+
 0.3.3
 
 * Update consul configuration to new version
