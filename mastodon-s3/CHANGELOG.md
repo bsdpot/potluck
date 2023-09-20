@@ -5,6 +5,7 @@
 * Update README
 * Update requirements to include a jail with S3 frontend
 * Fix ruby environment variables in scripts
+* Change postgresql settings in ENV file
 
 ---
 
