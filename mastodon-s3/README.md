@@ -13,11 +13,21 @@ The jail configures itself on the first start for your environment (see notes be
 
 Important: this jail is dependent on external ```postgresql``` and ```redis``` instances, along with S3 storage.
 
+S3 storage also needs a frontend such as ```nginx-s3-nomad``` configured beforehand.
+
 Deploying the image or flavour should be quite straight forward and not take more than a few minutes.
 
 # Requirements
 
-Do not startup this jail unless you have running ```postgresql``` and ```redis``` jails, such as Postgres-Single or Redis-Single on the potluck site.
+Do not startup this jail unless you have running ```postgresql``` and ```redis``` jails, such as the Postgres-Single or Redis-Single pot jails on the potluck site.
+
+You also need a S3 bucket setup, with anonymous download enabled, and a user/pass setup for the mastodon user.
+
+Then setup ```nginx-s3-nomad``` or similar with access to that bucket. 
+
+You will need an external HTTPS provider, such as ```acme.sh``` and  ```haproxy``` on your firewall device, with rule for the nomad pot image.
+
+However the mastodon pot jail will register a SSL certificate directly.
 
 # Installation
 
@@ -46,7 +56,7 @@ Do not startup this jail unless you have running ```postgresql``` and ```redis``
     -E BUCKETHOST=<hostname or IP of S3 storage> \
     -E BUCKETUSER=<S3 access id> \
     -E BUCKETPASS=<S3 password> \
-    -E BUCKETALIAS=<web address for files> \
+    -E BUCKETALIAS=<web address for files, S3 proxy> \
     -E BUCKETREGION=<S3 region> \
     [ -E MAILPORT=<SMTP port> ] \
     [ -E DBPORT=<database port> ] \

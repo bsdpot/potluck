@@ -20,7 +20,7 @@ if [ -f /mnt/mastodon/private/secret.key ]; then
 	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
 else
 	echo "Creating a secret key"
-	su - mastodon -c 'cd /usr/local/www/mastodon && /usr/local/bin/bundle exec rake secret -e RAILS_ENV=production > /mnt/mastodon/private/secret.key'
+	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake secret > /mnt/mastodon/private/secret.key'
 	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
 fi
 
@@ -29,7 +29,7 @@ if [ -f /mnt/mastodon/private/otp.key ]; then
 	OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
 else
 	echo "Creating OTP key"
-	su - mastodon -c 'cd /usr/local/www/mastodon && /usr/local/bin/bundle exec rake secret -e RAILS_ENV=production > /mnt/mastodon/private/otp.key'
+	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake secret > /mnt/mastodon/private/otp.key'
 	OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
 fi
 
@@ -39,7 +39,7 @@ if [ -f /mnt/mastodon/private/vapid.keys ]; then
 	VAPIDPUBLICKEY=$(grep VAPID_PUBLIC_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
 else
 	echo "Creating Vapid keys"
-	su - mastodon -c 'cd /usr/local/www/mastodon && /usr/local/bin/bundle exec rake mastodon:webpush:generate_vapid_key -e RAILS_ENV=production > /mnt/mastodon/private/vapid.keys'
+	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake mastodon:webpush:generate_vapid_key > /mnt/mastodon/private/vapid.keys'
 	VAPIDPRIVATEKEY=$(grep VAPID_PRIVATE_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
 	VAPIDPUBLICKEY=$(grep VAPID_PUBLIC_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
 fi
@@ -81,10 +81,10 @@ sep=$'\001'
 chown mastodon:mastodon /usr/local/www/mastodon/.env.production
 
 # setup database
-su - mastodon -c 'cd /usr/local/www/mastodon && /usr/local/bin/bundle exec rails db:setup -e SAFETY_ASSURED=1 -e RAILS_ENV=production'
+su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:setup'
 
 # precompile assets
-su - mastodon -c 'cd /usr/local/www/mastodon && /usr/local/bin/bundle exec rails assets:precompile'
+su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile'
 
 # enable services
 service mastodon_sidekiq enable

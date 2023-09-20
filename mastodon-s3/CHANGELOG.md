@@ -3,6 +3,8 @@
 * Remove internal postgresql and redis as now external pot jails
 * Add parameters for external DB and redis
 * Update README
+* Update requirements to include a jail with S3 frontend
+* Fix ruby environment variables in scripts
 
 ---
 
