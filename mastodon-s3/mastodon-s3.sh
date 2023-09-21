@@ -223,6 +223,14 @@ step "Add node-gyp to yarn"
 step "user mastodon - set yarn classic"
 su - mastodon -c "/usr/local/bin/yarn set version classic"
 
+# breaking changes with Psyche 4, which is default for Ruby 3.1
+# https://bugs.ruby-lang.org/issues/17866
+# https://stackoverflow.com/questions/74725359/ruby-on-rails-legacy-application-update-generates-gem-psych-alias-error-psychb
+# https://github.com/mastodon/mastodon/issues/24455
+step "lock to rubygem psych < 4"
+echo "gem 'psych', '< 4'" >> /usr/local/www/mastodon/Gemfile
+chown mastodon:mastodon /usr/local/www/mastodon/Gemfile
+
 step "user mastodon - enable deployment"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config deployment 'true'"
 
