@@ -80,8 +80,14 @@ sep=$'\001'
 # set permissions on the file
 chown mastodon:mastodon /usr/local/www/mastodon/.env.production
 
-# setup database
-su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:setup'
+# setup database if it doesn't exist
+dbcheck=$(PGPASSWORD="$DBPASS" /usr/local/bin/psql -h "$DBHOST" -p "$DBPORT" -U "$DBUSER" -t -c "SELECT 1 FROM pg_database WHERE datname='$DBNAME'" | xargs)
+if [ "$dbcheck" = "1" ]; then
+	echo "Database $DBNAME already exists on $DBHOST, no need to create it."
+else
+	echo "Setting up a new database"
+	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:setup'
+fi
 
 # precompile assets
 su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile'

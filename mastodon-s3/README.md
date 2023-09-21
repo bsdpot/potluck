@@ -15,7 +15,7 @@ Important: this jail is dependent on external ```postgresql``` and ```redis``` i
 
 S3 storage also needs a frontend such as ```nginx-s3-nomad``` configured beforehand.
 
-Deploying the image or flavour should be quite straight forward and not take more than a few minutes.
+Deploying the image or flavour should be quite straight forward, however it will take some time to become functional. This is not a fast image to boot!
 
 # Requirements
 

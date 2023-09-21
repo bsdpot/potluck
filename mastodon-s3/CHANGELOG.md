@@ -6,6 +6,8 @@
 * Update requirements to include a jail with S3 frontend
 * Fix ruby environment variables in scripts
 * Change postgresql settings in ENV file
+* Make note in readme about slow image boot
+* Check if database exists before creating it
 
 ---
 
