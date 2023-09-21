@@ -11,6 +11,7 @@
 * Make note of long running commands in output
 * Improve database checks
 * Attempted fix by locking rubygem Psyche to < 4, due to breaking changes with Psyche4 and Ruby3.1
+* Note that /usr/local/www/mastodon install is not persistent storage, will rebuild on new image
 
 ---
 
