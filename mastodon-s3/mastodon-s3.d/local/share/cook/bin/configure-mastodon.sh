@@ -19,7 +19,7 @@ chown -R mastodon:mastodon /mnt/mastodon/
 if [ -f /mnt/mastodon/private/secret.key ]; then
 	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
 else
-	echo "Creating a secret key"
+	echo "Creating a secret key, this takes up to 30 seconds"
 	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake secret > /mnt/mastodon/private/secret.key'
 	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
 fi
@@ -28,7 +28,7 @@ fi
 if [ -f /mnt/mastodon/private/otp.key ]; then
 	OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
 else
-	echo "Creating OTP key"
+	echo "Creating OTP key, this takes up to 30 seconds"
 	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake secret > /mnt/mastodon/private/otp.key'
 	OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
 fi
@@ -80,8 +80,12 @@ sep=$'\001'
 # set permissions on the file
 chown mastodon:mastodon /usr/local/www/mastodon/.env.production
 
-# setup database if it doesn't exist
-dbcheck=$(PGPASSWORD="$DBPASS" /usr/local/bin/psql -h "$DBHOST" -p "$DBPORT" -U "$DBUSER" -t -c "SELECT 1 FROM pg_database WHERE datname='$DBNAME'" | xargs)
+# setup database if it doesn't exist, this gives an error condition so we unset some things
+set +e
+# shellcheck disable=SC3040
+set +o pipefail
+# remote command database check
+dbcheck=$(cd /tmp; PGPASSWORD="$DBPASS" /usr/local/bin/psql -h "$DBHOST" -p "$DBPORT" -U "$DBUSER" -t -c "SELECT 1 FROM pg_database WHERE datname='$DBNAME'" | xargs)
 if [ "$dbcheck" = "1" ]; then
 	echo "Database $DBNAME already exists on $DBHOST, no need to create it."
 else
@@ -89,13 +93,18 @@ else
 	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:setup'
 fi
 
+# set this back on again, possibly lower down but lets test
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
 # precompile assets
 su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile'
 
 # enable services
-service mastodon_sidekiq enable
-service mastodon_streaming enable
-service mastodon_web enable
+service mastodon_sidekiq enable || true
+service mastodon_streaming enable || true
+service mastodon_web enable || true
 
 # to-do
 # add crontab entries
