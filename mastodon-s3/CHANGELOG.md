@@ -6,6 +6,7 @@
 * Add RC files for manual service setup
 * Add process to pull mastodon from github if not already installed
 * Need two ZFS mount in datasets now
+* Add mastodon group
 
 ---
 

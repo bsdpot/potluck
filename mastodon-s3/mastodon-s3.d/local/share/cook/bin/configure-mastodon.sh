@@ -20,7 +20,8 @@ mkdir -p /usr/local/www/mastodon
 
 # create mastodon user
 if ! id -u "mastodon" >/dev/null 2>&1; then
-  /usr/sbin/pw useradd -n mastodon -c 'Mastodon User' -d /usr/local/www/mastodon -m -s /bin/sh -h -
+  /usr/sbin/pw groupadd mastodon
+  /usr/sbin/pw useradd -n mastodon -G mastodon -c 'Mastodon User' -d /usr/local/www/mastodon -m -s /bin/sh -h -
 fi
 
 # set perms on /usr/local/www/mastodon to mastodon:mastodon
