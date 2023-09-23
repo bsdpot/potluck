@@ -113,6 +113,8 @@ else
 	VAPIDPUBLICKEY=$(grep VAPID_PUBLIC_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
 fi
 
+echo "Creating .env.production"
+
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
@@ -147,9 +149,11 @@ sep=$'\001'
   > /usr/local/www/mastodon/.env.production
 
 # set permissions on the file
+echo "Setting permissions on env file"
 chown mastodon:mastodon /usr/local/www/mastodon/.env.production
 
 # remote command database check
+echo "Checking remote database access"
 dbcheck=$(PGPASSWORD="$DBPASS" /usr/local/bin/psql -h "$DBHOST" -p "$DBPORT" -U "$DBUSER" -lqt | grep "$DBNAME")
 if [ -z "$dbcheck" ]; then
 	echo "Setting up a new database"
