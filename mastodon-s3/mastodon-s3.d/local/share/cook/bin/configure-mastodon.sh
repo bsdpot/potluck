@@ -15,6 +15,46 @@ export PATH=/usr/local/bin:$PATH
 mkdir -p /mnt/mastodon/private
 chown -R mastodon:mastodon /mnt/mastodon/
 
+
+# what goes before here in next update
+# - clone repo with these steps
+# cd /usr/local/www/mastodon
+# su - mastodon -c "git init"
+# su - mastodon -c "git remote add origin https://github.com/mastodon/mastodon.git"
+# su - mastodon -c "git fetch"
+# su - mastocon -c "git reset origin/master"
+# su - mastodon -c "git checkout -t MASTODON_VERSION"
+#
+
+# moved from base file mastodon-s3.sh in anticipation switch to install from github
+#
+# The FreeBSD wiki has a set of instructions
+# https://wiki.freebsd.org/Ports/net-im/mastodon
+# however it is missing a step to 'yarn add node-gyp'
+# as covered in the Bastillefile at
+# https://codeberg.org/ddowse/mastodon/src/branch/main/Bastillefile
+
+# enable corepack
+/usr/local/bin/corepack enable
+
+# Add node-gyp to yarn
+/usr/local/bin/yarn add node-gyp
+
+# as user mastodon - set yarn classic
+su - mastodon -c "/usr/local/bin/yarn set version classic"
+
+# as user mastodon - enable deployment
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config deployment 'true'"
+
+# as user mastodon - remove development and test environments
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config without 'development test'"
+
+# as user mastodon - bundle install
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j1"
+
+# as user mastodon - yarn install process
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
+
 # generate a rake secret if the file /mnt/mastodon/private/secret.key doesn't exist
 if [ -f /mnt/mastodon/private/secret.key ]; then
 	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
@@ -80,25 +120,17 @@ sep=$'\001'
 # set permissions on the file
 chown mastodon:mastodon /usr/local/www/mastodon/.env.production
 
-# setup database if it doesn't exist, this gives an error condition so we unset some things
-set +e
-# shellcheck disable=SC3040
-set +o pipefail
 # remote command database check
-dbcheck=$(cd /tmp; PGPASSWORD="$DBPASS" /usr/local/bin/psql -h "$DBHOST" -p "$DBPORT" -U "$DBUSER" -t -c "SELECT 1 FROM pg_database WHERE datname='$DBNAME'" | xargs)
-if [ "$dbcheck" = "1" ]; then
-	echo "Database $DBNAME already exists on $DBHOST, no need to create it."
-else
+dbcheck=$(PGPASSWORD="$DBPASS" /usr/local/bin/psql -h "$DBHOST" -p "$DBPORT" -U "$DBUSER" -lqt | grep "$DBNAME")
+if [ -z "$dbcheck" ]; then
 	echo "Setting up a new database"
 	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:setup'
+else
+	echo "Database $DBNAME already exists on $DBHOST, no need to create it."
 fi
 
-# set this back on again, possibly lower down but lets test
-set -e
-# shellcheck disable=SC3040
-set -o pipefail
-
 # precompile assets
+# todo: we only want to do this if it hasn't already been done!
 su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile'
 
 # enable services

@@ -1,3 +1,10 @@
+0.3
+
+* Rewrite for non-layered image using latest packages
+* Test image before pulling Mastodon from github instead of packages
+
+---
+
 0.2
 
 * Remove internal postgresql and redis as now external pot jails

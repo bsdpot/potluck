@@ -13,11 +13,11 @@ The jail configures itself on the first start for your environment (see notes be
 
 Important: this jail is dependent on external ```postgresql``` and ```redis``` instances, along with S3 storage.
 
-S3 storage also needs a frontend such as ```nginx-s3-nomad``` configured beforehand.
+Your S3 storage also needs a frontend such as ```nginx-s3-nomad``` configured beforehand.
 
 Deploying the image or flavour should be quite straight forward, however it will take some time to become functional. This is not a fast image to boot!
 
-The `mastodon` installation is not persistent. It will rebuild on every new version of the image. 
+The `mastodon` image is a non-layered pot jail and very large.
 
 # Requirements
 
@@ -35,8 +35,10 @@ However the mastodon pot jail will register a SSL certificate directly.
 
 * Create your local jail from the image or the flavour files.
 * Create a ZFS dataset for certificates and keys
+* Create a ZFS dataset for /usr/local/www/mastodon
 * Clone the local jail
 * Mount in persistent storage for certificates and keys to /mnt specifically
+* Mount in persistent storage for mastodon to /usr/local/www/mastodon specifically
 * Adjust to your environment:
   ```
     sudo pot set-env -p <clonejailname> \

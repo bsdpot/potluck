@@ -62,9 +62,10 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
 # only modify repo if not already done in base image
+# this is a non-layered image now, with latest package sources
 # shellcheck disable=SC2016
 test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
-  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
     >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
@@ -134,10 +135,12 @@ pkg install -y gnupg
 step "Install package wget"
 pkg install -y wget
 
-step "Install package postgresql13-client"
-pkg install -y postgresql13-client
+# dependency is postgres15-client not postgres13-client
+step "Install package postgresql15-client"
+pkg install -y postgresql15-client
 
-# we still install redis, we don't configure or start it
+# we still need to install redis for redis-cli, but
+# we don't configure or start it
 step "Install package redis"
 pkg install -y redis
 
@@ -165,8 +168,13 @@ pkg install -y ffmpeg
 step "Install package rubygem-bundler"
 pkg install -y rubygem-bundler
 
-step "Install package ImageMagick7-nox11"
-pkg install -y ImageMagick7-nox11
+# Mastodon will install ImageMagick7 regardless of this
+#step "Install package ImageMagick7-nox11"
+#pkg install -y ImageMagick7-nox11
+
+# this install wayland and lots of bloated packages
+step "Install package ImageMagick7"
+pkg install -y ImageMagick7
 
 step "Install package libidn"
 pkg install -y libidn
@@ -195,13 +203,16 @@ pkg install -y libyaml
 step "Install package readline"
 pkg install -y readline
 
+## removing this while testing with latest package sources ##
 # breaking changes with Psyche 4, which is default for Ruby 3.1
 # https://bugs.ruby-lang.org/issues/17866
 # https://stackoverflow.com/questions/74725359/ruby-on-rails-legacy-application-update-generates-gem-psych-alias-error-psychb
 # https://github.com/mastodon/mastodon/issues/24455
-step "Instal package rubygem-psych3"
-pkg install -y rubygem-psych3
+#step "Instal package rubygem-psych3"
+#pkg install -y rubygem-psych3
 
+# todo: this will be removed in next update in favour of github sources
+# so upgrades can be more easily performed in future
 step "Install package mastodon"
 pkg install -y mastodon
 
@@ -209,39 +220,6 @@ step "Clean package installation"
 pkg clean -y
 
 # -------------- END PACKAGE SETUP -------------
-
-# ------------ BEGIN MASTODON CUSTOM -----------
-
-# The FreeBSD wiki has a set of instructions
-# https://wiki.freebsd.org/Ports/net-im/mastodon
-# however it is missing a step to 'yarn add node-gyp'
-# as covered in the Bastillefile at
-# https://codeberg.org/ddowse/mastodon/src/branch/main/Bastillefile
-
-# We setup the bundle and yarn steps here in order to make them happen
-# during image build, to avoid delaying the pot image boot process
-
-step "enable corepack"
-/usr/local/bin/corepack enable
-
-step "Add node-gyp to yarn"
-/usr/local/bin/yarn add node-gyp
-
-step "user mastodon - set yarn classic"
-su - mastodon -c "/usr/local/bin/yarn set version classic"
-
-step "user mastodon - enable deployment"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config deployment 'true'"
-
-step "user mastodon - remove development and test environments"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config without 'development test'"
-
-step "user mastodon - bundle install"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j1"
-
-step "user mastodon - yarn install process"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
-
 #
 # Now generate the run command script "cook"
 # It configures the system on the first run by creating the config file(s)
