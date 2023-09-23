@@ -7,6 +7,7 @@
 * Add process to pull mastodon from github if not already installed
 * Need two ZFS mount in datasets now
 * Add mastodon group
+* Remove group add, create user before chown to user
 
 ---
 
