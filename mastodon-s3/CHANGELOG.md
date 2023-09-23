@@ -8,6 +8,7 @@
 * Need two ZFS mount in datasets now
 * Add mastodon group
 * Remove group add, create user before chown to user
+* Don't add skel files to mastodon user homedir
 
 ---
 

@@ -11,9 +11,9 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
-# create mastodon user
+# create mastodon user without -m, --create-home
 if ! id -u "mastodon" >/dev/null 2>&1; then
-  /usr/sbin/pw useradd -n mastodon -c 'Mastodon User' -d /usr/local/www/mastodon -m -s /bin/sh -h -
+  /usr/sbin/pw useradd -n mastodon -c 'Mastodon User' -d /usr/local/www/mastodon -s /bin/sh -h -
 fi
 
 # make directory to store keys
