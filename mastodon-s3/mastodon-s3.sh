@@ -119,7 +119,6 @@ pkg install -y rsync
 step "Install package node_exporter"
 pkg install -y node_exporter
 
-# nginx-full has conflicts and will remove any nginx
 step "Install package nginx"
 pkg install -y nginx
 
@@ -213,8 +212,8 @@ pkg install -y readline
 
 # todo: this will be removed in next update in favour of github sources
 # so upgrades can be more easily performed in future
-step "Install package mastodon"
-pkg install -y mastodon
+#step "Install package mastodon"
+#pkg install -y mastodon
 
 step "Clean package installation"
 pkg clean -y

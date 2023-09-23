@@ -2,6 +2,10 @@
 
 * Rewrite for non-layered image using latest packages
 * Test image before pulling Mastodon from github instead of packages
+* Remove artifacts from original flavour
+* Add RC files for manual service setup
+* Add process to pull mastodon from github if not already installed
+* Need two ZFS mount in datasets now
 
 ---
 

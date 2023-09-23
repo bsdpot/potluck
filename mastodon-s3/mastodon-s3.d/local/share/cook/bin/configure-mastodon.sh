@@ -15,16 +15,33 @@ export PATH=/usr/local/bin:$PATH
 mkdir -p /mnt/mastodon/private
 chown -R mastodon:mastodon /mnt/mastodon/
 
+# make sure we have /usr/local/www/mastodon
+mkdir -p /usr/local/www/mastodon
 
-# what goes before here in next update
-# - clone repo with these steps
-# cd /usr/local/www/mastodon
-# su - mastodon -c "git init"
-# su - mastodon -c "git remote add origin https://github.com/mastodon/mastodon.git"
-# su - mastodon -c "git fetch"
-# su - mastocon -c "git reset origin/master"
-# su - mastodon -c "git checkout -t MASTODON_VERSION"
-#
+# create mastodon user
+if ! id -u "mastodon" >/dev/null 2>&1; then
+  /usr/sbin/pw useradd -n mastodon -c 'Mastodon User' -d /usr/local/www/mastodon -m -s /bin/sh -h -
+fi
+
+# set perms on /usr/local/www/mastodon to mastodon:mastodon
+chown -R mastodon:mastodon /usr/local/www/mastodon
+
+# if we do not have /usr/local/www/mastodon/.git then
+# configure /usr/local/www/mastodon as git repo and pull files
+if [ ! -d /usr/local/www/mastodon/.git ]; then
+	echo "Initiating git repo in /usr/local/www/mastodon"
+	su - mastodon -c "cd /usr/local/www/mastodon; git init"
+	echo "Adding remote origin https://github.com/mastodon/mastodon.git"
+	su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/mastodon/mastodon.git"
+	echo "Running git fetch"
+	su - mastodon -c "cd /usr/local/www/mastodon; git fetch"
+	echo "Checking out the mastodon release we want"
+	su - mastodon -c "cd /usr/local/www/mastodon; git checkout origin/main -b 4.2.0"
+	echo "Pulling files from git"
+	su - mastodon -c "cd /usr/local/www/mastodon; git pull"
+else
+	echo ".git directory exists, not cloning repo"
+fi
 
 # moved from base file mastodon-s3.sh in anticipation switch to install from github
 #
@@ -35,46 +52,56 @@ chown -R mastodon:mastodon /mnt/mastodon/
 # https://codeberg.org/ddowse/mastodon/src/branch/main/Bastillefile
 
 # enable corepack
+echo "Enabling corepack"
 /usr/local/bin/corepack enable
 
 # Add node-gyp to yarn
+echo "Adding node-gyp to yarn"
 /usr/local/bin/yarn add node-gyp
 
 # as user mastodon - set yarn classic
+echo "Setting yarn to classic version"
 su - mastodon -c "/usr/local/bin/yarn set version classic"
 
 # as user mastodon - enable deployment
+echo "Setting mastodon deployment to true"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config deployment 'true'"
 
 # as user mastodon - remove development and test environments
+echo "Removing development and test environments"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config without 'development test'"
 
 # as user mastodon - bundle install
+echo "Installing the required files with bundle"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j1"
 
 # as user mastodon - yarn install process
+echo "Installing the required files with yarn"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
 
 # generate a rake secret if the file /mnt/mastodon/private/secret.key doesn't exist
 if [ -f /mnt/mastodon/private/secret.key ]; then
+	echo "Secret key exists, not creating"
 	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
 else
-	echo "Creating a secret key, this takes up to 30 seconds"
+	echo "Creating a secret key, this takes a few seconds"
 	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake secret > /mnt/mastodon/private/secret.key'
 	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
 fi
 
 # generate OTP secret if the file /mnt/mastodon/private/otp.key doesn't exist
 if [ -f /mnt/mastodon/private/otp.key ]; then
+	echo "OTP exists, not creating"
 	OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
 else
-	echo "Creating OTP key, this takes up to 30 seconds"
+	echo "Creating OTP key, this takes a few seconds"
 	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake secret > /mnt/mastodon/private/otp.key'
 	OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
 fi
 
 # generate vapid keys if the file /mnt/mastodon/private/vapid.keys doesn't exist
 if [ -f /mnt/mastodon/private/vapid.keys ]; then
+	echo "VAPID keys exist, not creating"
 	VAPIDPRIVATEKEY=$(grep VAPID_PRIVATE_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
 	VAPIDPUBLICKEY=$(grep VAPID_PUBLIC_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
 else
@@ -131,9 +158,22 @@ fi
 
 # precompile assets
 # todo: we only want to do this if it hasn't already been done!
+echo "Precompiling assets as mastodon user"
 su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile'
 
+# copy over RC scripts and set executable permissions
+echo "Copying over RC scripts"
+cp -f "$TEMPLATEPATH/rc.mastodon_sidekiq.in" /usr/local/etc/rc.d/mastodon_sidekiq
+chmod +x /usr/local/etc/rc.d/mastodon_sidekiq
+
+cp -f "$TEMPLATEPATH/rc.mastodon_streaming.in" /usr/local/etc/rc.d/mastodon_streaming
+chmod +x /usr/local/etc/rc.d/mastodon_streaming
+
+cp -f "$TEMPLATEPATH/rc.mastodon_web.in" /usr/local/etc/rc.d/mastodon_web
+chmod +x /usr/local/etc/rc.d/mastodon_web
+
 # enable services
+echo "Enabling mastodon services"
 service mastodon_sidekiq enable || true
 service mastodon_streaming enable || true
 service mastodon_web enable || true
