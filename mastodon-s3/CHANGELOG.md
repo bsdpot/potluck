@@ -13,6 +13,8 @@
 * Fix database check with better solution
 * Experiment with using bash to perform db creation and assets compile due to variables
 * Fine-tuning db creation, works manually, not in script
+* Add redis check
+* Remove redundant git pull
 
 ---
 

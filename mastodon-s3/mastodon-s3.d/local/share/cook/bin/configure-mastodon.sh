@@ -11,6 +11,16 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
+# check that redis is active
+echo "Checking for an active redis server"
+redischeck=$(/usr/local/bin/redis-cli -h "$REDISHOST" ping |grep -c PONG)
+if [ "$redischeck" -eq "1" ]; then
+	echo "Redis server found, continuing"
+else
+	echo "Cannot reach redis server, is it running?"
+	exit 1
+fi
+
 # create mastodon user without -m, --create-home
 if ! id -u "mastodon" >/dev/null 2>&1; then
   /usr/sbin/pw useradd -n mastodon -c 'Mastodon User' -d /usr/local/www/mastodon -s /bin/sh -h -
@@ -39,8 +49,8 @@ if [ ! -d /usr/local/www/mastodon/.git ]; then
 	su - mastodon -c "cd /usr/local/www/mastodon; git fetch"
 	echo "Checking out the mastodon release we want"
 	su - mastodon -c "cd /usr/local/www/mastodon; git checkout origin/main -b 4.2.0"
-	echo "Pulling files from git"
-	su - mastodon -c "cd /usr/local/www/mastodon; git pull"
+	#redundant# echo "Pulling files from git"
+	#redundant# su - mastodon -c "cd /usr/local/www/mastodon; git pull"
 else
 	echo ".git directory exists, not cloning repo"
 fi
@@ -197,6 +207,7 @@ echo "Enabling mastodon services"
 service mastodon_sidekiq enable || true
 service mastodon_streaming enable || true
 service mastodon_web enable || true
+
 
 # to-do
 # add crontab entries
