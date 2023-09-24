@@ -60,7 +60,9 @@ http {
         ssl_prefer_server_ciphers  off;
 		ssl_early_data on;
 
-        add_header X-Early-Data $tls1_3_early_data;
+		# this fails on freebsd
+		# nginx: [emerg] unknown "tls1_3_early_data" variable
+        #add_header X-Early-Data $tls1_3_early_data;
         add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
         add_header X-Frame-Options "DENY";
 
