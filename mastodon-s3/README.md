@@ -17,7 +17,7 @@ Your S3 storage also needs a frontend such as ```nginx-s3-nomad``` configured be
 
 Deploying the image or flavour should be quite straight forward, however it will take some time to become functional. This is not a fast image to boot!
 
-The `mastodon` image is a non-layered pot jail and very large.
+The `mastodon` image is a non-layered pot jail, and can take up to 30mins to boot the first time due to package download and compiling.
 
 # Requirements
 

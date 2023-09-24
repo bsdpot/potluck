@@ -10,6 +10,7 @@
 * Remove group add, create user before chown to user
 * Don't add skel files to mastodon user homedir
 * Fix nginx problems with invalid variable tls1_3_early_data
+* Fix database check with better solution
 
 ---
 

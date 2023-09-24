@@ -153,9 +153,12 @@ echo "Setting permissions on env file"
 chown mastodon:mastodon /usr/local/www/mastodon/.env.production
 
 # remote command database check
+# with bash we can set the shell variable PGPASSWORD="$DBPASS" and run psql without
+# being asked for a password.
+# with csh we must use the connect string and query postgres db
 echo "Checking remote database access"
-dbcheck=$(PGPASSWORD="$DBPASS" /usr/local/bin/psql -h "$DBHOST" -p "$DBPORT" -U "$DBUSER" -lqt | grep "$DBNAME")
-if [ -z "$dbcheck" ]; then
+dbcheck=$(/usr/local/bin/psql postgresql://"$DBUSER":"$DBPASS"@"$DBHOST":"$DBPORT",/postgres -lqt | grep -c "$DBNAME")
+if [ "$dbcheck" -eq "0" ]; then
 	echo "Setting up a new database"
 	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:setup'
 else
