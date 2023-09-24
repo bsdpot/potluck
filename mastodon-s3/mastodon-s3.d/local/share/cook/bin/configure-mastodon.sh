@@ -157,10 +157,16 @@ chown mastodon:mastodon /usr/local/www/mastodon/.env.production
 # being asked for a password.
 # with csh we must use the connect string and query postgres db
 echo "Checking remote database access"
-dbcheck=$(/usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT,/postgres" -lqt | grep -c "$DBNAME")
+
+# unset this
+set +e
+# shellcheck disable=SC3040
+set +o pipefail
+
+dbcheck=$(/usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres" -lqt | grep -c "$DBNAME")
 if [ "$dbcheck" -eq "0" ]; then
 	echo "Setting up a new database"
-	su - mastodon -c 'cd /usr/local/www/mastodon && /usr/local/bin/bash -c "RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:setup"'
+	su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:setup"'
 else
 	echo "Database $DBNAME already exists on $DBHOST, no need to create it."
 fi
@@ -168,7 +174,12 @@ fi
 # precompile assets
 # todo: we only want to do this if it hasn't already been done!
 echo "Precompiling assets as mastodon user"
-su - mastodon -c 'cd /usr/local/www/mastodon && /usr/local/bin/bash -c "RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile"'
+su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile"'
+
+# set back this
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
 
 # copy over RC scripts and set executable permissions
 echo "Copying over RC scripts"
