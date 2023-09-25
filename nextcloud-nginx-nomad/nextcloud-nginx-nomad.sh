@@ -271,6 +271,9 @@ pkg install -y php81-session
 step "Install package php81-simplexml"
 pkg install -y php81-simplexml
 
+step "Install package php81-sysvsem"
+pkg install -y php81-sysvsem
+
 step "Install package php81-xml"
 pkg install -y php81-xml
 

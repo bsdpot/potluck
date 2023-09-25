@@ -1,3 +1,9 @@
+0.80
+
+* Include php package php81-sysvsem
+
+---
+
 0.79
 
 * Rebuild for bsd and package updates
