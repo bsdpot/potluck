@@ -15,6 +15,7 @@
 * Fine-tuning db creation, works manually, not in script
 * Add redis check
 * Remove redundant git pull
+* Add first bash at upgrade script to be run inside jail before upgrade pot jail
 
 ---
 

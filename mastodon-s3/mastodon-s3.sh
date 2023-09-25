@@ -202,19 +202,6 @@ pkg install -y libyaml
 step "Install package readline"
 pkg install -y readline
 
-## removing this while testing with latest package sources ##
-# breaking changes with Psyche 4, which is default for Ruby 3.1
-# https://bugs.ruby-lang.org/issues/17866
-# https://stackoverflow.com/questions/74725359/ruby-on-rails-legacy-application-update-generates-gem-psych-alias-error-psychb
-# https://github.com/mastodon/mastodon/issues/24455
-#step "Instal package rubygem-psych3"
-#pkg install -y rubygem-psych3
-
-# todo: this will be removed in next update in favour of github sources
-# so upgrades can be more easily performed in future
-#step "Install package mastodon"
-#pkg install -y mastodon
-
 step "Clean package installation"
 pkg clean -y
 

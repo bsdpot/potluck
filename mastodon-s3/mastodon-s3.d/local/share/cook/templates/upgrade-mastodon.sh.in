@@ -1,0 +1,128 @@
+#!/bin/sh
+
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+# Check for root privileges
+if ! [ "$(id -u)" = 0 ]; then
+   echo "This script must be run with root privileges"
+   exit 1
+fi
+
+# we need a branch version passed in as arg1
+if [ -z "$1" ]; then
+	echo "Please pass in the branch version you wish to upgrade, for example"
+	echo ""
+	echo " ./upgrade-mastodon.sh 4.2.1"
+	echo ""
+	exit 1
+else
+	UPGRADE="$1"
+	export UPGRADE
+fi
+
+# change directory to tmp for su purposes
+cd /tmp || exit 1
+
+# These variables are set during pot start
+REDISHOST=%%redishost%%
+export REDISHOST
+DBUSER=%%dbuser%%
+export DBUSER
+DBPASS=%%dbpass%%
+export DBPASS
+DBHOST=%%dbhost%%
+export DBHOST
+DBPORT=%%dbport%%
+export DBPORT
+DBNAME=%%dbname%%
+export DBNAME
+
+# check that redis is active
+echo "Checking for an active redis server"
+redischeck=$(/usr/local/bin/redis-cli -h "$REDISHOST" ping |grep -c PONG)
+if [ "$redischeck" -eq "1" ]; then
+    echo "Redis server found, continuing"
+else
+    echo "Cannot reach redis server, is it running?"
+    exit 1
+fi
+
+if [ -d /usr/local/www/mastodon/.git ]; then
+	echo "Getting latest tags"
+	su - mastodon -c "cd /usr/local/www/mastodon; git fetch --tags"
+	echo "Checking out the mastodon release we want"
+	su - mastodon -c "cd /usr/local/www/mastodon; git checkout origin/main -b $UPGRADE"
+else
+	echo ".git directory does not exist, not upgrading repo"
+	exit 1
+fi
+
+# as user mastodon - bundle install
+echo "Installing the required files with bundle"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j1"
+
+# as user mastodon - yarn install process
+echo "Installing the required files with yarn"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --frozen-lockfile"
+
+# as user mastodon - precompile assets
+echo "Precompiling assets as mastodon user"
+su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile"'
+
+# unset this for dbcheck
+set +e
+# shellcheck disable=SC3040
+set +o pipefail
+# Run the pre-deployment database migrations by specifying the SKIP_POST_DEPLOYMENT_MIGRATIONS=true environment variable
+echo "Checking database access"
+first_dbcheck=$(/usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres" -lqt | grep -c "$DBNAME")
+if [ "$first_dbcheck" -eq "1" ]; then
+	echo "Running pre-deployment database migrations"
+	su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; SKIP_POST_DEPLOYMENT_MIGRATIONS=true RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:migrate"'
+else
+	echo "Error. Database $DBNAME does not exist on $DBHOST"
+	exit 1
+fi
+
+# set back this
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+# restart all mastodon processes
+echo "Restarting all mastodon processes"
+service mastodon_sidekiq restart
+service mastodon_web restart
+service mastodon_streaming restart
+
+# unset this for dbcheck
+set +e
+# shellcheck disable=SC3040
+set +o pipefail
+# Run the post-deployment database migrations
+echo "Checking database access"
+second_dbcheck=$(/usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres" -lqt | grep -c "$DBNAME")
+if [ "$second_dbcheck" -eq "1" ]; then
+	echo "Running post-deployment database migrations"
+	su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:migrate"'
+else
+	echo "Error. Database $DBNAME does not exist on $DBHOST. Did it disappear since previous step?"
+	exit 1
+fi
+
+# set back this
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+# If you use Elasticsearch, rebuild the search indexes with RAILS_ENV=production bin/tootctl search deploy --reset-chewy
+#
+# TBA
+
+
+# completion
+echo "Upgrade done. You should upgrade the core pot jail to use version $UPGRADE next."

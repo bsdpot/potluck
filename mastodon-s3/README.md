@@ -19,6 +19,8 @@ Deploying the image or flavour should be quite straight forward, however it will
 
 The `mastodon` image is a non-layered pot jail, and can take up to 30mins to boot the first time due to package download and compiling.
 
+Once started the public-facing website can take several minutes of showing a blank or error page before showing the expected Mastodon default page.
+
 # Requirements
 
 Do not startup this jail unless you have running ```postgresql``` and ```redis``` jails, such as the Postgres-Single or Redis-Single pot jails on the potluck site.
@@ -142,3 +144,17 @@ On reboot or an upgraded pot image, this file will be read to configure the `mas
 Vapid private/public keys are stored in a file in persistent storage at `/mnt/mastodon/private/vapid.keys`
 
 On reboot or an upgraded pot image, this file will be read to configure the `mastodon` settings.
+
+## Upgrading Mastodon
+
+When there is a new github release at https://github.com/mastodon/mastodon/releases you can perform an upgrade by running `/root/upgrade-mastodon.sh` as root, followed by the version you wish to upgrade to.
+
+```
+pot term mastodon-s3-clone
+./upgrade-mastodon.sh 4.2.0
+```
+
+Then make sure to update the source pot image to reflect the new version. You can then restart from the new version.
+
+Caveat: this is untested
+

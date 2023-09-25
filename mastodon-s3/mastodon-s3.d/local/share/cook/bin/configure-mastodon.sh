@@ -162,6 +162,19 @@ sep=$'\001'
 echo "Setting permissions on env file"
 chown mastodon:mastodon /usr/local/www/mastodon/.env.production
 
+# copy in upgrade script to /root/upgrade-mastodon.sh
+< "$TEMPLATEPATH/upgrade-mastodon.sh.in" \
+  sed "s${sep}%%redishost%%${sep}$REDISHOST${sep}g" | \
+  sed "s${sep}%%dbuser%%${sep}$DBUSER${sep}g" | \
+  sed "s${sep}%%dbpass%%${sep}$DBPASS${sep}g" | \
+  sed "s${sep}%%dbhost%%${sep}$DBHOST${sep}g" | \
+  sed "s${sep}%%dbport%%${sep}$SETDBPORT${sep}g" | \
+  sed "s${sep}%%dbname%%${sep}$DBNAME${sep}g" \
+  > /root/upgrade-mastodon.sh
+
+# set permissions on upgrade script
+chmod 750 /root/upgrade-mastodon.sh
+
 # remote command database check
 # with bash we can set the shell variable PGPASSWORD="$DBPASS" and run psql without
 # being asked for a password.
