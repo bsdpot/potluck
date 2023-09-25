@@ -107,7 +107,6 @@ pkg install -y bash
 
 step "Install package rsync"
 pkg install -y rsync
-##############
 
 step "Install package nginx"
 pkg install -y nginx
@@ -178,119 +177,119 @@ pkg install -y webp
 step "Install package pkgconf"
 pkg install -y pkgconf
 
-step "Install package php81"
-pkg install -y php81
+step "Install package php82"
+pkg install -y php82
 
-step "Install package php81-extensions"
-pkg install -y php81-extensions
+step "Install package php82-extensions"
+pkg install -y php82-extensions
 
-step "Install package php81-bcmath"
-pkg install -y php81-bcmath
+step "Install package php82-bcmath"
+pkg install -y php82-bcmath
 
-step "Install package php81-bz2"
-pkg install -y php81-bz2
+step "Install package php82-bz2"
+pkg install -y php82-bz2
 
-step "Install package php81-ctype"
-pkg install -y php81-ctype
+step "Install package php82-ctype"
+pkg install -y php82-ctype
 
-step "Install package php81-curl"
-pkg install -y php81-curl
+step "Install package php82-curl"
+pkg install -y php82-curl
 
-step "Install package php81-dom"
-pkg install -y php81-dom
+step "Install package php82-dom"
+pkg install -y php82-dom
 
-step "Install package php81-exif"
-pkg install -y php81-exif
+step "Install package php82-exif"
+pkg install -y php82-exif
 
-step "Install package php81-fileinfo"
-pkg install -y php81-fileinfo
+step "Install package php82-fileinfo"
+pkg install -y php82-fileinfo
 
-step "Install package php81-filter"
-pkg install -y php81-filter
+step "Install package php82-filter"
+pkg install -y php82-filter
 
-step "Install package php81-ftp"
-pkg install -y php81-ftp
+step "Install package php82-ftp"
+pkg install -y php82-ftp
 
-step "Install package php81-gd"
-pkg install -y php81-gd
+step "Install package php82-gd"
+pkg install -y php82-gd
 
-step "Install package php81-gmp"
-pkg install -y php81-gmp
+step "Install package php82-gmp"
+pkg install -y php82-gmp
 
-step "Install package php81-iconv"
-pkg install -y php81-iconv
+step "Install package php82-iconv"
+pkg install -y php82-iconv
 
-step "Install package php81-imap"
-pkg install -y php81-imap
+step "Install package php82-imap"
+pkg install -y php82-imap
 
-step "Install package php81-intl"
-pkg install -y php81-intl
+step "Install package php82-intl"
+pkg install -y php82-intl
 
-step "Install package php81-ldap"
-pkg install -y php81-ldap
+step "Install package php82-ldap"
+pkg install -y php82-ldap
 
-step "Install package php81-mysqli"
-pkg install -y php81-mysqli
+step "Install package php82-mysqli"
+pkg install -y php82-mysqli
 
-step "Install package php81-mbstring"
-pkg install -y php81-mbstring
+step "Install package php82-mbstring"
+pkg install -y php82-mbstring
 
-step "Install package php81-opcache"
-pkg install -y php81-opcache
+step "Install package php82-opcache"
+pkg install -y php82-opcache
 
-step "Install package php81-pcntl"
-pkg install -y php81-pcntl
+step "Install package php82-pcntl"
+pkg install -y php82-pcntl
 
-step "Install package php81-pdo"
-pkg install -y php81-pdo
+step "Install package php82-pdo"
+pkg install -y php82-pdo
 
-step "Install package php81-pdo_mysql"
-pkg install -y php81-pdo_mysql
+step "Install package php82-pdo_mysql"
+pkg install -y php82-pdo_mysql
 
-step "Install package php81-pecl-APCu"
-pkg install -y php81-pecl-APCu
+step "Install package php82-pecl-APCu"
+pkg install -y php82-pecl-APCu
 
-step "Install package php81-pecl-memcache"
-pkg install -y php81-pecl-memcache
+step "Install package php82-pecl-memcache"
+pkg install -y php82-pecl-memcache
 
-step "Install package php81-pecl-redis"
-pkg install -y php81-pecl-redis
+step "Install package php82-pecl-redis"
+pkg install -y php82-pecl-redis
 
-step "Install package php81-pecl-imagick"
-pkg install -y php81-pecl-imagick
+step "Install package php82-pecl-imagick"
+pkg install -y php82-pecl-imagick
 
-step "Install package php81-phar"
-pkg install -y php81-phar
+step "Install package php82-phar"
+pkg install -y php82-phar
 
-step "Install package php81-posix"
-pkg install -y php81-posix
+step "Install package php82-posix"
+pkg install -y php82-posix
 
-step "Install package php81-session"
-pkg install -y php81-session
+step "Install package php82-session"
+pkg install -y php82-session
 
-step "Install package php81-simplexml"
-pkg install -y php81-simplexml
+step "Install package php82-simplexml"
+pkg install -y php82-simplexml
 
-step "Install package php81-sysvsem"
-pkg install -y php81-sysvsem
+step "Install package php82-sysvsem"
+pkg install -y php82-sysvsem
 
-step "Install package php81-xml"
-pkg install -y php81-xml
+step "Install package php82-xml"
+pkg install -y php82-xml
 
-step "Install package php81-xmlreader"
-pkg install -y php81-xmlreader
+step "Install package php82-xmlreader"
+pkg install -y php82-xmlreader
 
-step "Install package php81-xmlwriter"
-pkg install -y php81-xmlwriter
+step "Install package php82-xmlwriter"
+pkg install -y php82-xmlwriter
 
-step "Install package php81-xsl"
-pkg install -y php81-xsl
+step "Install package php82-xsl"
+pkg install -y php82-xsl
 
-step "Install package php81-zip"
-pkg install -y php81-zip
+step "Install package php82-zip"
+pkg install -y php82-zip
 
-step "Install package php81-zlib"
-pkg install -y php81-zlib
+step "Install package php82-zlib"
+pkg install -y php82-zlib
 
 step "Install package ImageMagick6-nox11"
 pkg install -y ImageMagick6-nox11

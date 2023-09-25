@@ -1,3 +1,9 @@
+0.81
+
+* Update to php82 versions of everything
+
+---
+
 0.80
 
 * Include php package php81-sysvsem
