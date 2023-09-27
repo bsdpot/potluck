@@ -1,3 +1,9 @@
+0.82
+
+* Set X-Robots-Tag to "noindex, nofollow"
+
+---
+
 0.81
 
 * Update to php82 versions of everything
