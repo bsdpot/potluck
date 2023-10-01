@@ -1,6 +1,7 @@
 0.2
 
 * Version bump for new base image
+* Adjustments to caddyfile because "unrecognized directive: storage"
 
 ---
 
