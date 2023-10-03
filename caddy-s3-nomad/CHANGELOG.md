@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Adjustments to caddyfile because "unrecognized directive: storage"
+* Remove domain name from Caddyfile, then caddy starts
 
 ---
 
