@@ -1,4 +1,6 @@
 {
+	default_sni %%domain%%
+	admin off
 	storage s3 {
 		host "%%server%%:9000"
 		bucket "%%bucket%%"
@@ -8,5 +10,3 @@
 		insecure false #disables SSL if true
 	}
 }
-
-%%domain%%
