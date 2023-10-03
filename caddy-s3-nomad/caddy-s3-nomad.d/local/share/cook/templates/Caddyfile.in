@@ -1,6 +1,6 @@
 {
 	storage s3 {
-		host "%%server%%"
+		host "%%server%%:9000"
 		bucket "%%bucket%%"
 		access_id "%%username%%"
 		secret_key "%%password%%"
@@ -8,3 +8,5 @@
 		insecure false #disables SSL if true
 	}
 }
+
+%%domain%%
