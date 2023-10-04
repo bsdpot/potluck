@@ -1,12 +1,22 @@
 {
-	default_sni %%domain%%
+	order s3proxy last
+	debug
 	admin off
-	storage s3 {
-		host "%%server%%:9000"
-		bucket "%%bucket%%"
-		access_id "%%username%%"
-		secret_key "%%password%%"
-		prefix "ssl"
-		insecure false #disables SSL if true
+}
+
+http://%%domain%%:80 {
+        redir https://{host}{uri}
+}
+
+https://%%domain%%:443 {
+	log
+	tls %%email%%
+	respond /health-check "OK" 200
+	s3proxy /* {
+		bucket %%bucket%%
+		region global
+		index index.html
+		endpoint "https://%%server%%:9000"
+		force_path_style
 	}
 }

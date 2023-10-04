@@ -65,9 +65,7 @@ SELFSIGNED enables obtaining the self-signed CA certicate into the local store. 
 
 # Nomad Job File Samples
 
-## Two Minio servers
-
-The following example job uses 2 minio servers and a self-signed host.
+The following example job uses 1 self-signed minio server.
 
 ```
 job "example" {
@@ -102,7 +100,7 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/caddy-s3-nomad"
         pot = "caddy-s3-nomad-amd64-13_2"
-        tag = "0.2.5"
+        tag = "0.3.1"
         command = "/usr/local/bin/cook"
         args = ["-h","s3.my.host","-b","bucketname","-d","domainname","-u","username","-p","password","-s","yes"]
         port_map = {

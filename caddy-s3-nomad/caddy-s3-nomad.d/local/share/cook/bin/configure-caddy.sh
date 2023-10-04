@@ -21,13 +21,12 @@ mkdir -p /usr/local/etc/caddy/
 # safe(r) separator for sed
 sep=$'\001'
 
-# copy in custom nginx and set IP to ip address of pot image
+# copy in custom caddyfile
 < "$TEMPLATEPATH/Caddyfile.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%server%%${sep}$SERVER${sep}g" | \
   sed "s${sep}%%bucket%%${sep}$BUCKET${sep}g" | \
-  sed "s${sep}%%username%%${sep}$USERNAME${sep}g" | \
-  sed "s${sep}%%password%%${sep}$PASSWORD${sep}g"  \
+  sed "s${sep}%%email%%${sep}$EMAIL${sep}g" \
   > /usr/local/etc/caddy/Caddyfile
 
 # enable nginx

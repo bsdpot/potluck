@@ -126,7 +126,10 @@ pkg install -y go120
 
 echo "BATCH=yes" > /etc/make.conf
 echo "DEFAULT_VERSIONS+=ssl=openssl" >> /etc/make.conf
-echo "CADDY_CUSTOM_PLUGINS=github.com/ss098/certmagic-s3" >> /etc/make.conf
+# removing, not working as expected
+#echo "CADDY_CUSTOM_PLUGINS=github.com/ss098/certmagic-s3" >> /etc/make.conf
+# new, trying this one
+echo "CADDY_CUSTOM_PLUGINS=github.com/lindenlab/caddy-s3-proxy" >> /etc/make.conf
 
 step "Make directory /usr/ports"
 mkdir -p /usr/ports

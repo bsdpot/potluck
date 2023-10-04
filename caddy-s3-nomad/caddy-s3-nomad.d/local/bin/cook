@@ -45,7 +45,7 @@ fi
 ## Convert parameters to variables if passed (overwrite environment)
 ########################################################################
 OPTIND=1
-while getopts b:d:h:p:s:u: option
+while getopts b:d:e:h:p:s:u: option
 do
     case "${option}"
     in
@@ -54,6 +54,9 @@ do
          ;;
       d) DOMAIN=${OPTARG}
          export DOMAIN
+         ;;
+      e) EMAIL=${OPTARG}
+         export EMAIL
          ;;
       h) SERVER=${OPTARG}
          export SERVER
@@ -75,7 +78,7 @@ shift "$((OPTIND-1))"
 ## Check config
 ########################################################################
 
-required_args="SERVER DOMAIN BUCKET"
+required_args="SERVER DOMAIN BUCKET EMAIL"
 optional_args="USERNAME PASSWORD SELFSIGNHOST"
 
 for var in $required_args; do
@@ -101,6 +104,9 @@ if [ -n "$SELFSIGNHOST" ]; then
     log "Configure self-signed certicate store"
     configure-selfsigned.sh
 fi
+
+log "Configure access credentials file"
+configure-access.sh
 
 log "Configure nginx with one S3 server"
 configure-caddy.sh
