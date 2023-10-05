@@ -1,3 +1,9 @@
+0.12.5
+
+* Extend retention from 15 days to 2 years
+
+---
+
 0.12.4
 
 * Update consul configuration to new version
