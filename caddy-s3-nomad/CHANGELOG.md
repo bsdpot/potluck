@@ -2,6 +2,7 @@
 
 * Change s3 addon to caddy-s3-proxy
 * Use credentials file
+* Update Caddyfile
 
 ---
 
