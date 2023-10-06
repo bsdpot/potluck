@@ -1,3 +1,9 @@
+0.0.18
+
+* Version bump for new quarterlies
+
+---
+
 0.0.17
 
 * Version bump for kernel/pkg security patches
