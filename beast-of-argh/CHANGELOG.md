@@ -1,9 +1,17 @@
+0.10
+
+* Version bump for new base image
+* New loki and promtail versions 2.9.1
+
+---
+
 0.9
 
 * Version bump for new base image
 * New loki and promtail
 * Start syslog-ng last
 * Add SVG logo
+* Link to PNG logo in README as SVG not working
 
 ---
 
