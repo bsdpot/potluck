@@ -1,3 +1,9 @@
+0.4
+
+* Version bump for new base image
+
+---
+
 0.3
 
 * Rewrite for non-layered image using latest packages

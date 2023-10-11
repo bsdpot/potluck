@@ -19,7 +19,7 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 * `mastodon-s3.ini`
 
 ## New versions of Mastodon
-When updating to new versions of Mastodon, be sure to update the version in the git checkout statement in:
+When updating to new versions of Mastodon, be sure to update the version (4.2.0) in the git checkout statement in:
 * mastodon-s3.d/local/share/cook/bin/configure-mastodon.sh
 
 ## Shellcheck
