@@ -1,3 +1,9 @@
+0.4
+
+* Version bump for new base image
+
+---
+
 0.3
 
 * Change s3 addon to caddy-s3-proxy
