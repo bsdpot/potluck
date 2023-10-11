@@ -1,3 +1,9 @@
+0.0.19
+
+* Version bump for curl update
+
+---
+
 0.0.18
 
 * Version bump for new quarterlies
