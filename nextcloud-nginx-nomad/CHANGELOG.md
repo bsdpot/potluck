@@ -1,3 +1,9 @@
+0.83
+
+* Version bump for new packages
+
+---
+
 0.82
 
 * Set X-Robots-Tag to "noindex, nofollow"
