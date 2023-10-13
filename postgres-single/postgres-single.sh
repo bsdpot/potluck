@@ -118,11 +118,11 @@ pkg install -y rsync
 step "Install package node_exporter"
 pkg install -y node_exporter
 
-step "Install package postgresql13-client"
-pkg install -y postgresql13-client
+step "Install package postgresql15-client"
+pkg install -y postgresql15-client
 
-step "Install package postgresql13-server"
-pkg install -y postgresql13-server
+step "Install package postgresql15-server"
+pkg install -y postgresql15-server
 
 step "Install package git"
 pkg install -y git

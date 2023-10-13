@@ -1,3 +1,10 @@
+0.1
+
+* Version bump for new base image
+* Update to postgresql15
+
+---
+
 0.0
 
 * Initial postgres-single image
