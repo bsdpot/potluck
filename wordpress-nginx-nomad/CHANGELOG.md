@@ -1,6 +1,7 @@
 2.8
 
 * Version bump for new base image
+* Update to postgresql15-client
 
 ---
 
