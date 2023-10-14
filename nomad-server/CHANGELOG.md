@@ -1,6 +1,7 @@
 3.11
 
 * Version bump for new base image
+* Add data-dir to nomad_args
 
 ---
 

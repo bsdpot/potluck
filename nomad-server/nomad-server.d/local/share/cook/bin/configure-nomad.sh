@@ -50,5 +50,5 @@ service nomad enable || true
 
 # set load parameter for nomad config
 sysrc \
-  nomad_args="-config=/usr/local/etc/nomad/server.hcl -network-interface=$IP"
+  nomad_args="-config=/usr/local/etc/nomad/server.hcl -data-dir=/var/tmp/nomad -network-interface=$IP"
 sysrc nomad_debug="YES"
