@@ -1,6 +1,8 @@
 0.4
 
 * Version bump for new base image
+* Formatting in nginx.conf, adjustments
+* Add 'MAX_THREADS=10 WEB_CONCURRENCY=5' to env
 
 ---
 
