@@ -48,6 +48,8 @@ This jail must be run with a non-routable IP address, accessible only to the int
    -E IP=<IP address> \
    -E IP4NETWORK=<10.0.0.1/24> \
    -E EXPORTERPASS=<password for the postgres_exporter user> \
+   [ -E DUMPSCHEDULE="<cronschedule>" ] \
+   [ -E DUMPPATH=<path for database backups> ] \
    [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 
@@ -66,6 +68,10 @@ The IP parameter is the IP address of this image.
 The IP4NETWORK parameter is the local network/mask to allow access to the PostgreSQL server. Pot jails in this range can access PostgreSQL.
 
 The EXPORTERPASS parameter is a password for the postgres_exporter user for stats collection.
+
+DUMPSCHEDULE is an optional parameter for a cronjob to dump the databases to file. Provide it in the scheduling format of crontab, e.g. "*/5 * * * *". (include quotes)
+
+DUMPPATH is an optional parameter for the path to store database backups. For example `/mnt/pgbak`.
 
 REMOTELOG is an optional parameter for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
