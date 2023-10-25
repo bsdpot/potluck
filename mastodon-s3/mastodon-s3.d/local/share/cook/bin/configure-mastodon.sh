@@ -94,25 +94,28 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pu
 # add missing rake gem needed after mastodon 4.2.1
 # this is needed for make secret tasks below
 # See also https://github.com/mastodon/mastodon/issues/26490
-/usr/local/bin/gem install rake -v 13.0.6
+# removed, doesn't change anything. Using rails instead of rake to generate keys instead
+#/usr/local/bin/gem install rake -v 13.0.6
 
 # generate a rake secret if the file /mnt/mastodon/private/secret.key doesn't exist
+# we now use rails to generate the key instead of rake
 if [ -f /mnt/mastodon/private/secret.key ]; then
 	echo "Secret key exists, not creating"
 	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
 else
 	echo "Creating a secret key, this takes a few seconds"
-	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake secret > /mnt/mastodon/private/secret.key'
+	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails secret > /mnt/mastodon/private/secret.key'
 	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
 fi
 
 # generate OTP secret if the file /mnt/mastodon/private/otp.key doesn't exist
+# we now use rails to generate the key instead of rake
 if [ -f /mnt/mastodon/private/otp.key ]; then
 	echo "OTP exists, not creating"
 	OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
 else
 	echo "Creating OTP key, this takes a few seconds"
-	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake secret > /mnt/mastodon/private/otp.key'
+	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails secret > /mnt/mastodon/private/otp.key'
 	OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
 fi
 

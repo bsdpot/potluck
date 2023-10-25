@@ -5,6 +5,7 @@
 * Add 'MAX_THREADS=10 WEB_CONCURRENCY=5' to env
 * Update to mastodon 4.2.1
 * Adjustments for missing rake package failing rake secret step
+* Remove rake package install, use rails for secret key generation
 
 ---
 
