@@ -91,6 +91,11 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j
 echo "Installing the required files with yarn"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
 
+# add missing rake gem needed after mastodon 4.2.1
+# this is needed for make secret tasks below
+# See also https://github.com/mastodon/mastodon/issues/26490
+/usr/local/bin/gem install rake -v 13.0.6
+
 # generate a rake secret if the file /mnt/mastodon/private/secret.key doesn't exist
 if [ -f /mnt/mastodon/private/secret.key ]; then
 	echo "Secret key exists, not creating"

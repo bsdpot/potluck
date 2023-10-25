@@ -4,6 +4,7 @@
 * Formatting in nginx.conf, adjustments
 * Add 'MAX_THREADS=10 WEB_CONCURRENCY=5' to env
 * Update to mastodon 4.2.1
+* Adjustments for missing rake package failing rake secret step
 
 ---
 
