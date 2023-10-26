@@ -125,23 +125,31 @@ The REDISPORT parameter is the port to use for `redis`. It defaults to port `637
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 
+The MYSECRETKEY parameter is an optional passed-in secret key for the `.env.production` value `SECRET_KEY_BASE`.
+
+The MYOTPSECRET parameter is an optional passed-in OTP key for the `.env.production` value `OTP_SECRET`.
+
+The MYVAPIDPRIVATEKEY parameter is an optional passed-in secret key for the `.env.production` value `VAPID_PRIVATE_KEY`.
+
+The MYVAPIDPUBLICKEY parameter is an optional passed-in secret key for the `.env.production` value `VAPID_PUBLIC_KEY`.
+
 # Usage
 
 ## Secret Key
 
-A secret key is generated and stored in a file in persistent storage at `/mnt/mastodon/private/secret.key`
+A secret key is passed in, or generated, and stored in a file in persistent storage at `/mnt/mastodon/private/secret.key`
 
 On reboot or an upgraded pot image, this file will be read to configure the `mastodon` settings.
 
 ## OTP Key
 
-An OTP key is generated and stored in a file in persistent storage at `/mnt/mastodon/private/otp.key`
+An OTP key is passed-in, or generated, and stored in a file in persistent storage at `/mnt/mastodon/private/otp.key`
 
 On reboot or an upgraded pot image, this file will be read to configure the `mastodon` settings.
 
 ## Vapid Keys
 
-Vapid private/public keys are stored in a file in persistent storage at `/mnt/mastodon/private/vapid.keys`
+Vapid private/public keys are passed in, or generated, and stored in a file in persistent storage at `/mnt/mastodon/private/vapid.keys`
 
 On reboot or an upgraded pot image, this file will be read to configure the `mastodon` settings.
 
@@ -151,7 +159,7 @@ When there is a new github release at https://github.com/mastodon/mastodon/relea
 
 ```
 pot term mastodon-s3-clone
-./upgrade-mastodon.sh 4.2.0
+./upgrade-mastodon.sh 4.2.1
 ```
 
 Then make sure to update the source pot image to reflect the new version. You can then restart from the new version.

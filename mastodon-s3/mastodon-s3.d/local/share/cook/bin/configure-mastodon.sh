@@ -91,47 +91,41 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j
 echo "Installing the required files with yarn"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
 
-# add missing rake gem needed after mastodon 4.2.1
-# this is needed for make secret tasks below
-# See also https://github.com/mastodon/mastodon/issues/26490
-# removed, doesn't change anything. Using rails instead of rake to generate keys instead
-#/usr/local/bin/gem install rake -v 13.0.6
-
 # generate a rake secret if the file /mnt/mastodon/private/secret.key doesn't exist
 # we now use rails to generate the key instead of rake
+# shellcheck disable=SC2153
 if [ -f /mnt/mastodon/private/secret.key ]; then
 	echo "Secret key exists, not creating"
 	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
 else
-	echo "Creating a secret key, this takes a few seconds"
-	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails secret > /mnt/mastodon/private/secret.key'
-	SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
+	if [ -n "$MYSECRETKEY" ]; then
+		echo "Saving passed in secret key"
+		echo "$MYSECRETKEY" > /mnt/mastodon/private/secret.key
+		SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
+	else
+		echo "Creating a secret key, this takes a few seconds"
+		su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails secret > /mnt/mastodon/private/secret.key'
+		SECRETKEY=$(cat /mnt/mastodon/private/secret.key)
+	fi
 fi
 
 # generate OTP secret if the file /mnt/mastodon/private/otp.key doesn't exist
 # we now use rails to generate the key instead of rake
+# shellcheck disable=SC2153
 if [ -f /mnt/mastodon/private/otp.key ]; then
 	echo "OTP exists, not creating"
 	OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
 else
-	echo "Creating OTP key, this takes a few seconds"
-	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails secret > /mnt/mastodon/private/otp.key'
-	OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
+	if [ -n "$MYOTPSECRET" ]; then
+		echo "Saving passed in OTP key"
+		echo "$MYOTPSECRET" > /mnt/mastodon/private/otp.key
+		OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
+	else
+		echo "Creating OTP key, this takes a few seconds"
+		su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails secret > /mnt/mastodon/private/otp.key'
+		OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
+	fi
 fi
-
-# generate vapid keys if the file /mnt/mastodon/private/vapid.keys doesn't exist
-if [ -f /mnt/mastodon/private/vapid.keys ]; then
-	echo "VAPID keys exist, not creating"
-	VAPIDPRIVATEKEY=$(grep VAPID_PRIVATE_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
-	VAPIDPUBLICKEY=$(grep VAPID_PUBLIC_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
-else
-	echo "Creating Vapid keys"
-	su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake mastodon:webpush:generate_vapid_key > /mnt/mastodon/private/vapid.keys'
-	VAPIDPRIVATEKEY=$(grep VAPID_PRIVATE_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
-	VAPIDPUBLICKEY=$(grep VAPID_PUBLIC_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
-fi
-
-echo "Creating .env.production"
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
@@ -139,6 +133,32 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 # shellcheck disable=SC3003,SC2039
 sep=$'\001'
+
+# generate vapid keys if the file /mnt/mastodon/private/vapid.keys doesn't exist
+# shellcheck disable=SC2153
+if [ -f /mnt/mastodon/private/vapid.keys ]; then
+	echo "VAPID keys exist, not creating"
+	VAPIDPRIVATEKEY=$(grep VAPID_PRIVATE_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
+	VAPIDPUBLICKEY=$(grep VAPID_PUBLIC_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
+else
+	if [ -n "$MYVAPIDPRIVATEKEY" ] && [ -n "$MYVAPIDPUBLICKEY" ]; then
+		echo "Passing vapid keys to new file"
+		< "$TEMPLATEPATH/vapid.keys.in" \
+		sed "s${sep}%%myvapidprivatekey%%${sep}$MYVAPIDPRIVATEKEY${sep}g" | \
+		sed "s${sep}%%myvapidpublickey%%${sep}$MYVAPIDPUBLICKEY${sep}g" \
+		> /mnt/mastodon/private/vapid.keys
+	else
+		echo "Creating Vapid keys"
+		su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rake mastodon:webpush:generate_vapid_key > /mnt/mastodon/private/vapid.keys'
+	fi
+	VAPIDPRIVATEKEY=$(grep VAPID_PRIVATE_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
+	VAPIDPUBLICKEY=$(grep VAPID_PUBLIC_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
+fi
+
+# make sure permissions are correct
+chown -R mastodon:mastodon /mnt/mastodon/private/
+
+echo "Creating .env.production"
 
 # copy in custom mastodon environment file
 < "$TEMPLATEPATH/env.production.in" \

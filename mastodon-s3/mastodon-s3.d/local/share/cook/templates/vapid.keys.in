@@ -1,0 +1,2 @@
+VAPID_PRIVATE_KEY=%%myvapidprivatekey%%
+VAPID_PUBLIC_KEY=%%myvapidpublickey%%

@@ -54,7 +54,8 @@ required_args="$required_args EMAIL MAILHOST MAILUSER MAILPASS MAILFROM"
 required_args="$required_args REDISHOST DBHOST DBUSER DBPASS DBNAME"
 required_args="$required_args BUCKETHOST BUCKETUSER BUCKETPASS"
 required_args="$required_args BUCKETALIAS BUCKETREGION"
-optional_args="MAILPORT DBPORT REDISPORT REMOTELOG"
+optional_args="MAILPORT DBPORT REDISPORT REMOTELOG MYSECRETKEY"
+optional_args="$optional_args MYOTPSECRET MYVAPIDPRIVATEKEY MYVAPIDPUBLICKEY"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
