@@ -7,6 +7,7 @@
 * Adjustments for missing rake package failing rake secret step
 * Remove rake package install, use rails for secret key generation
 * Add parameters for secret key, otp key, vapid keys
+* Fix README for new parameters
 
 ---
 

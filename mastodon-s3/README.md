@@ -68,7 +68,11 @@ However the mastodon pot jail will register a SSL certificate directly.
     [ -E MAILPORT=<SMTP port> ] \
     [ -E DBPORT=<database port> ] \
     [ -E REDISPORT=<redis port> ] \
-    [ -E REMOTELOG="<IP syslog-ng server>" ]
+    [ -E REMOTELOG="<IP syslog-ng server>" ] \
+	[ -E MYSECRETKEY="<rails secret key>" ] \
+	[ -E MYOTPSECRET="<rails secret key for otp>" ] \
+	[ -E MYVAPIDPRIVATEKEY="<vapid private key>" ] \
+	[ -E MYVAPIDPUBLICKEY="<vapid public key>" ]
   ```
 * Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.
 
