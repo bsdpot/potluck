@@ -4,11 +4,11 @@
 	admin off
 }
 
-:80 {
+%%domain%% {
 	redir https://{host}{uri}
 }
 
-:443 {
+%%domain%%:443 {
 	log
 	tls %%email%%
 	respond /health-check "OK" 200
@@ -20,5 +20,3 @@
 		force_path_style
 	}
 }
-
-%%domain%%

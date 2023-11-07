@@ -1,6 +1,7 @@
 0.4
 
 * Version bump for new base image
+* Adjustments to caddyfile
 
 ---
 
