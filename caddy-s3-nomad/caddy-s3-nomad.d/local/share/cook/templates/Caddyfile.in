@@ -4,7 +4,7 @@
 	admin off
 }
 
-%%domain%% {
+:80 {
 	redir https://{host}{uri}
 }
 
