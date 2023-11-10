@@ -1,3 +1,9 @@
+0.84
+
+* Version bump for security updates in base
+
+---
+
 0.83
 
 * Version bump for new packages
