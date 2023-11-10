@@ -1,3 +1,9 @@
+0.0.20
+
+* Version bump for security fixes
+
+---
+
 0.0.19
 
 * Version bump for curl update
