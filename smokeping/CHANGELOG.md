@@ -1,3 +1,9 @@
+0.7
+
+* Rebuild for security updates
+
+---
+
 0.6
 
 * Rebuild for new versions
