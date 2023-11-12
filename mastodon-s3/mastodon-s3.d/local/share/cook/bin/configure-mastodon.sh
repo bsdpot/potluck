@@ -101,7 +101,7 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-pl
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
 #su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --immutable --non-interactive"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --immutable"
 
 # generate a rake secret if the file /mnt/mastodon/private/secret.key doesn't exist
 # we now use rails to generate the key instead of rake

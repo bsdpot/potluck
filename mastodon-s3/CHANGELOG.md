@@ -6,6 +6,7 @@
 * Manually add yarn packages `babel-plugin-lodash@3.3.4` and `compression-webpack-plugin@10.0.0` to fix a compile error
 * Set yarn to stable version instead of classic
 * Remove yarn -W flag for stable version
+* Remove non-interactive flag as deprecated
 
 ---
 
