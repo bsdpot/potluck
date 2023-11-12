@@ -4,6 +4,7 @@
 * Changes to fix broken dependancies
 * Yarn flag change from `yarn install --pure-lockfile` to `yarn install --immutable`
 * Manually add yarn packages `babel-plugin-lodash@3.3.4` and `compression-webpack-plugin@10.0.0` to fix a compile error
+* Set yarn to stable version instead of classic
 
 ---
 

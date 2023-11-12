@@ -72,8 +72,10 @@ echo "Adding node-gyp to yarn"
 /usr/local/bin/yarn add node-gyp
 
 # as user mastodon - set yarn classic
-echo "Setting yarn to classic version"
-su - mastodon -c "/usr/local/bin/yarn set version classic"
+#echo "Setting yarn to classic version"
+#su - mastodon -c "/usr/local/bin/yarn set version classic"
+echo "Setting yarn to stable version"
+su - mastodon -c "/usr/local/bin/yarn set version stable"
 
 # as user mastodon - enable deployment
 echo "Setting mastodon deployment to true"
