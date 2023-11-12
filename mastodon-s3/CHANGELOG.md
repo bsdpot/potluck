@@ -1,6 +1,8 @@
 0.5
 
 * Version bump for new base image
+* Changes to fix broken dependancies
+* Yarn flag change from `yarn install --pure-lockfile` to `yarn install --immutable`
 
 ---
 
