@@ -94,7 +94,9 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j
 # "Using --ignore-workspace-root-check or -W allows a package to be installed at the workspaces root.
 # This tends not to be desired behaviour, as dependencies are generally expected to be part of a workspace."
 echo "Adding yarn package dependancies - temp fix"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
+# no -W with yarn stable aka version 4+
+#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0"
 
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
