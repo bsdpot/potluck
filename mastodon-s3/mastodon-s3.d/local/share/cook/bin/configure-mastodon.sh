@@ -87,10 +87,17 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config wit
 echo "Installing the required files with bundle"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j1"
 
+# add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0
+# this is a temp fix for the error about missing versions
+# "Using --ignore-workspace-root-check or -W allows a package to be installed at the workspaces root.
+# This tends not to be desired behaviour, as dependencies are generally expected to be part of a workspace."
+echo "Adding yarn package dependancies - temp fix"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
+
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
 #su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --immutable"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --immutable --non-interactive"
 
 # generate a rake secret if the file /mnt/mastodon/private/secret.key doesn't exist
 # we now use rails to generate the key instead of rake
