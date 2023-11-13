@@ -7,6 +7,7 @@
 * Set yarn to stable version instead of classic
 * Remove yarn -W flag for stable version
 * Remove non-interactive flag as deprecated
+* Set `compression-webpack-plugin@6.1.1` to avoid api error
 
 ---
 

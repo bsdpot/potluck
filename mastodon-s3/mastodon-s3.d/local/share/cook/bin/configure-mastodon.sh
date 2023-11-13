@@ -89,14 +89,14 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config wit
 echo "Installing the required files with bundle"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j1"
 
-# add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0
+# add babel-plugin-lodash@3.3.4 compression-webpack-plugin@6.1.1
 # this is a temp fix for the error about missing versions
 # "Using --ignore-workspace-root-check or -W allows a package to be installed at the workspaces root.
 # This tends not to be desired behaviour, as dependencies are generally expected to be part of a workspace."
 echo "Adding yarn package dependancies - temp fix"
 # no -W with yarn stable aka version 4+
 #su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@6.1.1"
 
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
