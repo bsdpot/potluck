@@ -114,6 +114,9 @@ pkg install -y nano
 step "Install package sudo"
 pkg install -y sudo
 
+step "Install package acme.sh"
+pkg install -y acme.sh
+
 step "Install package git-lite"
 pkg install -y git-lite
 

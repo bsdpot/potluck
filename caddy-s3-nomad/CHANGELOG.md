@@ -3,6 +3,7 @@
 * Version bump for new base image
 * use acme.sh for certificate registration, remove autossl from caddy
 * Update README and example job
+* Include package acme.sh
 
 ---
 
