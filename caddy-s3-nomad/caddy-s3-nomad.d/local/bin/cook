@@ -108,7 +108,10 @@ fi
 log "Configure access credentials file"
 configure-access.sh
 
-log "Configure nginx with one S3 server"
+log "Configure acme.sh"
+configure-acme.sh
+
+log "Configure caddy with one S3 server"
 configure-caddy.sh
 
 log "Start caddy"

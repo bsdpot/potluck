@@ -55,6 +55,8 @@ BUCKET is the name of the bucket to access, and can be set with `-b` and the buc
 
 DOMAIN is the domain name of the site. You can set this with the `-d` parameter and the domain name.
 
+EMAIL is the email address to use for SSL certificate registration. You can set this with the `-e` parameter and email address.
+
 SERVER is the S3 server. You can also set this with the `-h` parameter followed by the S3 host..
 
 USERNAME to access the S3 repo is can be set with `-u` and the username.
@@ -102,7 +104,7 @@ job "example" {
         pot = "caddy-s3-nomad-amd64-13_2"
         tag = "0.5.1"
         command = "/usr/local/bin/cook"
-        args = ["-h","s3.my.host","-b","bucketname","-d","domainname","-u","username","-p","password","-s","yes"]
+        args = ["-h","s3.my.host","-b","bucketname","-d","domainname","-e","email@add.com","-u","username","-p","password","-s","yes"]
         port_map = {
           http = "443"
         }

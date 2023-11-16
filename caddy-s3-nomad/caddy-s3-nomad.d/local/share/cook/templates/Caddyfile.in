@@ -2,6 +2,7 @@
 	order s3proxy last
 	debug
 	admin off
+	auto_https off
 }
 
 :80 {
@@ -10,7 +11,7 @@
 
 %%domain%%:443 {
 	log
-	tls %%email%%
+    tls /etc/ssl/certs/%%domain%%.cer /etc/ssl/certs/%%domain%%.key
 	respond /health-check "OK" 200
 	s3proxy /* {
 		bucket %%bucket%%
