@@ -1,3 +1,9 @@
+2.2.17
+
+* Make consul-template retry more often
+
+---
+
 2.2.16
 
 * Increase dead-server-last-contact-threshold to 24h

@@ -4,7 +4,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:"$PATH"
 export VAULT_ADDR=https://127.0.0.1:8200
 export VAULT_CACERT=/mnt/unsealcerts/ca_root.crt
 vault audit list | grep -c "^file/" ||

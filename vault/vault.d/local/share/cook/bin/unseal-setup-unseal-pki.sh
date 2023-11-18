@@ -10,7 +10,7 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTDIR=$(dirname "$SCRIPT")
 #TEMPLATEPATH=$SCRIPTDIR/../templates
 
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:"$PATH"
 export VAULT_ADDR=http://127.0.0.1:8200
 
 cd /mnt/unsealcerts

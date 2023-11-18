@@ -31,7 +31,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:"$PATH"
 export VAULT_ADDR=https://active.vault.service.consul:8200
 export VAULT_CLIENT_CERT=/mnt/vaultcerts/agent.crt
 export VAULT_CLIENT_KEY=/mnt/vaultcerts/agent.key

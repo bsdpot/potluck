@@ -7,7 +7,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:"$PATH"
 
 if [ ! -s /mnt/unsealcerts/unwrapped.token ]; then
     UNSEALTOKEN=$(< /mnt/unsealcerts/credentials.json \

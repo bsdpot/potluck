@@ -1,3 +1,9 @@
+0.3.5
+
+* Make consul-template retry a lot more
+
+---
+
 0.3.4
 
 * Stop using custom rc scripts

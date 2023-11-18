@@ -1,3 +1,9 @@
+0.12.6
+
+* Make consul-template retry more often
+
+---
+
 0.12.5
 
 * Extend retention from 15 days to 2 years

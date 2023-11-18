@@ -1,3 +1,9 @@
+0.2.13
+
+* Make consul-template retry more often
+
+---
+
 0.2.12
 
 * Update consul configuration to new version

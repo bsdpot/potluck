@@ -8,7 +8,8 @@ set -e
 set -o pipefail
 
 SCRIPT=$(readlink -f "$0")
-TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+SCRIPTDIR=$(dirname "$SCRIPT")
+TEMPLATEPATH=$SCRIPTDIR/../templates
 
 # shellcheck disable=SC3003
 # safe(r) separator for sed
@@ -97,24 +98,4 @@ sed -i '' 's/consul-template/consul-template-unseal/g' \
 ln -s /usr/local/bin/consul-template \
   /usr/local/bin/consul-template-unseal
 
-echo "Writing consul-template-unseal config"
-mkdir -p /usr/local/etc/consul-template-unseal.d
-
-< "$TEMPLATEPATH/cluster-consul-template-unseal.hcl.in" \
-  sed "s${sep}%%unsealip%%${sep}$UNSEALIP${sep}g" \
-  > /usr/local/etc/consul-template-unseal.d/consul-template-unseal.hcl
-chmod 600 \
-  /usr/local/etc/consul-template-unseal.d/consul-template-unseal.hcl
-echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
-  /usr/local/etc/consul-template-unseal.d/consul-template-unseal.hcl
-
-< "$TEMPLATEPATH/cluster-unseal-vault.tpl.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-  sed "s${sep}%%attl%%${sep}$ATTL${sep}g" | \
-  sed "s${sep}%%bttl%%${sep}$BTTL${sep}g" \
-  > "/mnt/templates/unseal-vault.tpl"
-
-echo "Enabling and starting consul-template-unseal"
-sysrc consul_template_unseal_syslog_output_enable=YES
-service consul-template-unseal enable
+"$SCRIPTDIR"/cluster-configure-consul-template-unseal.sh
