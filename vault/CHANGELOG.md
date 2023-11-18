@@ -1,3 +1,9 @@
+2.2.16
+
+* Increase dead-server-last-contact-threshold to 24h
+
+---
+
 2.2.15
 
 * Update consul configuration to new version

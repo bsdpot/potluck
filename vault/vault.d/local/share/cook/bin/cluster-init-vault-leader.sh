@@ -64,7 +64,7 @@ vault audit enable -address="$LOCAL_VAULT" \
 # XXX: Maybe do this later?
 echo "tuning cluster"
 vault operator raft autopilot set-config \
-  -address="$LOCAL_VAULT" -dead-server-last-contact-threshold=10s \
+  -address="$LOCAL_VAULT" -dead-server-last-contact-threshold=24h \
   -server-stabilization-time=30s -cleanup-dead-servers=true \
   -min-quorum=3
 
