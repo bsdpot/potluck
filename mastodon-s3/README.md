@@ -60,10 +60,11 @@ However the mastodon pot jail will register a SSL certificate directly.
     -E DBPASS=<password> \
     -E DBNAME=<database name> \
     -E REDISHOST=<IP of redis instance> \
-    -E BUCKETHOST=<hostname or IP of S3 storage> \
+    -E BUCKETHOST=<public hostname or IP of S3 storage> \
+    -E S3HOSTNAME=<S3 hostname> \
     -E BUCKETUSER=<S3 access id> \
     -E BUCKETPASS=<S3 password> \
-    -E BUCKETALIAS=<web address for files, S3 proxy> \
+    -E BUCKETALIAS=<web address for files, or alt domain name> \
     -E BUCKETREGION=<S3 region> \
     [ -E MAILPORT=<SMTP port> ] \
     [ -E DBPORT=<database port> ] \
@@ -109,13 +110,15 @@ The DBNAME parameter is the database name on the external `postgresql` instance.
 
 The REDISHOST parameter is the IP address of a LAN-based `redis` host, such as the `redis-single` potluck instance.
 
-The BUCKETHOST paramter is the hostname of your S3 storage.
+The BUCKETHOST parameter is the public hostname of your S3 storage, such as `file.mastodon.instance`.
 
-The BUCKETUSER parameter is the S3 access id of your storage.
+The S3HOSTNAME parameter is the hostname or IP of your S3 storage.
 
-The BUCKETPASS parameter is the S3 password of your storage.
+The BUCKETUSER parameter is the S3 access-id for your storage.
 
-The BUCKETALIAS parameter is the public hostname for the files storage.
+The BUCKETPASS parameter is the S3 password for your storage.
+
+The BUCKETALIAS parameter is an alternate hostname for the S3 storage, or repeat of BUCKETHOST.
 
 The BUCKETREGION parameter is the S3 region.
 

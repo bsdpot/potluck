@@ -22,5 +22,7 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 When updating to new versions of Mastodon, be sure to update the version (4.2.1) in the git checkout statement in:
 * mastodon-s3.d/local/share/cook/bin/configure-mastodon.sh
 
+Also check for changes to install of `babel-plugin-lodash@3.3.4 compression-webpack-plugin@6.1.1` in the same file.
+
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?
