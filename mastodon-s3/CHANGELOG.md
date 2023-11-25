@@ -1,3 +1,10 @@
+0.6
+
+* Version bump for source switch
+* Switch to Wogan May mastodon fork with 5000 character limit
+
+---
+
 0.5
 
 * Version bump for new base image

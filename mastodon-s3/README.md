@@ -173,3 +173,6 @@ Then make sure to update the source pot image to reflect the new version. You ca
 
 Caveat: this is untested
 
+## Custom fork of Mastodon
+
+This uses a custom fork of Mastodon with a 5000 character limit, from https://github.com/woganmay/mastodon in the v4.2.1-patch tag.

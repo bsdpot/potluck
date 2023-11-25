@@ -43,14 +43,15 @@ chown -R mastodon:mastodon /usr/local/www/mastodon
 if [ ! -d /usr/local/www/mastodon/.git ]; then
 	echo "Initiating git repo in /usr/local/www/mastodon"
 	su - mastodon -c "cd /usr/local/www/mastodon; git init"
-	echo "Adding remote origin https://github.com/mastodon/mastodon.git"
-	su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/mastodon/mastodon.git"
+	#echo "Adding remote origin https://github.com/mastodon/mastodon.git"
+	#su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/mastodon/mastodon.git"
+	#switch to fork with 5k post limit
+	echo "Adding remote origin https://github.com/woganmay/mastodon.git"
+	su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/woganmay/mastodon.git"
 	echo "Running git fetch"
 	su - mastodon -c "cd /usr/local/www/mastodon; git fetch"
 	echo "Checking out the mastodon release we want"
-	su - mastodon -c "cd /usr/local/www/mastodon; git checkout origin/main -b 4.2.1"
-	#redundant# echo "Pulling files from git"
-	#redundant# su - mastodon -c "cd /usr/local/www/mastodon; git pull"
+	su - mastodon -c "cd /usr/local/www/mastodon; git checkout v4.2.1-patch"
 else
 	echo ".git directory exists, not cloning repo"
 fi
