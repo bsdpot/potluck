@@ -73,10 +73,12 @@ echo "Adding node-gyp to yarn"
 /usr/local/bin/yarn add node-gyp
 
 # as user mastodon - set yarn classic
-#echo "Setting yarn to classic version"
-#su - mastodon -c "/usr/local/bin/yarn set version classic"
-echo "Setting yarn to stable version"
-su - mastodon -c "/usr/local/bin/yarn set version stable"
+# enable this for wogan fork
+echo "Setting yarn to classic version"
+su - mastodon -c "/usr/local/bin/yarn set version classic"
+# undo this for wogan fork
+#echo "Setting yarn to stable version"
+#su - mastodon -c "/usr/local/bin/yarn set version stable"
 
 # as user mastodon - enable deployment
 echo "Setting mastodon deployment to true"
@@ -94,15 +96,18 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j
 # this is a temp fix for the error about missing versions
 # "Using --ignore-workspace-root-check or -W allows a package to be installed at the workspaces root.
 # This tends not to be desired behaviour, as dependencies are generally expected to be part of a workspace."
-echo "Adding yarn package dependancies - temp fix"
-# no -W with yarn stable aka version 4+
-#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@6.1.1"
+# disable for wogan fork, testing
+#echo "Adding yarn package dependancies - temp fix"
+## no -W with yarn stable aka version 4+
+##su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
+#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@6.1.1"
 
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
-#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --immutable"
+# enable for wogan fork
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
+# disable for wogan fork
+#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --immutable"
 
 # generate a rake secret if the file /mnt/mastodon/private/secret.key doesn't exist
 # we now use rails to generate the key instead of rake
@@ -235,10 +240,6 @@ if [ "$dbcheck" -eq "0" ]; then
 else
 	echo "Database $DBNAME already exists on $DBHOST, no need to create it."
 fi
-
-# testing downgrade of yarn
-echo "Setting yarn back to classic version"
-su - mastodon -c "/usr/local/bin/yarn set version classic"
 
 # precompile assets
 # todo: we only want to do this if it hasn't already been done!
