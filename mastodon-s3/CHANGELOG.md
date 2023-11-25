@@ -3,6 +3,8 @@
 * Version bump for source switch
 * Switch to Wogan May mastodon fork with 5000 character limit
 * Testing hacks to allow yarn 4.0.2
+* Revert hack, yarn <4 and yarn >4 are too different
+* Test if downgrading yarn works
 
 ---
 

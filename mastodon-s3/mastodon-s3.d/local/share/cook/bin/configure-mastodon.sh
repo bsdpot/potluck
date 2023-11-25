@@ -97,8 +97,7 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j
 echo "Adding yarn package dependancies - temp fix"
 # no -W with yarn stable aka version 4+
 #su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
-# adding babel-loader@8.3.0 for testing purposes
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@6.1.1 babel-loader@8.3.0"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@6.1.1"
 
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
@@ -237,10 +236,9 @@ else
 	echo "Database $DBNAME already exists on $DBHOST, no need to create it."
 fi
 
-# testing a hack to allow yarn stable
-# this failed manually, trying after manual install babel-loader
-echo "Testing a hack to allow yarn 4.0.2"
-sed -i '' "s|>=1 <4|>=1 <=4.0.2|g" /usr/local/www/mastodon/vendor/bundle/ruby/3.1/gems/webpacker-5.4.4/package.json
+# testing downgrade of yarn
+echo "Setting yarn back to classic version"
+su - mastodon -c "/usr/local/bin/yarn set version classic"
 
 # precompile assets
 # todo: we only want to do this if it hasn't already been done!
@@ -268,7 +266,6 @@ echo "Enabling mastodon services"
 service mastodon_sidekiq enable || true
 service mastodon_streaming enable || true
 service mastodon_web enable || true
-
 
 # to-do
 # add crontab entries
