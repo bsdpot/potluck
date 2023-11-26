@@ -6,6 +6,7 @@
 * Revert hack, yarn <4 and yarn >4 are too different
 * Test if downgrading yarn works
 * Test downgrading yarn earlier
+* Ruby doesn't like symlink CA certs, update env.production with direct link for freebsd CA cert
 
 ---
 
