@@ -1,3 +1,9 @@
+0.85
+
+* Version bump for new version nextcloud
+
+---
+
 0.84
 
 * Version bump for security updates in base
