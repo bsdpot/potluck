@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Zincsearch</title>
+<style>
+	body {
+		width: 35em;
+		margin: 0 auto;
+		font-family: Tahoma, Verdana, Arial, sans-serif;
+	}
+</style>
+</head>
+<body>
+<h1>Header goes here</h1>
+
+<p>WIP - to go here are charts pulled from zincsearch with clever queries</p>
+
+<section>
+	<div>
+		<p>Paragraph</p>
+		<ul>
+			<li>List item</li>
+		</ul>
+		<p>Paragraph</p>
+	</div>
+</section>
+
+<section>
+    <div>
+        <h5>Heading</h5>
+		<p>Paragraph</p>
+    </div>
+</section>
+
+</body>
+</html>
