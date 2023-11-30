@@ -50,7 +50,7 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY RUNTYPE BUILDHOST"
-optional_args="REMOTELOG EXTRAHOST IMPORTKEYS"
+optional_args="REMOTELOG EXTRAHOST IMPORTKEYS BUCKETHOST BUCKETUSER BUCKETPASS BUCKETNAME"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -108,6 +108,11 @@ timeout --foreground 120 \
 
 log "Start node_exporter"
 service node_exporter start || true
+
+if [ -n "${BUCKETHOST}" ]; then
+	log "Configure minio client.json"
+	configure-minio.sh
+fi
 
 log "Configure jenkins"
 configure-jenkins.sh

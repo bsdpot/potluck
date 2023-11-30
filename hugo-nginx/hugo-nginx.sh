@@ -136,6 +136,9 @@ pkg install -y node_exporter
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
+step "Install package minio-client"
+pkg install -y minio-client
+
 step "Clean package installation"
 pkg autoremove -y
 pkg clean -y

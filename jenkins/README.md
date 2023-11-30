@@ -38,6 +38,10 @@ You can adjust this flavour and rebuild your own pot image if you have other req
     -E RUNTYPE=<nostore|setupstore|activestore> \
     -E BUILDHOST=<IP of potbuilder VM> \
     [ -E IMPORTKEYS=<1|0 default> ] \
+    [ -E BUCKETHOST=<ip or hostname S3 host> ] \
+    [ -E BUCKETUSER=<s3 username> ] \
+    [ -E BUCKETPASS=<s3 password> ] \
+    [ -E BUCKETNAME=<name of bucket> ] \
     [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 
@@ -63,7 +67,9 @@ BUILDHOST is the IP address of a VM or server running FreeBSD and pot, to build 
 IMPORTKEYS defaults to 0 and sets up new keys for jenkins user. Set to 1 to import existing SSH keys to use.
 Copy in the files id_rsa & id_rsa.pub as part of the pot setup and start process.
 
-The REMOTELOG parameter is the IP address of a syslog-ng server, such as with a `loki` or `beast-of-argh` pot image.
+The optional parameters BUCKETHOST, BUCKETUSER, BUCKETPASS and BUCKETNAME refer to credentials for minio-client. This feature is not fully developed yet.
+
+The optional REMOTELOG parameter is the IP address of a syslog-ng server, such as with a `loki` or `beast-of-argh` pot image.
 
 # Usage
 

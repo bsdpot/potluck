@@ -126,6 +126,9 @@ pkg install -y openjdk11
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
+step "Install package minio-client"
+pkg install -y minio-client
+
 step "Install package jenkins"
 pkg install -y jenkins
 
