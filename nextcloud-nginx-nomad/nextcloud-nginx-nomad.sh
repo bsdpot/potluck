@@ -291,8 +291,12 @@ pkg install -y php82-zip
 step "Install package php82-zlib"
 pkg install -y php82-zlib
 
-step "Install package ImageMagick6-nox11"
-pkg install -y ImageMagick6-nox11
+# php82-pecl-imagick installs ImageMagick7 as dependency.
+#step "Install package ImageMagick6-nox11"
+#pkg install -y ImageMagick6-nox11
+
+step "Install package ImageMagick7"
+pkg install -y ImageMagick7
 
 step "Install package libheif"
 pkg install -y libheif

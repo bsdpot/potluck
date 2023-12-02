@@ -1,6 +1,7 @@
 0.85
 
 * Version bump for new version nextcloud
+* Use ImageMagick7 instead of ImageMagick6-nox11 and install all X dependencies too, because php82-pecl-imagick
 
 ---
 
