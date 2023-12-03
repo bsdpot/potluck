@@ -1,6 +1,7 @@
 0.11
 
 * Version bump for new base image
+* Update loki and promtail versions
 
 ---
 
