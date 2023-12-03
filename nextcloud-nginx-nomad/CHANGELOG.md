@@ -1,3 +1,15 @@
+0.87
+
+* Version bump for rebuild
+
+---
+
+0.86
+
+* Version bump for rebuild
+
+---
+
 0.85
 
 * Version bump for new version nextcloud
