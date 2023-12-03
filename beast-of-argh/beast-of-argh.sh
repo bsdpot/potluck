@@ -149,7 +149,7 @@ fi
 
 step "Download promtail release from github"
 fetch -qo - https://github.com/grafana/loki/releases/download/\
-v2.9.1/promtail-freebsd-amd64.zip | unzip -p - promtail-freebsd-amd64 \
+v2.9.2/promtail-freebsd-amd64.zip | unzip -p - promtail-freebsd-amd64 \
   >/usr/local/bin/promtail
 chmod 755 /usr/local/bin/promtail
 
