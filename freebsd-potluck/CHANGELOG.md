@@ -1,3 +1,9 @@
+0.0.21
+
+* Version bump after ZFS fix
+
+---
+
 0.0.20
 
 * Version bump for security fixes
