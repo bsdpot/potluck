@@ -1,6 +1,13 @@
+0.3
+
+* Version bump for new base image
+
+---
+
 0.2
 
 * Version bump for new base image
+* Add item to checklist for new versions postgresql
 
 ---
 

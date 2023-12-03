@@ -18,6 +18,10 @@ Changes to major or minor versions need to be logged in:
 To force a rebuild of the pot image for the potluck site, increment Z of version="x.y.Z" in:
 * `postgres-single.ini`
 
+## New versions of postgresql
+On new versions of postgresql, the postgres.conf.in file needs to be updated
+* postgres-single.d/local/share/cook/templates/postgres.conf.in
+
 ## postgres_exporter
 On new versions of `postgres_exporter` make sure to update the download link, version and checksum in:
 * `postgres-single.sh`
