@@ -102,7 +102,7 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/caddy-s3-nomad"
         pot = "caddy-s3-nomad-amd64-13_2"
-        tag = "0.5.3"
+        tag = "0.6.1"
         command = "/usr/local/bin/cook"
         args = ["-h","s3.my.host","-b","bucketname","-d","domainname","-e","email@add.com","-u","username","-p","password","-s","yes"]
 		mount = [
