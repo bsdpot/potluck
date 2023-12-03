@@ -1,3 +1,9 @@
+0.8
+
+* Version bump for ZFS changes
+
+---
+
 0.7
 
 * Rebuild for security updates
