@@ -7,6 +7,7 @@
 * Update Gemfile by copying in custom version
 * Fix errors
 * Set bundle freeze false
+* Set json-canonicalization (1.0.0)
 
 ---
 
