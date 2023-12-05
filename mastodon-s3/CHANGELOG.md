@@ -6,6 +6,7 @@
 * Update Gemfile manually
 * Update Gemfile by copying in custom version
 * Fix errors
+* Set bundle freeze false
 
 ---
 

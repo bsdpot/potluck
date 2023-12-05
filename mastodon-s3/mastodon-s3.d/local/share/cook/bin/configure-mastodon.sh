@@ -73,6 +73,7 @@ fi
 # https://codeberg.org/ddowse/mastodon/src/branch/main/Bastillefile
 
 # Update Gemfile for older version json-canonicalization
+# Remove this when fixed in source for workaround for json-canonicalization (0.3.1)
 cp -f "$TEMPLATEPATH/Gemfile.lock.in" /usr/local/www/mastodon/Gemfile.lock
 chown  mastodon:mastodon /usr/local/www/mastodon/Gemfile.lock
 
@@ -99,6 +100,10 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config dep
 # as user mastodon - remove development and test environments
 echo "Removing development and test environments"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config without 'development test'"
+
+# unfreeze the gem because we're using older json-canonicalization (0.3.1)
+# remove this when fixed in source
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config set frozen false"
 
 # as user mastodon - bundle install
 echo "Installing the required files with bundle"
