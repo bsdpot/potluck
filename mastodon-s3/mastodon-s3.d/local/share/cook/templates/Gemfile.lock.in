@@ -388,7 +388,7 @@ GEM
       aes_key_wrap
       bindata
       httpclient
-    json-ld (3.3.0)
+    json-ld (3.3.1)
       htmlentities (~> 4.3)
       json-canonicalization (~> 1.0)
       link_header (~> 0.0, >= 0.0.8)

@@ -8,6 +8,8 @@
 * Fix errors
 * Set bundle freeze false
 * Set json-canonicalization (1.0.0)
+* Set json-ld (3.3.1)
+* Switch the alternate patched fork of mastodon https://github.com/hny-gd/mastodon/tree/stable-4.2
 
 ---
 

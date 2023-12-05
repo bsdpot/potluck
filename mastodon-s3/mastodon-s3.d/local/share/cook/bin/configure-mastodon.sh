@@ -51,15 +51,21 @@ sep=$'\001'
 if [ ! -d /usr/local/www/mastodon/.git ]; then
 	echo "Initiating git repo in /usr/local/www/mastodon"
 	su - mastodon -c "cd /usr/local/www/mastodon; git init"
-	#echo "Adding remote origin https://github.com/mastodon/mastodon.git"
-	#su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/mastodon/mastodon.git"
+	# add custom fork with 5k limit and 4.2.3 patches
+	echo "Adding remote origin https://github.com/hny-gd/mastodon.git"
+	su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/hny-gd/mastodon.git"
 	#switch to fork with 5k post limit
-	echo "Adding remote origin https://github.com/woganmay/mastodon.git"
-	su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/woganmay/mastodon.git"
+	## temp remove wogan fork
+	##echo "Adding remote origin https://github.com/woganmay/mastodon.git"
+	##su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/woganmay/mastodon.git"
+	## end temp remove
 	echo "Running git fetch"
 	su - mastodon -c "cd /usr/local/www/mastodon; git fetch"
 	echo "Checking out the mastodon release we want"
-	su - mastodon -c "cd /usr/local/www/mastodon; git checkout v4.2.1-patch"
+	## temp remove wogan fork
+	##su - mastodon -c "cd /usr/local/www/mastodon; git checkout v4.2.1-patch"
+	# temp replace with hnygd
+	su - mastodon -c "cd /usr/local/www/mastodon; git checkout stable-4.2"
 else
 	echo ".git directory exists, not cloning repo"
 fi
@@ -72,10 +78,11 @@ fi
 # as covered in the Bastillefile at
 # https://codeberg.org/ddowse/mastodon/src/branch/main/Bastillefile
 
+# not needed any more
 # Update Gemfile for older version json-canonicalization
 # Remove this when fixed in source for workaround for json-canonicalization (1.0.0)
-cp -f "$TEMPLATEPATH/Gemfile.lock.in" /usr/local/www/mastodon/Gemfile.lock
-chown  mastodon:mastodon /usr/local/www/mastodon/Gemfile.lock
+#cp -f "$TEMPLATEPATH/Gemfile.lock.in" /usr/local/www/mastodon/Gemfile.lock
+#chown  mastodon:mastodon /usr/local/www/mastodon/Gemfile.lock
 
 # enable corepack
 echo "Enabling corepack"
@@ -101,9 +108,10 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config dep
 echo "Removing development and test environments"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config without 'development test'"
 
+# not needed any more
 # unfreeze the gem because we're using newer json-canonicalization (1.0.0)
 # remove this when fixed in source
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config set frozen false"
+#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config set frozen false"
 
 # as user mastodon - bundle install
 echo "Installing the required files with bundle"
