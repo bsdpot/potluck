@@ -38,6 +38,14 @@ mkdir -p /usr/local/www/mastodon
 # set perms on /usr/local/www/mastodon to mastodon:mastodon
 chown -R mastodon:mastodon /usr/local/www/mastodon
 
+# move this up
+SCRIPT=$(readlink -f "$0")
+TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+
+# safe(r) separator for sed
+# shellcheck disable=SC3003,SC2039
+sep=$'\001'
+
 # if we do not have /usr/local/www/mastodon/.git then
 # configure /usr/local/www/mastodon as git repo and pull files
 if [ ! -d /usr/local/www/mastodon/.git ]; then
@@ -66,7 +74,7 @@ fi
 
 # Update Gemfile for older version json-canonicalization
 cp -f "$TEMPLATEPATH/Gemfile.lock.in" /usr/local/www/mastodon/Gemfile.lock
-chown  mastodon:mastdon /usr/local/www/mastodon/Gemfile.lock
+chown  mastodon:mastodon /usr/local/www/mastodon/Gemfile.lock
 
 # enable corepack
 echo "Enabling corepack"
@@ -147,13 +155,6 @@ else
 		OTPSECRET=$(cat /mnt/mastodon/private/otp.key)
 	fi
 fi
-
-SCRIPT=$(readlink -f "$0")
-TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
-
-# safe(r) separator for sed
-# shellcheck disable=SC3003,SC2039
-sep=$'\001'
 
 # generate vapid keys if the file /mnt/mastodon/private/vapid.keys doesn't exist
 # shellcheck disable=SC2153
