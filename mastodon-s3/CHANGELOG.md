@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Update checkout for changed gemfile
 * Manually install json-canonicalization 0.3.1
+* Update Gemfile manually
 
 ---
 

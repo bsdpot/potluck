@@ -101,16 +101,11 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j
 ## no -W with yarn stable aka version 4+
 ##su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
 
-# alt temp fix for missing json-canonicalization-0.3.2#
+# temp fix - missing json-canonicalization-0.3.2#
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add json-canonicalization@0.3.1"
 
-# temp fix #
-# fix missing gem install
-# download the gem file
-#fetch -q https://rubygems.org/downloads/json-canonicalization-0.3.1.gem -o /tmp/json-canonicalization-0.3.1.gem
-# install manually
-#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/gem install /tmp/json-canonicalization-0.3.1.gem"
-# temp fix #
+# temp fix - update Gemfile.lock to reflect earlier version
+sed -i '' "s|json-canonicalization (0.3.2)|json-canonicalization (0.3.1)|g" /usr/local/www/mastodon/Gemfile.lock
 
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
