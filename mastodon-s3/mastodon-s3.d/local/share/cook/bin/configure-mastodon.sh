@@ -64,6 +64,10 @@ fi
 # as covered in the Bastillefile at
 # https://codeberg.org/ddowse/mastodon/src/branch/main/Bastillefile
 
+# Update Gemfile for older version json-canonicalization
+cp -f "$TEMPLATEPATH/Gemfile.lock.in" /usr/local/www/mastodon/Gemfile.lock
+chown  mastodon:mastdon /usr/local/www/mastodon/Gemfile.lock
+
 # enable corepack
 echo "Enabling corepack"
 /usr/local/bin/corepack enable
@@ -100,12 +104,6 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j
 #echo "Adding yarn package dependancies - temp fix"
 ## no -W with yarn stable aka version 4+
 ##su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
-
-# temp fix - missing json-canonicalization-0.3.2#
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add json-canonicalization@0.3.1"
-
-# temp fix - update Gemfile.lock to reflect earlier version
-sed -i '' "s|json-canonicalization (0.3.2)|json-canonicalization (0.3.1)|g" /usr/local/www/mastodon/Gemfile.lock
 
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
