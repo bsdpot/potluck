@@ -59,10 +59,6 @@ EMAIL is the email address to use for SSL certificate registration. You can set 
 
 SERVER is the S3 server. You can also set this with the `-h` parameter followed by the S3 host..
 
-USERNAME to access the S3 repo is can be set with `-u` and the username.
-
-PASSWORD to access the S3 repo is set with `-p` and the password.
-
 SELFSIGNED enables obtaining the self-signed CA certicate into the local store. Enable with `-s` and any value.
 
 # Nomad Job File Samples
@@ -102,9 +98,9 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/caddy-s3-nomad"
         pot = "caddy-s3-nomad-amd64-13_2"
-        tag = "0.6.1"
+        tag = "0.7.1"
         command = "/usr/local/bin/cook"
-        args = ["-h","s3.my.host","-b","bucketname","-d","domainname","-e","email@add.com","-u","username","-p","password","-s","yes"]
+        args = ["-h","s3.my.host","-b","bucketname","-d","domainname","-e","email@add.com","-s","yes"]
 		mount = [
           "/path/to/dataset/caddyimage:/mnt"
         ]

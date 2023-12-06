@@ -21,8 +21,9 @@ mkdir -p /root/.aws
 # safe(r) separator for sed
 sep=$'\001'
 
+# removed as not using auth
 # copy in credentials file
-< "$TEMPLATEPATH/credentials.in" \
-  sed "s${sep}%%username%%${sep}$USERNAME${sep}g" | \
-  sed "s${sep}%%password%%${sep}$PASSWORD${sep}g" \
-  > /root/.aws/credentials
+#< "$TEMPLATEPATH/credentials.in" \
+#  sed "s${sep}%%username%%${sep}$USERNAME${sep}g" | \
+#  sed "s${sep}%%password%%${sep}$PASSWORD${sep}g" \
+#  > /root/.aws/credentials

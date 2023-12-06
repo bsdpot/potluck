@@ -45,7 +45,7 @@ fi
 ## Convert parameters to variables if passed (overwrite environment)
 ########################################################################
 OPTIND=1
-while getopts b:d:e:h:p:s:u: option
+while getopts b:d:e:h:s: option
 do
     case "${option}"
     in
@@ -61,14 +61,8 @@ do
       h) SERVER=${OPTARG}
          export SERVER
          ;;
-      p) PASSWORD=${OPTARG}
-         export PASSWORD
-         ;;
       s) SELFSIGNHOST=${OPTARG}
          export SELFSIGNHOST
-         ;;
-      u) USERNAME=${OPTARG}
-         export USERNAME
          ;;
     esac
 done
@@ -79,7 +73,7 @@ shift "$((OPTIND-1))"
 ########################################################################
 
 required_args="SERVER DOMAIN BUCKET EMAIL"
-optional_args="USERNAME PASSWORD SELFSIGNHOST"
+optional_args="SELFSIGNHOST"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then

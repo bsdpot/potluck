@@ -1,3 +1,10 @@
+0.7
+
+* Version bump for new base image
+* Remove authentication, proceed with image using anonymous download only
+
+---
+
 0.6
 
 * Version bump for new base image
