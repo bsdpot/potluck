@@ -71,7 +71,8 @@ However the mastodon pot jail will register a SSL certificate directly.
 	[ -E MYSECRETKEY="<rails secret key>" ] \
 	[ -E MYOTPSECRET="<rails secret key for otp>" ] \
 	[ -E MYVAPIDPRIVATEKEY="<vapid private key>" ] \
-	[ -E MYVAPIDPUBLICKEY="<vapid public key>" ]
+	[ -E MYVAPIDPUBLICKEY="<vapid public key>" ] \
+    [ -E PVTCERT=<any value enables> ]
   ```
 * Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.
 
@@ -137,6 +138,8 @@ The MYOTPSECRET parameter is an optional passed-in OTP key for the `.env.product
 The MYVAPIDPRIVATEKEY parameter is an optional passed-in secret key for the `.env.production` value `VAPID_PRIVATE_KEY`.
 
 The MYVAPIDPUBLICKEY parameter is an optional passed-in secret key for the `.env.production` value `VAPID_PUBLIC_KEY`.
+
+The PVTCERT parameter is an optional passed in value which generates self-signed certificates when enabled, instead of using `acme.sh`. This is used in testing.
 
 # Usage
 
