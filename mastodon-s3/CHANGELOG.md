@@ -1,3 +1,9 @@
+0.8
+
+* Version bump for new setup with git pull and bundle build process happening in pot build
+
+---
+
 0.7
 
 * Version bump for new base image

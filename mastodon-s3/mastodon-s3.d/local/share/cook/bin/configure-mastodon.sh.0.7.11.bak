@@ -21,10 +21,10 @@ else
 	exit 1
 fi
 
-#test## create mastodon user without -m, --create-home
-#test#if ! id -u "mastodon" >/dev/null 2>&1; then
-#test#  /usr/sbin/pw useradd -n mastodon -c 'Mastodon User' -d /usr/local/www/mastodon -s /bin/sh -h -
-#test#fi
+# create mastodon user without -m, --create-home
+if ! id -u "mastodon" >/dev/null 2>&1; then
+  /usr/sbin/pw useradd -n mastodon -c 'Mastodon User' -d /usr/local/www/mastodon -s /bin/sh -h -
+fi
 
 # make directory to store keys
 mkdir -p /mnt/mastodon/private
@@ -32,11 +32,11 @@ mkdir -p /mnt/mastodon/private
 # set permissions on key directory after creating user
 chown -R mastodon:mastodon /mnt/mastodon/
 
-#test## make sure we have /usr/local/www/mastodon
-#test#mkdir -p /usr/local/www/mastodon
+# make sure we have /usr/local/www/mastodon
+mkdir -p /usr/local/www/mastodon
 
-#test## set perms on /usr/local/www/mastodon to mastodon:mastodon
-#test#chown -R mastodon:mastodon /usr/local/www/mastodon
+# set perms on /usr/local/www/mastodon to mastodon:mastodon
+chown -R mastodon:mastodon /usr/local/www/mastodon
 
 # move this up
 SCRIPT=$(readlink -f "$0")
@@ -46,92 +46,92 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # shellcheck disable=SC3003,SC2039
 sep=$'\001'
 
-#test## if we do not have /usr/local/www/mastodon/.git then
-#test## configure /usr/local/www/mastodon as git repo and pull files
-#test#if [ ! -d /usr/local/www/mastodon/.git ]; then
-#test#	echo "Initiating git repo in /usr/local/www/mastodon"
-#test#	su - mastodon -c "cd /usr/local/www/mastodon; git init"
-#test#	# add custom fork with 5k limit and 4.2.3 patches
-#test#	echo "Adding remote origin https://github.com/hny-gd/mastodon.git"
-#test#	su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/hny-gd/mastodon.git"
-#test#	#switch to fork with 5k post limit
-#test#	## temp remove wogan fork
-#test#	##echo "Adding remote origin https://github.com/woganmay/mastodon.git"
-#test#	##su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/woganmay/mastodon.git"
-#test#	## end temp remove
-#test#	echo "Running git fetch"
-#test#	su - mastodon -c "cd /usr/local/www/mastodon; git fetch"
-#test#	echo "Checking out the mastodon release we want"
-#test#	## temp remove wogan fork
-#test#	##su - mastodon -c "cd /usr/local/www/mastodon; git checkout v4.2.1-patch"
-#test#	# temp replace with hnygd
-#test#	su - mastodon -c "cd /usr/local/www/mastodon; git checkout stable-4.2"
-#test#else
-#test#	echo ".git directory exists, not cloning repo"
-#test#fi
+# if we do not have /usr/local/www/mastodon/.git then
+# configure /usr/local/www/mastodon as git repo and pull files
+if [ ! -d /usr/local/www/mastodon/.git ]; then
+	echo "Initiating git repo in /usr/local/www/mastodon"
+	su - mastodon -c "cd /usr/local/www/mastodon; git init"
+	# add custom fork with 5k limit and 4.2.3 patches
+	echo "Adding remote origin https://github.com/hny-gd/mastodon.git"
+	su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/hny-gd/mastodon.git"
+	#switch to fork with 5k post limit
+	## temp remove wogan fork
+	##echo "Adding remote origin https://github.com/woganmay/mastodon.git"
+	##su - mastodon -c "cd /usr/local/www/mastodon; git remote add origin https://github.com/woganmay/mastodon.git"
+	## end temp remove
+	echo "Running git fetch"
+	su - mastodon -c "cd /usr/local/www/mastodon; git fetch"
+	echo "Checking out the mastodon release we want"
+	## temp remove wogan fork
+	##su - mastodon -c "cd /usr/local/www/mastodon; git checkout v4.2.1-patch"
+	# temp replace with hnygd
+	su - mastodon -c "cd /usr/local/www/mastodon; git checkout stable-4.2"
+else
+	echo ".git directory exists, not cloning repo"
+fi
 
-#test## moved from base file mastodon-s3.sh in anticipation switch to install from github
-#test##
-#test## The FreeBSD wiki has a set of instructions
-#test## https://wiki.freebsd.org/Ports/net-im/mastodon
-#test## however it is missing a step to 'yarn add node-gyp'
-#test## as covered in the Bastillefile at
-#test## https://codeberg.org/ddowse/mastodon/src/branch/main/Bastillefile
+# moved from base file mastodon-s3.sh in anticipation switch to install from github
+#
+# The FreeBSD wiki has a set of instructions
+# https://wiki.freebsd.org/Ports/net-im/mastodon
+# however it is missing a step to 'yarn add node-gyp'
+# as covered in the Bastillefile at
+# https://codeberg.org/ddowse/mastodon/src/branch/main/Bastillefile
 
-#test## not needed any more
-#test## Update Gemfile for older version json-canonicalization
-#test## Remove this when fixed in source for workaround for json-canonicalization (1.0.0)
-#test##cp -f "$TEMPLATEPATH/Gemfile.lock.in" /usr/local/www/mastodon/Gemfile.lock
-#test##chown  mastodon:mastodon /usr/local/www/mastodon/Gemfile.lock
+# not needed any more
+# Update Gemfile for older version json-canonicalization
+# Remove this when fixed in source for workaround for json-canonicalization (1.0.0)
+#cp -f "$TEMPLATEPATH/Gemfile.lock.in" /usr/local/www/mastodon/Gemfile.lock
+#chown  mastodon:mastodon /usr/local/www/mastodon/Gemfile.lock
 
-#test## enable corepack
-#test#echo "Enabling corepack"
-#test#/usr/local/bin/corepack enable
+# enable corepack
+echo "Enabling corepack"
+/usr/local/bin/corepack enable
 
-#test## Add node-gyp to yarn
-#test#echo "Adding node-gyp to yarn"
-#test#/usr/local/bin/yarn add node-gyp
+# Add node-gyp to yarn
+echo "Adding node-gyp to yarn"
+/usr/local/bin/yarn add node-gyp
 
-#test## as user mastodon - set yarn classic
-#test## enable this for wogan fork
-#test#echo "Setting yarn to classic version"
-#test#su - mastodon -c "/usr/local/bin/yarn set version classic"
-#test## undo this for wogan fork
-#test##echo "Setting yarn to stable version"
-#test##su - mastodon -c "/usr/local/bin/yarn set version stable"
+# as user mastodon - set yarn classic
+# enable this for wogan fork
+echo "Setting yarn to classic version"
+su - mastodon -c "/usr/local/bin/yarn set version classic"
+# undo this for wogan fork
+#echo "Setting yarn to stable version"
+#su - mastodon -c "/usr/local/bin/yarn set version stable"
 
-#test## as user mastodon - enable deployment
-#test#echo "Setting mastodon deployment to true"
-#test#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config deployment 'true'"
+# as user mastodon - enable deployment
+echo "Setting mastodon deployment to true"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config deployment 'true'"
 
-#test## as user mastodon - remove development and test environments
-#test#echo "Removing development and test environments"
-#test#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config without 'development test'"
+# as user mastodon - remove development and test environments
+echo "Removing development and test environments"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config without 'development test'"
 
-#test## not needed any more
-#test## unfreeze the gem because we're using newer json-canonicalization (1.0.0)
-#test## remove this when fixed in source
-#test##su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config set frozen false"
+# not needed any more
+# unfreeze the gem because we're using newer json-canonicalization (1.0.0)
+# remove this when fixed in source
+#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config set frozen false"
 
-#test## as user mastodon - bundle install
-#test#echo "Installing the required files with bundle"
-#test#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j1"
+# as user mastodon - bundle install
+echo "Installing the required files with bundle"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j1"
 
-#test## add babel-plugin-lodash@3.3.4 compression-webpack-plugin@6.1.1
-#test## this is a temp fix for the error about missing versions
-#test## "Using --ignore-workspace-root-check or -W allows a package to be installed at the workspaces root.
-#test## This tends not to be desired behaviour, as dependencies are generally expected to be part of a workspace."
-#test## disable for wogan fork, testing
-#test##echo "Adding yarn package dependancies - temp fix"
-#test### no -W with yarn stable aka version 4+
-#test###su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
+# add babel-plugin-lodash@3.3.4 compression-webpack-plugin@6.1.1
+# this is a temp fix for the error about missing versions
+# "Using --ignore-workspace-root-check or -W allows a package to be installed at the workspaces root.
+# This tends not to be desired behaviour, as dependencies are generally expected to be part of a workspace."
+# disable for wogan fork, testing
+#echo "Adding yarn package dependancies - temp fix"
+## no -W with yarn stable aka version 4+
+##su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
 
-#test## as user mastodon - yarn install process
-#test#echo "Installing the required files with yarn"
-#test## enable for wogan fork
-#test#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
-#test## disable for wogan fork
-#test##su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --immutable"
+# as user mastodon - yarn install process
+echo "Installing the required files with yarn"
+# enable for wogan fork
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
+# disable for wogan fork
+#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --immutable"
 
 # generate a rake secret if the file /mnt/mastodon/private/secret.key doesn't exist
 # we now use rails to generate the key instead of rake

@@ -17,7 +17,7 @@ Your S3 storage also needs a frontend such as ```nginx-s3-nomad``` configured be
 
 Deploying the image or flavour should be quite straight forward, however it will take some time to become functional. This is not a fast image to boot!
 
-The `mastodon` image is a non-layered pot jail, and can take up to 30mins to boot the first time due to package download and compiling.
+The `mastodon` image is a non-layered pot jail, and can take a short while to boot assets compiling.
 
 Once started the public-facing website can take several minutes of showing a blank or error page before showing the expected Mastodon default page.
 
@@ -37,10 +37,8 @@ However the mastodon pot jail will register a SSL certificate directly.
 
 * Create your local jail from the image or the flavour files.
 * Create a ZFS dataset for certificates and keys
-* Create a ZFS dataset for /usr/local/www/mastodon
 * Clone the local jail
 * Mount in persistent storage for certificates and keys to /mnt specifically
-* Mount in persistent storage for mastodon to /usr/local/www/mastodon specifically
 * Adjust to your environment:
   ```
     sudo pot set-env -p <clonejailname> \
