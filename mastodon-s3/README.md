@@ -139,7 +139,7 @@ The MYVAPIDPRIVATEKEY parameter is an optional passed-in secret key for the `.en
 
 The MYVAPIDPUBLICKEY parameter is an optional passed-in secret key for the `.env.production` value `VAPID_PUBLIC_KEY`.
 
-The PVTCERT parameter is an optional passed in value which generates self-signed certificates when enabled, instead of using `acme.sh`. This is used in testing.
+The PVTCERT parameter is an optional value which generates self-signed certificates instead of using `acme.sh`. This is used in testing, or if there is a frontend that handles SSL certificates, such as `haproxy`. You must still pass in an EMAIL parameter even though it's not used.
 
 # Usage
 
