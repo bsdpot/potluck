@@ -121,11 +121,11 @@ echo "Creating .env.production"
   sed "s${sep}%%s3user%%${sep}$BUCKETUSER${sep}g" | \
   sed "s${sep}%%s3pass%%${sep}$BUCKETPASS${sep}g" | \
   sed "s${sep}%%region%%${sep}$BUCKETREGION${sep}g" | \
-  sed "s${sep}%%aliashost%%${sep}$BUCKETALIAS${sep}g" \
-  sed "s${sep}%%elasticenable%%${sep}$SETELASTICENABLE${sep}g" \
-  sed "s${sep}%%elastichost%%${sep}$SETELASTICHOST${sep}g" \
-  sed "s${sep}%%elasticport%%${sep}$SETELASTICPORT${sep}g" \
-  sed "s${sep}%%elasticuser%%${sep}$SETELASTICUSER${sep}g" \
+  sed "s${sep}%%aliashost%%${sep}$BUCKETALIAS${sep}g" | \
+  sed "s${sep}%%elasticenable%%${sep}$SETELASTICENABLE${sep}g" | \
+  sed "s${sep}%%elastichost%%${sep}$SETELASTICHOST${sep}g" | \
+  sed "s${sep}%%elasticport%%${sep}$SETELASTICPORT${sep}g" | \
+  sed "s${sep}%%elasticuser%%${sep}$SETELASTICUSER${sep}g" | \
   sed "s${sep}%%elasticpass%%${sep}$SETELASTICPASS${sep}g" \
   > /usr/local/www/mastodon/.env.production
 
