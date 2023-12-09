@@ -122,24 +122,37 @@ echo "Creating .env.production"
   sed "s${sep}%%s3pass%%${sep}$BUCKETPASS${sep}g" | \
   sed "s${sep}%%region%%${sep}$BUCKETREGION${sep}g" | \
   sed "s${sep}%%aliashost%%${sep}$BUCKETALIAS${sep}g" \
+  sed "s${sep}%%elasticenable%%${sep}$SETELASTICENABLE${sep}g" \
+  sed "s${sep}%%elastichost%%${sep}$SETELASTICHOST${sep}g" \
+  sed "s${sep}%%elasticport%%${sep}$SETELASTICPORT${sep}g" \
+  sed "s${sep}%%elasticuser%%${sep}$SETELASTICUSER${sep}g" \
+  sed "s${sep}%%elasticpass%%${sep}$SETELASTICPASS${sep}g" \
   > /usr/local/www/mastodon/.env.production
 
 # set permissions on the file
 echo "Setting permissions on env file"
 chown mastodon:mastodon /usr/local/www/mastodon/.env.production
 
-# copy in upgrade script to /root/upgrade-mastodon.sh
-< "$TEMPLATEPATH/upgrade-mastodon.sh.in" \
-  sed "s${sep}%%redishost%%${sep}$REDISHOST${sep}g" | \
-  sed "s${sep}%%dbuser%%${sep}$DBUSER${sep}g" | \
-  sed "s${sep}%%dbpass%%${sep}$DBPASS${sep}g" | \
-  sed "s${sep}%%dbhost%%${sep}$DBHOST${sep}g" | \
-  sed "s${sep}%%dbport%%${sep}$SETDBPORT${sep}g" | \
-  sed "s${sep}%%dbname%%${sep}$DBNAME${sep}g" \
-  > /root/upgrade-mastodon.sh
+# make a backup of .env.production in /mnt/mastodon/private
+if [ -f /mnt/mastodon/private/backup.env.production ]; then
+	mv -f /mnt/mastodon/private/backup.env.production /mnt/mastodon/private/backup.env.production.old
+fi
+# copy our .env.production to backup
+cp -f /usr/local/www/mastodon/.env.production /mnt/mastodon/private/backup.env.production
 
-# set permissions on upgrade script
-chmod 750 /root/upgrade-mastodon.sh
+# removed as not in use, we'll rebuild the image each time
+# and upgrade the database during boot
+# copy in upgrade script to /root/upgrade-mastodon.sh
+#< "$TEMPLATEPATH/upgrade-mastodon.sh.in" \
+#  sed "s${sep}%%redishost%%${sep}$REDISHOST${sep}g" | \
+#  sed "s${sep}%%dbuser%%${sep}$DBUSER${sep}g" | \
+#  sed "s${sep}%%dbpass%%${sep}$DBPASS${sep}g" | \
+#  sed "s${sep}%%dbhost%%${sep}$DBHOST${sep}g" | \
+#  sed "s${sep}%%dbport%%${sep}$SETDBPORT${sep}g" | \
+#  sed "s${sep}%%dbname%%${sep}$DBNAME${sep}g" \
+#  > /root/upgrade-mastodon.sh
+## set permissions on upgrade script
+#chmod 750 /root/upgrade-mastodon.sh
 
 # remote command database check
 # with bash we can set the shell variable PGPASSWORD="$DBPASS" and run psql without
@@ -158,7 +171,9 @@ if [ "$dbcheck" -eq "0" ]; then
 	echo "Setting up a new database"
 	su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:setup"'
 else
-	echo "Performing database upgrade."
+    echo "Running pre-deployment database migrations"
+    su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; SKIP_POST_DEPLOYMENT_MIGRATIONS=true RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:migrate"'
+    echo "Running post-deployment database migrations"
     su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production SAFETY_ASSURED=1 /usr/local/bin/bundle exec rails db:migrate"'
 fi
 

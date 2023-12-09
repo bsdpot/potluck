@@ -72,7 +72,12 @@ However the mastodon pot jail will register a SSL certificate directly.
 	[ -E MYOTPSECRET="<rails secret key for otp>" ] \
 	[ -E MYVAPIDPRIVATEKEY="<vapid private key>" ] \
 	[ -E MYVAPIDPUBLICKEY="<vapid public key>" ] \
-    [ -E PVTCERT=<any value enables> ]
+    [ -E PVTCERT=<any value enables> ] \
+    [ -E ELASTICENABLE=true ] \
+    [ -E ELASTICHOST=<IP of elasticsearch or zincsearch instance> ] \
+    [ -E ELASTICPORT=<port of ES instance, default 9200> ] \
+    [ -E ELASTICUSER=<username for ES instance > ] \
+    [ -E ELASTICPASS=<password for ES instance > ]
   ```
 * Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.
 
@@ -140,6 +145,14 @@ The MYVAPIDPRIVATEKEY parameter is an optional passed-in secret key for the `.en
 The MYVAPIDPUBLICKEY parameter is an optional passed-in secret key for the `.env.production` value `VAPID_PUBLIC_KEY`.
 
 The PVTCERT parameter is an optional value which generates self-signed certificates instead of using `acme.sh`. This is used in testing, or if there is a frontend that handles SSL certificates, such as `haproxy`. You must still pass in an EMAIL parameter even though it's not used.
+
+The ELASTICENABLE parameter must be set to `true` to enable this functionality.
+
+The ELASTICHOST parameter is the IP address or hostname of an `elasticsearch` or `zincsearch` instance. 
+
+The ELASTICPORT parameter is the port of the `elasticsearch` or `zincsearch` instance.
+
+The ELASTICUSER and ELASTICPASS parameters are the credentials for the `elasticsearch` or `zincsearch` instance.
 
 # Usage
 

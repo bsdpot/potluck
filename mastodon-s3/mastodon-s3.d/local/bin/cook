@@ -56,7 +56,8 @@ required_args="$required_args BUCKETHOST BUCKETUSER BUCKETPASS"
 required_args="$required_args BUCKETALIAS BUCKETREGION S3HOSTNAME"
 optional_args="MAILPORT DBPORT REDISPORT REMOTELOG MYSECRETKEY"
 optional_args="$optional_args MYOTPSECRET MYVAPIDPRIVATEKEY MYVAPIDPUBLICKEY"
-optional_args="$optional_args PVTCERT"
+optional_args="$optional_args PVTCERT ELASTICENABLE ELASTICHOST ELASTICPORT"
+optional_args="$optional_args ELASTICUSER ELASTICPASS"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -108,6 +109,30 @@ if [ -n "${REDISPORT+x}" ]; then
 else
 	SETREDISPORT="6379"
 	export SETREDISPORT
+fi
+
+# set default elasticsearch parameters if not set
+if [ "${ELASTICENABLE+x}" != "true" ]; then
+	# Set ELASTICHOST and ELASTICPORT
+	ELASTICENABLE="false"
+	ELASTICHOST="127.0.0.1"
+	ELASTICPORT="9200"
+	ELASTICUSER="elastic"
+	ELASTICPASS="password"
+fi
+
+# update variable for elasticsearch/zincsearch
+if [ -n "${ELASTICENABLE+x}" ]; then
+	SETELASTICENABLE="$ELASTICENABLE"
+	export SETELASTICENABLE
+    SETELASTICHOST="$ELASTICHOST"
+	export SETELASTICHOST
+    SETELASTICPORT="$ELASTICPORT"
+	export SETELASTICPORT
+    SETELASTICUSER="$ELASTICUSER"
+	export SETELASTICUSER
+    SETELASTICPASS="$ELASTICPASS"
+	export SETELASTICPASS
 fi
 
 # stop services
