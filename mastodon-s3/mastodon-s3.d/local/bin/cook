@@ -111,19 +111,10 @@ else
 	export SETREDISPORT
 fi
 
-# set default elasticsearch parameters if not set
-if [ "${ELASTICENABLE+x}" != "true" ]; then
-	# Set ELASTICHOST and ELASTICPORT
-	ELASTICENABLE="false"
-	ELASTICHOST="127.0.0.1"
-	ELASTICPORT="9200"
-	ELASTICUSER="elastic"
-	ELASTICPASS="password"
-fi
-
 # update variable for elasticsearch/zincsearch
+# if not set, set some sane defaults but disabled
 if [ -n "${ELASTICENABLE+x}" ]; then
-	SETELASTICENABLE="$ELASTICENABLE"
+	SETELASTICENABLE="true"
 	export SETELASTICENABLE
     SETELASTICHOST="$ELASTICHOST"
 	export SETELASTICHOST
@@ -133,6 +124,17 @@ if [ -n "${ELASTICENABLE+x}" ]; then
 	export SETELASTICUSER
     SETELASTICPASS="$ELASTICPASS"
 	export SETELASTICPASS
+else
+    SETELASTICENABLE="false"
+    export SETELASTICENABLE
+    SETELASTICHOST="127.0.0.1"
+    export SETELASTICHOST
+    SETELASTICPORT="9200"
+    export SETELASTICPORT
+    SETELASTICUSER="elastic"
+    export SETELASTICUSER
+    SETELASTICPASS="password"
+    export SETELASTICPASS
 fi
 
 # stop services

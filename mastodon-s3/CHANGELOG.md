@@ -6,6 +6,7 @@
 * Cleanup image, add database migration step if database exists
 * Add elasticsearch parameters
 * Remove upgrade script as image build will upgrade, adjust database upgrade to two-step process
+* adjust logic for elasticsearch parameters
 
 ---
 
