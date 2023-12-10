@@ -273,9 +273,22 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config dep
 echo "Removing development and test environments"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config without 'development test'"
 
+# Left out as not working, may be relevant for FBSD 14
+# might require cbor and posix-spawn gems installed first
+#########
+# as user mastodon add extra adjustments to bundle as per https://wiki.freebsd.org/Ports/net-im/mastodon
+# (Needed for 13.2-STABLE and 14.0-RELEASE and later)
+#echo "Setting Wno-incompatible-function-pointer-types flag for build.cbor"
+## not working: Could not find command "build.cbor".
+#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle build.cbor --with-cflags='-Wno-incompatible-function-pointer-types'"
+#echo "Setting Wno-incompatible-function-pointer-types flag for build.posix-spawn"
+## not working: Could not find command "build.posix-spawn"
+#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle build.posix-spawn --with-cflags='-Wno-incompatible-function-pointer-types'"
+#########
+
 # not needed any more
 # unfreeze the gem because we're using newer json-canonicalization (1.0.0)
-# remove this when fixed in source
+# remove this when fixed in source, keep as record
 #su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config set frozen false"
 
 # as user mastodon - bundle install
