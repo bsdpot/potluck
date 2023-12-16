@@ -1,0 +1,138 @@
+#!/bin/sh
+RUNS_IN_NOMAD=true
+COOKLOG=/var/log/cook.log
+
+pot_seasoned_exit() {
+    [ ! -e /usr/local/etc/pot-is-seasoned ] && \
+      touch /usr/local/etc/pot-is-seasoned
+    # If this pot flavour is blocking (i.e. it should not return), there is
+    # no /tmp/environment.sh created by pot and we now alter configuration
+    # block indefinitely
+    if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        service cook onestop || true
+        service cook onedisable || true
+        /bin/sh /etc/rc
+        tail -f /dev/null
+    fi
+    exit 0
+}
+
+# No need to change this, just ensures configuration is done only once
+[ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
+
+########################################################################
+## Functions and settings
+########################################################################
+
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
+set -e
+export HOME=/root
+
+if [ -e /tmp/environment.sh ]
+then
+    # shellcheck disable=SC1091
+    . /tmp/environment.sh
+
+    # XXX: Remove some things from here later
+    cp -a /tmp/environment.sh /root/.env.cook
+fi
+
+########################################################################
+## Get command line flag options used for nomad images
+## Convert parameters to variables if passed (overwrite environment)
+########################################################################
+OPTIND=1
+while getopts a:b:c:d:i:s:x: option
+do
+    case "${option}"
+    in
+      a) SERVERONE=${OPTARG}
+         export SERVERONE
+         ;;
+      b) SERVERTWO=${OPTARG}
+         export SERVERTWO
+         ;;
+      c) SERVERTHREE=${OPTARG}
+         export SERVERTHREE
+         ;;
+      d) DOMAIN=${OPTARG}
+         export DOMAIN
+         ;;
+      i) IP=${OPTARG}
+         export IP
+         ;;
+      s) SELFSIGNHOST=${OPTARG}
+         export SELFSIGNHOST
+         ;;
+      x) BUCKET=${OPTARG}
+         export BUCKET
+         ;;
+    esac
+done
+shift "$((OPTIND-1))"
+
+########################################################################
+## Check config
+########################################################################
+
+required_args="DOMAIN IP"
+optional_args="SERVERONE SERVERTWO SERVERTHREE BUCKET SELFSIGNHOST"
+
+for var in $required_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "$var is unset - see documentation to configure this flavour."
+    exit 1
+  fi
+done
+
+for var in $optional_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "Optional $var is unset - see documentation to configure this flavour."
+  fi
+done
+
+########################################################################
+## Provision image
+########################################################################
+
+export PATH=/usr/local/share/cook/bin:$PATH
+
+log "stop nginx service, kill nginx if around"
+service nginx onestop || true
+pkill nginx || true
+
+log "Creating self-sign certificates for nginx"
+configure-ssl.sh
+
+if [ -n "$SELFSIGNHOST" ]; then
+    log "Configure self-signed certicate store"
+    configure-selfsigned.sh
+fi
+
+if [ -n "$SERVERONE" ] && [ -z "$SERVERTWO" ] && [ -z "$SERVERTHREE" ]; then
+    log "Configure nginx with one server"
+    configure-nginx.sh
+elif [ -n "$SERVERONE" ] && [ -n "$SERVERTWO" ] && [ -z "$SERVERTHREE" ]; then
+    log "Configure nginx with two servers"
+    configure-nginx2.sh
+elif [ -n "$SERVERONE" ] && [ -n "$SERVERTWO" ] && [ -n "$SERVERTHREE" ]; then
+    log "Configure nginx with three servers"
+    configure-nginx3.sh
+else
+    log "Error: please pass in at least one minio server IP or domain"
+    echo "Please pass in at least one minio server IP or domain"
+    exit 1
+fi
+
+log "Start nginx"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status; do
+    service nginx start || true; sleep 5;
+  done'
+
+# end script placement
+log "Exit seasoned"
+pot_seasoned_exit
