@@ -45,7 +45,7 @@ fi
 ## Convert parameters to variables if passed (overwrite environment)
 ########################################################################
 OPTIND=1
-while getopts a:b:c:d:i:s:x: option
+while getopts a:b:c:d:s:x: option
 do
     case "${option}"
     in
@@ -61,9 +61,6 @@ do
       d) DOMAIN=${OPTARG}
          export DOMAIN
          ;;
-      i) IP=${OPTARG}
-         export IP
-         ;;
       s) SELFSIGNHOST=${OPTARG}
          export SELFSIGNHOST
          ;;
@@ -78,7 +75,7 @@ shift "$((OPTIND-1))"
 ## Check config
 ########################################################################
 
-required_args="DOMAIN IP"
+required_args="DOMAIN"
 optional_args="SERVERONE SERVERTWO SERVERTHREE BUCKET SELFSIGNHOST"
 
 for var in $required_args; do

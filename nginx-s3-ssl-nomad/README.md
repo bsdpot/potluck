@@ -53,8 +53,6 @@ You can pass in parameters to the image to set variables.
 
 DOMAIN is the domain name to use for self-signed certificate used by nginx. You can set this option with `-d` and the domain name.
 
-IP is the IP address of the nomad compute host running the job. You can set this option with `-i` and the IP address of the nomad client instance.
-
 SERVERONE is the first minio server. SERVERTWO is the second. SERVERTHREE is the third. You can set one or all of these with options `-a`, `-b`, and `-c`, for each server.
 
 BUCKET is the name of the bucket to access, and can be set with `-x` and the bucket name. 
@@ -100,9 +98,9 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/nginx-s3-ssl-nomad"
         pot = "nginx-s3-ssl-nomad-amd64-13_2"
-        tag = "0.1.1"
+        tag = "0.1.2"
         command = "/usr/local/bin/cook"
-        args = ["-d","domainname","-i",192.168.0.2","-a","10.0.0.2","-b","10.0.0.3","-x","bucketname","-s","yes"]
+        args = ["-d","domainname","-a","10.0.0.2","-b","10.0.0.3","-x","bucketname","-s","yes"]
         port_map = {
           http = "443"
         }
@@ -154,9 +152,9 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/nginx-s3-ssl-nomad"
         pot = "nginx-s3-ssl-nomad-amd64-13_2"
-        tag = "0.1.1"
+        tag = "0.1.2"
         command = "/usr/local/bin/cook"
-        args = ["-d","domainname","-i",192.168.0.2","-a","10.0.0.2","-b","10.0.0.3","-c","10.0.0.4","-x","bucketname","-s","yes"]
+        args = ["-d","domainname","-a","10.0.0.2","-b","10.0.0.3","-c","10.0.0.4","-x","bucketname","-s","yes"]
         port_map = {
           http = "443"
         }
