@@ -7,7 +7,7 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 mywebpath="/usr/local/www/%%sitename%%"
-mys3path="mymino/%%bucketname%%"
+mys3path="myminio/%%bucketname%%"
 limit="50M"
 
 _check_minio() {

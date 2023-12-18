@@ -4,6 +4,7 @@
 * Adjust minio-client client.json to config.json
 * Add mirror to S3 script
 * Fix typo in mkdir command
+* Fix typo in local minio name myminio
 
 ---
 
