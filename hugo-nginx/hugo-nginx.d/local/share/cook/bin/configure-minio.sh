@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:"$PATH"
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
@@ -18,7 +18,7 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 mkdir -p /root/.minio-client
 
 # make sure root has a bin directory
-mkdir =p /root/bin
+mkdir -p /root/bin
 
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
@@ -35,7 +35,7 @@ sep=$'\001'
 # setup mirror script
 < "$TEMPLATEPATH/mirrorsync.sh.in" \
   sed "s${sep}%%sitename%%${sep}$SITENAME${sep}g" | \
-  sed "s${sep}%%bucketname%%${sep}$BUCKETNAME${sep}g" | \
+  sed "s${sep}%%bucketname%%${sep}$BUCKETNAME${sep}g" \
   > /root/bin/mirrorsync.sh
 
 # set execute permissions
