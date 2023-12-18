@@ -21,8 +21,10 @@ mkdir -p /root/.minio-client
 # safe(r) separator for sed
 sep=$'\001'
 
+# minio is expecting config.json now
+# updating for destination
 < "$TEMPLATEPATH/client.json.in" \
   sed "s${sep}%%buckethost%%${sep}$BUCKETHOST${sep}g" | \
   sed "s${sep}%%bucketuser%%${sep}$BUCKETUSER${sep}g" | \
   sed "s${sep}%%bucketpass%%${sep}$BUCKETPASS${sep}g" \
-  > /root/.minio-client/client.json
+  > /root/.minio-client/config.json

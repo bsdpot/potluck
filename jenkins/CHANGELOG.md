@@ -1,6 +1,7 @@
 0.12
 
 * Version bump for new base image
+* Update minio-client client.json to config.json
 
 ---
 

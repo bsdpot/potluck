@@ -17,12 +17,30 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # create minio client directory
 mkdir -p /root/.minio-client
 
+# make sure root has a bin directory
+mkdir =p /root/bin
+
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 
+# minio actually wants config.json not client.json
+# setting for destination
 < "$TEMPLATEPATH/client.json.in" \
   sed "s${sep}%%buckethost%%${sep}$BUCKETHOST${sep}g" | \
   sed "s${sep}%%bucketuser%%${sep}$BUCKETUSER${sep}g" | \
   sed "s${sep}%%bucketpass%%${sep}$BUCKETPASS${sep}g" \
-  > /root/.minio-client/client.json
+  > /root/.minio-client/config.json
+
+# setup mirror script
+< "$TEMPLATEPATH/mirrorsync.sh.in" \
+  sed "s${sep}%%sitename%%${sep}$SITENAME${sep}g" | \
+  sed "s${sep}%%bucketname%%${sep}$BUCKETNAME${sep}g" | \
+  > /root/bin/mirrorsync.sh
+
+# set execute permissions
+chmod +x /root/bin/mirrorsync.sh
+
+# setup mirror script cron job
+# todo
+# jenkins can also run this after a build process

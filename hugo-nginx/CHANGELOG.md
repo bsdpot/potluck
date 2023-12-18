@@ -1,6 +1,8 @@
 0.12
 
 * Version bump for new base image
+* Adjust minio-client client.json to config.json
+* Add mirror to S3 script
 
 ---
 

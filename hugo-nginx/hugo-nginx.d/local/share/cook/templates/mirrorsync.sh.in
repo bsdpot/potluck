@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+mywebpath="/usr/local/www/%%sitename%%"
+mys3path="mymino/%%bucketname%%"
+limit="50M"
+
+_check_minio() {
+	/usr/local/bin/minio-client --insecure stat "$mys3path"
+}
+
+_mirror_to_minio() {
+	/usr/local/bin/minio-client --insecure --limit-upload "$limit" \
+     --limit-download "$limit" --overwrite "$mywebpath" "$mys3path"
+}
+
+# change directory to the webpath
+cd "$mywebpath" || exit 1
+
+# If minio check is valid, then mirror
+if _check_minio; then
+	_mirror_to_minio
+	echo "S3 mirror success"
+else
+	echo "An error occurred. Could not access bucket. Exiting."
+	exit 1
+fi
