@@ -5,6 +5,8 @@
 * Add mirror to S3 script
 * Fix typo in mkdir command
 * Fix typo in local minio name myminio
+* Update custom minio scripts
+* Add package tmux
 
 ---
 

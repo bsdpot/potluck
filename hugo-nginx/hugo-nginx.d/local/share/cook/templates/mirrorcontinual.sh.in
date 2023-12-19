@@ -14,17 +14,17 @@ _check_minio() {
 	/usr/local/bin/minio-client --insecure stat "$mys3path"
 }
 
-_mirror_to_minio() {
-	/usr/local/bin/minio-client --insecure mirror --limit-upload "$limit" \
+_continual_mirror_to_minio() {
+	/usr/local/bin/minio-client --insecure mirror --watch --limit-upload "$limit" \
      --retry --limit-download "$limit" --overwrite "$mywebpath" "$mys3path"
 }
 
 # change directory to the webpath
 cd "$mywebpath" || exit 1
 
-# If minio check is valid, then mirror
+# If minio check is valid, then continually mirror
 if _check_minio; then
-	_mirror_to_minio
+	_continual_mirror_to_minio
 	printf "\nS3 mirror success\n\n"
 else
 	printf "\nAn error occurred. Could not access bucket. Exiting. Contact Admin.\n\n"

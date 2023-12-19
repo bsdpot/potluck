@@ -32,7 +32,16 @@ sep=$'\001'
   sed "s${sep}%%bucketpass%%${sep}$BUCKETPASS${sep}g" \
   > /root/.minio-client/config.json
 
-# setup mirror script
+# setup diff mirror check script
+< "$TEMPLATEPATH/mirrorcheck.sh.in" \
+  sed "s${sep}%%sitename%%${sep}$SITENAME${sep}g" | \
+  sed "s${sep}%%bucketname%%${sep}$BUCKETNAME${sep}g" \
+  > /root/bin/mirrorcheck.sh
+
+# set execute permissions
+chmod +x /root/bin/mirrorcheck.sh
+
+# setup mirror sync script
 < "$TEMPLATEPATH/mirrorsync.sh.in" \
   sed "s${sep}%%sitename%%${sep}$SITENAME${sep}g" | \
   sed "s${sep}%%bucketname%%${sep}$BUCKETNAME${sep}g" \
@@ -40,6 +49,15 @@ sep=$'\001'
 
 # set execute permissions
 chmod +x /root/bin/mirrorsync.sh
+
+# setup continual mirror sync script
+< "$TEMPLATEPATH/mirrorcontinual.sh.in" \
+  sed "s${sep}%%sitename%%${sep}$SITENAME${sep}g" | \
+  sed "s${sep}%%bucketname%%${sep}$BUCKETNAME${sep}g" \
+  > /root/bin/mirrorcontinual.sh
+
+# set execute permissions
+chmod +x /root/bin/mirrorcontinual.sh
 
 # setup mirror script cron job
 # todo

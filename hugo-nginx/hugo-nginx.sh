@@ -139,6 +139,9 @@ pkg install -y syslog-ng
 step "Install package minio-client"
 pkg install -y minio-client
 
+step "Install package tmux"
+pkg install -y tmux
+
 step "Clean package installation"
 pkg autoremove -y
 pkg clean -y
