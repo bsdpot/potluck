@@ -7,6 +7,7 @@
 * Fix typo in local minio name myminio
 * Update custom minio scripts
 * Add package tmux
+* Update minio scripts
 
 ---
 
