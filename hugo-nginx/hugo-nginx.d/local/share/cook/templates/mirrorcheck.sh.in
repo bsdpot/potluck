@@ -18,7 +18,6 @@ _diff_against_minio() {
 	/usr/local/bin/minio-client \
 	 --insecure \
 	 diff \
-	 --json
 	 "$mywebpath" "$mys3path"
 }
 
@@ -32,3 +31,5 @@ else
 	printf "\nAn error occurred. Could not access bucket. Exiting. Contact Admin.\n\n"
 	exit 1
 fi
+
+printf "\nNote this will give errors on local symlinked files copied to created directories in the object store\n\n"

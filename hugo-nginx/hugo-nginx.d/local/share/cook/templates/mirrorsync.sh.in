@@ -15,6 +15,8 @@ _check_minio() {
 	 --insecure stat "$mys3path"
 }
 
+# this will mirror the files in $mywebpath to minio bucket
+# but it doesn't do symlinks
 _mirror_to_minio() {
 	/usr/local/bin/minio-client \
 	 --insecure \
@@ -28,13 +30,55 @@ _mirror_to_minio() {
 	 "$mywebpath" "$mys3path"
 }
 
+# this will take in symlinks from $mywebpath and create directories in S3
+_create_dir_from_symlink() {
+	mydir=$1
+	mytarget="$mys3path$mydir"
+	/usr/local/bin/minio-client \
+	--insecure \
+	mb \
+	--ignore-existing \
+	"$mytarget"
+}
+
+# this will mirror the files in symlinked directories to the created dirs in S3
+_mirror_symlinked_files() {
+	destdir=$1
+	symsource="$mywebpath$destdir"
+	symtarget="$mys3path$destdir"
+	/usr/local/bin/minio-client \
+	 --insecure \
+	 mirror \
+	 --overwrite \
+	 --limit-upload "$limit" \
+	 --limit-download "$limit" \
+	 --preserve \
+	 --quiet \
+	 --json \
+	 --no-color \
+	 "$symsource" "$symtarget"
+}
+
 # change directory to the webpath
 cd "$mywebpath" || exit 1
 
+# this will get a list of symlinks in $mywebdir and set an empty string variable for $newdir
+findsymlinks=$(find . -type l | sed -e "s|./||")
+newdir=
+
 # If minio check is valid, then mirror
 if _check_minio; then
-        _mirror_to_minio
+	# mirror files (but not symlinks) in $mywebdir to myminio/bucket
+	_mirror_to_minio
+	# do not quote $makedirs because it combines all the items into one
+	for newdir in $findsymlinks; do
+		# from the list of symlinks create a directory in the destination bucket
+		_create_dir_from_symlink "$newdir"
+		# for each symlink destination, sync those files to their respective
+		# bucket/dir
+		_mirror_symlinked_files "$newdir"
+	done
 else
-        printf "\nAn error occurred. Could not access bucket. Exiting. Contact Admin.\n\n"
-        exit 1
+	printf "\nAn error occurred. Could not access bucket. Exiting. Contact Admin.\n\n"
+	exit 1
 fi

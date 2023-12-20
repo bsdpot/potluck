@@ -8,6 +8,7 @@
 * Update custom minio scripts
 * Add package tmux
 * Update minio scripts
+* Refined minio scripts
 
 ---
 

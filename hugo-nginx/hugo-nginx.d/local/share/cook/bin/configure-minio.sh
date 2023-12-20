@@ -50,15 +50,6 @@ chmod +x /root/bin/mirrorcheck.sh
 # set execute permissions
 chmod +x /root/bin/mirrorsync.sh
 
-# setup continual mirror sync script
-< "$TEMPLATEPATH/mirrorcontinual.sh.in" \
-  sed "s${sep}%%sitename%%${sep}$SITENAME${sep}g" | \
-  sed "s${sep}%%bucketname%%${sep}$BUCKETNAME${sep}g" \
-  > /root/bin/mirrorcontinual.sh
-
-# set execute permissions
-chmod +x /root/bin/mirrorcontinual.sh
-
 # setup mirror script cron job
 # todo
 # jenkins can also run this after a build process
