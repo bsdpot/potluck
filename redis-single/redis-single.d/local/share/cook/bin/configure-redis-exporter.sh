@@ -13,5 +13,7 @@ echo "redis_exporter_listen_address=\"$IP:9121\"" >> /etc/rc.conf
 echo "redis_exporter_server=\"$IP\"" >> /etc/rc.conf
 
 if [ -n "$AUTHPASS" ]; then
-	echo "redis_exporter_args=\"-redis.password $AUTHPASS\"" >> /etc/rc.conf
+	echo "redis_exporter_args=\"-include-system-metrics -redis.password $AUTHPASS\"" >> /etc/rc.conf
+else
+	echo "redis_exporter_args=\"-include-system-metrics\"" >> /etc/rc.conf
 fi
