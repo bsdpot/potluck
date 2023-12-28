@@ -6,6 +6,7 @@
 * Remove noisy low usage postgres alerts
 * Add redis config to prometheus
 * Update loki and promtail version to latest
+* Add redis dashboard
 
 ---
 

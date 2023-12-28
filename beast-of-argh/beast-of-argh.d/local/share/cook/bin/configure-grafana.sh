@@ -32,6 +32,7 @@ chown -R grafana:grafana /mnt/applog/grafana
 # dashboard sources
 # https://raw.githubusercontent.com/lux4rd0/grafana-loki-syslog-aio/main/config/grafana/dashboards/no_folder/loki_syslog_aio_overview.json
 # https://grafana.com/grafana/dashboards/15764-nomad/
+# https://promcat.io/apps/redis
 #
 # removed as no longer working
 # https://raw.githubusercontent.com/mr-karan/nomad-monitoring/main/dashboards/allocations.json
@@ -98,6 +99,8 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
       /mnt/grafana/provisioning/dashboards/mysql.json
     cp "$TEMPLATEPATH/minio.json.in" \
       /mnt/grafana/provisioning/dashboards/minio.json
+    cp "$TEMPLATEPATH/redis.json.in" \
+      /mnt/grafana/provisioning/dashboards/redis.json
 	# removing as not working any more, using hashicorp supplied dashboard now
     #cp "$TEMPLATEPATH/nomadallocations.json.in" \
     #  /mnt/grafana/provisioning/dashboards/nomadallocations.json
@@ -164,6 +167,8 @@ else
       /mnt/grafana/provisioning/dashboards/mysql.json
     cp "$TEMPLATEPATH/minio.json.in" \
       /mnt/grafana/provisioning/dashboards/minio.json
+    cp "$TEMPLATEPATH/redis.json.in" \
+      /mnt/grafana/provisioning/dashboards/redis.json
 	# removing as not working any more, using hashicorp supplied dashboard now
     #cp "$TEMPLATEPATH/nomadallocations.json.in" \
     #  /mnt/grafana/provisioning/dashboards/nomadallocations.json
