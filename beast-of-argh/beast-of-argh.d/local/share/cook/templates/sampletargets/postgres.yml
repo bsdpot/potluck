@@ -1,8 +1,8 @@
 # postgres.yml - adjust to suit your needs using the following format
 #
 #- targets:
-#  - 10.0.0.5
-#  - 10.0.0.6
+#  - 10.0.0.5:9187
+#  - 10.0.0.6:9187
 #  labels:
 #    job: postgres
 - targets:

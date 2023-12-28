@@ -2,6 +2,10 @@
 
 * Version bump for new base image
 * Update loki and promtail versions
+* Specify port in postgres.yml for prometheus monitoring
+* Remove noisy low usage postgres alerts
+* Add redis config to prometheus
+* Update loki and promtail version to latest
 
 ---
 

@@ -35,6 +35,9 @@ fi
 if [ ! -f /mnt/prometheus/targets.d/mysql.yml ]; then
     cp -a "$TEMPLATEPATH"/sampletargets/mysql.yml /mnt/prometheus/targets.d/mysql.yml
 fi
+if [ ! -f /mnt/prometheus/targets.d/redis.yml ]; then
+    cp -a "$TEMPLATEPATH"/sampletargets/redis.yml /mnt/prometheus/targets.d/redis.yml
+fi
 chown -R prometheus:prometheus /mnt/prometheus/targets.d
 
 # shellcheck disable=SC3003,SC2039

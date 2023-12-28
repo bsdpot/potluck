@@ -120,11 +120,12 @@ File-based scrape targets are configured for the following files, which you can 
 * /mnt/prometheus/targets.d/mytargets.yml
 * /mnt/prometheus/targets.d/postgres.yml
 * /mnt/prometheus/targets.d/minio.yml
+* /mnt/prometheus/targets.d/redis.yml
 
 These files need to in the format:
 ```
 - targets:
-  - <fqdn or ip>:<optional port>
+  - <ip>:<port>
   labels:
     job: jobtype1
 ```
@@ -138,6 +139,7 @@ Test metrics scraping with ```curl -k https://your-minio-host:9000/minio/v2/metr
 ```
 - targets:
   - your-minio-host:9000
+  - your-other-minio:9000
   labels:
     job: minio
 ```

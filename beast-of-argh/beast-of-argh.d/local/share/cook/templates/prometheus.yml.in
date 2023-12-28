@@ -120,6 +120,10 @@ scrape_configs:
     file_sd_configs:
     - files:
       - '/mnt/prometheus/targets.d/mysql.yml'
+  - job_name: 'redis'
+    file_sd_configs:
+    - files:
+      - '/mnt/prometheus/targets.d/redis.yml'
   - job_name: 'postgresql'
     metrics_path: "/metrics"
     params:
