@@ -255,6 +255,7 @@ pkg install -y php82-pecl-memcache
 step "Install package php82-pecl-redis"
 pkg install -y php82-pecl-redis
 
+# this is giving problems Dec 2023, missing in package sources
 step "Install package php82-pecl-imagick"
 pkg install -y php82-pecl-imagick
 
@@ -269,6 +270,9 @@ pkg install -y php82-session
 
 step "Install package php82-simplexml"
 pkg install -y php82-simplexml
+
+step "Install package php82-sodium"
+pkg install -y php82-sodium
 
 step "Install package php82-sysvsem"
 pkg install -y php82-sysvsem

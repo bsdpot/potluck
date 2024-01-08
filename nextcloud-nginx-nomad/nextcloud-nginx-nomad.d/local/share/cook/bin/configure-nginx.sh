@@ -23,3 +23,8 @@ chown -R www:www "${DATADIR}"
 # Configure NGINX
 cp -f "$TEMPLATEPATH/nginx.conf" /usr/local/etc/nginx/nginx.conf
 
+# update mime.types file
+# we want to include the following
+#  application/javascript js mjs;
+#
+cp -f "$TEMPLATEPATH/mime.types.in" /usr/local/etc/nginx/mime.types

@@ -1,3 +1,16 @@
+0.89
+
+* Add missing js mimetype
+
+---
+
+0.88
+
+* Version bump for rebuild
+* Add php82-sodium
+
+---
+
 0.87
 
 * Version bump for rebuild
