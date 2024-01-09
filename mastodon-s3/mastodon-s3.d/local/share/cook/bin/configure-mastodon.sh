@@ -127,7 +127,7 @@ echo "Creating .env.production"
   sed "s${sep}%%elasticport%%${sep}$SETELASTICPORT${sep}g" | \
   sed "s${sep}%%elasticuser%%${sep}$SETELASTICUSER${sep}g" | \
   sed "s${sep}%%elasticpass%%${sep}$SETELASTICPASS${sep}g" | \
-  sed "s${sep}%%deepltranslatekey%%${sep}$SETDEEPLKEY{sep}g" | \
+  sed "s${sep}%%deepltranslatekey%%${sep}$SETDEEPLKEY${sep}g" | \
   sed "s${sep}%%deepltranslateplan%%${sep}$SETDEEPLPLAN${sep}g" \
   > /usr/local/www/mastodon/.env.production
 
