@@ -77,7 +77,9 @@ However the mastodon pot jail will register a SSL certificate directly.
     [ -E ELASTICHOST=<IP of elasticsearch or zincsearch instance> ] \
     [ -E ELASTICPORT=<port of ES instance, default 9200> ] \
     [ -E ELASTICUSER=<username for ES instance > ] \
-    [ -E ELASTICPASS=<password for ES instance > ]
+    [ -E ELASTICPASS=<password for ES instance > ] \
+    [ -E DEEPLKEY=<API key> ] \
+    [ -E DEEPLPLAN=<API plan or free> ]
   ```
 * Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.
 
@@ -153,6 +155,10 @@ The ELASTICHOST parameter is the IP address or hostname of an `elasticsearch` or
 The ELASTICPORT parameter is the port of the `elasticsearch` or `zincsearch` instance.
 
 The ELASTICUSER and ELASTICPASS parameters are the credentials for the `elasticsearch` or `zincsearch` instance.
+
+The DEEPLKEY parameter is the API key for the [DeepL translation service](https://www.deepl.com/translator). In unset a default, invalid key will be set.
+
+The DEEPLPLAN is the type of API plan. If using the free plan set this value to 'free'. If unset it will default to 'free'.
 
 # Usage
 

@@ -8,6 +8,7 @@
 * Remove upgrade script as image build will upgrade, adjust database upgrade to two-step process
 * adjust logic for elasticsearch parameters
 * Add bundle config adjustments from https://wiki.freebsd.org/Ports/net-im/mastodon but commented out because not working
+* Add DeepL translation API parameters
 
 ---
 
