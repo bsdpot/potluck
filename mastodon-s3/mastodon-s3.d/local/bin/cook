@@ -145,7 +145,7 @@ else
 	SETDEEPLKEY="SIGN-UP-FOR-API-KEY"
 	export SETDEEPLKEY
 fi
-if [ -n "${DEEPLPLAN}" ]; then
+if [ -n "${DEEPLPLAN+x}" ]; then
 	SETDEEPLPLAN="$DEEPLPLAN"
 	export SETDEEPLPLAN
 else
