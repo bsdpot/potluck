@@ -439,6 +439,11 @@ proc-title-template "{title} {listen-addr} {server-mode}"
 #
 # save 3600 1 300 100 60 10000
 
+# potluck enablement
+# from https://www.dragonflydb.io/faq/how-to-configure-redis-as-persistent-cache
+# Snapshot after 900 seconds if at least 1 key changed
+save 900 1
+
 # By default Redis will stop accepting writes if RDB snapshots are enabled
 # (at least one save point) and the latest background save failed.
 # This will make the user aware (in a hard way) that data is not persisting
@@ -1384,7 +1389,7 @@ disable-thp yes
 #
 # Please check https://redis.io/topics/persistence for more information.
 
-appendonly no
+appendonly yes
 
 # The base name of the append only file.
 #

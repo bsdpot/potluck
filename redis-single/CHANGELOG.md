@@ -2,6 +2,8 @@
 
 * Version bump for new base image
 * Add include-system-metrics to redis_exporter
+* Enable appendonly config (AOF)
+* Set new RDB settings, use both
 
 ---
 
