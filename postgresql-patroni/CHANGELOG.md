@@ -1,3 +1,7 @@
+2.2.17
+
+* Log queries that take longer than 100ms without parameters
+
 2.2.16
 
 * Make consul-template retry more often

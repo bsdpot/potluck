@@ -48,6 +48,8 @@ bootstrap:
       parameters:
         wal_level: replica
         hot_standby: %%hot_standby%%
+        log_min_duration_statement: 100
+        log_parameter_max_length: 0
         wal_keep_segments: 8
         max_wal_senders: 5
         max_replication_slots: 5
