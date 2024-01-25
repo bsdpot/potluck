@@ -28,12 +28,21 @@ EXPPASS=$(cat /mnt/patronicerts/exporter.pass)
 REPPASS=$(cat /mnt/patronicerts/replicator.pass)
 SUPPASS=$(cat /mnt/patronicerts/superuser.pass)
 
+if [ "$SERVICETAG" = "backup_node" ]; then
+  NO_FAILOVER=true
+  HOT_STANDBY=off
+else
+  NO_FAILOVER=false
+  HOT_STANDBY=on
+fi
 # setup patroni.yml by updating variables
 < "$TEMPLATEPATH/patroni.yml.in" \
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%servicetag%%${sep}$SERVICETAG${sep}g" \
+  sed "s${sep}%%servicetag%%${sep}$SERVICETAG${sep}g" | \
+  sed "s${sep}%%nofailover%%${sep}$NO_FAILOVER${sep}g" | \
+  sed "s${sep}%%hot_standby%%${sep}$HOT_STANDBY${sep}g" \
   > /usr/local/etc/patroni/patroni.yml
 chmod 600 /usr/local/etc/patroni/patroni.yml
 echo "s${sep}%%admpass%%${sep}$ADMPASS${sep}g" | sed -i '' -f - \
@@ -50,10 +59,6 @@ chown postgres /usr/local/etc/patroni/patroni.yml
 
 # copy patroni startup script to /usr/local/etc/rc.d/
 cp "$TEMPLATEPATH/patroni.rc.in" /usr/local/etc/rc.d/patroni
-
-# enable postgresql
-service postgresql enable
-sysrc postgresql_data="/mnt/postgres/data/"
 
 # enable patroni
 service patroni enable

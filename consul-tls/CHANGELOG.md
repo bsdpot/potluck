@@ -1,3 +1,21 @@
+0.2.13
+
+* Make consul-template retry more often
+
+---
+
+0.2.12
+
+* Update consul configuration to new version
+
+---
+
+0.2.11
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
 0.2.10
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured

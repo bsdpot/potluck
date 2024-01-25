@@ -1,3 +1,28 @@
+0.1.7
+
+* Make consul-template retry more often
+
+---
+
+0.1.6
+
+* Update consul configuration to new version
+* Fix _app label in node-exporter
+
+---
+
+0.1.5
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
+0.1.4
+
+* Explicitly install ca_root_nss, as it does not come with curl anymore
+
+---
+
 0.1.3
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured

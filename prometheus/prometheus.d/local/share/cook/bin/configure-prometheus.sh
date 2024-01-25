@@ -29,15 +29,15 @@ CONSUL_METRICS_TOKEN=$(cat /mnt/consulcerts/consul_metrics.token)
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%consulservers%%${sep}$SCRAPECONSUL${sep}g" | \
   sed "s${sep}%%consul_metrics_token%%${sep}$CONSUL_METRICS_TOKEN${sep}g" | \
-  sed "s${sep}%%nomadservers%%${sep}$SCRAPENOMAD${sep}g" | \
-  sed "s${sep}%%dbservers%%${sep}$SCRAPEDATABASE${sep}g" \
+  sed "s${sep}%%nomadservers%%${sep}$SCRAPENOMAD${sep}g" \
   > /usr/local/etc/prometheus.yml
 
 # enable prometheus service
 service prometheus enable
 sysrc prometheus_data_dir="/mnt/prometheus"
 sysrc prometheus_syslog_output_enable="YES"
-sysrc prometheus_args="--web.listen-address=127.0.0.1:9090"
+sysrc prometheus_args="--web.listen-address=127.0.0.1:9090 \
+--storage.tsdb.retention=2y"
 
 ## end prometheus config
 

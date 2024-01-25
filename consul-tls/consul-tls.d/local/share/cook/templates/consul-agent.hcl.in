@@ -10,13 +10,20 @@ ports = {
   http = -1
   https = 8500
 }
-ca_file = "/mnt/consulcerts/ca_root.crt"
-cert_file = "/mnt/consulcerts/agent.crt"
-key_file = "/mnt/consulcerts/agent.key"
-verify_incoming = true
-verify_outgoing = true
-verify_server_hostname = true
-verify_incoming_rpc = true
+tls = {
+  defaults = {
+    verify_incoming = true
+    verify_outgoing = true
+    ca_file = "/mnt/consulcerts/ca_root.crt"
+    cert_file = "/mnt/consulcerts/agent.crt"
+    key_file = "/mnt/consulcerts/agent.key"
+  }
+
+  internal_rpc = {
+    verify_incoming = true
+    verify_server_hostname = true
+  }
+}
 enable_syslog = true
 leave_on_terminate = true
 log_level = "WARN"
@@ -29,7 +36,7 @@ server = true
 encrypt = "%%gossipkey%%"
 bootstrap_expect = %%bootstrap%%
 %%forcluster%%rejoin_after_leave = true
-%%forcluster%%start_join = ["%%ip%%", %%peers%%]
+%%forcluster%%retry_join = ["%%ip%%", %%peers%%]
 telemetry = {
   disable_hostname = true
   prometheus_retention_time = "24h"

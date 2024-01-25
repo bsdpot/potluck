@@ -1,3 +1,38 @@
+2.2.17
+
+* Log queries that take longer than 100ms without parameters
+
+2.2.16
+
+* Make consul-template retry more often
+
+---
+
+2.2.15
+
+* Update consul configuration to new version
+* Fix _app label in node-exporter
+
+---
+
+2.2.14
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
+2.2.13
+
+* Remove outdated consul patch
+
+---
+
+2.2.12
+
+* Various fixes, support for backup node
+
+---
+
 2.2.11
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured

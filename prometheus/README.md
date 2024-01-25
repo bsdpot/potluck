@@ -32,7 +32,6 @@ site to run `consul`.
         -E CONSULSERVERS='<correctly formatted list of quoted IP addresses>' \
         -E SCRAPECONSUL='<correctly formatted list of quoted IP addresses>' \
         -E SCRAPENOMAD='<correctly formatted list of quoted IP addresses>' \
-        -E SCRAPEDATABASE='<correctly formatted list of quoted IP addresses>' \
         -E SMTPHOSTPORT="smtp.host.com:25" -E SMTPFROM="alertmanager@example.com" \
         -E ALERTADDRESS="<email address to notify>" \
         [-E SMTPUSER=<smtp auth user> -E SMTPPASS=<smtp auth password>] \
@@ -49,10 +48,6 @@ The SCRAPECONSUL parameter is a list of `consul` servers with port for TLS
 
 The SCRAPENOMAD parameter is a list of `nomad` servers with port for TLS
 (usually 4646), to pass into prometheus.yml.
-
-The SCRAPEDATABASE parameter is a list of `postgres_exporter` instances on
-`postgresql-patroni` images with TLS port (usually 9187) to pass into
-prometheus.yml.
 
 The REMOTELOG parameter is the IP address of a remote syslog server to send
 logs to, such as for the `loki` flavour on this site.

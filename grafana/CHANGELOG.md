@@ -1,3 +1,40 @@
+0.3.5
+
+* Make consul-template retry a lot more
+
+---
+
+0.3.4
+
+* Stop using custom rc scripts
+
+---
+
+0.3.3
+
+* Update consul configuration to new version
+* Fix _app label in node-exporter
+
+---
+
+0.3.2
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
+0.3.1
+
+* Bugfix for grafana9 provisioning
+
+---
+
+0.3.0
+
+* Update to grafana9
+
+---
+
 0.2.8
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured

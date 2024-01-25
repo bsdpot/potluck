@@ -7,11 +7,12 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:"$PATH"
 
 echo 'server:
   do-not-query-localhost: no
   domain-insecure: "consul"
+  qname-minimisation: no
 
 #Add consul as a stub-zone
 stub-zone:

@@ -1,3 +1,27 @@
+2.2.17
+
+* Make consul-template retry more often
+
+---
+
+2.2.16
+
+* Increase dead-server-last-contact-threshold to 24h
+
+---
+
+2.2.15
+
+* Update consul configuration to new version
+
+---
+
+2.2.14
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
 2.2.13
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured

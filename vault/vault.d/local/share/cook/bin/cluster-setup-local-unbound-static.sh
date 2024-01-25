@@ -12,7 +12,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:"$PATH"
 
 echo "server:
         local-zone: active.vault.service.consul typetransparent

@@ -47,7 +47,9 @@ bootstrap:
       use_slots: true
       parameters:
         wal_level: replica
-        hot_standby: "on"
+        hot_standby: %%hot_standby%%
+        log_min_duration_statement: 100
+        log_parameter_max_length: 0
         wal_keep_segments: 8
         max_wal_senders: 5
         max_replication_slots: 5
@@ -113,7 +115,7 @@ postgresql:
     ssl_ca_file: /mnt/patronicerts/postgres_ca_root.crt
 
 tags:
-    nofailover: false
+    nofailover: %%nofailover%%
     noloadbalance: false
     clonefrom: false
     nosync: false

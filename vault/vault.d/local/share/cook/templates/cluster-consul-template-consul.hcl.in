@@ -11,6 +11,11 @@ vault {
     ca_cert = "/mnt/vaultcerts/ca_root.crt"
     server_name = "localhost"
   }
+
+  retry {
+    attempts = 120
+    max_backoff = "2m"
+  }
 }
 
 syslog {

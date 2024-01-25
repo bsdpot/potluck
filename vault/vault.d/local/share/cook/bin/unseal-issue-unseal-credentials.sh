@@ -22,7 +22,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/bin:"$PATH"
 export VAULT_ADDR=https://127.0.0.1:8200
 export VAULT_CACERT=/mnt/unsealcerts/ca_root.crt
 export VAULT_FORMAT=json
@@ -42,7 +42,7 @@ CERT=$(echo "$CERT_JSON" | jq -e ".data.certificate")
 KEY=$(echo "$CERT_JSON" | jq -e ".data.private_key")
 CA=$(echo "$CERT_JSON" | jq -e ".data.issuing_ca")
 CA_CHAIN=$(
-  echo "$CERT_JSON" | jq -ec ".data.ca_chain[]"
+  echo "$CERT_JSON" | jq -e '.data.ca_chain | join("\n")'
 )
 
 STEP="Assemble response"

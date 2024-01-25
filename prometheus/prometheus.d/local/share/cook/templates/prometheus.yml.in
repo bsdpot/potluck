@@ -25,7 +25,12 @@ scrape_configs:
     metrics_path: '/metrics'
     consul_sd_configs:
     - server: 'localhost:8500'
-      services: ["node-exporter"]
+      services:
+        - node-exporter
+        - haproxy-exporter
+        - postgres-exporter
+        - prometheus-json-metrics-exporter
+        - prometheus-log-exporter
       datacenter: '%%datacenter%%'
     relabel_configs:
     - source_labels: ['__meta_consul_service']
@@ -142,44 +147,3 @@ scrape_configs:
       target_label: _datacenter
     static_configs:
     - targets: ['127.0.0.1:8100']
-  - job_name: 'postgresql'
-    metrics_path: "/metrics"
-    params:
-      format: ['prometheus']
-    scheme: https
-    tls_config:
-      insecure_skip_verify: false
-      ca_file: /mnt/metricscerts/ca_root.crt
-      cert_file: /mnt/metricscerts/metrics.crt
-      key_file: /mnt/metricscerts/metrics.key
-    relabel_configs:
-    - source_labels: ['__meta_consul_service']
-      regex:         '(.*)'
-      target_label:  '__scheme__'
-      replacement:   'https'
-    - source_labels: ['__meta_consul_service']
-      regex:         '(.*)'
-      target_label:  'job'
-      replacement:   '$1'
-    - source_labels: ['__meta_consul_node']
-      regex:         '(.*)'
-      target_label:  'instance'
-      replacement:   '$1'
-    - source_labels: [__meta_consul_tags]
-      regex: .*,_app=([^,]+),.*
-      replacement: ${1}
-      target_label: _app
-    - source_labels: [__meta_consul_tags]
-      regex: .*,_service=([^,]+),.*
-      replacement: ${1}
-      target_label: _service
-    - source_labels: [__meta_consul_tags]
-      regex: .*,_hostname=([^,]+),.*
-      replacement: ${1}
-      target_label: _hostname
-    - source_labels: [__meta_consul_tags]
-      regex: .*,_datacenter=([^,]+),.*
-      replacement: ${1}
-      target_label: _datacenter
-    static_configs:
-    - targets: [%%dbservers%%]

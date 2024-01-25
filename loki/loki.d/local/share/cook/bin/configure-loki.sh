@@ -26,6 +26,7 @@ cp "$TEMPLATEPATH/loki.rc.in" /usr/local/etc/rc.d/loki
 chmod +x /usr/local/etc/rc.d/loki
 service loki enable
 sysrc loki_syslog_output_enable="YES"
+sysrc loki_args="-frontend.instance-addr=127.0.0.1"
 
 # copy in loki config file
 if [ -f /mnt/loki/loki-local-config.yaml.in ]; then

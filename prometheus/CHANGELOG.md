@@ -1,3 +1,47 @@
+0.12.6
+
+* Make consul-template retry more often
+
+---
+
+0.12.5
+
+* Extend retention from 15 days to 2 years
+
+---
+
+0.12.4
+
+* Update consul configuration to new version
+* Fix _app label in node-exporter
+
+---
+
+0.12.3
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
+0.12.2
+
+* Add support from prometheus-json-metrics-exporter (implementation to be provided by user)
+
+---
+
+0.12.1
+
+* Add support from prometheus-log-exporter (implementation to be provided by user)
+
+---
+
+0.12.0
+
+* Remove SCRAPEDATABASES parameter
+* Discover postgres-exporters automatically
+
+---
+
 0.11.8
 
 * Add new parameter DNSFORWARDERS to allow controlling how unbound is configured

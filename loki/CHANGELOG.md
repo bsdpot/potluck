@@ -1,3 +1,34 @@
+0.2.22
+
+* Make consul-template retry more often
+
+---
+
+0.2.21
+
+* Update consul configuration to new version
+* Fix _app label in node-exporter
+
+---
+
+0.2.20
+
+* Disable QNAME minimization in unbound (consul can't handle it)
+
+---
+
+0.2.19
+
+* Move special logs into their own dirs
+
+---
+
+0.2.18
+
+* Add filtering of metric logs to a separate file in loki
+
+---
+
 0.2.17
 
 * Version bump to rebuild

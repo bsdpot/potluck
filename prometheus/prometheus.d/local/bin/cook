@@ -118,7 +118,7 @@ set -e
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS"
-required_args="$required_args SCRAPECONSUL SCRAPENOMAD SCRAPEDATABASE"
+required_args="$required_args SCRAPECONSUL SCRAPENOMAD"
 required_args="$required_args SMTPHOSTPORT SMTPFROM ALERTADDRESS"
 optional_args="REMOTELOG DNSFORWARDERS SMTPUSER SMTPPASS"
 

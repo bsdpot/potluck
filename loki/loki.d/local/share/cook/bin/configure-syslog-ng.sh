@@ -25,7 +25,7 @@ config_version=$(/usr/local/sbin/syslog-ng --version | \
   > /usr/local/etc/syslog-ng.conf
 
 # create remote log dir
-mkdir -p /mnt/log/remote
+mkdir -p /mnt/log/remote/metrics
 
 # stop and disable syslogd
 service syslogd onestop || true
