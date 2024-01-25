@@ -1,3 +1,9 @@
+1.0.10
+
+* Remove pot flags
+
+---
+
 1.0.9
 
 * Version bump for rebuild
