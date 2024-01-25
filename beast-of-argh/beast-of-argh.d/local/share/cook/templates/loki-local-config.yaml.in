@@ -41,7 +41,7 @@ query_range:
 
 common:
   instance_addr: %%ip%%
-  path_prefix: /tmp/loki
+  path_prefix: /mnt/loki
   storage:
     filesystem:
       chunks_directory: /mnt/loki/chunks

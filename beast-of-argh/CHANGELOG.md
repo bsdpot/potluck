@@ -7,6 +7,8 @@
 * Add redis config to prometheus
 * Update loki and promtail version to latest
 * Add redis dashboard
+* Fix alert metric and loki path
+* Update loki and promtail versions
 
 ---
 
