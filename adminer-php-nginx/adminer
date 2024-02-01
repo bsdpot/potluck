@@ -1,0 +1,1 @@
+copy-in-flv -s adminer.d/local -d /root/.pot_local
