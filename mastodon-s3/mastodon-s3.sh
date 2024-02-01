@@ -230,7 +230,10 @@ if [ ! -d /usr/local/www/mastodon/.git ]; then
     echo "Running git fetch"
     su - mastodon -c "cd /usr/local/www/mastodon; git fetch"
     echo "Checking out the mastodon release we want"
-    su - mastodon -c "cd /usr/local/www/mastodon; git checkout stable-4.2"
+    # old
+    #su - mastodon -c "cd /usr/local/www/mastodon; git checkout stable-4.2"
+    # security patch
+    su - mastodon -c "cd /usr/local/www/mastodon; git checkout releases/v4.2.5"
 else
     echo ".git directory exists, not cloning repo"
 fi
