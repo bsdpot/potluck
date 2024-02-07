@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# Adminer (nginx, php-fpm, non-nomad)
-# by Deividas Gedgaudas
 # Based on POTLUCK TEMPLATE v3.0
 # Altered by Michael Gmelin
 
@@ -69,11 +67,41 @@ service sendmail onedisable
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
+step "Install package consul"
+pkg install -y consul
+
+step "Install package openssl"
+pkg install -y openssl
+
+step "Install package sudo"
+pkg install -y sudo
+
+step "Install package ca_root_nss"
+pkg install -y ca_root_nss
+
+step "Install package curl"
+pkg install -y curl
+
+step "Install package jq"
+pkg install -y jq
+
+step "Install package jo"
+pkg install -y jo
+
+step "Install package nano"
+pkg install -y nano
+
+step "Install package bash"
+pkg install -y bash
+
+step "Install package rsync"
+pkg install -y rsync
+
+step "Install package node_exporter"
+pkg install -y node_exporter
+
 step "Install nginx"
 pkg install -y nginx
-
-step "Install curl"
-pkg install -y curl
 
 step "Install PHP"
 pkg install -y php82
@@ -83,9 +111,6 @@ pkg install -y php82-mbstring php82-zlib php82-curl php82-gd php82-extensions
 
 step "Install PHP database extensions"
 pkg install -y php82-mysqli php82-odbc php82-pgsql php82-pdo_sqlite
-
-step "Install Adminer"
-pkg install -y databases/adminer
 
 step "Clean package installation"
 pkg clean -y 
@@ -109,38 +134,18 @@ rm -f /usr/local/bin/cook
 # this runs when image boots
 # ----------------- BEGIN COOK ------------------
 
-step "Create cook script"
-echo "#!/bin/sh
-RUNS_IN_NOMAD=$RUNS_IN_NOMAD
-COOKLOG=/var/log/cook.log
-if [ -e /usr/local/etc/pot-is-seasoned ]
-then
-    exit 0
-fi
+step "Clean cook artifacts"
+rm -rf /usr/local/bin/cook /usr/local/share/cook
 
-# Enable required services
-sysrc nginx_enable="YES"
-sysrc php_fpm_enable="YES"
-
-if [ -e /tmp/environment.sh ]
-then
-    . /tmp/environment.sh
-fi
-
+step "Install pot local"
 tar -C /root/.pot_local -cf - . | tar -C /usr/local -xf -
 rm -rf /root/.pot_local
 
-# Fix file permissions
-chown root:wheel /usr/local/etc/nginx/nginx.conf
-
-service nginx start
-service php-fpm start
-
-touch /usr/local/etc/pot-is-seasoned
-" > /usr/local/bin/cook
+step "Set file ownership on cook scripts"
+chown -R root:wheel /usr/local/bin/cook /usr/local/share/cook
+chmod 755 /usr/local/share/cook/bin/*
 
 # ----------------- END COOK ------------------
-
 
 # ---------- NO NEED TO EDIT BELOW ------------
 
