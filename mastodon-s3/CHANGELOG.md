@@ -9,6 +9,7 @@
 * adjust logic for elasticsearch parameters
 * Add bundle config adjustments from https://wiki.freebsd.org/Ports/net-im/mastodon but commented out because not working
 * Add DeepL translation API parameters
+* Update to mastodon releases/v4.2.5 for security patch
 
 ---
 
