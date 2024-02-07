@@ -159,8 +159,12 @@ pkg install -y fribidi
 step "Install package gdbm"
 pkg install -y gdbm
 
-step "Install package ghostscript9-agpl-base"
-pkg install -y ghostscript9-agpl-base
+#This port expired on: 2023-12-31
+#step "Install package ghostscript9-agpl-base"
+#pkg install -y ghostscript9-agpl-base
+
+step "Install package ghostscript10"
+pkg install -y ghostscript10
 
 step "Install package giflib"
 pkg install -y giflib

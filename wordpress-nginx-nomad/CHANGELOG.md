@@ -1,6 +1,8 @@
 2.10
 
 * Version bump for new base image
+* Update nginx for ActivityPub plugin
+* Update to ghostscript10
 
 ---
 
