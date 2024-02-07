@@ -33,7 +33,7 @@ fi
 
 # Use adminer with a login page unless DBSERVER is set
 if [ -n "$DBSERVER" ]; then
-  ln -s /usr/local/www/stdwebsite/adminer-4.8.1 /usr/local/www/stdwebsite/index.php
+  ln -s /usr/local/www/stdwebsite/adminer.php /usr/local/www/stdwebsite/index.php
 else
 < "$TEMPLATEPATH/index.php.in" \
   sed "s${sep}%%DBSERVER%%${sep}$DBSERVER${sep}g" | \
