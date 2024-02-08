@@ -106,11 +106,32 @@ pkg install -y nginx
 step "Install PHP"
 pkg install -y php82
 
-step "Install PHP extensions"
-pkg install -y php82-mbstring php82-zlib php82-curl php82-gd php82-extensions
+step "Install PHP mbstring"
+pkg install -y php82-mbstring
 
-step "Install PHP database extensions"
-pkg install -y php82-mysqli php82-odbc php82-pgsql php82-pdo_sqlite
+step "Install PHP zlib"
+pkg install -y php82-zlib
+
+step "Install PHP curl"
+pkg install -y php82-curl
+
+step "Install PHP gd"
+pkg install -y php82-gd
+
+step "Install PHP extensions"
+pkg install -y php82-extensions
+
+step "Install PHP mysqli driver"
+pkg install -y php82-mysqli
+
+step "Install PHP odbc driver"
+pkg install -y php82-odbc
+
+step "Install PHP pgsql driver"
+pkg install -y php82-pgsql
+
+step "Install PHP pdo_sqlite driver"
+pkg install -y php82-pdo_sqlite
 
 step "Clean package installation"
 pkg clean -y 

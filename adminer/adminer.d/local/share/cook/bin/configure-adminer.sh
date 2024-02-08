@@ -18,22 +18,22 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 sep=$'\001'
 
-# make sure /usr/local/www/stdwebsite exists
-if [ ! -d "/usr/local/www/stdwebsite" ]; then
-  echo "/usr/local/www/stdwebsite missing, nginx configuration probably failed."
+# make sure /usr/local/www/adminer exists
+if [ ! -d "/usr/local/www/adminer" ]; then
+  echo "/usr/local/www/adminer missing, nginx configuration probably failed."
   exit 1
 fi
 
 # Fetch adminer full release unless EDITOR=true in env
 if [ -n "$EDITOR" ] && [ "$EDITOR" = true ]; then
-  curl -L -o /usr/local/www/stdwebsite/adminer.php https://github.com/vrana/adminer/releases/download/v4.8.1/editor-4.8.1.php
+  curl -L -o /usr/local/www/adminer/adminer.php https://github.com/vrana/adminer/releases/download/v4.8.1/editor-4.8.1.php
 else
-  curl -L -o /usr/local/www/stdwebsite/adminer.php https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php
+  curl -L -o /usr/local/www/adminer/adminer.php https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php
 fi
 
 # Use adminer with a login page unless DBSERVER is set
 if [ -n "$DBSERVER" ]; then
-  ln -s /usr/local/www/stdwebsite/adminer.php /usr/local/www/stdwebsite/index.php
+  ln -s /usr/local/www/adminer/adminer.php /usr/local/www/adminer/index.php
 else
 < "$TEMPLATEPATH/index.php.in" \
   sed "s${sep}%%DBSERVER%%${sep}$DBSERVER${sep}g" | \
@@ -41,5 +41,5 @@ else
   sed "s${sep}%%DBPASS%%${sep}$DBPASS${sep}g" | \
   sed "s${sep}%%DBNAME%%${sep}$DBNAME${sep}g" | \
   sed "s${sep}%%DBDRIVER%%${sep}$DBDRIVER${sep}g" \
-    > /usr/local/www/stdwebsite/index.php
+    > /usr/local/www/adminer/index.php
 fi
