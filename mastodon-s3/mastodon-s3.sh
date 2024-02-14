@@ -233,7 +233,8 @@ if [ ! -d /usr/local/www/mastodon/.git ]; then
     # old
     #su - mastodon -c "cd /usr/local/www/mastodon; git checkout stable-4.2"
     # security patch
-    su - mastodon -c "cd /usr/local/www/mastodon; git checkout releases/v4.2.5"
+    #su - mastodon -c "cd /usr/local/www/mastodon; git checkout releases/v4.2.5"
+    su - mastodon -c "cd /usr/local/www/mastodon; git checkout 04cf87f6999a090b84176a077e19d882c1bb4107"
 else
     echo ".git directory exists, not cloning repo"
 fi
