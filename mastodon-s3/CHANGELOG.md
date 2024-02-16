@@ -11,6 +11,7 @@
 * Add DeepL translation API parameters
 * Update to mastodon releases/v4.2.5 for security patch
 * Update to mastodon releases/v4.2.6 for security patch
+* Update to mastodon releases/v4.2.7 for security patch
 
 ---
 
