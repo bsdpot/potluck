@@ -42,8 +42,11 @@ It is advised to run this image behind a proxy. The directory permissions on the
   -E SITENAME=<site name> \
   -E GITEMAIL=<git user email> \
   -E GITUSER=<git username> \
+  -E THEMESRC=<git url> \
+  -E THEMENAME=<name of theme, will become directory name> \
   [ -E CUSTOMDIR=<custom dir inside huge sitename> ] \
   [ -E CUSTOMFILE=1 -E IMPORTKEYS=1 ] \
+  [ -E CONTENTSRC=<git url> ] \
   [ -E THEMEADJUST=1 ] \
   [ -E BUCKETHOST=<ip or hostname S3 host> ] \
   [ -E BUCKETUSER=<s3 username> ] \
@@ -72,12 +75,15 @@ The GITEMAIL parameter is the email address to use for a git username.
 
 The GITUSER parameter is the git username associated with the email address.
 
+The THEMESRC parameter is the URL to the theme git source.
+
+The THEMENAME parameter is the name of the theme. This will become a directory name so no spaces or punctuation.
+
 The optional CUSTOMDIR parameter is a custom directory to create inside the hugo installation in SITENAME.
 
 The optional CUSTOMFILE parameter, if set to 1, will copy in your own customfile.tgz which will be extracted to ```/mnt/{SITENAME}/```. This would be a custom config.toml, static microblog posts or about.md pages and images for static dir.
 
-The optional IMPORTKEYS parameter, if set to 1, will add the copied in pubkey to authenticated_keys.
-Copy in the applicable id_rsa.pub as part of the pot setup and start process.
+The optional CONTENTSRC parameter is the URL to a git source with custom content pages and static files.
 
 The optional THEMEADJUST parameter, if set to 1, will make run a script to make custom changes to a theme.
 
