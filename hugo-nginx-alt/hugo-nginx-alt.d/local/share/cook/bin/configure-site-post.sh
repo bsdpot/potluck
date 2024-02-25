@@ -40,6 +40,7 @@ cd "/mnt/$SITENAME"
 # add content as submodule
 if [ -n "$CONTENTSRC" ]; then
 	/usr/local/bin/git submodule add "$CONTENTSRC" .customcontent || true
+	#/usr/local/bin/git submodule update --init --recursive || true
 	/usr/local/bin/git config -f .gitmodules submodule.customcontent.update merge
 fi
 
@@ -50,8 +51,11 @@ if [ -n "$CONTENTSRC" ]; then
 fi
 
 # add theme as submodule
-/usr/local/bin/git submodule add "$THEMESRC" themes/"$THEMENAME" || true
-sh -c "cd themes; /usr/local/bin/git config -f .gitmodules submodule.$THEMENAME.update merge"
+/usr/local/bin/git submodule add --depth=1 "$THEMESRC" themes/"$THEMENAME" || true
+# from papermod theme install guide
+/usr/local/bin/git submodule update --init --recursive || true
+# set git config settings
+/bin/sh -c "cd themes; /usr/local/bin/git config -f .gitmodules submodule.$THEMENAME.update merge"
 
 # shellcheck disable=SC2035
 /usr/local/bin/git add -v *

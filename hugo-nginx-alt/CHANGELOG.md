@@ -4,3 +4,4 @@
 * No SSH access currently
 * No SSL
 * Update variables in README
+* Adjust git submodule commands
