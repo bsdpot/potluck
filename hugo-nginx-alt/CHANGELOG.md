@@ -7,3 +7,4 @@
 * Adjust git submodule commands
 * Adjust scripts with directory creation, fix typo
 * Fix theme import error, disable ssh
+* More adjustments to theme import

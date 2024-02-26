@@ -41,8 +41,9 @@ fi
 # from papermod theme install guide
 /usr/local/bin/git submodule update --init --recursive || true
 # set git config settings
-/bin/sh -c "cd themes; /usr/local/bin/git config -f .gitmodules submodule.$THEMENAME.update merge"
-cd
+# removing for now
+# /bin/sh -c "cd /mnt/$SITENAME/themes; /usr/local/bin/git config -f .gitmodules submodule.$THEMENAME.update merge"
+
 # shellcheck disable=SC2035
 /usr/local/bin/git add -v *
 
