@@ -80,8 +80,8 @@ sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 step "Disable sendmail"
 service sendmail onedisable || true
 
-step "Enable SSH"
-service sshd enable || true
+step "Disable SSH"
+service sshd onedisable || true
 
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d

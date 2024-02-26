@@ -42,7 +42,7 @@ fi
 /usr/local/bin/git submodule update --init --recursive || true
 # set git config settings
 /bin/sh -c "cd themes; /usr/local/bin/git config -f .gitmodules submodule.$THEMENAME.update merge"
-
+cd
 # shellcheck disable=SC2035
 /usr/local/bin/git add -v *
 
@@ -50,7 +50,4 @@ fi
 # shellcheck disable=SC2035
 if [ -d "/mnt/$SITENAME/themes/$THEMENAME/static/" ] && [ -d "/mnt/$SITENAME/static/" ]; then
     cp -Rf "/mnt/$SITENAME/themes/$THEMENAME/static/" "/mnt/$SITENAME/static/"
-else
-    echo "There is an error with /mnt/$SITENAME/themes/$THEMENAME/static/ or /mnt/$SITENAME/static/"
-    exit 1
 fi

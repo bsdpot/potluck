@@ -6,3 +6,4 @@
 * Update variables in README
 * Adjust git submodule commands
 * Adjust scripts with directory creation, fix typo
+* Fix theme import error, disable ssh
