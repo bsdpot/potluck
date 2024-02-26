@@ -48,10 +48,13 @@ chown -R www:www "/mnt/$SITENAME"
 # set permissions again so remote user can write files from other image
 # there might be another way to do this with more security
 chmod 777 "/mnt/$SITENAME"
-chmod 777 "/mnt/$SITENAME/$CUSTOMDIR"
 chmod 777 "/mnt/$SITENAME/content"
 chmod 777 "/mnt/$SITENAME/content/blog"
 chmod 666 "/mnt/$SITENAME/content/blog/*.md" || true
 chmod 777 "/mnt/$SITENAME/content/micro"
 chmod 666 "/mnt/$SITENAME/content/micro/*.md" || true
 chmod 777 "/mnt/$SITENAME/static"
+
+if [ -d "/mnt/$SITENAME/$CUSTOMDIR" ]; then
+	chmod 777 "/mnt/$SITENAME/$CUSTOMDIR"
+fi

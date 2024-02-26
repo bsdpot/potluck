@@ -20,10 +20,27 @@ if [ ! -f "/mnt/$SITENAME/config.toml" ]; then
     /usr/local/bin/hugo new site "$SITENAME" || true
 fi
 
-# this has to happen after the force create, as this directory was getting wiped
-# this is pot a mount-in now
-# make some directories from input variables
-mkdir -p "/mnt/$SITENAME/$CUSTOMDIR/"
-
 # setup .gitignore, overwrite any existing
 echo "$CUSTOMDIR/**" > "/mnt/$SITENAME/.gitignore"
+
+# make sure directories exist
+mkdir -p "/mnt/$SITENAME/content/blog"
+mkdir -p "/mnt/$SITENAME/content/micro"
+mkdir -p "/mnt/$SITENAME/static"
+
+# set permissions so jenkins user can write files from jenkins image
+chmod 777 "/mnt/$SITENAME"
+chmod g+s "/mnt/$SITENAME"
+chmod 777 "/mnt/$SITENAME/content"
+chmod g+s "/mnt/$SITENAME/content"
+chmod 777 "/mnt/$SITENAME/content/blog"
+chmod g+s "/mnt/$SITENAME/content/blog"
+chmod 777 "/mnt/$SITENAME/content/micro"
+chmod g+s "/mnt/$SITENAME/content/micro"
+chmod 777 "/mnt/$SITENAME/static"
+chmod g+s "/mnt/$SITENAME/static"
+
+if [ -d "/mnt/$SITENAME/$CUSTOMDIR" ]; then
+	chmod 777 "/mnt/$SITENAME/$CUSTOMDIR"
+	chmod g+s "/mnt/$SITENAME/$CUSTOMDIR"
+fi
