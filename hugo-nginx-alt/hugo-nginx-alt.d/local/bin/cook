@@ -51,7 +51,7 @@ fi
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args SERVERNAME SITENAME GITEMAIL GITUSER"
-required_args="$required_args THEMESRC THEMENAME"
+required_args="$required_args THEMESRC THEMENAME DOMAINNAME"
 optional_args="CUSTOMDIR CUSTOMFILE THEMEADJUST REMOTELOG"
 optional_args="$optional_args BUCKETHOST BUCKETUSER BUCKETPASS BUCKETNAME"
 optional_args="$optional_args CONTENTSRC"

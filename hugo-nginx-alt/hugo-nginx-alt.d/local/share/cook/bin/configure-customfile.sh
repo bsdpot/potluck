@@ -13,5 +13,5 @@ export PATH=/usr/local/bin:$PATH
 
 # if the copied-in customfile exists, extract to sitename
 if [ -f /root/customfile.tgz ]; then
-    /usr/bin/tar -xzf /root/customfile.tgz --directory "/mnt/$SITENAME"
+    /usr/bin/tar -xzf /root/customfile.tgz --directory "/var/db/$SITENAME"
 fi

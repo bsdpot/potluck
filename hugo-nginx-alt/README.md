@@ -22,7 +22,7 @@ It is advised to run this image behind a proxy. The directory permissions on the
 # Installation
 
 * Create a ZFS data set on the parent system beforehand
-  ```zfs create -o mountpoint=/mnt/<sitename> zroot/jaildata_hugoalt```
+  ```zfs create -o mountpoint=/mnt/<sitename> zroot/jaildata/hugoalt```
 * Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created:
@@ -38,6 +38,7 @@ It is advised to run this image behind a proxy. The directory permissions on the
   -E DATACENTER=datacenter \
   -E CONSULSERVERS=<comma-deliminated list of consul servers> \
   -E SERVERNAME=<fqdn> \
+  -E DOMAINNAME=<baseURL value> \
   -E IP=<IP address> \
   -E SITENAME=<site name> \
   -E GITEMAIL=<git user email> \
@@ -45,7 +46,7 @@ It is advised to run this image behind a proxy. The directory permissions on the
   -E THEMESRC=<git url> \
   -E THEMENAME=<name of theme, will become directory name> \
   [ -E CUSTOMDIR=<custom dir inside huge sitename> ] \
-  [ -E CUSTOMFILE=1 -E IMPORTKEYS=1 ] \
+  [ -E CUSTOMFILE=1 ] \
   [ -E CONTENTSRC=<git url> ] \
   [ -E THEMEADJUST=1 ] \
   [ -E BUCKETHOST=<ip or hostname S3 host> ] \
@@ -66,6 +67,8 @@ e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.
 The GOSSIPKEY parameter is the gossip encryption key for consul agent.
 
 The SERVERNAME parameter is the fully qualified domain name to configure nginx with.
+
+The DOMAINNAME parameter is the domain name of the final destination, or baseURL for hugo. Include `http://` or `https://`.
 
 The IP parameter is the IP address of the pot image.
 
@@ -94,7 +97,7 @@ The optional REMOTELOG parameter is for a remote syslog service, such as via the
 # Usage
 Start hugo manually (not necessary):
 ```
-cd /mnt/sitename && hugo
+cd /var/db/SITENAME && hugo
 ```
 
 To access ```hugo```:
@@ -119,4 +122,4 @@ Make sure to copy-in to /root/customfile.tgz and set ```-E CUSTOMFILE=1``` in th
 
 # Persistent storage
 
-To use persistent storage make sure to mount-in a pre-configured data set to /mnt/(your-sitename).
+Persistent storage is not used in this version of the hugo pot image. To update re-run the pot image and rebuild the site.

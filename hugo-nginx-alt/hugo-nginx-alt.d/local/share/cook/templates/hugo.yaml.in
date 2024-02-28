@@ -1,0 +1,5 @@
+baseURL: https://%%domainname%%/
+languageCode: en-us
+title: %%title%%
+theme: %%themename%%
+

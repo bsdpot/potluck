@@ -12,10 +12,10 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 # final perms check
-chown -R www:www "/mnt/$SITENAME"
+chown -R www:www "/var/db/$SITENAME"
 
 # add changed files
-cd "/mnt/${SITENAME}" || exit 1
+cd "/var/db/${SITENAME}" || exit 1
 
 # shellcheck disable=SC2035
 /usr/local/bin/git add -v * || true
@@ -28,33 +28,33 @@ cd "/mnt/${SITENAME}" || exit 1
 # hugo server -b http://${IP}:1313 --bind ${IP} -D
 
 # set www permissions on sitefolder
-chown -R www:www "/mnt/$SITENAME"
+chown -R www:www "/var/db/$SITENAME"
 
 # run hugo
 /usr/local/bin/hugo || true
 
 # create sample pages
 # we need this to create the blog and microblog directories
-if [ ! -f "/mnt/${SITENAME}/blog/sample-blog-post.md" ]; then
+if [ ! -f "/var/db/${SITENAME}/blog/sample-blog-post.md" ]; then
     /usr/local/bin/hugo new blog/sample-blog-post.md || true
 fi
-if [ ! -f "/mnt/${SITENAME}/micro/sample-microblog-post.md" ]; then
+if [ ! -f "/var/db/${SITENAME}/micro/sample-microblog-post.md" ]; then
     /usr/local/bin/hugo new micro/sample-microblog-post.md || true
 fi
 
 # check ownership again
-chown -R www:www "/mnt/$SITENAME"
+chown -R www:www "/var/db/$SITENAME"
 
 # set permissions again so remote user can write files from other image
 # there might be another way to do this with more security
-chmod 777 "/mnt/$SITENAME"
-chmod 777 "/mnt/$SITENAME/content"
-chmod 777 "/mnt/$SITENAME/content/blog"
-chmod 666 "/mnt/$SITENAME/content/blog/*.md" || true
-chmod 777 "/mnt/$SITENAME/content/micro"
-chmod 666 "/mnt/$SITENAME/content/micro/*.md" || true
-chmod 777 "/mnt/$SITENAME/static"
+chmod 777 "/var/db/$SITENAME"
+chmod 777 "/var/db/$SITENAME/content"
+chmod 777 "/var/db/$SITENAME/content/blog"
+chmod 666 "/var/db/$SITENAME/content/blog/*.md" || true
+chmod 777 "/var/db/$SITENAME/content/micro"
+chmod 666 "/var/db/$SITENAME/content/micro/*.md" || true
+chmod 777 "/var/db/$SITENAME/static"
 
-if [ -d "/mnt/$SITENAME/$CUSTOMDIR" ]; then
-	chmod 777 "/mnt/$SITENAME/$CUSTOMDIR"
+if [ -d "/var/db/$SITENAME/$CUSTOMDIR" ]; then
+	chmod 777 "/var/db/$SITENAME/$CUSTOMDIR"
 fi

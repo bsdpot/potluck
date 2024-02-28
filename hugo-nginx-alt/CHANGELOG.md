@@ -1,3 +1,11 @@
+0.1
+
+* Adjustment to setup, don't use persistent storage as files going to S3 anyway and rebuild on every image startup
+* Use /var/db/$SITENAME instead of persistent storage in /mnt
+* Use a custom hugo.yaml file with variables set from parameters
+
+---
+
 0.0
 
 * Alternate version Hugo with site and theme import from git sources as submodules

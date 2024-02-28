@@ -11,39 +11,50 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
+SCRIPT=$(readlink -f "$0")
+TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
+
 # setup hugo pre-steps
-cd /mnt
+cd /var/db || exit 1
 
 # if no hugo site directories, then create a site
 # testing, not clear if mandatory
-if [ ! -f "/mnt/$SITENAME/config.toml" ]; then
+if [ ! -f "/var/db/$SITENAME/hugo.yaml" ]; then
     /usr/local/bin/hugo new site "$SITENAME" --format yaml || true
 fi
 
-# setup .gitignore, overwrite any existing
-echo "$CUSTOMDIR/**" > "/mnt/$SITENAME/.gitignore"
+# shellcheck disable=SC3003,SC2039
+# safe(r) separator for sed
+sep=$'\001'
 
-# append theme directory name to hugo.yaml
-echo "theme: $THEMENAME" >> "/mnt/$SITENAME/hugo.yaml"
+# replace the hugo.yaml with our own
+< "$TEMPLATEPATH/hugo.yaml.in" \
+  sed "s${sep}%%domainname%%${sep}$DOMAINNAME${sep}g" | \
+  sed "s${sep}%%title%%${sep}$TITLE${sep}g" | \
+  sed "s${sep}%%themename%%${sep}$THEMENAME${sep}g" \
+  > /var/db/"$SITENAME"/hugo.yaml
+
+# setup .gitignore, overwrite any existing
+echo "$CUSTOMDIR/**" > "/var/db/$SITENAME/.gitignore"
 
 # make sure directories exist
-mkdir -p "/mnt/$SITENAME/content/blog"
-mkdir -p "/mnt/$SITENAME/content/micro"
-mkdir -p "/mnt/$SITENAME/static"
+mkdir -p "/var/db/$SITENAME/content/blog"
+mkdir -p "/var/db/$SITENAME/content/micro"
+mkdir -p "/var/db/$SITENAME/static"
 
 # set permissions so jenkins user can write files from jenkins image
-chmod 777 "/mnt/$SITENAME"
-chmod g+s "/mnt/$SITENAME"
-chmod 777 "/mnt/$SITENAME/content"
-chmod g+s "/mnt/$SITENAME/content"
-chmod 777 "/mnt/$SITENAME/content/blog"
-chmod g+s "/mnt/$SITENAME/content/blog"
-chmod 777 "/mnt/$SITENAME/content/micro"
-chmod g+s "/mnt/$SITENAME/content/micro"
-chmod 777 "/mnt/$SITENAME/static"
-chmod g+s "/mnt/$SITENAME/static"
+chmod 777 "/var/db/$SITENAME"
+chmod g+s "/var/db/$SITENAME"
+chmod 777 "/var/db/$SITENAME/content"
+chmod g+s "/var/db/$SITENAME/content"
+chmod 777 "/var/db/$SITENAME/content/blog"
+chmod g+s "/var/db/$SITENAME/content/blog"
+chmod 777 "/var/db/$SITENAME/content/micro"
+chmod g+s "/var/db/$SITENAME/content/micro"
+chmod 777 "/var/db/$SITENAME/static"
+chmod g+s "/var/db/$SITENAME/static"
 
-if [ -d "/mnt/$SITENAME/$CUSTOMDIR" ]; then
-	chmod 777 "/mnt/$SITENAME/$CUSTOMDIR"
-	chmod g+s "/mnt/$SITENAME/$CUSTOMDIR"
+if [ -d "/var/db/$SITENAME/$CUSTOMDIR" ]; then
+	chmod 777 "/var/db/$SITENAME/$CUSTOMDIR"
+	chmod g+s "/var/db/$SITENAME/$CUSTOMDIR"
 fi
