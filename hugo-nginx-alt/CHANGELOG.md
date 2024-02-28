@@ -8,3 +8,5 @@
 * Adjust scripts with directory creation, fix typo
 * Fix theme import error, disable ssh
 * More adjustments to theme import
+* Generate hugo site with yaml config
+* Include passed in theme dir as theme in yaml config

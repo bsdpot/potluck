@@ -17,11 +17,14 @@ cd /mnt
 # if no hugo site directories, then create a site
 # testing, not clear if mandatory
 if [ ! -f "/mnt/$SITENAME/config.toml" ]; then
-    /usr/local/bin/hugo new site "$SITENAME" || true
+    /usr/local/bin/hugo new site "$SITENAME" --format yaml || true
 fi
 
 # setup .gitignore, overwrite any existing
 echo "$CUSTOMDIR/**" > "/mnt/$SITENAME/.gitignore"
+
+# append theme directory name to hugo.yaml
+echo "theme: $THEMENAME" >> "/mnt/$SITENAME/hugo.yaml"
 
 # make sure directories exist
 mkdir -p "/mnt/$SITENAME/content/blog"
