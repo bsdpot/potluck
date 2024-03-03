@@ -1,3 +1,9 @@
+0.0.22
+
+* Version bump for FBSD14 base image
+
+---
+
 0.0.21
 
 * Version bump after ZFS fix
