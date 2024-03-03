@@ -1,3 +1,11 @@
+0.11
+
+* Version bump for new base image
+* FBSD14 base image
+* Perl36, add net/p5-IO-Socket-INET6 and net/p5-Socket6 to ports pulled from git
+
+---
+
 0.10
 
 * Version bump for new base image
