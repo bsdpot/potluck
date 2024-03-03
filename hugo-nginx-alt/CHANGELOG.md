@@ -1,3 +1,10 @@
+0.2
+
+* Version bump for new base image
+* FBSD14 base image
+
+---
+
 0.1
 
 * Adjustment to setup, don't use persistent storage as files going to S3 anyway and rebuild on every image startup
