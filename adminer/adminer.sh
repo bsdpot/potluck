@@ -134,7 +134,7 @@ step "Install PHP pdo_sqlite driver"
 pkg install -y php82-pdo_sqlite
 
 step "Clean package installation"
-pkg clean -y 
+pkg clean -y
 
 # -------------- END PACKAGE SETUP -------------
 
