@@ -1,3 +1,10 @@
+1.13
+
+* Version bump for new base image FBSD14
+* Separate package installs to independent commands
+
+---
+
 1.12
 
 * Version bump for new base image
