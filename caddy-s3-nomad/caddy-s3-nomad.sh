@@ -114,6 +114,9 @@ pkg install -y nano
 step "Install package sudo"
 pkg install -y sudo
 
+step "Install package unzip"
+pkg install -y unzip
+
 step "Install package acme.sh"
 pkg install -y acme.sh
 
@@ -169,7 +172,8 @@ git sparse-checkout set GIDs UIDs \
 #   January 2016, is named 2016Q1."
 # Quarterly in Aug 2023 is 2023Q3
 step "Pull files"
-git pull --depth=1 origin 2023Q3
+#git pull --depth=1 origin 2023Q3
+git pull --depth=1 origin 2024Q1
 
 # go straight to building caddy-custom
 #step "Build caddy"
