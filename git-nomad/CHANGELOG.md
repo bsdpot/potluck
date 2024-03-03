@@ -1,3 +1,10 @@
+1.12
+
+* Version bump for base image
+* FBSD14 base image
+
+---
+
 1.11
 
 * Version bump for new base image
