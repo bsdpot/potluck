@@ -1,3 +1,13 @@
+0.13
+
+* Version bump for new base image
+* FBSD14 base image
+* Loki 2.9.5, Promtail 2.9.5
+* Adjust install method for loki and promtail due to errors with old way
+* Add unzip to packages
+
+---
+
 0.12
 
 * Version bump for new base image
