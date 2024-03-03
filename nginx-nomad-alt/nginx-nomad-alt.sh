@@ -117,8 +117,20 @@ pkg install -y sudo
 step "Install package nginx"
 pkg install -y nginx
 
-step "Install package php82 and related"
-pkg install -y php82 php82-mbstring php82-zlib php82-curl php82-gd
+step "Install package php82"
+pkg install -y php82
+
+step "Install package php82-mbstring"
+pkg install -y php82-mbstring
+
+step "Install package php82-zlib"
+pkg install -y php82-zlib
+
+step "Install package php82-curl"
+pkg install -y php82-curl
+
+step "Install package php82-gd"
+pkg install -y php82-gd
 
 step "Install package php82-extensions"
 pkg install -y php82-extensions
