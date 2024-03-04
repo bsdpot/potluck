@@ -1,3 +1,12 @@
+0.9
+
+* Version bump for new base image
+* FBSD14 base image
+* Add rbenv and upgrade ruby
+* Add cflags to bundle config for cbor and posix-spawn
+
+---
+
 0.8
 
 * Version bump for new setup with git pull and bundle build process happening in pot build
