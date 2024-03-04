@@ -1,3 +1,11 @@
+0.92
+
+* Version bump for rebuild
+* Add storage to build host
+
+---
+
+
 0.91
 
 * Version bump for rebuild
