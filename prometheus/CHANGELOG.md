@@ -1,3 +1,10 @@
+0.12.7
+
+* Protect admin web api endpoint in nginx proxy
+* Web admin api endpoint is still disabled by default, but can be enabled temporarily for maintenance tasks
+
+---
+
 0.12.6
 
 * Make consul-template retry more often
