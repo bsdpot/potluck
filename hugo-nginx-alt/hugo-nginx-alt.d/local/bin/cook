@@ -52,7 +52,7 @@ fi
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args SERVERNAME SITENAME GITEMAIL GITUSER"
 required_args="$required_args THEMESRC THEMENAME DOMAINNAME"
-optional_args="CUSTOMDIR CUSTOMFILE THEMEADJUST REMOTELOG"
+optional_args="CUSTOMDIR CUSTOMFILE REMOTELOG"
 optional_args="$optional_args BUCKETHOST BUCKETUSER BUCKETPASS BUCKETNAME"
 optional_args="$optional_args CONTENTSRC"
 
@@ -127,10 +127,9 @@ fi
 log "Configure $SITENAME post"
 configure-site-post.sh
 
-if [ -n "${THEMEADJUST}" ]; then
-    log "Configure theme"
-    configure-theme.sh
-fi
+# if /root/customscript.sh exists via copy-in, this will run it
+log "Configure theme"
+configure-theme.sh
 
 log "Configure Hugo"
 configure-hugo.sh

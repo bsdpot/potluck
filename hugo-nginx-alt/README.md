@@ -29,6 +29,8 @@ It is advised to run this image behind a proxy. The directory permissions on the
   ```pot mount-in -p <jailname> -d /mnt/<sitename> -m /mnt```
 * Optionally copy in customfile.tgz:
   ```pot copy-in -p <jailname> -s /path/to/customfile.tgz -d /root/customfile.tgz```
+* Optionally copy in your own customscript.sh
+  ```pot copy-in -p <jailname> -s /path/to/customscript.sh -d /root/customscript.sh```
 * Optionally export the ports after creating the jail:
   ```pot export-ports -p <jailname> -e 80:80```
 * Adjust to your environment:
@@ -48,7 +50,6 @@ It is advised to run this image behind a proxy. The directory permissions on the
   [ -E CUSTOMDIR=<custom dir inside huge sitename> ] \
   [ -E CUSTOMFILE=1 ] \
   [ -E CONTENTSRC=<git url> ] \
-  [ -E THEMEADJUST=1 ] \
   [ -E BUCKETHOST=<ip or hostname S3 host> ] \
   [ -E BUCKETUSER=<s3 username> ] \
   [ -E BUCKETPASS=<s3 password> ] \
@@ -88,8 +89,6 @@ The optional CUSTOMFILE parameter, if set to 1, will copy in your own customfile
 
 The optional CONTENTSRC parameter is the URL to a git source with custom content pages and static files.
 
-The optional THEMEADJUST parameter, if set to 1, will make run a script to make custom changes to a theme.
-
 The optional parameters BUCKETHOST, BUCKETUSER, BUCKETPASS and BUCKETNAME refer to credentials for minio-client.
 
 The optional REMOTELOG parameter is for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
@@ -119,6 +118,12 @@ If you wish to include a custom setup for hugo, you can create a file ```customf
 ```
 
 Make sure to copy-in to /root/customfile.tgz and set ```-E CUSTOMFILE=1``` in the parameters.
+
+# customfile.sh.example
+
+There is an example `customscript.sh` you can copy in to `/root/customscript.sh`.
+
+Check out the file `customscript.sh.example` in the git folder.
 
 # Persistent storage
 

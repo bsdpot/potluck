@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * FBSD14 base image
+* Add ability to run copied in customscript.sh file automatically if exists
 
 ---
 

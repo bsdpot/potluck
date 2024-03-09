@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+###
+# Sample script to copy into image and run a command
+# For example coping theme files to specific directories for hugo
+#
+# pot copy-in -p POTNAME \
+#  -s /path/to/your/customscript.sh \
+#  -d /root/customscript.sh
+###
+
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+cd /var/db/SITENAME
+
+cp -a themes/THEMENAME/exampleSite/* .

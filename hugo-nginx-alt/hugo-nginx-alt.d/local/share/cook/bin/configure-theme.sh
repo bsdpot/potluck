@@ -11,21 +11,11 @@ set -o pipefail
 
 export PATH=/usr/local/bin:$PATH
 
-#SCRIPT=$(readlink -f "$0")
-#TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
-
-# legacy potluck customisations, to be removed if not adapted
-#cp -f "$TEMPLATEPATH/custom_theme_default_list.html" \
-#  "/var/db/$SITENAME/themes/kiss-em/layouts/_default/list.html"
+# this will run an imported script copied into /root/customscript.sh
+# if the file exists.
 #
-#cp -f "$TEMPLATEPATH/custom_theme_blog_list.html" \
-#  "/var/db/$SITENAME/themes/kiss-em/layouts/blog/list.html"
-#
-#cp -f "$TEMPLATEPATH/custom_theme_partial_article.html" \
-#  "/var/db/$SITENAME/themes/kiss-em/layouts/partials/article.html"
-#
-#cp -f "$TEMPLATEPATH/custom_theme_partial_footer.html" \
-#  "/var/db/$SITENAME/themes/kiss-em/layouts/partials/footer.html"
-#
-#cp -f "$TEMPLATEPATH/custom_theme_taxonomy_tag.html" \
-#  "/var/db/$SITENAME/themes/kiss-em/layouts/taxonomy/tag.html"
+# This is useful if you want to perform additional steps after theme
+# import
+if [ -f /root/customscript.sh ]; then
+    /bin/sh /root/customscript.sh || true
+fi
