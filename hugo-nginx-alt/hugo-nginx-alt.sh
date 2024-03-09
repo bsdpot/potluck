@@ -109,6 +109,9 @@ pkg install -y jq
 step "Install package jo"
 pkg install -y jo
 
+step "Install package yj"
+pkg install -y yj
+
 step "Install package nano"
 pkg install -y nano
 
@@ -129,6 +132,27 @@ pkg install -y gohugo
 
 step "Install package goaccess"
 pkg install -y goaccess
+
+step "Install package node20"
+pkg install -y node20
+
+step "Install package www/npm"
+pkg install -y www/npm
+
+step "Install package yarn-node20"
+pkg install -y yarn-node20
+
+step "Install package rubygem-bundler"
+pkg install -y rubygem-bundler
+
+step "Install package ruby"
+pkg install -y ruby
+
+step "Install package devel/ruby-build"
+pkg install -y devel/ruby-build
+
+step "Install package rbenv"
+pkg install -y rbenv
 
 step "Install package node_exporter"
 pkg install -y node_exporter
