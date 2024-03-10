@@ -31,6 +31,7 @@ sep=$'\001'
 < "$TEMPLATEPATH/hugo.yaml.in" \
   sed "s${sep}%%domainname%%${sep}$DOMAINNAME${sep}g" | \
   sed "s${sep}%%title%%${sep}$TITLE${sep}g" | \
+  sed "s${sep}%%language%%${sep}$LANGUAGE${sep}g" | \
   sed "s${sep}%%themename%%${sep}$THEMENAME${sep}g" \
   > /var/db/"$SITENAME"/hugo.yaml
 

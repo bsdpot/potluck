@@ -52,7 +52,7 @@ fi
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args SERVERNAME SITENAME GITEMAIL GITUSER"
 required_args="$required_args THEMESRC THEMENAME DOMAINNAME"
-optional_args="CUSTOMDIR CUSTOMFILE REMOTELOG"
+optional_args="CUSTOMDIR CUSTOMFILE REMOTELOG MYLANG"
 optional_args="$optional_args BUCKETHOST BUCKETUSER BUCKETPASS BUCKETNAME"
 optional_args="$optional_args CONTENTSRC"
 
@@ -79,6 +79,15 @@ done
 if [ -n "${CONSULSERVERS+x}" ]; then
     FIXCONSULSERVERS=$(convert_to_required_format "$CONSULSERVERS")
     export FIXCONSULSERVERS
+fi
+
+# set language to passed in paramter, else a default of 'en' instead
+# of 'en-us' from hugo
+
+if [ -n "${MYLANG+x}" ]; then
+	LANGUAGE="$MYLANG"
+else
+	LANGUAGE="en"
 fi
 
 # stop services

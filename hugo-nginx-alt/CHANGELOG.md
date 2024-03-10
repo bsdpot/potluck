@@ -4,6 +4,7 @@
 * FBSD14 base image
 * Add ability to run copied in customscript.sh file automatically if exists
 * Add various toolsets for node, npm, ruby, toml-to-yaml conversion
+* Make language a parameter, add additional settings to hugo.yaml.in
 
 ---
 
