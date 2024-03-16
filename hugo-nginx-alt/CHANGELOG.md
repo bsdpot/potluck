@@ -10,6 +10,7 @@
 * Set a default title if not set, export variables
 * Change order of copying so custom content is after theme site icons and css
 * Make consistent parameter naming convention for MYTITLE and MYLANG
+* Bug-fixing custom content copy by making sure directories exist
 
 ---
 
