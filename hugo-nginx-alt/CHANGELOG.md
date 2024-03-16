@@ -5,6 +5,8 @@
 * Add ability to run copied in customscript.sh file automatically if exists
 * Add various toolsets for node, npm, ruby, toml-to-yaml conversion
 * Make language a parameter, add additional settings to hugo.yaml.in
+* Fix README references to config.toml as using hugo.yaml format
+* Fix missing TITLE parameter
 
 ---
 

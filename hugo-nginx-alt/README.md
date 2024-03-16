@@ -50,6 +50,7 @@ It is advised to run this image behind a proxy. The directory permissions on the
   [ -E CUSTOMDIR=<custom dir inside huge sitename> ] \
   [ -E CUSTOMFILE=1 ] \
   [ -E CONTENTSRC=<git url> ] \
+  [ -E TITLE="site title in quotes" ] \
   [ -E MYLANG=<language code> ] \
   [ -E BUCKETHOST=<ip or hostname S3 host> ] \
   [ -E BUCKETUSER=<s3 username> ] \
@@ -86,9 +87,11 @@ The THEMENAME parameter is the name of the theme. This will become a directory n
 
 The optional CUSTOMDIR parameter is a custom directory to create inside the hugo installation in SITENAME.
 
-The optional CUSTOMFILE parameter, if set to 1, will copy in your own customfile.tgz which will be extracted to ```/mnt/{SITENAME}/```. This would be a custom config.toml, static microblog posts or about.md pages and images for static dir.
+The optional CUSTOMFILE parameter, if set to 1, will copy in your own customfile.tgz which will be extracted to ```/mnt/{SITENAME}/```. This would be a custom ```hugo.yaml```, static microblog posts or about.md pages and images for static dir.
 
 The optional CONTENTSRC parameter is the URL to a git source with custom content pages and static files.
+
+The optional TITLE parameter is the site title. A default title will be set if not enabled. 
 
 The optional MYLANG parameter is the language code. Defaults to ```en``` over the ```hugo``` default ```en-us```.
 
