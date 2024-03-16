@@ -49,8 +49,19 @@ fi
 
 # copy custom content if exists, move to after theme site icons and css copied
 if [ -n "$CONTENTSRC" ]; then
-	cp -Rf .customcontent/assets/ assets/
-	cp -Rf .customcontent/config/ config/
-	cp -Rf .customcontent/content/ content/
-	cp -Rf .customcontent/static/ static/
+	if [ -d "/var/db/$SITENAME/.customcontent/assets" ]; then
+		cp -Rf "/var/db/$SITENAME/.customcontent/assets/" "/var/db/$SITENAME/assets/"
+	fi
+	if [ -d "/var/db/$SITENAME/.customcontent/config" ]; then
+		cp -Rf "/var/db/$SITENAME/.customcontent/config/" "/var/db/$SITENAME/config/"
+	fi
+	if [ -d "/var/db/$SITENAME/.customcontent/content" ]; then
+		cp -Rf "/var/db/$SITENAME/.customcontent/content/" "/var/db/$SITENAME/content/"
+	fi
+	if [ -d "/var/db/$SITENAME/.customcontent/static" ]; then
+		cp -Rf "/var/db/$SITENAME/.customcontent/static/" "/var/db/$SITENAME/static/"
+	fi
 fi
+
+# set permissions again
+chown -R www:www "/var/db/$SITENAME"
