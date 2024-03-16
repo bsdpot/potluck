@@ -7,6 +7,9 @@
 * Make language a parameter, add additional settings to hugo.yaml.in
 * Fix README references to config.toml as using hugo.yaml format
 * Fix missing TITLE parameter
+* Set a default title if not set, export variables
+* Change order of copying so custom content is after theme site icons and css
+* Make consistent parameter naming convention for MYTITLE and MYLANG
 
 ---
 

@@ -52,7 +52,7 @@ fi
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args SERVERNAME SITENAME GITEMAIL GITUSER"
 required_args="$required_args THEMESRC THEMENAME DOMAINNAME"
-optional_args="CUSTOMDIR CUSTOMFILE REMOTELOG TITLE MYLANG"
+optional_args="CUSTOMDIR CUSTOMFILE REMOTELOG MYTITLE MYLANG"
 optional_args="$optional_args BUCKETHOST BUCKETUSER BUCKETPASS BUCKETNAME"
 optional_args="$optional_args CONTENTSRC"
 
@@ -83,12 +83,20 @@ fi
 
 # set language to passed in paramter, else a default of 'en' instead
 # of 'en-us' from hugo
-
 if [ -n "${MYLANG+x}" ]; then
 	LANGUAGE="$MYLANG"
 else
 	LANGUAGE="en"
 fi
+export LANGUAGE
+
+# set title or set default
+if [ -n "${MYTITLE+x}" ]; then
+	TITLE="$MYTITLE"
+else
+	TITLE="Default Site Title"
+fi
+export TITLE
 
 # stop services
 timeout --foreground 10 \

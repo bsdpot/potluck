@@ -30,12 +30,6 @@ if [ -n "$CONTENTSRC" ]; then
 	/usr/local/bin/git config -f .gitmodules submodule.customcontent.update merge
 fi
 
-# copy custom content if exists
-if [ -n "$CONTENTSRC" ]; then
-	cp -Rf .customcontent/content/ content/
-	cp -Rf .customcontent/static/ static/
-fi
-
 # add theme as submodule
 /usr/local/bin/git submodule add --depth=1 "$THEMESRC" themes/"$THEMENAME" || true
 # from papermod theme install guide
@@ -51,4 +45,12 @@ fi
 # shellcheck disable=SC2035
 if [ -d "/var/db/$SITENAME/themes/$THEMENAME/static/" ] && [ -d "/var/db/$SITENAME/static/" ]; then
     cp -Rf "/var/db/$SITENAME/themes/$THEMENAME/static/" "/var/db/$SITENAME/static/"
+fi
+
+# copy custom content if exists, move to after theme site icons and css copied
+if [ -n "$CONTENTSRC" ]; then
+	cp -Rf .customcontent/assets/ assets/
+	cp -Rf .customcontent/config/ config/
+	cp -Rf .customcontent/content/ content/
+	cp -Rf .customcontent/static/ static/
 fi

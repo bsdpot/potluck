@@ -50,7 +50,7 @@ It is advised to run this image behind a proxy. The directory permissions on the
   [ -E CUSTOMDIR=<custom dir inside huge sitename> ] \
   [ -E CUSTOMFILE=1 ] \
   [ -E CONTENTSRC=<git url> ] \
-  [ -E TITLE="site title in quotes" ] \
+  [ -E MYTITLE="site title in quotes" ] \
   [ -E MYLANG=<language code> ] \
   [ -E BUCKETHOST=<ip or hostname S3 host> ] \
   [ -E BUCKETUSER=<s3 username> ] \
@@ -91,11 +91,11 @@ The optional CUSTOMFILE parameter, if set to 1, will copy in your own customfile
 
 The optional CONTENTSRC parameter is the URL to a git source with custom content pages and static files.
 
-The optional TITLE parameter is the site title. A default title will be set if not enabled. 
+The optional MYTITLE parameter is the site title. A default title will be set if not enabled.
 
 The optional MYLANG parameter is the language code. Defaults to ```en``` over the ```hugo``` default ```en-us```.
 
-The optional parameters BUCKETHOST, BUCKETUSER, BUCKETPASS and BUCKETNAME refer to credentials for minio-client.
+The optional parameters BUCKETHOST, BUCKETUSER, BUCKETPASS and BUCKETNAME refer to credentials for minio-client to perform sync of HTML files to a bucket.
 
 The optional REMOTELOG parameter is for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
