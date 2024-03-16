@@ -37,21 +37,26 @@ sep=$'\001'
 
 # setup .gitignore, overwrite any existing
 echo "$CUSTOMDIR/**" > "/var/db/$SITENAME/.gitignore"
+echo ".customcontent/**" >> "/var/db/$SITENAME/.gitignore"
 
 # make sure directories exist
-mkdir -p "/var/db/$SITENAME/assets"
-mkdir -p "/var/db/$SITENAME/config"
+mkdir -p "/var/db/$SITENAME/assets/css"
+mkdir -p "/var/db/$SITENAME/config/_default"
 mkdir -p "/var/db/$SITENAME/content/blog"
 mkdir -p "/var/db/$SITENAME/content/micro"
 mkdir -p "/var/db/$SITENAME/static"
 
-# set permissions so jenkins user can write files from jenkins image
+# set permissions
 chmod 777 "/var/db/$SITENAME"
 chmod g+s "/var/db/$SITENAME"
 chmod 777 "/var/db/$SITENAME/assets"
 chmod g+s "/var/db/$SITENAME/assets"
+chmod 777 "/var/db/$SITENAME/assets/css"
+chmod g+s "/var/db/$SITENAME/assets/css"
 chmod 777 "/var/db/$SITENAME/config"
 chmod g+s "/var/db/$SITENAME/config"
+chmod 777 "/var/db/$SITENAME/config/_default"
+chmod g+s "/var/db/$SITENAME/config/_default"
 chmod 777 "/var/db/$SITENAME/content"
 chmod g+s "/var/db/$SITENAME/content"
 chmod 777 "/var/db/$SITENAME/content/blog"
