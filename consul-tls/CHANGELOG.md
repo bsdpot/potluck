@@ -1,3 +1,9 @@
+0.3.1
+
+* Version bump for FBSD14 base image
+
+---
+
 0.2.13
 
 * Make consul-template retry more often
