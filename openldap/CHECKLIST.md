@@ -19,7 +19,7 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 * `openldap.ini`
 
 ## PHP version changes
-Update the pkg install commands in, current is php81
+Update the pkg install commands in, current is php82
 * openldap.sh
 
 ## Shellcheck
