@@ -96,6 +96,11 @@ timeout --foreground 10 \
 timeout --foreground 10 \
   service slapd onestop || service slapd onestop || true
 
+timeout --foreground 10 \
+  service php-fpm onestop || service php-fpm onestop || true
+
+pkill php-fpm || true
+
 export PATH=/usr/local/share/cook/bin:$PATH
 
 log "Configure directories"
@@ -132,6 +137,9 @@ configure-ssl.sh
 log "Configure slapd"
 configure-slapd.sh
 
+log "Configure php"
+configure-php.sh
+
 log "Configure apache24"
 configure-apache24.sh
 
@@ -156,6 +164,12 @@ fi
 
 log "Start apache24"
 service apache24 start || true
+
+log "Start php-fpm"
+timeout --foreground 120 \
+  sh -c 'while ! service php-fpm status; do
+    service php-fpm start || true; sleep 5;
+  done'
 
 log "Exit seasoned"
 pot_seasoned_exit

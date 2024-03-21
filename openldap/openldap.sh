@@ -140,8 +140,12 @@ pkg install -y p5-Archive-Zip
 step "Install package apache24"
 pkg install -y apache24
 
-step "Install package mod_php82"
-pkg install -y mod_php82
+# deprecated in favour of php-fpm
+#step "Install package mod_php82"
+#pkg install -y mod_php82
+
+step "Install package php82"
+pkg install -y php82
 
 # php modules need explicit installation now
 step "Install package php82-session"
