@@ -162,14 +162,14 @@ if [ -n "$CRONBACKUP" ]; then
 	configure-cronbackup.sh
 fi
 
-log "Start apache24"
-service apache24 start || true
-
 log "Start php-fpm"
 timeout --foreground 120 \
   sh -c 'while ! service php-fpm status; do
     service php-fpm start || true; sleep 5;
   done'
+
+log "Start apache24"
+service apache24 start || true
 
 log "Exit seasoned"
 pot_seasoned_exit

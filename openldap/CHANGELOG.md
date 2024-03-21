@@ -4,6 +4,7 @@
 * FBSD14 base image
 * Fix broken php packages
 * Switch to using php-fpm
+* Adjust apache24 config for php-fpm
 
 ---
 
