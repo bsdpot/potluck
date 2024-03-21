@@ -22,5 +22,9 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 Update the pkg install commands in, current is php82
 * openldap.sh
 
+Make sure to change the php socket filename in
+* openldap.d/local/share/cook/templates/httpd.conf.in
+* openldap.d/local/share/cook/templates/www.conf.in
+
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?

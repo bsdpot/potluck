@@ -5,6 +5,8 @@
 * Fix broken php packages
 * Switch to using php-fpm
 * Adjust apache24 config for php-fpm
+* Increase php-fpm memory to 128MB to clear error and make LAM work again
+* Include files to change for php socket on php version change
 
 ---
 
