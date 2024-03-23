@@ -1,0 +1,27 @@
+global
+  daemon
+  user www
+  group www
+  maxconn 4096
+  stats socket /var/run/haproxy/socket mode 600 level admin expose-fd listeners
+
+defaults
+  log global
+  option tcplog
+  option dontlognull
+  option redispatch
+  option socket-stats
+  timeout connect 10000ms
+  timeout client 100000ms
+  timeout server 100000ms
+  retries 3
+
+listen minioloadbalancer
+  bind %%ip%%:443 ssl crt /usr/local/etc/ssl/fullchain.cer
+  mode tcp
+  balance leastconn
+  option tcpka
+  option tcplog
+  server minio1 %%serverone%%:%%serveroneport%% check inter 2s
+  server minio2 %%servertwo%%:%%servertwoport%% check inter 2s
+  server minio3 %%serverthree%%:%%serverthreeport%% check inter 2s
