@@ -12,6 +12,7 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 DOMAIN="$DOMAIN"
+IP="$IP"
 
 # create directory for local certificates
 mkdir -p /usr/local/etc/ssl/
@@ -20,11 +21,11 @@ mkdir -p /usr/local/etc/ssl/
 # fullchain.cer is just the certificate, not a CA and intermediate too
 /usr/bin/openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:secp384r1 -days 3650 \
   -nodes -keyout /usr/local/etc/ssl/"$DOMAIN".key -out /usr/local/etc/ssl/fullchain.cer -subj "/CN=$DOMAIN" \
-  -addext "subjectAltName=DNS:$DOMAIN,DNS:*.$DOMAIN,IP:127.0.0.1"
+  -addext "subjectAltName=DNS:$DOMAIN,DNS:*.$DOMAIN,IP:$IP"
 
 # create combined crt and key for haproxy.pem
 cat /usr/local/etc/ssl/"$DOMAIN".key /usr/local/etc/ssl/fullchain.cer > /usr/local/etc/ssl/haproxy.pem
 
-# set permissions
+# set permissions on certificate files
 chmod 644 /usr/local/etc/ssl/fullchain.cer
 chmod 644 /usr/local/etc/ssl/haproxy.pem

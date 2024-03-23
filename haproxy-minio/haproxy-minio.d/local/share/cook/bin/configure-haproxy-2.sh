@@ -25,6 +25,7 @@ sep=$'\001'
 # copy in 2 server haproxy.cfg
 < "$TEMPLATEPATH/haproxy-2.cfg.in" \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%serverone%%${sep}$SERVERONE${sep}g" | \
   sed "s${sep}%%serveroneport%%${sep}$SERVERONEPORT${sep}g" | \
   sed "s${sep}%%servertwo%%${sep}$SERVERTWO${sep}g" | \

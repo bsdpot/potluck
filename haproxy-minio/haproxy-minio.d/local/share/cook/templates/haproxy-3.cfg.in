@@ -7,7 +7,7 @@ global
 
 defaults
   log global
-  option tcplog
+  option httplog
   option dontlognull
   option redispatch
   option socket-stats
@@ -18,10 +18,14 @@ defaults
 
 listen minioloadbalancer
   bind %%ip%%:443 ssl crt /usr/local/etc/ssl/haproxy.pem
-  mode tcp
+  mode http
+  acl default hdr(host) -i %%domain%%          
+  use_backend loadbalancer if default
+  default_backend loadbalancer
+
+backend loadbalancer
+  mode http
   balance leastconn
-  option tcpka
-  option tcplog
-  server minio1 %%serverone%%:%%serveroneport%% check inter 2s
-  server minio2 %%servertwo%%:%%servertwoport%% check inter 2s
-  server minio3 %%serverthree%%:%%serverthreeport%% check inter 2s
+  server minio1 %%serverone%%:%%serveroneport%% ssl verify none check inter 2s
+  server minio2 %%servertwo%%:%%servertwoport%% ssl verify none check inter 2s
+  server minio3 %%serverthree%%:%%serverthreeport%% ssl verify none check inter 2s
