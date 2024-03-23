@@ -22,5 +22,9 @@ mkdir -p /usr/local/etc/ssl/
   -nodes -keyout /usr/local/etc/ssl/"$DOMAIN".key -out /usr/local/etc/ssl/fullchain.cer -subj "/CN=$DOMAIN" \
   -addext "subjectAltName=DNS:$DOMAIN,DNS:*.$DOMAIN,IP:127.0.0.1"
 
+# create combined crt and key for haproxy.pem
+cat /usr/local/etc/ssl/"$DOMAIN".key /usr/local/etc/ssl/fullchain.cer > /usr/local/etc/ssl/haproxy.pem
+
 # set permissions
 chmod 644 /usr/local/etc/ssl/fullchain.cer
+chmod 644 /usr/local/etc/ssl/haproxy.pem
