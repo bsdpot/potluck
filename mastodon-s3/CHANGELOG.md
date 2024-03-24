@@ -6,6 +6,7 @@
 * Add cflags to bundle config for cbor and posix-spawn
 * Change BUCKETHOST to BUCKETNAME
 * Update node_exporter to ignore ZFS
+* Fix typo in README
 
 ---
 

@@ -58,7 +58,7 @@ However the mastodon pot jail will register a SSL certificate directly.
     -E DBPASS=<password> \
     -E DBNAME=<database name> \
     -E REDISHOST=<IP of redis instance> \
-    -E BUCKET=<bucket name on S3 host> \
+    -E BUCKETNAME=<bucket name on S3 host> \
     -E S3HOSTNAME=<S3 hostname> \
     -E BUCKETUSER=<S3 access id> \
     -E BUCKETPASS=<S3 password> \
