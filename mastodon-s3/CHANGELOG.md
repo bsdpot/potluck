@@ -4,6 +4,8 @@
 * FBSD14 base image
 * Add rbenv and upgrade ruby
 * Add cflags to bundle config for cbor and posix-spawn
+* Change BUCKETHOST to BUCKETNAME
+* Update node_exporter to ignore ZFS
 
 ---
 

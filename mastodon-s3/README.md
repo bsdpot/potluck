@@ -58,7 +58,7 @@ However the mastodon pot jail will register a SSL certificate directly.
     -E DBPASS=<password> \
     -E DBNAME=<database name> \
     -E REDISHOST=<IP of redis instance> \
-    -E BUCKETHOST=<public hostname or IP of S3 storage> \
+    -E BUCKET=<bucket name on S3 host> \
     -E S3HOSTNAME=<S3 hostname> \
     -E BUCKETUSER=<S3 access id> \
     -E BUCKETPASS=<S3 password> \
@@ -116,7 +116,7 @@ The DBNAME parameter is the database name on the external `postgresql` instance.
 
 The REDISHOST parameter is the IP address of a LAN-based `redis` host, such as the `redis-single` potluck instance.
 
-The BUCKETHOST parameter is the public hostname of your S3 storage, such as `file.mastodon.instance`.
+The BUCKETNAME parameter is the name of your bucket in S3 storage.
 
 The S3HOSTNAME parameter is the hostname or IP of your S3 storage.
 

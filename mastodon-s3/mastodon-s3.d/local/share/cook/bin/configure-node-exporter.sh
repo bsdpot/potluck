@@ -15,7 +15,7 @@ fi
 
 # enable node_exporter service
 service node_exporter enable
-sysrc node_exporter_args="--log.level=warn"
+sysrc node_exporter_args="--no-collector.zfs --log.level=warn"
 sysrc node_exporter_user=nodeexport
 sysrc node_exporter_group=nodeexport
 echo "node_exporter_listen_address=\"$IP:9100\"" >> /etc/rc.conf
