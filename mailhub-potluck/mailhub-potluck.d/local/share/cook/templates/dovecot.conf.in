@@ -559,3 +559,8 @@ plugin {
   # (Currently only relevant for ManageSieve) 
   #sieve_quota_max_storage = 0
 }
+
+# required to make ACLs work
+plugin {
+  acl = vfile:/usr/local/etc/dovecot/global-acls:cache_secs=300
+}

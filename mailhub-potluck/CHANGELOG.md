@@ -4,6 +4,7 @@
 * FBSD14 base image
 * Perl36, add net/p5-IO-Socket-INET6 and net/p5-Socket6 to ports pulled from git
 * Fix global-acls issue by creating necessary directory /usr/local/etc/dovecot/global-acls
+* Add necessary config line to dovecot.conf for ACL fix
 
 ---
 
