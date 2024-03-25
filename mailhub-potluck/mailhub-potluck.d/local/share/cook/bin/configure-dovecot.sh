@@ -18,6 +18,12 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 mkdir -p /mnt/dovecot/mail
 mkdir -p /mnt/dovecot/sieve/before.d/
 
+# if ACL error with IMAP connections, check this
+#   mkdir -p /usr/local/etc/dovecot/global-acls
+#   service dovecot onerestart
+# Solution:
+mkdir -p /usr/local/etc/dovecot/global-acls
+
 # create vhost user and group
 # create Dovecot Virtual Mail User
 pw groupadd -n vhost -g 3000
