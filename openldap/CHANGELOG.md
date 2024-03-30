@@ -14,6 +14,7 @@
 * Fixing clustering setup and add entries to /etc/hosts
 * Adjust openldap to use hostnames localldap and remoteldap set in /etc/hosts
 * No trailing slash in ldap url for sysrc entry
+* Openldap mirrormode parameter is now called multiprovider
 
 ---
 

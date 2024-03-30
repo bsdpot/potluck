@@ -122,7 +122,7 @@ syncrepl rid=0
 	binddn="cn=replicator,dc=%%mysuffix%%,dc=%%mytld%%"
 	credentials=%%setslappass%%
 	type=refreshAndPersist
-	retry="5 5 300 +"
+	retry="60 5 300 +"
 	interval=00:00:05:00
 	schemachecking=on
 
@@ -146,12 +146,15 @@ index mail pres,eq,sub
 # Syncprov indexes
 index entryCSN eq
 index entryUUID eq
+
 # Mirror mode essential to allow writes and must appear
 # after all syncrepl directives
-mirrormode on
+# mirrormode parameter is replaced by multiprovider parameter
+multiprovider on
+
 # Define the provider to use the syncprov overlay
 # (last directives in database section)
 overlay syncprov
-# contextCSN saved to database every 100 updates or 10 mins.
-syncprov-checkpoint 100 10
+# contextCSN saved to database every 100 updates or 5 mins.
+syncprov-checkpoint 100 5
 syncprov-sessionlog 100
