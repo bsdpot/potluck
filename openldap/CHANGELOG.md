@@ -13,6 +13,7 @@
 * Improve ldap clustering setup with correct server-id parameters
 * Fixing clustering setup and add entries to /etc/hosts
 * Adjust openldap to use hostnames localldap and remoteldap set in /etc/hosts
+* No trailing slash in ldap url for sysrc entry
 
 ---
 
