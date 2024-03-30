@@ -25,9 +25,13 @@ SETSLAPPASS=$(/usr/local/sbin/slappasswd -s "$MYCREDS")
 # safe(r) separator for sed
 sep=$'\001'
 
+# make sure the outside IP is set to hostname localldap
+echo "$IP localldap" >> /etc/hosts
+
 if [ -n "$REMOTEIP" ]; then
-	echo "$IP openldap0" >> /etc/hosts
-	echo "$REMOTEIP openldap1" >> /etc/hosts
+	# make sure remoteldap is in /etc/hosts
+	echo "$REMOTEIP remoteldap" >> /etc/hosts
+	# configure multi server mirror mode ldap
     < "$TEMPLATEPATH/multi-slapd.conf.in" \
     sed "s${sep}%%serverid%%${sep}$SERVERID${sep}g" | \
     sed "s${sep}%%remoteserverid%%${sep}$REMOTESERVERID${sep}g" | \
@@ -146,7 +150,9 @@ chmod +x /root/importldapdata.sh
 # enable service
 service slapd enable || true
 # sysrc doesn't seem to add this correctly so echo in
-echo "slapd_flags='-4 -h \"ldapi://%2fvar%2frun%2fopenldap%2fldapi/ ldap://$IP/ ldaps://$IP/\"'" >> /etc/rc.conf
+#echo "slapd_flags='-4 -h \"ldapi://%2fvar%2frun%2fopenldap%2fldapi/ ldap://$IP/ ldaps://$IP/\"'" >> /etc/rc.conf
+# we're setting hostname localldap with external IP in /etc/hosts
+echo "slapd_flags='-4 -h \"ldapi://%2fvar%2frun%2fopenldap%2fldapi/ ldap://localldap/ ldaps://localldap/\"'" >> /etc/rc.conf
 # set cn=config directory config settings
 sysrc slapd_cn_config="YES"
 sysrc slapd_sockets="/var/run/openldap/ldapi"

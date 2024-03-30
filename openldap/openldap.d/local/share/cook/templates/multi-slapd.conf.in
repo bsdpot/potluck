@@ -30,8 +30,8 @@ moduleload    lastmod
 #  serverID <integer> [<URL>]
 # should be using fully qualified server names instead of IP
 # setting local names in /etc/hosts in configure step
-serverID %%serverid%% ldap://openldap0
-serverID %%remoteserverid%% ldap://openldap1
+serverID %%serverid%% ldap://localldap
+serverID %%remoteserverid%% ldap://remoteldap
 
 # added from
 # https://loga.us/2014/08/16/openldap-and-multi-master-replication-in-freebsd-part-1/
@@ -113,7 +113,7 @@ access	to	*
 
 # sync
 syncrepl rid=0
-	provider=ldap://%%remoteip%%:389
+	provider=ldap://remoteldap:389
 	searchbase="dc=%%mysuffix%%,dc=%%mytld%%"
 	filter="(objectClass=*)"
 	scope=sub
