@@ -72,8 +72,10 @@ Thereafter these files will load automatically, along with any updates, from per
   -E HOSTNAME=<hostname> \
   [ -E CRONBACKUP=/mnt/openldap-data/backups ] \
   [ -E IMPORTCUSTOM=1 ] \
-  [ -E REMOTEIP=<IP address second instance> ] \
-  [ -E SERVERID=<001 or 002> ] \
+  [ -E LAMPASS=<password for ldap-account-manager configuration> ] \
+  [ -E SERVERID=<this server ID, integer from 0 to 4095> ] \
+  [ -E REMOTEIP=<IP address of second openldap instance> ] \
+  [ -E REMOTESERVERID=<server ID of second instance, integer 0 to 4095 not matching SERVERID> ] \
   [ -E DEFAULTGROUPS=Y ] \
   [ -E USERNAME=<generic user username> ] \
   [ -E PASSWORD=<generic user password ] \
@@ -102,10 +104,13 @@ The CRONBACKUP parameter is the path to persistent storage where automatic backu
 
 If set, IMPORTCUSTOM enables the import of copied-in files `/root/config.ldif` and `/root/data.ldif` as a repeat in the cook script. Also available via shell scripts.
 
-The optional REMOTEIP parameter is the IP address of a second `openldap` pot server if running a multi-master
-cluster. If set, a cluster setup will be initiated.
+The optional LAMPASS parameter is the configuration password for `ldap-account-manager`. If not set it defaults to `lam`, as set by the software.
 
-The optional SERVERID parameter is one of `001` or `002` for first or second server if running a multi-master cluster.
+The optional SERVERID parameter is an integer from `0 to 4095`, or `0` for first server, and `1` for second server, and only applies if running a multi-master cluster.
+
+The optional REMOTEIP parameter is the IP address of a second `openldap` pot server if running a multi-master cluster. If set, a cluster setup will be initiated.
+
+The optional REMOTESERVERID parameter is an integer from `0 to 4095` for the second instance, and must be different to SERVERID. 
 
 The optional DEFAULTGROUPS parameter will enable a default group arrangement with People and mail, if set to any value. This will not work if IMPORTCUSTOM is enabled.
 

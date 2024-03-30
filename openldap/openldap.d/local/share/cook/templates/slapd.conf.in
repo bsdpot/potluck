@@ -15,6 +15,9 @@ argsfile    /var/run/openldap/slapd.args
 # added from
 # https://loga.us/2014/08/16/openldap-and-multi-master-replication-in-freebsd-part-1/
 loglevel 256
+# set log file, also included in syslog-ng
+logfile /var/log/slapd.log
+logfile-format syslog-localtime
 # Load dynamic backend modules:
 modulepath  /usr/local/libexec/openldap
 moduleload    back_mdb

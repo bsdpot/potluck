@@ -1,0 +1,34 @@
+password: %%configpassword%%
+default: lam
+logLevel: 3
+logDestination: /var/log/lam.log
+configDatabaseType: files
+configDatabaseServer: 
+configDatabasePort: 
+configDatabaseName: 
+configDatabaseUser: 
+configDatabasePassword: 
+license: 
+sessionTimeout: 30
+hideLoginErrorDetails: false
+allowedHosts: 
+allowedHostsSelfService: 
+passwordMinLength: 0
+passwordMinUpper: 0
+passwordMinLower: 0
+passwordMinNumeric: 0
+passwordMinSymbol: 0
+passwordMinClasses: 0
+checkedRulesCount: -1
+passwordMustNotContain3Chars: false
+passwordMustNotContainUser: false
+externalPwdCheckUrl: 
+errorReporting: default
+licenseEmailFrom: 
+licenseEmailTo: 
+licenseEmailDateSent: 
+licenseWarningType: 
+mailServer: 
+mailUser: 
+mailPassword: 
+mailEncryption: 

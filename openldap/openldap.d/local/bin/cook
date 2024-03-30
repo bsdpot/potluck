@@ -53,6 +53,7 @@ required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args DOMAIN MYCREDS HOSTNAME"
 optional_args="SERVERID CRONBACKUP REMOTEIP IMPORTCUSTOM REMOTELOG"
 optional_args="$optional_args DEFAULTGROUPS USERNAME PASSWORD"
+optional_args="$optional_args LAMPASS"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -83,6 +84,15 @@ echo "From DOMAIN of $DOMAIN we get MYSUFFIX of $MYSUFFIX and MYTLD of $MYTLD"
 if [ -n "${CONSULSERVERS+x}" ]; then
     FIXCONSULSERVERS=$(convert_to_required_format "$CONSULSERVERS")
     export FIXCONSULSERVERS
+fi
+
+# ldap-account-manager configuration password, if not set then set default
+if [ -n "${LAMPASS+x}" ]; then
+	LAMPASS="$LAMPASS"
+	export LAMPASS
+else
+	LAMPASS="lam"
+	export LAMPASS
 fi
 
 # stop services

@@ -7,6 +7,10 @@
 * Adjust apache24 config for php-fpm
 * Increase php-fpm memory to 128MB to clear error and make LAM work again
 * Include files to change for php socket on php version change
+* Fix node_exporter ZFS error
+* Adjust apache logging and send logs out with syslog-ng
+* Improve openldap and LAM logging
+* Improve ldap clustering setup with correct server-id parameters
 
 ---
 

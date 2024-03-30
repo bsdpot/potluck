@@ -14,9 +14,9 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# create syslog file and necessary directories
+# create log file for debug messages
 touch /var/log/slapd.log
-mkdir -p /usr/local/etc/syslog.d/
+chown ldap:ldap /var/log/slapd.log
 
 # create password
 SETSLAPPASS=$(/usr/local/sbin/slappasswd -s "$MYCREDS")
@@ -28,6 +28,8 @@ sep=$'\001'
 if [ -n "$REMOTEIP" ]; then
     < "$TEMPLATEPATH/multi-slapd.conf.in" \
     sed "s${sep}%%serverid%%${sep}$SERVERID${sep}g" | \
+    sed "s${sep}%%remoteserverid%%${sep}$REMOTESERVERID${sep}g" | \
+    sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
     sed "s${sep}%%mysuffix%%${sep}$MYSUFFIX${sep}g" | \
     sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" | \
     sed "s${sep}%%setslappass%%${sep}$SETSLAPPASS${sep}g" | \
