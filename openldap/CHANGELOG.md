@@ -11,6 +11,7 @@
 * Adjust apache logging and send logs out with syslog-ng
 * Improve openldap and LAM logging
 * Improve ldap clustering setup with correct server-id parameters
+* Fixing clustering setup and add entries to /etc/hosts
 
 ---
 

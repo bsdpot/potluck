@@ -26,6 +26,8 @@ SETSLAPPASS=$(/usr/local/sbin/slappasswd -s "$MYCREDS")
 sep=$'\001'
 
 if [ -n "$REMOTEIP" ]; then
+	echo "$IP openldap0" >> /etc/hosts
+	echo "$REMOTEIP openldap1" >> /etc/hosts
     < "$TEMPLATEPATH/multi-slapd.conf.in" \
     sed "s${sep}%%serverid%%${sep}$SERVERID${sep}g" | \
     sed "s${sep}%%remoteserverid%%${sep}$REMOTESERVERID${sep}g" | \
