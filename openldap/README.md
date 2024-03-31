@@ -234,3 +234,23 @@ service slapd restart
 ```
 
 You can now login as Manager via web front end with the new credentials.
+
+## Checking user passwords
+
+If you need to test user credentials, make use of the script `/root/testldapcredentials.sh` and the username as follows:
+
+```
+./testldapcredentials.sh username-to-check
+
+This tool will query the correct cn= from ldapsearch to use in ldapwhoami query.
+
+Manual password entry is required because funny characters don't get escaped properly.
+
+Enter LDAP Password: ******
+dn:cn=user name,ou=People,dc=domain,dc=com
+
+Password success if you see the following:
+dn: cn=user name,ou=People,dc=domain,dc=com
+```
+
+Unfortunately the password requires manual entry as special characters aren't escaped correctly with the right parameter.

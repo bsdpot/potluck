@@ -150,6 +150,10 @@ chmod +x /root/importldapconfig.sh
 cp -f "$TEMPLATEPATH/importldapdata.sh.in" /root/importldapdata.sh
 chmod +x /root/importldapdata.sh
 
+# copy script to test credentials
+cp -f "$TEMPLATEPATH/testldapcredentials.sh.in" /root/testldapcredentials.sh
+chmod +x /root/testldapcredentials.sh
+
 # enable service
 service slapd enable || true
 # sysrc doesn't seem to add this correctly so echo in

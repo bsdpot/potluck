@@ -16,6 +16,8 @@
 * No trailing slash in ldap url for sysrc entry
 * Openldap mirrormode parameter is now called multiprovider
 * Adjust credentials setup because passwords are hashed or not hashed depending on config option
+* Allow invalid certificates for ldap client programs
+* Add script to test credentials added via LAM
 
 ---
 
