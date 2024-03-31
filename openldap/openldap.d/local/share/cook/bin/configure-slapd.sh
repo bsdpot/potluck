@@ -32,6 +32,7 @@ if [ -n "$REMOTEIP" ]; then
 	# make sure remoteldap is in /etc/hosts
 	echo "$REMOTEIP remoteldap" >> /etc/hosts
 	# configure multi server mirror mode ldap
+	# we hash the password for some entries but not the sync entry
     < "$TEMPLATEPATH/multi-slapd.conf.in" \
     sed "s${sep}%%serverid%%${sep}$SERVERID${sep}g" | \
     sed "s${sep}%%remoteserverid%%${sep}$REMOTESERVERID${sep}g" | \
@@ -39,6 +40,7 @@ if [ -n "$REMOTEIP" ]; then
     sed "s${sep}%%mysuffix%%${sep}$MYSUFFIX${sep}g" | \
     sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" | \
     sed "s${sep}%%setslappass%%${sep}$SETSLAPPASS${sep}g" | \
+    sed "s${sep}%%replicationpassword%%${sep}$MYCREDS${sep}g" | \
     sed "s${sep}%%remoteip%%${sep}$REMOTEIP${sep}g" \
     > /usr/local/etc/openldap/slapd.conf
 else
@@ -127,11 +129,12 @@ else
 fi
 
 # setup replicator user if remoteip set
+# we don't hash the password, it will be automatically done
 if [ -n "$REMOTEIP" ]; then
     < "$TEMPLATEPATH/syncuser.ldif.in" \
     sed "s${sep}%%mysuffix%%${sep}$MYSUFFIX${sep}g" | \
     sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" | \
-    sed "s${sep}%%mycreds%%${sep}$MYCREDS${sep}g" \
+    sed "s${sep}%%replicationpassword%%${sep}$MYCREDS${sep}g" \
     > /tmp/syncuser.ldif
 
     # add syncuser to database 1, uses -c to continue on error

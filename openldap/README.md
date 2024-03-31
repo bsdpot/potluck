@@ -152,10 +152,15 @@ Important: `ldapmodify` and `ldapadd` don't work for import, where `slapadd` wor
 
 ## Two server setup - multi-master cluster
 
-When running with two servers, you must first setup one and import existing data with the included scripts.
+When running with two servers, you must first setup one server and import existing data with the included scripts.
 
-Then start a second server on a different host (both will use /mnt/openldap-data so keep on different servers)
-with a different SERVERID and setting REMOTEIP to the IP address of the first server.
+Then start on a second server, or make use of a different ZFS dataset for persistent storage, with a different SERVERID and setting REMOTEIP to the IP address of the first server.
+
+To check sync status compare `contextCSN`:
+```
+ldapsearch -x -LLL -H ldap://remoteldap:389 -s base -b "dc=your-domain,dc=net" contextCSN dn: dc=your-domain,dc=net
+ldapsearch -x -LLL -H ldap://localldap:389 -s base -b "dc=your-domain,dc=net" contextCSN dn: dc=your-domain,dc=net
+```
 
 ## Basic command line search
 

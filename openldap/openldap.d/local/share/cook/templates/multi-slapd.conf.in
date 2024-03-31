@@ -120,11 +120,12 @@ syncrepl rid=0
 	attrs="*,+"
 	bindmethod=simple
 	binddn="cn=replicator,dc=%%mysuffix%%,dc=%%mytld%%"
-	credentials=%%setslappass%%
+	credentials=%%replicationpassword%%
 	type=refreshAndPersist
 	retry="60 5 300 +"
 	interval=00:00:05:00
 	schemachecking=on
+	timeout=1
 
 # Indices to maintain
 index   objectClass eq

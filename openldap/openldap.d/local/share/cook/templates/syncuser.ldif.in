@@ -9,4 +9,4 @@ uidNumber: 5999
 gidNumber: 5999
 homeDirectory: /home/replicator
 loginShell: /bin/sh
-userPassword: %%mycreds%%
+userPassword: %%replicationpassword%%
