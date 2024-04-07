@@ -180,9 +180,9 @@ else
 fi
 
 # precompile assets
-# todo: we only want to do this if it hasn't already been done!
+# new: set NODE_OPTIONS=--openssl-legacy-provider to deal with older openssl implementations like mail servers
 echo "Precompiling assets as mastodon user"
-su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile"'
+su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; NODE_OPTIONS=--openssl-legacy-provider RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile"'
 
 # set back this
 set -e

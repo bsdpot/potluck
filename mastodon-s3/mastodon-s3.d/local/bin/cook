@@ -160,6 +160,13 @@ killall -9 consul || true
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
+# temp fix, ensure mode 644 for /etc/resolv.conf
+# mastodon user ruby process needs to read /etc/resolv.conf
+# to perform DNS lookups
+###
+chmod 644 /etc/resolv.conf
+###
+
 if [ -n "${REMOTELOG}" ]; then
     log "Configure and start syslog-ng"
     configure-syslog-ng.sh

@@ -263,32 +263,32 @@ echo "Adding node-gyp to yarn"
 # as user mastodon - set yarn classic
 # enable this for wogan fork
 echo "Setting yarn to classic version"
-su - mastodon -c "/usr/local/bin/yarn set version classic"
+su - mastodon -c "NODE_OPTIONS=--openssl-legacy-provider /usr/local/bin/yarn set version classic"
 
 # as user mastodon - enable deployment
 echo "Setting mastodon deployment to true"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config deployment 'true'"
+su - mastodon -c "cd /usr/local/www/mastodon && NODE_OPTIONS=--openssl-legacy-provider /usr/local/bin/bundle config deployment 'true'"
 
 # as user mastodon - remove development and test environments
 echo "Removing development and test environments"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config without 'development test'"
+su - mastodon -c "cd /usr/local/www/mastodon && NODE_OPTIONS=--openssl-legacy-provider /usr/local/bin/bundle config without 'development test'"
 
 # as user mastodon add extra adjustments to bundle as per https://wiki.freebsd.org/Ports/net-im/mastodon
 echo "Setting Wno-incompatible-function-pointer-types flag for build.cbor"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config build.cbor --with-cflags='-Wno-incompatible-function-pointer-types'"
+su - mastodon -c "cd /usr/local/www/mastodon && NODE_OPTIONS=--openssl-legacy-provider /usr/local/bin/bundle config build.cbor --with-cflags='-Wno-incompatible-function-pointer-types'"
 
 echo "Setting Wno-incompatible-function-pointer-types flag for build.posix-spawn"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config build.posix-spawn --with-cflags='-Wno-incompatible-function-pointer-types'"
+su - mastodon -c "cd /usr/local/www/mastodon && NODE_OPTIONS=--openssl-legacy-provider /usr/local/bin/bundle config build.posix-spawn --with-cflags='-Wno-incompatible-function-pointer-types'"
 
 # as user mastodon - bundle install
 echo "Installing the required files with bundle"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j1"
+su - mastodon -c "cd /usr/local/www/mastodon && NODE_OPTIONS=--openssl-legacy-provider /usr/local/bin/bundle install -j1"
 
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
 
 # enable for wogan fork
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
+su - mastodon -c "cd /usr/local/www/mastodon && NODE_OPTIONS=--openssl-legacy-provider /usr/local/bin/yarn install --pure-lockfile"
 
 # ----------- END CUSTOM MASTODON ---------------
 

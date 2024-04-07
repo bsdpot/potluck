@@ -7,6 +7,8 @@
 * Change BUCKETHOST to BUCKETNAME
 * Update node_exporter to ignore ZFS
 * Fix typo in README
+* Enable legacy ssl in node with NODE_OPTIONS=--openssl-legacy-provider [testing]
+* Set read permissions on /etc/resolv.conf for Ruby as user to allow DNS resolution
 
 ---
 
