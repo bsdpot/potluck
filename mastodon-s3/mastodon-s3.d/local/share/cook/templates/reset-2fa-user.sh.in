@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+# Check for root privileges
+if ! [ "$(id -u)" = 0 ]; then
+   echo "This script must be run with root privileges"
+   exit 1
+fi
+
+CHANGEUSER="$1"
+if [ -z "$CHANGEUSER" ]; then
+	echo "Please pass in the username to reset 2FA for as first argument"
+	exit 1
+fi
+
+# change directory to tmp for su purposes
+cd /tmp || exit 1
+
+# as user mastodon run tootctl to reset 2FA for a specific user
+su - mastodon -c "/usr/local/bin/bash -c 'cd /usr/local/www/mastodon; RAILS_ENV=production SAFETY_ASSURED=1 bin/tootctl accounts modify --disable-2fa $CHANGEUSER'"

@@ -9,6 +9,8 @@
 * Fix typo in README
 * Enable legacy ssl in node with NODE_OPTIONS=--openssl-legacy-provider [testing]
 * Set read permissions on /etc/resolv.conf for Ruby as user to allow DNS resolution
+* Remove legacy ssl settings as not working, simply can't connect to old SSL hosts for mail servers
+* Add maintenance scripts for common tasks
 
 ---
 

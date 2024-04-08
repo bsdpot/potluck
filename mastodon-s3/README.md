@@ -100,7 +100,7 @@ The DOMAIN parameter is the domain name of the `mastodon-s3` instance.
 
 The EMAIL parameter is the email address to use for letsencrypt registration. SSL certificates are mandatory, modern browsers won't open camera or microphone unless SSL enabled.
 
-The MAILHOST parameter is the hostname or IP address of a mail server to us.
+The MAILHOST parameter is the hostname or IP address of a mail server to us. Legacy SSL is not supported, older mail hosts are not suitable.
 
 The MAILUSER and MAILPASS parameters are the mail user credentials.
 

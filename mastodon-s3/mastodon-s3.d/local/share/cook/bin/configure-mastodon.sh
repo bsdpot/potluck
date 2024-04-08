@@ -180,9 +180,8 @@ else
 fi
 
 # precompile assets
-# new: set NODE_OPTIONS=--openssl-legacy-provider to deal with older openssl implementations like mail servers
 echo "Precompiling assets as mastodon user"
-su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; NODE_OPTIONS=--openssl-legacy-provider RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile"'
+su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile"'
 
 # set back this
 set -e
@@ -209,3 +208,22 @@ service mastodon_web enable || true
 # to-do
 # add crontab entries
 # bundle exec rake mastodon:media:remove_remote
+
+# make sure root has a bin directory
+mkdir -p /root/bin
+
+# copy over admin script to reset elasticsearch indexes
+cp -f "$TEMPLATEPATH/rebuild-es-index.sh.in" /root/bin/rebuild-es-index.sh
+chmod +x /root/bin/rebuild-es-index.sh
+
+# copy over mastodon diagnostic script
+cp -f "$TEMPLATEPATH/diagnose-mastodon.sh.in" /root/bin/diagnose-mastodon.sh
+chmod +x /root/bin/diagnose-mastodon.sh
+
+# copy over script to reset 2FA for mastodon user
+cp -f "$TEMPLATEPATH/reset-2fa-user.sh.in" /root/bin/reset-2fa-user.sh
+chmod +x /root/bin/reset-2fa-user.sh
+
+# copy over script to remove media and preview_cards
+cp -f "$TEMPLATEPATH/remove-old-media.sh.in" /root/bin/remove-old-media.sh
+chmod +x /root/bin/remove-old-media.sh
