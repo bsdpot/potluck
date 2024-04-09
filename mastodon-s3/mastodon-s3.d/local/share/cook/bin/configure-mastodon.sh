@@ -227,3 +227,10 @@ chmod +x /root/bin/reset-2fa-user.sh
 # copy over script to remove media and preview_cards
 cp -f "$TEMPLATEPATH/remove-old-media.sh.in" /root/bin/remove-old-media.sh
 chmod +x /root/bin/remove-old-media.sh
+
+# copy over the create-admin-user script and set variables
+< "$TEMPLATEPATH/create-admin-user.sh" \
+  sed "s${sep}%%ownername%%${sep}$SETOWNERNAME${sep}g" | \
+  sed "s${sep}%%owneremail%%${sep}$SETOWNEREMAIL${sep}g" \
+  > /root/bin/create-admin-user.sh
+chmod +x /root/bin/create-admin-user.sh

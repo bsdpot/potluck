@@ -11,6 +11,7 @@
 * Set read permissions on /etc/resolv.conf for Ruby as user to allow DNS resolution
 * Remove legacy ssl settings as not working, simply can't connect to old SSL hosts for mail servers
 * Add maintenance scripts for common tasks
+* Add script to automate creating owner user without requiring email confirmation
 
 ---
 

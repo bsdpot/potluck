@@ -58,6 +58,7 @@ optional_args="MAILPORT DBPORT REDISPORT REMOTELOG MYSECRETKEY"
 optional_args="$optional_args MYOTPSECRET MYVAPIDPRIVATEKEY MYVAPIDPUBLICKEY"
 optional_args="$optional_args PVTCERT ELASTICENABLE ELASTICHOST ELASTICPORT"
 optional_args="$optional_args ELASTICUSER ELASTICPASS DEEPLKEY DEEPLPLAN"
+optional_args="$optional_args OWNERNAME OWNEREMAIL"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -151,6 +152,22 @@ if [ -n "${DEEPLPLAN+x}" ]; then
 else
 	SETDEEPLPLAN="free"
 	export SETDEEPLPLAN
+fi
+
+# set Owner defaults if not set
+if [ -n "${OWNERNAME+x}" ]; then
+	SETOWNERNAME="$OWNERNAME"
+	export SETOWNERNAME
+else
+    SETOWNERNAME="admin"
+    export SETOWNERNAME
+fi
+if [ -n "${OWNEREMAIL+x}" ]; then
+	SETOWNEREMAIL="$OWNEREMAIL"
+	export SETOWNEREMAIL
+else
+	SETOWNEREMAIL="set@email.address"
+	export SETOWNEREMAIL
 fi
 
 # stop services

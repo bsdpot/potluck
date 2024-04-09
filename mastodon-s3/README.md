@@ -41,45 +41,47 @@ However the mastodon pot jail will register a SSL certificate directly.
 * Mount in persistent storage for certificates and keys to /mnt specifically
 * Adjust to your environment:
   ```
-    sudo pot set-env -p <clonejailname> \
-    -E DATACENTER=<datacentername> \
-    -E IP=<IP address of this nomad instance> \
-    -E NODENAME=<an internal name for image> \
-    -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
-    -E GOSSIPKEY="<32 byte Base64 key from consul keygen>" \
-    -E DOMAIN=<FQDN for host> \
-    -E EMAIL=<email address for letsencrypt setup> \
-    -E MAILHOST=<mailserver hostname or IP> \
-    -E MAILUSER=<SMTP username> \
-    -E MAILPASS=<SMTP password> \
-    -E MAILFROM=<SMTP from address> \
-    -E DBHOST=<host of postgres jail> \
-    -E DBUSER=<username> \
-    -E DBPASS=<password> \
-    -E DBNAME=<database name> \
-    -E REDISHOST=<IP of redis instance> \
-    -E BUCKETNAME=<bucket name on S3 host> \
-    -E S3HOSTNAME=<S3 hostname> \
-    -E BUCKETUSER=<S3 access id> \
-    -E BUCKETPASS=<S3 password> \
-    -E BUCKETALIAS=<web address for files, or alt domain name> \
-    -E BUCKETREGION=<S3 region> \
-    [ -E MAILPORT=<SMTP port> ] \
-    [ -E DBPORT=<database port> ] \
-    [ -E REDISPORT=<redis port> ] \
-    [ -E REMOTELOG="<IP syslog-ng server>" ] \
+	sudo pot set-env -p <clonejailname> \
+	-E DATACENTER=<datacentername> \
+	-E IP=<IP address of this nomad instance> \
+	-E NODENAME=<an internal name for image> \
+	-E CONSULSERVERS="<comma-deliminated list of consul servers>" \
+	-E GOSSIPKEY="<32 byte Base64 key from consul keygen>" \
+	-E DOMAIN=<FQDN for host> \
+	-E EMAIL=<email address for letsencrypt setup> \
+	-E MAILHOST=<mailserver hostname or IP> \
+	-E MAILUSER=<SMTP username> \
+	-E MAILPASS=<SMTP password> \
+	-E MAILFROM=<SMTP from address> \
+	-E DBHOST=<host of postgres jail> \
+	-E DBUSER=<username> \
+	-E DBPASS=<password> \
+	-E DBNAME=<database name> \
+	-E REDISHOST=<IP of redis instance> \
+	-E BUCKETNAME=<bucket name on S3 host> \
+	-E S3HOSTNAME=<S3 hostname> \
+	-E BUCKETUSER=<S3 access id> \
+	-E BUCKETPASS=<S3 password> \
+	-E BUCKETALIAS=<web address for files, or alt domain name> \
+	-E BUCKETREGION=<S3 region> \
+	[ -E MAILPORT=<SMTP port> ] \
+	[ -E DBPORT=<database port> ] \
+	[ -E REDISPORT=<redis port> ] \
+	[ -E REMOTELOG="<IP syslog-ng server>" ] \
 	[ -E MYSECRETKEY="<rails secret key>" ] \
 	[ -E MYOTPSECRET="<rails secret key for otp>" ] \
 	[ -E MYVAPIDPRIVATEKEY="<vapid private key>" ] \
 	[ -E MYVAPIDPUBLICKEY="<vapid public key>" ] \
-    [ -E PVTCERT=<any value enables> ] \
-    [ -E ELASTICENABLE=<any value enables> ] \
-    [ -E ELASTICHOST=<IP of elasticsearch or zincsearch instance> ] \
-    [ -E ELASTICPORT=<port of ES instance, default 9200> ] \
-    [ -E ELASTICUSER=<username for ES instance > ] \
-    [ -E ELASTICPASS=<password for ES instance > ] \
-    [ -E DEEPLKEY=<API key> ] \
-    [ -E DEEPLPLAN=<API plan or free> ]
+	[ -E PVTCERT=<any value enables> ] \
+	[ -E ELASTICENABLE=<any value enables> ] \
+	[ -E ELASTICHOST=<IP of elasticsearch or zincsearch instance> ] \
+	[ -E ELASTICPORT=<port of ES instance, default 9200> ] \
+	[ -E ELASTICUSER=<username for ES instance > ] \
+	[ -E ELASTICPASS=<password for ES instance > ] \
+	[ -E DEEPLKEY=<API key> ] \
+	[ -E DEEPLPLAN=<API plan or free> ] \
+	[ -E OWNERNAME=<admin username> ] \
+	[ -E OWNEREMAIL=<admin email address> ]
   ```
 * Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.
 
@@ -160,6 +162,10 @@ The DEEPLKEY parameter is the API key for the [DeepL translation service](https:
 
 The DEEPLPLAN is the type of API plan. If using the free plan set this value to 'free'. If unset it will default to 'free'.
 
+The OWNERNAME is the username of the Owner account on a fresh instance. Setting this simply hard-codes it in the script. The script must still be run manually.
+
+The OWNEREMAIL is the email address of the Owner account. Setting this simply hard-codes it in the script. The script must still be run manually.
+
 # Usage
 
 ## Secret Key
@@ -196,3 +202,11 @@ Caveat: this is untested
 ## Custom fork of Mastodon
 
 This uses a custom fork of Mastodon with a 5000 character limit, from https://github.com/woganmay/mastodon in the v4.2.1-patch tag.
+
+## Maintenance Scripts
+
+There are several useful scripts in `/root/bin/` which can be used to create an admin user, or reset 2FA, or clear media, or produce diagnostic output.
+
+The `/root/bin/create-admin-user.sh` has the admin user and email set by the passed in parameters OWNERNAME and OWNEREMAIL.
+
+A password will be created and user credentials will be saved in `/mnt/mastodon/private/mastodon.owner.credentials`
