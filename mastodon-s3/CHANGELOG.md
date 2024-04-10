@@ -13,6 +13,7 @@
 * Add maintenance scripts for common tasks
 * Add script to automate creating owner user without requiring email confirmation
 * Fix typo
+* Add adjustments for custom S3 provider, use S3_ENDPOINT with url/bucket
 
 ---
 
