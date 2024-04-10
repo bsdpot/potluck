@@ -8,5 +8,6 @@
 * Adjust self-signed certificate generation to use pot image IP
 * Adjust haproxy config, SSL verify off for backend
 * Fix node_exporter zfs error
+* Allow port 80 requests without redirect to port 443
 
 ---
