@@ -229,7 +229,7 @@ cp -f "$TEMPLATEPATH/remove-old-media.sh.in" /root/bin/remove-old-media.sh
 chmod +x /root/bin/remove-old-media.sh
 
 # copy over the create-admin-user script and set variables
-< "$TEMPLATEPATH/create-admin-user.sh" \
+< "$TEMPLATEPATH/create-admin-user.sh.in" \
   sed "s${sep}%%ownername%%${sep}$SETOWNERNAME${sep}g" | \
   sed "s${sep}%%owneremail%%${sep}$SETOWNEREMAIL${sep}g" \
   > /root/bin/create-admin-user.sh

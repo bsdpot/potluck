@@ -12,6 +12,7 @@
 * Remove legacy ssl settings as not working, simply can't connect to old SSL hosts for mail servers
 * Add maintenance scripts for common tasks
 * Add script to automate creating owner user without requiring email confirmation
+* Fix typo
 
 ---
 
