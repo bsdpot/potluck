@@ -173,11 +173,11 @@ fi
 # set default S3 upload protocol
 # defaults to https if not set, or http if enabled
 if [ -n "${S3UPNOSSL+x}" ]; then
-	S3UPNOSSL="http"
-	export S3UPNOSSL
+	SETS3UPNOSSL="http"
+	export SETS3UPNOSSL
 else
-	S3UPNOSSL="https"
-	export S3UPNOSSL
+	SETS3UPNOSSL="https"
+	export SETS3UPNOSSL
 fi
 
 # stop services
