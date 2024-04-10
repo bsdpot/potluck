@@ -64,6 +64,7 @@ However the mastodon pot jail will register a SSL certificate directly.
 	-E BUCKETPASS=<S3 password> \
 	-E BUCKETALIAS=<web address for files, or alt domain name> \
 	-E BUCKETREGION=<S3 region> \
+	[ -E S3UPNOSSL=<any value enables http upload to S3 instead of https> ] \
 	[ -E MAILPORT=<SMTP port> ] \
 	[ -E DBPORT=<database port> ] \
 	[ -E REDISPORT=<redis port> ] \
@@ -131,6 +132,8 @@ The BUCKETALIAS parameter is an alternate hostname for the S3 storage, or repeat
 The BUCKETREGION parameter is the S3 region.
 
 ## Optional Parameters
+
+The S3UPNOSSL parameter will set `http://` uploads to S3 object storage, such as a local minio where self-signed certificate fails. Otherwise defaults to `https://`.
 
 The MAILPORT parameter is the SMTP port to use of the mail server. It defaults to port `25` if not set.
 

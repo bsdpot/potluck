@@ -118,6 +118,7 @@ echo "Creating .env.production"
   sed "s${sep}%%mailfrom%%${sep}$MAILFROM${sep}g" | \
   sed "s${sep}%%bucketname%%${sep}$BUCKETNAME${sep}g" | \
   sed "s${sep}%%s3hostname%%${sep}$S3HOSTNAME${sep}g" | \
+  sed "s${sep}%%uploadprotocol%%${sep}$S3UPNOSSL${sep}g" | \
   sed "s${sep}%%s3user%%${sep}$BUCKETUSER${sep}g" | \
   sed "s${sep}%%s3pass%%${sep}$BUCKETPASS${sep}g" | \
   sed "s${sep}%%region%%${sep}$BUCKETREGION${sep}g" | \

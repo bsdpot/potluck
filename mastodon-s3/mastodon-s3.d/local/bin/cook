@@ -58,7 +58,7 @@ optional_args="MAILPORT DBPORT REDISPORT REMOTELOG MYSECRETKEY"
 optional_args="$optional_args MYOTPSECRET MYVAPIDPRIVATEKEY MYVAPIDPUBLICKEY"
 optional_args="$optional_args PVTCERT ELASTICENABLE ELASTICHOST ELASTICPORT"
 optional_args="$optional_args ELASTICUSER ELASTICPASS DEEPLKEY DEEPLPLAN"
-optional_args="$optional_args OWNERNAME OWNEREMAIL"
+optional_args="$optional_args OWNERNAME OWNEREMAIL S3UPNOSSL"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -168,6 +168,16 @@ if [ -n "${OWNEREMAIL+x}" ]; then
 else
 	SETOWNEREMAIL="set@email.address"
 	export SETOWNEREMAIL
+fi
+
+# set default S3 upload protocol
+# defaults to https if not set, or http if enabled
+if [ -n "${S3UPNOSSL+x}" ]; then
+	S3UPNOSSL="http"
+	export S3UPNOSSL
+else
+	S3UPNOSSL="https"
+	export S3UPNOSSL
 fi
 
 # stop services
