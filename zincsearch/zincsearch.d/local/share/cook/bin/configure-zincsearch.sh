@@ -20,6 +20,7 @@ fi
 if [ -n "${ZINCDATA}" ]; then
     mkdir -p "$ZINCDATA"
     chown -R zincsearch:zincsearch "$ZINCDATA"
+	chmod 775 "$ZINCDATA"
 fi
 
 SCRIPT=$(readlink -f "$0")

@@ -2,6 +2,9 @@
 
 * Version bump for new base image
 * FBSD14 base image
+* Fix node_exporter ZFS error
+* Fix permissions on zincsearch data to allow user zincseach to write
+* Update zincsearch to v0.4.10
 
 ---
 
