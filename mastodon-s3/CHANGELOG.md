@@ -17,6 +17,7 @@
 * Add S3UPNOSSL parameter to set HTTP for S3 uploads, such as local minio where self-signed certificates fail to work
 * Fix processing logic for S3UPNOSSL parameter
 * Adjustments to endpoints to remove bucket name, use S3_ENDPOINT with url only
+* Add script to create elasticsearch indexes
 
 ---
 

@@ -213,6 +213,10 @@ service mastodon_web enable || true
 # make sure root has a bin directory
 mkdir -p /root/bin
 
+# copy over admin script to create elasticsearch indexes
+cp -f "$TEMPLATEPATH/setup-es-index.sh.in" /root/bin/setup-es-index.sh
+chmod +x /root/bin/setup-es-index.sh
+
 # copy over admin script to reset elasticsearch indexes
 cp -f "$TEMPLATEPATH/rebuild-es-index.sh.in" /root/bin/rebuild-es-index.sh
 chmod +x /root/bin/rebuild-es-index.sh
