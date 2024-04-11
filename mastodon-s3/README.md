@@ -127,7 +127,7 @@ The BUCKETUSER parameter is the S3 access-id for your storage.
 
 The BUCKETPASS parameter is the S3 password for your storage.
 
-The BUCKETALIAS parameter is an alternate hostname for the S3 storage, or repeat of BUCKETHOST.
+The BUCKETALIAS parameter is an external hostname for the S3 storage, such as reverse proxy front-end.
 
 The BUCKETREGION parameter is the S3 region.
 
