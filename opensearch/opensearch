@@ -1,0 +1,5 @@
+copy-in -s /usr/local/etc/pot/flavours/opensearch.d/local -d /root/.pot_local
+set-attribute -A fdescfs -V YES
+set-attribute -A procfs -V YES
+set-attribute -A enforce_statfs -V 1
+set-attribute -A mlock -V YES
