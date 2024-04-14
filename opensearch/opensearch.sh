@@ -164,6 +164,7 @@ step "Remove /usr/ports"
 rm -rf /usr/ports
 
 ## remove this plugin which is linux only
+## unlikely to be necessary with build from source options
 #if [ -x /usr/local/lib/opensearch/bin/opensearch-plugin ]; then
 #	/usr/local/lib/opensearch/bin/opensearch-plugin remove opensearch-performance-analyzer
 #fi

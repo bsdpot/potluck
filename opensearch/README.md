@@ -19,6 +19,13 @@ The flavour includes a local ```consul``` agent instance to be available that it
 
 * Create your local jail from the image or the flavour files.
 * Clone the local jail
+* Set the following attributes 
+  ```
+  pot set-attribute -A fdescfs -V YES -p <jailname>
+  pot set-attribute -A procfs -V YES -p <jailname>
+  pot set-attribute -A enforce_statfs -V 1 -p <jailname>
+  pot set-attribute -A mlock -V YES -p <jailname>
+  ```
 * Mount in persistent storage
 * Adjust to your environment:
   ```
@@ -46,7 +53,6 @@ e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
 
-
 ## Optional Parameters
 
 The PORT parameter is the port to make `opensearch` available on. Defaults to `9200`.
@@ -61,7 +67,7 @@ The default username and password is `admin:admin`. Setting this on image start 
 
 The data directory for `opensearch` is automatically set to `/mnt/opensearch`, which needs to be mounted-in persistent storage.
 
-The image sets jail attributes automatically as follows:
+The image requires the following jail attributes get set manually:
 ```
 set-attribute -A fdescfs -V YES
 set-attribute -A procfs -V YES
