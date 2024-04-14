@@ -1,3 +1,9 @@
+0.0.23
+
+* Version bump for new quarterlies
+
+---
+
 0.0.22
 
 * Version bump for FBSD14 base image
