@@ -1,6 +1,7 @@
 0.1
 
 * Version bump for new base image
+* Disable plugins and set network parameters
 
 ---
 
