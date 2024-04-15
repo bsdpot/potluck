@@ -31,6 +31,8 @@ It is advised to run this image behind a proxy. The directory permissions on the
   ```pot copy-in -p <jailname> -s /path/to/customfile.tgz -d /root/customfile.tgz```
 * Optionally copy in your own customscript.sh
   ```pot copy-in -p <jailname> -s /path/to/customscript.sh -d /root/customscript.sh```
+* Optionally copy in SSH private key for custom gitserver ssh access. Make sure destination is `/root/sshkey`:
+  ```pot copy-in -p <jailname> -s /path/to/id_rsa -d /root/sshkey```
 * Optionally export the ports after creating the jail:
   ```pot export-ports -p <jailname> -e 80:80```
 * Adjust to your environment:
@@ -50,6 +52,8 @@ It is advised to run this image behind a proxy. The directory permissions on the
   [ -E CUSTOMDIR=<custom dir inside huge sitename> ] \
   [ -E CUSTOMFILE=1 ] \
   [ -E CONTENTSRC=<git url> ] \
+  [ -E GITPORT=<ssh access port for custom git server> ] \
+  [ -E GITHOST=<IP address of custom gitserver> ] \
   [ -E MYTITLE="site title in quotes" ] \
   [ -E MYLANG=<language code> ] \
   [ -E BUCKETHOST=<ip or hostname S3 host> ] \
@@ -89,7 +93,11 @@ The optional CUSTOMDIR parameter is a custom directory to create inside the hugo
 
 The optional CUSTOMFILE parameter, if set to 1, will copy in your own customfile.tgz which will be extracted to ```/mnt/{SITENAME}/```. This would be a custom ```hugo.yaml```, static microblog posts or about.md pages and images for static dir.
 
-The optional CONTENTSRC parameter is the URL to a git source with custom content pages and static files.
+The optional CONTENTSRC parameter is the HTTP url of a github source with custom content pages and static files, or `git@hostname:/path` for a custom git server.
+
+The optional GITPORT parameter is the SSH port for a custom git server instance. Set this is passing in `git@hostname:/path` for CONTENTSRC.
+
+The optional GITHOST parameter is the hostname or IP address of a custom git server instance. Set this is passing in `git@hostname:/path` for CONTENTSRC. Make sure to copy in the private SSH key for the user in `authorized_keys` on git server to `/root/sshkey`.
 
 The optional MYTITLE parameter is the site title. A default title will be set if not enabled.
 
@@ -116,6 +124,7 @@ If you wish to include a custom setup for hugo, you can create a file ```customf
 
 ```
 ./config.toml
+./assets
 ./static
 ./static/mylogo.png
 ./content/info.md

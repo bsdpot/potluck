@@ -1,3 +1,11 @@
+0.3
+
+* Version bump for new base image
+* Import SSH key to authenticate to custom git server
+* Add useful customscript.sh example
+
+---
+
 0.2
 
 * Version bump for new base image

@@ -54,7 +54,7 @@ required_args="$required_args SERVERNAME SITENAME GITEMAIL GITUSER"
 required_args="$required_args THEMESRC THEMENAME DOMAINNAME"
 optional_args="CUSTOMDIR CUSTOMFILE REMOTELOG MYTITLE MYLANG"
 optional_args="$optional_args BUCKETHOST BUCKETUSER BUCKETPASS BUCKETNAME"
-optional_args="$optional_args CONTENTSRC"
+optional_args="$optional_args CONTENTSRC GITHOST GITPORT"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -98,6 +98,14 @@ else
 fi
 export TITLE
 
+# set a default gitport if not set
+if [ -n "${GITPORT+x}" ]; then
+	SETGITPORT="$GITPORT"
+else
+	SETGITPORT="22"
+fi
+export SETGITPORT
+
 # stop services
 timeout --foreground 10 \
   service consul onestop || service consul onestop || true
@@ -108,6 +116,11 @@ export PATH=/usr/local/share/cook/bin:$PATH
 if [ -n "${REMOTELOG}" ]; then
     log "Configure and start syslog-ng"
     configure-syslog-ng.sh
+fi
+
+if [ -n "${GITHOST}" ]; then
+	log "Configure ssh for gitserver"
+	configure-ssh-keys.sh
 fi
 
 log "Setup node_exporter"
