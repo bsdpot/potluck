@@ -24,7 +24,7 @@ For more details about ```nomad```images, see [about potluck](https://potluck.ho
 
 It is suggested to mount the jail directory ```/var/db/git``` from outside as this contains the git database and the ```.ssh/authorized_keys``` file for access:
 
-You can also copy-in an SSH public key to ```/root/publickey``` exactly and it will be automatically added to the git user ```.ssh/authorized_keys``` file.
+You can also copy-in an SSH public key to ```/root/publickey``` exactly and it will be automatically added to the git user ```.ssh/authorized_keys``` file. This will overwrite the file each time, so add all keys to the copy-in file.
 
 ```
 job "examplegit" {
