@@ -24,6 +24,8 @@ For more details about ```nomad```images, see [about potluck](https://potluck.ho
 
 It is suggested to mount the jail directory ```/var/db/git``` from outside as this contains the git database and the ```.ssh/authorized_keys``` file for access:
 
+You can also copy-in an SSH public key to ```/root/publickey``` exactly and it will be automatically added to the git user ```.ssh/authorized_keys``` file.
+
 ```
 job "examplegit" {
   datacenters = ["datacenter"]
@@ -51,16 +53,22 @@ job "examplegit" {
       config {
         image = "https://potluck.honeyguide.net/git-nomad"
         pot = "git-nomad-amd64-14_0"
-        tag = "1.12.1"
+        tag = "1.13.1"
         command = "/usr/local/bin/cook"
-        args = [""]
+        args = ["-n","gitnomad"]
 
-       mount = [
-         "/mnt/s3/web/git:/var/db/git"
-       ]
+        copy = [
+          "/path/to/id_rsa.pub:/root/publickey"
+        ]
+
+        mount = [
+          "/mnt/s3/web/git:/var/db/git"
+        ]
+
         port_map = {
           ssh = "22"
         }
+
       }
 
       resources {

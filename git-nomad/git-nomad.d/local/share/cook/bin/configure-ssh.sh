@@ -20,6 +20,11 @@ pw user add -n git -c 'Git Server' -d /var/db/git -G wheel -m -s /bin/sh
 mkdir -p /var/db/git/.ssh
 chown git:git /var/db/git/.ssh
 touch /var/db/git/.ssh/authorized_keys
+# if we have a copied-in pubkey, add to authorized_keys
+if [ -f /root/publickey ]; then
+	cat /root/publickey >> /var/db/git/.ssh/authorized_keys
+fi
+# make sure to set permissions
 chown git:git /var/db/git/.ssh/authorized_keys
 chmod u+rw /var/db/git/.ssh/authorized_keys
 chmod go-w /var/db/git/.ssh/authorized_keys

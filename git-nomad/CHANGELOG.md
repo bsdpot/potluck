@@ -1,3 +1,10 @@
+1.13
+
+* Version bump for new base image
+* Include automatic copy-in pubkey to git user authorized_keys
+
+---
+
 1.12
 
 * Version bump for base image
