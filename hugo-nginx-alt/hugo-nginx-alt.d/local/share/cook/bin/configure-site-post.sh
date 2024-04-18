@@ -27,7 +27,7 @@ cd "/var/db/$SITENAME" || exit 1
 if [ -n "$CONTENTSRC" ]; then
 	/usr/local/bin/git submodule add "$CONTENTSRC" .customcontent || true
 	#/usr/local/bin/git submodule update --init --recursive || true
-	/usr/local/bin/git config -f .gitmodules submodule.customcontent.update merge
+	/usr/local/bin/git config -f .gitmodules submodule.customcontent.update merge || true
 fi
 
 # add theme as submodule

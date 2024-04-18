@@ -30,11 +30,12 @@ fi
 
 # setup ssh/config file with username
 cat >>/root/.ssh/config<<EOF
-Host "$GITHOST"
+Host githost
   HostName "$GITHOST"
   Port "$SETGITPORT"
   User git
   IdentityFile /root/.ssh/id_rsa
+  StrictHostKeyChecking=accept-new
 EOF
 
 # remove the copied in key if it exists

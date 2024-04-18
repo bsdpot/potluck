@@ -51,7 +51,7 @@ It is advised to run this image behind a proxy. The directory permissions on the
   -E THEMENAME=<name of theme, will become directory name> \
   [ -E CUSTOMDIR=<custom dir inside huge sitename> ] \
   [ -E CUSTOMFILE=1 ] \
-  [ -E CONTENTSRC=<git url> ] \
+  [ -E CONTENTSRC=<git url | git@githost:reponame> ] \
   [ -E GITPORT=<ssh access port for custom git server> ] \
   [ -E GITHOST=<IP address of custom gitserver> ] \
   [ -E MYTITLE="site title in quotes" ] \
@@ -93,11 +93,11 @@ The optional CUSTOMDIR parameter is a custom directory to create inside the hugo
 
 The optional CUSTOMFILE parameter, if set to 1, will copy in your own customfile.tgz which will be extracted to ```/mnt/{SITENAME}/```. This would be a custom ```hugo.yaml```, static microblog posts or about.md pages and images for static dir.
 
-The optional CONTENTSRC parameter is the HTTP url of a github source with custom content pages and static files, or `git@hostname:/path` for a custom git server.
+The optional CONTENTSRC parameter is the HTTP url of a github source with custom content pages and static files, or `git@githost:repo.git` for a custom git server. You can specifically use `git@githost` and pass in the IP and port with the following parameters. Make sure to specify correct repo name.
 
-The optional GITPORT parameter is the SSH port for a custom git server instance. Set this is passing in `git@hostname:/path` for CONTENTSRC.
+The optional GITPORT parameter is the SSH port for a custom git server instance. Set this if passing in `git@githost:repo.git` for CONTENTSRC.
 
-The optional GITHOST parameter is the hostname or IP address of a custom git server instance. Set this is passing in `git@hostname:/path` for CONTENTSRC. Make sure to copy in the private SSH key for the user in `authorized_keys` on git server to `/root/sshkey`.
+The optional GITHOST parameter is the hostname or IP address of a custom git server instance. Set this if passing in `git@githost:repo.git` for CONTENTSRC. Make sure to copy in the private SSH key for the user in `authorized_keys` on git server to `/root/sshkey`.
 
 The optional MYTITLE parameter is the site title. A default title will be set if not enabled.
 

@@ -3,6 +3,9 @@
 * Version bump for new base image
 * Import SSH key to authenticate to custom git server
 * Add useful customscript.sh example
+* Fix typos in README
+* Fix node_exporter ZFS collector
+* Minor tweaks to git steps and SSH config
 
 ---
 
