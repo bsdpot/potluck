@@ -127,9 +127,9 @@ pkg install -y node_exporter
 step "Install package nginx"
 pkg install -y nginx
 
-# install from source and disable plugins to allow non-ssl
-#step "Install package opensearch"
-#pkg install -y opensearch
+# install from packages and disable security plugins
+step "Install package opensearch"
+pkg install -y opensearch
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng
@@ -138,31 +138,34 @@ pkg install -y syslog-ng
 
 # ---------------- SETUP PORTS -----------------
 
-step "Add openssl make.conf"
-echo "BATCH=yes" > /etc/make.conf
-echo "DEFAULT_VERSIONS+=ssl=openssl" >> /etc/make.conf
-#echo "OPTIONS_SET+= OPTION" >> /etc/make.conf
+# Its not necessary to build from source to disable TLS, just disable the plugins
 
-step "Make directory /usr/ports"
-mkdir -p /usr/ports
+#step "Add openssl make.conf"
+#echo "BATCH=yes" > /etc/make.conf
+#echo "DEFAULT_VERSIONS+=ssl=openssl" >> /etc/make.conf
+##echo "OPTIONS_SET+= OPTION" >> /etc/make.conf
 
-step "Clone ports repo (slow, large)"
-git clone https://git.freebsd.org/ports.git /usr/ports
+#step "Make directory /usr/ports"
+#mkdir -p /usr/ports
 
-step "Checkout the quarterly distribution"
-cd /usr/ports
-git checkout 2024Q2
+#step "Clone ports repo (slow, large)"
+#git clone https://git.freebsd.org/ports.git /usr/ports
 
-step "Port build opensearch"
-cd /usr/ports/textproc/opensearch/
-make install clean PLUGINS=no
+#step "Checkout the quarterly distribution"
+#cd /usr/ports
+#git checkout 2024Q2
 
-step "Change directory to /root"
-cd /root
+#step "Port build opensearch"
+#cd /usr/ports/textproc/opensearch/
+#make install clean PLUGINS=no
 
-step "Remove /usr/ports"
-rm -rf /usr/ports
+#step "Change directory to /root"
+#cd /root
 
+#step "Remove /usr/ports"
+#rm -rf /usr/ports
+
+# leave enabled to disable TLS
 if [ -x /usr/local/lib/opensearch/bin/opensearch-plugin ]; then
 	/usr/local/lib/opensearch/bin/opensearch-plugin remove opensearch-performance-analyzer
 	/usr/local/lib/opensearch/bin/opensearch-plugin remove opensearch-security

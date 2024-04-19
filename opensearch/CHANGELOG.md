@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Disable plugins and set network parameters
+* Install from packages and disable security plugins. No need to build from source to work without TLS
 
 ---
 
