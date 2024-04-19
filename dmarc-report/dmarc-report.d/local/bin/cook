@@ -50,7 +50,6 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
-required_args="$required_args ZINCUSER ZINCPASS ZINCDATA ZINCPORT"
 required_args="$required_args IMAPSERVER IMAPUSER IMAPPASS IMAPFOLDER"
 required_args="$required_args OUTPUTFOLDER GRAFANAUSER GRAFANAPASSWORD"
 optional_args="REMOTELOG"
@@ -80,18 +79,6 @@ if [ -n "${CONSULSERVERS+x}" ]; then
     export FIXCONSULSERVERS
 fi
 
-# shellcheck disable=SC2157
-if [ -z "{$ZINCDATA+x}" ]; then
-    ZINCDATA="/mnt/zinc/data"
-    export ZINCDATA
-fi
-
-# shellcheck disable=SC2157
-if [ -z "{$ZINCPORT+x}" ]; then
-    ZINCPORT=4080
-    export ZINCPORT
-fi
-
 # stop services
 timeout --foreground 10 \
   service consul onestop || service consul onestop || true
@@ -102,6 +89,10 @@ mkdir -p /mnt/applog/grafana
 
 # setup directories for persistent storage
 mkdir -p /mnt/grafana
+mkdir -p /mnt/opensearch
+
+# make sure opensearch log dir exists
+mkdir -p /var/log/opensearch
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
@@ -130,8 +121,8 @@ timeout --foreground 120 \
 log "Start node_exporter"
 service node_exporter start
 
-log "configure and start zincsearch"
-configure-zincsearch.sh
+log "configure opensearch"
+configure-opensearch.sh
 
 log "Configure nginx"
 configure-nginx.sh
@@ -139,8 +130,11 @@ configure-nginx.sh
 log "Start nginx"
 service nginx start || true
 
-log "Create default indices for zincsearch"
-configure-index.sh
+log "Start opensearch and wait for it to become stable"
+timeout --foreground 120 \
+  sh -c 'while ! service opensearch status; do
+    service opensearch start || true; sleep 5;
+  done'
 
 log "Configure grafana"
 configure-grafana.sh

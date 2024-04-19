@@ -58,10 +58,7 @@ echo "Creating parsedmarc.ini file"
   sed "s${sep}%%imappass%%${sep}$IMAPPASS${sep}g" | \
   sed "s${sep}%%imapfolder%%${sep}$IMAPFOLDER${sep}g" | \
   sed "s${sep}%%outputfolder%%${sep}$OUTPUTFOLDER${sep}g" | \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%zincuser%%${sep}$ZINCUSER${sep}g" | \
-  sed "s${sep}%%zincpass%%${sep}$ZINCPASS${sep}g" | \
-  sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
   > /usr/local/etc/parsedmarc.ini
 
 # set the ownership of the config file. This could be changed

@@ -40,9 +40,6 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     < "$TEMPLATEPATH/datasources.yml.in" \
-      sed "s${sep}%%zincuser%%${sep}$ZINCUSER${sep}g" | \
-      sed "s${sep}%%zincpass%%${sep}$ZINCPASS${sep}g" | \
-      sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" | \
       sed "s${sep}%%ip%%${sep}$IP${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
 
@@ -68,9 +65,6 @@ else
 
     # copy in the datasource.yml file to /mnt/grafana/provisioning/datasources
     < "$TEMPLATEPATH/datasources.yml.in" \
-      sed "s${sep}%%zincuser%%${sep}$ZINCUSER${sep}g" | \
-      sed "s${sep}%%zincpass%%${sep}$ZINCPASS${sep}g" | \
-      sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" | \
       sed "s${sep}%%ip%%${sep}$IP${sep}g" \
       > /mnt/grafana/provisioning/datasources/datasources.yml
 

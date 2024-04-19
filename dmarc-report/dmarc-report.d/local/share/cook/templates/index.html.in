@@ -13,7 +13,7 @@
 <body>
 <h1>Header goes here</h1>
 
-<p>WIP - to go here are charts pulled from zincsearch with clever queries</p>
+<p>WIP - to go here are charts pulled from opensearch or grafana with clever queries</p>
 
 <section>
 	<div>

@@ -11,11 +11,9 @@ This flavour contains a local implementation of [parsedmarc](https://pypi.org/pr
 
 `parsedmarc` will produce CSV/JSON output from the relevant mailbox folder in the destination folder selected for /mnt.
 
-This information can be submitted to the local `zincsearch` instance, a low footprint, non-java, `elasticsearch` clone.
+This information can be submitted to the local `opensearch` instance, an `elasticsearch` clone.
 
 It is currently expected that this jail will run on an internal IP with no remote access.
-
-The display of the report using `zincsearch` data is pending, likely local Grafana with imported dashboard.
 
 The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. You can also connect to this host and ```service consul restart``` manually.
 
@@ -29,6 +27,13 @@ There is no progress indicator when complete. When your dmarc folder empties, th
 
 * Create your local jail from the image or the flavour files.
 * Clone the local jail
+* Set the following attributes 
+  ```
+  pot set-attribute -A fdescfs -V YES -p <jailname>
+  pot set-attribute -A procfs -V YES -p <jailname>
+  pot set-attribute -A enforce_statfs -V 1 -p <jailname>
+  pot set-attribute -A mlock -V YES -p <jailname>
+  ```
 * Mount in persistent storage
 * Adjust to your environment:
   ```
@@ -43,12 +48,8 @@ There is no progress indicator when complete. When your dmarc folder empties, th
     -E IMAPPASS=<imap password> \
     -E IMAPFOLDER=<imap folder with dmarc reports> \
     -E OUTPUTFOLDER=<name of folder to create in /mnt/> \
-    -E ZINCUSER=<zincsearch admin user> \
-    -E ZINCPASS=<zincsearch admin pass> \
-    -E ZINCDATA=<path to store zincsearch files, default /mnt/zinc/data> \
     -E GRAFANAUSER=<username> \
     -E GRAFANAPASSWORD=<password> \
-    [ -E ZINCPORT=<zincsearch port, default 4080> ] \
     [ -E REMOTELOG=<IP address> ]
   ```
 * Start the jail
@@ -74,15 +75,9 @@ The IMAPFOLDER parameter is the mail folder with the DMARC reports as attachment
 
 The OUTPUTFOLDER parameter is the folder to create in /mnt, which should be mounted in as persistent storage.
 
-The ZINCUSER and ZINCPASS parameters set the `zincsearch` admin user and password.
-
-The ZINCDATA parameter is the directory to save `zincsearch` data files. Defaults to `/mnt/zinc/data`.
-
 The GRAFANAUSER and GRAFANAPASSWORD parameters are for login to the Grafana interface and must be set.
 
 ## Optional Parameters
-
-The ZINCPORT parameter is the port to make `zincsearch` available on. Defaults to `4080`.
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 
@@ -92,7 +87,18 @@ We recommend creating a dedicated mailbox folder for DMARC reports and filtering
 
 This development version simply sets up `parsedmarc` and runs the python process to generate JSON and CSV output from a mailbox.
 
-It still needs a way to store the reports long term, and show pretty charts. Possibly `elasticsearch` and `kibana` or something lighter.
-
 Note: there is very little feedback that process a mailbox has happened. Check the folders under `Archive` called `Aggregate`, `Foresic`, and `Invalid`. You might need to subscribe to the folders in an IMAP client to see. When mails are processed from the identified `dmarc` mail folder, they are transferred to the `Archive` subfolders.
 
+`opensearch` is a drop-in replacement for `elasticsearch`. 
+
+The default username and password is `admin:admin`. Setting this on image start is still to come.
+
+The data directory for `opensearch` is automatically set to `/mnt/opensearch`, which needs to be mounted-in persistent storage.
+
+The image requires the following jail attributes get set manually:
+```
+set-attribute -A fdescfs -V YES
+set-attribute -A procfs -V YES
+set-attribute -A enforce_statfs -V 1
+set-attribute -A mlock -V YES
+```

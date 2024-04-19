@@ -154,26 +154,22 @@ pkg install -y rust
 step "Install package grafana9"
 pkg install -y grafana9
 
+step "Install package opensearch"
+pkg install -y opensearch
+
 step "Clean package installation"
 pkg clean -y
 
-step "Download and extract zincsearch binary from github"
-fetch -qo - \
- https://github.com/zincsearch/zincsearch/releases/download/v0.4.9/zincsearch_0.4.9_freebsd_x86_64.tar.gz | \
- tar xzf - -C /usr/local/bin
-
-step "Testing if zincsearch binary exists"
-if [ ! -f /usr/local/bin/zincsearch ]; then
-    exit_error "/usr/local/bin/zincsearch is missing"
-fi
-
-step "Checksum query for zincsearch"
-if [ "$(sha256 -q /usr/local/bin/zincsearch)" != \
-  "b2183ac2829847897b837017c4d1828cd66ac655fa0c66c67bbd1237e4faff21" ]; then
-  exit_error "/usr/local/bin/zincsearch checksum mismatch!"
-fi
 
 # -------------- END PACKAGE SETUP -------------
+
+# turn off opensearch security plugins
+
+if [ -x /usr/local/lib/opensearch/bin/opensearch-plugin ]; then
+	/usr/local/lib/opensearch/bin/opensearch-plugin remove opensearch-performance-analyzer
+	/usr/local/lib/opensearch/bin/opensearch-plugin remove opensearch-security
+	/usr/local/lib/opensearch/bin/opensearch-plugin remove opensearch-security-analytics
+fi
 
 #
 # Now generate the run command script "cook"

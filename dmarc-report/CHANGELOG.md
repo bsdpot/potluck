@@ -1,3 +1,11 @@
+0.10
+
+* Version bump for new base image
+* Switch from zincsearch to opensearch with security plugins disabled
+* Fix node_exporter zfs issue
+
+---
+
 0.9
 
 * Version bump for base image
