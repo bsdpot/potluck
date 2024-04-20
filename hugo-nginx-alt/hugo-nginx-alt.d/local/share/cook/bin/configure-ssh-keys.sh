@@ -39,8 +39,8 @@ Host githost
 EOF
 
 # remove the copied in key if it exists
-#if [ -f /root/sshkey ]; then
-#	rm -r /root/sshkey
-#fi
+if [ -f /root/sshkey ]; then
+	rm -r /root/sshkey
+fi
 
 # end

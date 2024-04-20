@@ -8,6 +8,7 @@
 * Minor tweaks to git steps and SSH config
 * Copy layouts folder from customgit too
 * Make S3 host port an option
+* Fix permissions, remove legacy permission setting, delete copied in key
 
 ---
 
