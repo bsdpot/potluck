@@ -137,7 +137,7 @@ timeout --foreground 120 \
   done'
 
 log "Create default parsedmarc indices for opensearch"
-configure-index.sh
+create-index.sh
 
 log "Configure grafana"
 configure-grafana.sh

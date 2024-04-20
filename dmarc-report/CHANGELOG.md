@@ -6,6 +6,7 @@
 * Update parsedmarc version and config
 * Create opensearch indexes manually
 * Add py39-regex
+* Fix typo for create-index.sh not configure-index.sh
 
 ---
 
