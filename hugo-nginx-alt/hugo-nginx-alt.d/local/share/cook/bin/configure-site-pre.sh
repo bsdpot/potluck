@@ -75,7 +75,7 @@ chmod 777 "/var/db/$SITENAME/layouts/partials/head"
 chmod g+s "/var/db/$SITENAME/layouts/partials/head"
 chmod 777 "/var/db/$SITENAME/static"
 chmod g+s "/var/db/$SITENAME/static"
-chmod 777 "/var/db/$SITENAME/static/font"
+chmod 777 "/var/db/$SITENAME/static/fonts"
 chmod g+s "/var/db/$SITENAME/static/fonts"
 
 if [ -d "/var/db/$SITENAME/$CUSTOMDIR" ]; then
