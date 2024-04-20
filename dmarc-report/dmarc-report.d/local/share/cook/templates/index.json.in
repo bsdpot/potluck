@@ -1,0 +1,304 @@
+{
+      "mappings": {
+         "properties": {
+            "date_begin": {
+               "type": "date"
+            },
+            "date_end": {
+               "type": "date"
+            },
+            "date_range": {
+               "type": "date"
+            },
+            "disposition": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "dkim_aligned": {
+               "type": "boolean"
+            },
+            "dkim_results": {
+               "properties": {
+                  "domain": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  },
+                  "result": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  },
+                  "selector": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  }
+               }
+            },
+            "envelope_from": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "envelope_to": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "errors": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "header_from": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "message_count": {
+               "type": "long"
+            },
+            "org_email": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "org_extra_contact_info": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "org_name": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "passed_dmarc": {
+               "type": "boolean"
+            },
+            "policy_overrides": {
+               "properties": {
+                  "comment": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  },
+                  "type": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  }
+               }
+            },
+            "published_policy": {
+               "properties": {
+                  "adkim": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  },
+                  "aspf": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  },
+                  "domain": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  },
+                  "fo": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  },
+                  "p": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  },
+                  "pct": {
+                     "type": "long"
+                  },
+                  "sp": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  }
+               }
+            },
+            "report_id": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "source_base_domain": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "source_country": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "source_ip_address": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "source_reverse_dns": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            },
+            "spf_aligned": {
+               "type": "boolean"
+            },
+            "spf_results": {
+               "properties": {
+                  "domain": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  },
+                  "result": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  },
+                  "scope": {
+                     "fields": {
+                        "keyword": {
+                           "ignore_above": 256,
+                           "type": "keyword"
+                        }
+                     },
+                     "type": "text"
+                  }
+               }
+            },
+            "xml_schema": {
+               "fields": {
+                  "keyword": {
+                     "ignore_above": 256,
+                     "type": "keyword"
+                  }
+               },
+               "type": "text"
+            }
+         }
+      },
+      "settings": {
+         "index": {
+            "number_of_replicas": "0",
+            "number_of_shards": "1"
+         }
+      }
+}

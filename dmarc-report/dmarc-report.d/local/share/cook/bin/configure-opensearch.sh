@@ -28,8 +28,7 @@ sep=$'\001'
 # the data directory is set to /mnt/opensearch by default
 # instead of /var/db/opensearch
 < "$TEMPLATEPATH/opensearch.yml.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
-  sed "s${sep}%%port%%${sep}$SETPORT${sep}g" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
   > /usr/local/etc/opensearch/opensearch.yml
 
 # set ownership

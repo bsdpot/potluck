@@ -3,6 +3,9 @@
 * Version bump for new base image
 * Switch from zincsearch to opensearch with security plugins disabled
 * Fix node_exporter zfs issue
+* Update parsedmarc version and config
+* Create opensearch indexes manually
+* Add py39-regex
 
 ---
 

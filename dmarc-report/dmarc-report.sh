@@ -142,8 +142,11 @@ pkg install -y py39-libxml2
 step "Install package py39-cryptography"
 pkg install -y py39-cryptography
 
-step "Install pckage py39-cryptography-vectors"
+step "Install package py39-cryptography-vectors"
 pkg install -y py39-cryptography-vectors
+
+step "Install package py39-regex"
+pkg install -y py39-regex
 
 step "Install package libxslt"
 pkg install -y libxslt
