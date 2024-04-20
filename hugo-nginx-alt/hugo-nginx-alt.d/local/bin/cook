@@ -54,7 +54,7 @@ required_args="$required_args SERVERNAME SITENAME GITEMAIL GITUSER"
 required_args="$required_args THEMESRC THEMENAME DOMAINNAME"
 optional_args="CUSTOMDIR CUSTOMFILE REMOTELOG MYTITLE MYLANG"
 optional_args="$optional_args BUCKETHOST BUCKETUSER BUCKETPASS BUCKETNAME"
-optional_args="$optional_args CONTENTSRC GITHOST GITPORT"
+optional_args="$optional_args BUCKETPORT CONTENTSRC GITHOST GITPORT"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -97,6 +97,14 @@ else
 	TITLE="Default Site Title"
 fi
 export TITLE
+
+# set a default S3 port of 443 if not set
+if [ -n "${BUCKETPORT+x}" ]; then
+	SETBUCKETPORT="$BUCKETPORT"
+else
+	SETBUCKETPORT="443"
+fi
+export SETBUCKETPORT
 
 # set a default gitport if not set
 if [ -n "${GITPORT+x}" ]; then

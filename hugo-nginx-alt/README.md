@@ -57,6 +57,7 @@ It is advised to run this image behind a proxy. The directory permissions on the
   [ -E MYTITLE="site title in quotes" ] \
   [ -E MYLANG=<language code> ] \
   [ -E BUCKETHOST=<ip or hostname S3 host> ] \
+  [ -E BUCKETPORT=<port of S3 host, 443 or 9000> ]\
   [ -E BUCKETUSER=<s3 username> ] \
   [ -E BUCKETPASS=<s3 password> ] \
   [ -E BUCKETNAME=<name of bucket> ] \
@@ -103,7 +104,7 @@ The optional MYTITLE parameter is the site title. A default title will be set if
 
 The optional MYLANG parameter is the language code. Defaults to ```en``` over the ```hugo``` default ```en-us```.
 
-The optional parameters BUCKETHOST, BUCKETUSER, BUCKETPASS and BUCKETNAME refer to credentials for minio-client to perform sync of HTML files to a bucket.
+The optional parameters BUCKETHOST, BUCKETPORT, BUCKETUSER, BUCKETPASS and BUCKETNAME refer to credentials for minio-client to perform sync of HTML files to a bucket.
 
 The optional REMOTELOG parameter is for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
@@ -130,6 +131,7 @@ If you wish to include a custom setup for hugo, you can create a file ```customf
 ./content/info.md
 ./content/micro/news.md
 ./content/micro/about.md
+./layouts/partials/head/custom.html
 ```
 
 Make sure to copy-in to /root/customfile.tgz and set ```-E CUSTOMFILE=1``` in the parameters.

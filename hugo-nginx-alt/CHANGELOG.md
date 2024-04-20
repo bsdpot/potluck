@@ -6,6 +6,8 @@
 * Fix typos in README
 * Fix node_exporter ZFS collector
 * Minor tweaks to git steps and SSH config
+* Copy layouts folder from customgit too
+* Make S3 host port an option
 
 ---
 

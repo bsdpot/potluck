@@ -16,7 +16,7 @@
 			"path": "auto"
 		},
 		"myminio": {
-			"url": "https://%%buckethost%%:9000",
+			"url": "https://%%buckethost%%:%%bucketport%%",
 			"accessKey": "%%bucketuser%%",
 			"secretKey": "%%bucketpass%%",
 			"api": "S3v4",

@@ -28,6 +28,7 @@ sep=$'\001'
 # setting for destination
 < "$TEMPLATEPATH/client.json.in" \
   sed "s${sep}%%buckethost%%${sep}$BUCKETHOST${sep}g" | \
+  sed "s${sep}%%bucketport%%${sep}$SETBUCKETPORT${sep}g" | \
   sed "s${sep}%%bucketuser%%${sep}$BUCKETUSER${sep}g" | \
   sed "s${sep}%%bucketpass%%${sep}$BUCKETPASS${sep}g" \
   > /root/.minio-client/config.json

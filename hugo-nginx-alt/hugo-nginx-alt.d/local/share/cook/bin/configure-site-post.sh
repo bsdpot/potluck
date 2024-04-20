@@ -58,6 +58,9 @@ if [ -n "$CONTENTSRC" ]; then
 	if [ -d "/var/db/$SITENAME/.customcontent/content" ]; then
 		cp -Rf "/var/db/$SITENAME/.customcontent/content/" "/var/db/$SITENAME/content/"
 	fi
+	if [ -d "/var/db/$SITENAME/.customcontent/layouts" ]; then
+		cp -Rf "/var/db/$SITENAME/.customcontent/layouts/" "/var/db/$SITENAME/layouts/"
+	fi
 	if [ -d "/var/db/$SITENAME/.customcontent/static" ]; then
 		cp -Rf "/var/db/$SITENAME/.customcontent/static/" "/var/db/$SITENAME/static/"
 	fi
