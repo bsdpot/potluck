@@ -11,7 +11,7 @@ This flavour contains a local implementation of [parsedmarc](https://pypi.org/pr
 
 `parsedmarc` will produce CSV/JSON output from the relevant mailbox folder in the destination folder selected for /mnt.
 
-This information can be submitted to the local `opensearch` instance, an `elasticsearch` clone.
+This information can be submitted to a local script to produce a very simple chart at the site web address.
 
 It is currently expected that this jail will run on an internal IP with no remote access.
 
@@ -27,13 +27,6 @@ There is no progress indicator when complete. When your dmarc folder empties, th
 
 * Create your local jail from the image or the flavour files.
 * Clone the local jail
-* Set the following attributes 
-  ```
-  pot set-attribute -A fdescfs -V YES -p <jailname>
-  pot set-attribute -A procfs -V YES -p <jailname>
-  pot set-attribute -A enforce_statfs -V 1 -p <jailname>
-  pot set-attribute -A mlock -V YES -p <jailname>
-  ```
 * Mount in persistent storage
 * Adjust to your environment:
   ```
@@ -48,8 +41,6 @@ There is no progress indicator when complete. When your dmarc folder empties, th
     -E IMAPPASS=<imap password> \
     -E IMAPFOLDER=<imap folder with dmarc reports> \
     -E OUTPUTFOLDER=<name of folder to create in /mnt/> \
-    -E GRAFANAUSER=<username> \
-    -E GRAFANAPASSWORD=<password> \
     [ -E REMOTELOG=<IP address> ]
   ```
 * Start the jail
@@ -75,8 +66,6 @@ The IMAPFOLDER parameter is the mail folder with the DMARC reports as attachment
 
 The OUTPUTFOLDER parameter is the folder to create in /mnt, which should be mounted in as persistent storage.
 
-The GRAFANAUSER and GRAFANAPASSWORD parameters are for login to the Grafana interface and must be set.
-
 ## Optional Parameters
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
@@ -85,20 +74,8 @@ The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` serve
 
 We recommend creating a dedicated mailbox folder for DMARC reports and filtering those mails to it. Then configure this image to use that mail folder.
 
-This development version simply sets up `parsedmarc` and runs the python process to generate JSON and CSV output from a mailbox.
+This development version sets up `parsedmarc` and runs the python process to generate JSON and CSV output from a mailbox.
 
-Note: there is very little feedback that process a mailbox has happened. Check the folders under `Archive` called `Aggregate`, `Foresic`, and `Invalid`. You might need to subscribe to the folders in an IMAP client to see. When mails are processed from the identified `dmarc` mail folder, they are transferred to the `Archive` subfolders.
+Then it generates 3 simple charts from the data for display at the pot image's IP address.
 
-`opensearch` is a drop-in replacement for `elasticsearch`. 
-
-The default username and password is `admin:admin`. Setting this on image start is still to come.
-
-The data directory for `opensearch` is automatically set to `/mnt/opensearch`, which needs to be mounted-in persistent storage.
-
-The image requires the following jail attributes get set manually:
-```
-set-attribute -A fdescfs -V YES
-set-attribute -A procfs -V YES
-set-attribute -A enforce_statfs -V 1
-set-attribute -A mlock -V YES
-```
+Note: there is very little feedback that processing a mailbox has happened. Check the folders under `Archive` called `Aggregate`, `Foresic`, and `Invalid`. You might need to subscribe to the folders in an IMAP client to see. When mails are processed from the identified `dmarc` mail folder, they are transferred to the `Archive` subfolders.

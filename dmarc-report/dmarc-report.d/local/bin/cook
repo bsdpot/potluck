@@ -51,7 +51,7 @@ fi
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args IMAPSERVER IMAPUSER IMAPPASS IMAPFOLDER"
-required_args="$required_args OUTPUTFOLDER GRAFANAUSER GRAFANAPASSWORD"
+required_args="$required_args OUTPUTFOLDER"
 optional_args="REMOTELOG"
 
 for var in $required_args; do
@@ -84,16 +84,6 @@ timeout --foreground 10 \
   service consul onestop || service consul onestop || true
 killall -9 consul || true
 
-# setup directories for local logs
-mkdir -p /mnt/applog/grafana
-
-# setup directories for persistent storage
-mkdir -p /mnt/grafana
-mkdir -p /mnt/opensearch
-
-# make sure opensearch log dir exists
-mkdir -p /var/log/opensearch
-
 export PATH=/usr/local/share/cook/bin:$PATH
 
 if [ -n "${REMOTELOG}" ]; then
@@ -121,32 +111,17 @@ timeout --foreground 120 \
 log "Start node_exporter"
 service node_exporter start
 
-log "configure opensearch"
-configure-opensearch.sh
-
 log "Configure nginx"
 configure-nginx.sh
 
 log "Start nginx"
 service nginx start || true
 
-log "Start opensearch and wait for it to become stable"
-timeout --foreground 120 \
-  sh -c 'while ! service opensearch status; do
-    service opensearch start || true; sleep 5;
-  done'
-
-log "Create default parsedmarc indices for opensearch"
-create-index.sh
-
-log "Configure grafana"
-configure-grafana.sh
-
-log "Start grafana"
-service grafana start || true
-
 log "Configure and start parsedmarc. This takes a while for the virtual environment."
 configure-parsedmarc.sh
+
+log "Setup tooling to create charts on default webpage"
+configure-report.sh
 
 log "Exit seasoned"
 pot_seasoned_exit

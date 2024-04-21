@@ -1,0 +1,10 @@
+#!/bin/sh
+export PATH=/usr/local/bin:/root/bin:$PATH
+
+# if file exists and is not empty generate report
+if [ -s /mnt/dmarcreports/aggregate.csv ]; then
+	/usr/local/bin/python3.9 /root/bin/makereport.py
+	chown -R www:www /usr/local/www/dmarc-report/
+else
+	echo "/mnt/dmarcreports/aggregate.csv does not exist or is empty"
+fi

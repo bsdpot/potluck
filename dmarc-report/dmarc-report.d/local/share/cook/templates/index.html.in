@@ -11,26 +11,7 @@
 </style>
 </head>
 <body>
-<h1>Header goes here</h1>
-
-<p>WIP - to go here are charts pulled from opensearch or grafana with clever queries</p>
-
-<section>
-	<div>
-		<p>Paragraph</p>
-		<ul>
-			<li>List item</li>
-		</ul>
-		<p>Paragraph</p>
-	</div>
-</section>
-
-<section>
-    <div>
-        <h5>Heading</h5>
-		<p>Paragraph</p>
-    </div>
-</section>
-
+<h1>DMARC Report</h1>
+<p>Please wait for hourly cron to generate charts.</p>
 </body>
 </html>

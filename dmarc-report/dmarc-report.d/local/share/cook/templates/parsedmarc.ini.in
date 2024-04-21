@@ -21,10 +21,10 @@ reports_folder = %%imapfolder%%
 server = localhost
 port = 514
 
-[opensearch]
-hosts = http://admin:admin@%%ip%%:9200
-ssl = False
-monthly_indexes = True
+#[opensearch]
+#hosts = http://admin:admin@%%ip%%:9200
+#ssl = False
+#monthly_indexes = True
 
 #[elasticsearch]
 #hosts = %%ip%%:9200

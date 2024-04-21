@@ -1,3 +1,10 @@
+0.11
+
+* Remove opensearch and grafana
+* Introduce a script to produce 3 charts from aggregate.csv
+
+---
+
 0.10
 
 * Version bump for new base image

@@ -148,31 +148,23 @@ pkg install -y py39-cryptography-vectors
 step "Install package py39-regex"
 pkg install -y py39-regex
 
+step "Install package py39-pandas"
+pkg install -y py39-pandas
+
+step "Install package py39-matplotlib"
+pkg install -y py39-matplotlib
+
 step "Install package libxslt"
 pkg install -y libxslt
 
 step "Install package rust"
 pkg install -y rust
 
-step "Install package grafana9"
-pkg install -y grafana9
-
-step "Install package opensearch"
-pkg install -y opensearch
-
 step "Clean package installation"
 pkg clean -y
 
 
 # -------------- END PACKAGE SETUP -------------
-
-# turn off opensearch security plugins
-
-if [ -x /usr/local/lib/opensearch/bin/opensearch-plugin ]; then
-	/usr/local/lib/opensearch/bin/opensearch-plugin remove opensearch-performance-analyzer
-	/usr/local/lib/opensearch/bin/opensearch-plugin remove opensearch-security
-	/usr/local/lib/opensearch/bin/opensearch-plugin remove opensearch-security-analytics
-fi
 
 #
 # Now generate the run command script "cook"
