@@ -34,7 +34,7 @@ plot_pie(dkim_counts, 'DKIM Aligned', 'dkim_pie.png')
 plot_pie(dmarc_counts, 'DMARC Aligned', 'dmarc_pie.png')
 
 # Write HTML to include images
-with open('index.html', 'w') as f:
+with open('/usr/local/www/dmarc-report/index.html', 'w') as f:
 	f.write('<html><body>')
 	f.write('<html><head><title>Report Status</title></head><body><h1>Report Status</h1>')
 	f.write('<img src="spf_pie.png" style="width: 32%; height: 32%">')

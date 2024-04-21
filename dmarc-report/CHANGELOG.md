@@ -2,6 +2,7 @@
 
 * Remove opensearch and grafana
 * Introduce a script to produce 3 charts from aggregate.csv
+* Fix write path for index.html report
 
 ---
 
