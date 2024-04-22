@@ -1,3 +1,10 @@
+0.5
+
+* Version bump for new base image
+* Fix node_exporter zfs issue
+
+---
+
 0.4
 
 * Version bump for new base image
