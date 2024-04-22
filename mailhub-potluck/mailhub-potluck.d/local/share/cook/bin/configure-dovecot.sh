@@ -18,11 +18,19 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 mkdir -p /mnt/dovecot/mail
 mkdir -p /mnt/dovecot/sieve/before.d/
 
-# if ACL error with IMAP connections, check this
-#   mkdir -p /usr/local/etc/dovecot/global-acls
-#   service dovecot onerestart
-# Solution:
-mkdir -p /usr/local/etc/dovecot/global-acls
+# This should be a file with
+# #<identifier> <ACLs> [:<named ACLs>]
+# # options: l lookup, r read, w write, s write-seen,
+# # t write-deleted, i insert, p post, e expunge,
+# # k create, x delete, a administration rights
+# public/TestFolder user=username lrwstipekxa
+# #owner lrwstipekxa
+# # allow anyone to list and read a public mailbox
+# public/* user=username lr
+# # Prevent all users from deleting their Spam folder
+# #INBOX.Spam owner lrwstipeka
+#############
+touch /usr/local/etc/dovecot/global-acls
 
 # create vhost user and group
 # create Dovecot Virtual Mail User
