@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Loki 2.9.7, Promtail 2.9.7
+* Fix node_exporter zfs issue
 
 ---
 
