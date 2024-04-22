@@ -1,3 +1,10 @@
+0.14
+
+* Version bump for new base image
+* Loki 2.9.7, Promtail 2.9.7
+
+---
+
 0.13
 
 * Version bump for new base image
