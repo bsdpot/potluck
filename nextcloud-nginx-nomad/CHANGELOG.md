@@ -1,3 +1,9 @@
+0.93
+
+* Version bump for new quarterlies
+
+---
+
 0.92
 
 * Version bump for rebuild
