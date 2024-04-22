@@ -124,7 +124,7 @@ step "Install package git-lite"
 pkg install -y git-lite
 
 step "Install go120"
-pkg install -y go120
+pkg install -y go121
 
 # -------------- END PACKAGE SETUP -------------
 
@@ -155,10 +155,10 @@ git sparse-checkout set GIDs UIDs \
   Mk/ \
   Templates/ \
   Keywords/ \
-  lang/perl5.32/ \
+  lang/perl5.36/ \
   security/openssl/ \
   ports-mgmt/pkg/ \
-  lang/go120/ \
+  lang/go121/ \
   lang/go-devel/ \
   www/caddy/ \
   www/xcaddy/ \
@@ -173,7 +173,7 @@ git sparse-checkout set GIDs UIDs \
 # Quarterly in Aug 2023 is 2023Q3
 step "Pull files"
 #git pull --depth=1 origin 2023Q3
-git pull --depth=1 origin 2024Q1
+git pull --depth=1 origin 2024Q2
 
 # go straight to building caddy-custom
 #step "Build caddy"
