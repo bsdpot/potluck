@@ -1,3 +1,9 @@
+0.0.24
+
+* Version bump for ZFS fix
+
+---
+
 0.0.23
 
 * Version bump for new quarterlies
