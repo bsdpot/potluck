@@ -1,2 +1,0 @@
-set-attribute -A persistent -V OFF
-set-attribute -A no-rc-script -V ON

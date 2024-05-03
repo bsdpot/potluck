@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+# Check for root privileges
+if ! [ "$(id -u)" = 0 ]; then
+   echo "This script must be run with root privileges"
+   exit 1
+fi
+
+USERNAME="%%ownername%%"
+EMAIL="%%owneremail%%"
+CREDENTIALSFILE="/mnt/mastodon/private/mastodon.owner.credentials"
+
+echo "$USERNAME, $EMAIL" > "$CREDENTIALSFILE"
+
+# change directory to tmp for su purposes
+cd /tmp || exit 1
+
+# as user mastodon run tootctl to create username with email and specific default settings
+su - mastodon -c "/usr/local/bin/bash -c 'cd /usr/local/www/mastodon; RAILS_ENV=production SAFETY_ASSURED=1 bin/tootctl accounts create $USERNAME --email=$EMAIL --role=Owner --confirmed'" >> "$CREDENTIALSFILE"
+
+echo "Mastodon Owner user credentials are stored in $CREDENTIALSFILE"

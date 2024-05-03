@@ -1,0 +1,21 @@
+#!/usr/local/bin/bash
+
+mydomain="%%domain%%"
+registermail="%%email%%"
+
+if [ -d /mnt/acme/"$mydomain"_ecc ]; then
+	service nginx stop
+	service ncs_signaling stop
+    mv -f /mnt/acme/"$mydomain"_ecc /mnt/acme/"$mydomain"_ecc.old
+    /usr/local/sbin/acme.sh --register-account -m "$registermail" --home /mnt/acme --server zerossl
+    /usr/local/sbin/acme.sh --set-default-ca --server zerossl
+    /usr/local/sbin/acme.sh --issue -d "$mydomain" --home /mnt/acme --standalone --server zerossl --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
+    cd /mnt/acme/"$mydomain"_ecc/ || exit 1
+    cp -Rf /mnt/acme/"$mydomain"_ecc/ /usr/local/etc/ssl/
+    service nginx restart
+	service ncs_signaling restart
+    exit 0
+else
+    echo "There is no /mnt/acme/$mydomain _ecc directory. Cannot renew missing certificate."
+    exit 1
+fi

@@ -1,3 +1,32 @@
+1.17
+
+* Version bump for new base image
+
+---
+
+1.16
+
+* Version bump for new base image
+* FBSD14 base image
+* Fix broken php packages
+* Switch to using php-fpm
+* Adjust apache24 config for php-fpm
+* Increase php-fpm memory to 128MB to clear error and make LAM work again
+* Include files to change for php socket on php version change
+* Fix node_exporter ZFS error
+* Adjust apache logging and send logs out with syslog-ng
+* Improve openldap and LAM logging
+* Improve ldap clustering setup with correct server-id parameters
+* Fixing clustering setup and add entries to /etc/hosts
+* Adjust openldap to use hostnames localldap and remoteldap set in /etc/hosts
+* No trailing slash in ldap url for sysrc entry
+* Openldap mirrormode parameter is now called multiprovider
+* Adjust credentials setup because passwords are hashed or not hashed depending on config option
+* Allow invalid certificates for ldap client programs
+* Add script to test credentials added via LAM
+
+---
+
 1.15
 
 * Version bump for new base image

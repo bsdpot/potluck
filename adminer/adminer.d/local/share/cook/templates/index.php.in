@@ -1,0 +1,15 @@
+<?php
+
+  if(!count($_GET)) {
+  $_POST['auth'] = [
+    'server' => '%%DBSERVER%%',
+    'username' => '%%DBUSER%%',
+    'password' => '%%DBPASS%%',
+    'db' => '%%DBNAME%%',
+    'driver' => '%%DBDRIVER%%'
+  ];
+}
+
+include "adminer.php";
+
+?>

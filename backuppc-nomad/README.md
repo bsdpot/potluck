@@ -63,8 +63,8 @@ job "backuppc" {
 
       config {
         image = "https://potluck.honeyguide.net/backuppc-nomad"
-        pot = "backuppc-nomad-amd64-13_2"
-        tag = "1.10.1"
+        pot = "backuppc-nomad-amd64-14_0"
+        tag = "1.12.1"
         command = "/usr/local/bin/cook"
         args = ["-p","myadminpassword"]
         mount = [

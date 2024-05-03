@@ -1,3 +1,18 @@
+0.9
+
+* Version bump for new base image
+* Update go package to go121
+* Fix perl version 5.36
+
+---
+
+0.8
+
+* Version bump for new base image
+* FBSD14 base image
+
+---
+
 0.7
 
 * Version bump for new base image

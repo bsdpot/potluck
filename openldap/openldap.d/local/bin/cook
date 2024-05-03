@@ -53,6 +53,7 @@ required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args DOMAIN MYCREDS HOSTNAME"
 optional_args="SERVERID CRONBACKUP REMOTEIP IMPORTCUSTOM REMOTELOG"
 optional_args="$optional_args DEFAULTGROUPS USERNAME PASSWORD"
+optional_args="$optional_args LAMPASS"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -85,6 +86,15 @@ if [ -n "${CONSULSERVERS+x}" ]; then
     export FIXCONSULSERVERS
 fi
 
+# ldap-account-manager configuration password, if not set then set default
+if [ -n "${LAMPASS+x}" ]; then
+	LAMPASS="$LAMPASS"
+	export LAMPASS
+else
+	LAMPASS="lam"
+	export LAMPASS
+fi
+
 # stop services
 timeout --foreground 10 \
   service consul onestop || service consul onestop || true
@@ -95,6 +105,11 @@ timeout --foreground 10 \
 
 timeout --foreground 10 \
   service slapd onestop || service slapd onestop || true
+
+timeout --foreground 10 \
+  service php-fpm onestop || service php-fpm onestop || true
+
+pkill php-fpm || true
 
 export PATH=/usr/local/share/cook/bin:$PATH
 
@@ -132,6 +147,9 @@ configure-ssl.sh
 log "Configure slapd"
 configure-slapd.sh
 
+log "Configure php"
+configure-php.sh
+
 log "Configure apache24"
 configure-apache24.sh
 
@@ -153,6 +171,12 @@ if [ -n "$CRONBACKUP" ]; then
 	log "Enabling cron backups"
 	configure-cronbackup.sh
 fi
+
+log "Start php-fpm"
+timeout --foreground 120 \
+  sh -c 'while ! service php-fpm status; do
+    service php-fpm start || true; sleep 5;
+  done'
 
 log "Start apache24"
 service apache24 start || true

@@ -1,3 +1,21 @@
+0.0.24
+
+* Version bump for ZFS fix
+
+---
+
+0.0.23
+
+* Version bump for new quarterlies
+
+---
+
+0.0.22
+
+* Version bump for FBSD14 base image
+
+---
+
 0.0.21
 
 * Version bump after ZFS fix

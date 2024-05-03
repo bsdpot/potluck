@@ -124,6 +124,9 @@ pkg install -y py39-salt
 step "Install py39-pip"
 pkg install -y py39-pip
 
+step "Install py39-tornado"
+pkg install -y py39-tornado
+
 step "Install package git-lite"
 pkg install -y git-lite
 

@@ -21,11 +21,16 @@ reports_folder = %%imapfolder%%
 server = localhost
 port = 514
 
-[elasticsearch]
-hosts = %%ip%%:9200
-ssl = False
-user = %%zincuser%%
-password = %%zincpass%%
+#[opensearch]
+#hosts = http://admin:admin@%%ip%%:9200
+#ssl = False
+#monthly_indexes = True
+
+#[elasticsearch]
+#hosts = %%ip%%:9200
+#ssl = False
+#user = admin
+#password = admin
 
 #[s3]
 #bucket = my-bucket

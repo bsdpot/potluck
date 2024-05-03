@@ -1,3 +1,30 @@
+0.11
+
+* Remove opensearch and grafana
+* Introduce a script to produce 3 charts from aggregate.csv
+* Fix write path for index.html report
+
+---
+
+0.10
+
+* Version bump for new base image
+* Switch from zincsearch to opensearch with security plugins disabled
+* Fix node_exporter zfs issue
+* Update parsedmarc version and config
+* Create opensearch indexes manually
+* Add py39-regex
+* Fix typo for create-index.sh not configure-index.sh
+
+---
+
+0.9
+
+* Version bump for base image
+* FBSD14 base image
+
+---
+
 0.8
 
 * Version bump for new base image

@@ -22,10 +22,5 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 Make sure to update python39 and py39-{packagename} in the following files on Python version change:
 * dmarc-report.sh
 
-## Zincsearch
-Zincsearch releases are on github at https://github.com/zincsearch/zincsearch/releases
-For new releases the URL, and checksum of extracted binary, must be updated in:
-* dmarc-report.sh
-
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?

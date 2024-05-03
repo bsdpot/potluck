@@ -1,3 +1,9 @@
+0.13.1
+
+* Version bump for FBSD14 base image
+
+---
+
 0.12.7
 
 * Protect admin web api endpoint in nginx proxy

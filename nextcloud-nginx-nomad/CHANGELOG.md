@@ -1,3 +1,29 @@
+0.93
+
+* Version bump for new quarterlies
+
+---
+
+0.92
+
+* Version bump for rebuild
+* Add storage to build host
+
+---
+
+
+0.91
+
+* Version bump for rebuild
+
+---
+
+0.90
+
+* Version bump for FBSD14
+
+---
+
 0.89
 
 * Add missing js mimetype

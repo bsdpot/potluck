@@ -14,9 +14,9 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# create syslog file and necessary directories
+# create log file for debug messages
 touch /var/log/slapd.log
-mkdir -p /usr/local/etc/syslog.d/
+chown ldap:ldap /var/log/slapd.log
 
 # create password
 SETSLAPPASS=$(/usr/local/sbin/slappasswd -s "$MYCREDS")
@@ -25,12 +25,22 @@ SETSLAPPASS=$(/usr/local/sbin/slappasswd -s "$MYCREDS")
 # safe(r) separator for sed
 sep=$'\001'
 
+# make sure the outside IP is set to hostname localldap
+echo "$IP localldap" >> /etc/hosts
+
 if [ -n "$REMOTEIP" ]; then
+	# make sure remoteldap is in /etc/hosts
+	echo "$REMOTEIP remoteldap" >> /etc/hosts
+	# configure multi server mirror mode ldap
+	# we hash the password for some entries but not the sync entry
     < "$TEMPLATEPATH/multi-slapd.conf.in" \
     sed "s${sep}%%serverid%%${sep}$SERVERID${sep}g" | \
+    sed "s${sep}%%remoteserverid%%${sep}$REMOTESERVERID${sep}g" | \
+    sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
     sed "s${sep}%%mysuffix%%${sep}$MYSUFFIX${sep}g" | \
     sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" | \
     sed "s${sep}%%setslappass%%${sep}$SETSLAPPASS${sep}g" | \
+    sed "s${sep}%%replicationpassword%%${sep}$MYCREDS${sep}g" | \
     sed "s${sep}%%remoteip%%${sep}$REMOTEIP${sep}g" \
     > /usr/local/etc/openldap/slapd.conf
 else
@@ -119,11 +129,12 @@ else
 fi
 
 # setup replicator user if remoteip set
+# we don't hash the password, it will be automatically done
 if [ -n "$REMOTEIP" ]; then
     < "$TEMPLATEPATH/syncuser.ldif.in" \
     sed "s${sep}%%mysuffix%%${sep}$MYSUFFIX${sep}g" | \
     sed "s${sep}%%mytld%%${sep}$MYTLD${sep}g" | \
-    sed "s${sep}%%mycreds%%${sep}$MYCREDS${sep}g" \
+    sed "s${sep}%%replicationpassword%%${sep}$MYCREDS${sep}g" \
     > /tmp/syncuser.ldif
 
     # add syncuser to database 1, uses -c to continue on error
@@ -139,10 +150,17 @@ chmod +x /root/importldapconfig.sh
 cp -f "$TEMPLATEPATH/importldapdata.sh.in" /root/importldapdata.sh
 chmod +x /root/importldapdata.sh
 
+# copy script to test credentials
+cp -f "$TEMPLATEPATH/testldapcredentials.sh.in" /root/testldapcredentials.sh
+chmod +x /root/testldapcredentials.sh
+
 # enable service
 service slapd enable || true
 # sysrc doesn't seem to add this correctly so echo in
-echo "slapd_flags='-4 -h \"ldapi://%2fvar%2frun%2fopenldap%2fldapi/ ldap://$IP/ ldaps://$IP/\"'" >> /etc/rc.conf
+#echo "slapd_flags='-4 -h \"ldapi://%2fvar%2frun%2fopenldap%2fldapi/ ldap://$IP/ ldaps://$IP/\"'" >> /etc/rc.conf
+# we're setting hostname localldap with external IP in /etc/hosts
+# no trailing slash after url!
+echo "slapd_flags='-4 -h \"ldapi://%2fvar%2frun%2fopenldap%2fldapi/ ldap://localldap ldaps://localldap\"'" >> /etc/rc.conf
 # set cn=config directory config settings
 sysrc slapd_cn_config="YES"
 sysrc slapd_sockets="/var/run/openldap/ldapi"

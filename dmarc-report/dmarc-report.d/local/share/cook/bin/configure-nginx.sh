@@ -27,8 +27,7 @@ sep=$'\001'
 
 # copy in custom nginx.conf and set IP to ip address of pot image
 < "$TEMPLATEPATH/nginx.conf.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" |
-  sed "s${sep}%%zincport%%${sep}$ZINCPORT${sep}g" \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" \
   > /usr/local/etc/nginx/nginx.conf
 
 # copy in standard html

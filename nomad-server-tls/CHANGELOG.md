@@ -1,6 +1,10 @@
-0.10.18
+0.11.2
 
 * Add explicit -data-dir parameter
+
+0.11.1
+
+* Version bump for FBSD14 base image
 
 ---
 

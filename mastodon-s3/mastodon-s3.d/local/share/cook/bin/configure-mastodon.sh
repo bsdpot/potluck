@@ -116,8 +116,9 @@ echo "Creating .env.production"
   sed "s${sep}%%mailuser%%${sep}$MAILUSER${sep}g" | \
   sed "s${sep}%%mailpass%%${sep}$MAILPASS${sep}g" | \
   sed "s${sep}%%mailfrom%%${sep}$MAILFROM${sep}g" | \
-  sed "s${sep}%%bucket%%${sep}$BUCKETHOST${sep}g" | \
+  sed "s${sep}%%bucketname%%${sep}$BUCKETNAME${sep}g" | \
   sed "s${sep}%%s3hostname%%${sep}$S3HOSTNAME${sep}g" | \
+  sed "s${sep}%%uploadprotocol%%${sep}$SETS3UPNOSSL${sep}g" | \
   sed "s${sep}%%s3user%%${sep}$BUCKETUSER${sep}g" | \
   sed "s${sep}%%s3pass%%${sep}$BUCKETPASS${sep}g" | \
   sed "s${sep}%%region%%${sep}$BUCKETREGION${sep}g" | \
@@ -180,7 +181,6 @@ else
 fi
 
 # precompile assets
-# todo: we only want to do this if it hasn't already been done!
 echo "Precompiling assets as mastodon user"
 su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production /usr/local/bin/bundle exec rails assets:precompile"'
 
@@ -209,3 +209,33 @@ service mastodon_web enable || true
 # to-do
 # add crontab entries
 # bundle exec rake mastodon:media:remove_remote
+
+# make sure root has a bin directory
+mkdir -p /root/bin
+
+# copy over admin script to create elasticsearch indexes
+cp -f "$TEMPLATEPATH/setup-es-index.sh.in" /root/bin/setup-es-index.sh
+chmod +x /root/bin/setup-es-index.sh
+
+# copy over admin script to reset elasticsearch indexes
+cp -f "$TEMPLATEPATH/rebuild-es-index.sh.in" /root/bin/rebuild-es-index.sh
+chmod +x /root/bin/rebuild-es-index.sh
+
+# copy over mastodon diagnostic script
+cp -f "$TEMPLATEPATH/diagnose-mastodon.sh.in" /root/bin/diagnose-mastodon.sh
+chmod +x /root/bin/diagnose-mastodon.sh
+
+# copy over script to reset 2FA for mastodon user
+cp -f "$TEMPLATEPATH/reset-2fa-user.sh.in" /root/bin/reset-2fa-user.sh
+chmod +x /root/bin/reset-2fa-user.sh
+
+# copy over script to remove media and preview_cards
+cp -f "$TEMPLATEPATH/remove-old-media.sh.in" /root/bin/remove-old-media.sh
+chmod +x /root/bin/remove-old-media.sh
+
+# copy over the create-admin-user script and set variables
+< "$TEMPLATEPATH/create-admin-user.sh.in" \
+  sed "s${sep}%%ownername%%${sep}$SETOWNERNAME${sep}g" | \
+  sed "s${sep}%%owneremail%%${sep}$SETOWNEREMAIL${sep}g" \
+  > /root/bin/create-admin-user.sh
+chmod +x /root/bin/create-admin-user.sh

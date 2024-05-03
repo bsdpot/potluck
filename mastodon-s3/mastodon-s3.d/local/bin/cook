@@ -52,12 +52,13 @@ fi
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY DOMAIN"
 required_args="$required_args EMAIL MAILHOST MAILUSER MAILPASS MAILFROM"
 required_args="$required_args REDISHOST DBHOST DBUSER DBPASS DBNAME"
-required_args="$required_args BUCKETHOST BUCKETUSER BUCKETPASS"
+required_args="$required_args BUCKETNAME BUCKETUSER BUCKETPASS"
 required_args="$required_args BUCKETALIAS BUCKETREGION S3HOSTNAME"
 optional_args="MAILPORT DBPORT REDISPORT REMOTELOG MYSECRETKEY"
 optional_args="$optional_args MYOTPSECRET MYVAPIDPRIVATEKEY MYVAPIDPUBLICKEY"
 optional_args="$optional_args PVTCERT ELASTICENABLE ELASTICHOST ELASTICPORT"
 optional_args="$optional_args ELASTICUSER ELASTICPASS DEEPLKEY DEEPLPLAN"
+optional_args="$optional_args OWNERNAME OWNEREMAIL S3UPNOSSL"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -153,12 +154,45 @@ else
 	export SETDEEPLPLAN
 fi
 
+# set Owner defaults if not set
+if [ -n "${OWNERNAME+x}" ]; then
+	SETOWNERNAME="$OWNERNAME"
+	export SETOWNERNAME
+else
+    SETOWNERNAME="admin"
+    export SETOWNERNAME
+fi
+if [ -n "${OWNEREMAIL+x}" ]; then
+	SETOWNEREMAIL="$OWNEREMAIL"
+	export SETOWNEREMAIL
+else
+	SETOWNEREMAIL="set@email.address"
+	export SETOWNEREMAIL
+fi
+
+# set default S3 upload protocol
+# defaults to https if not set, or http if enabled
+if [ -n "${S3UPNOSSL+x}" ]; then
+	SETS3UPNOSSL="http"
+	export SETS3UPNOSSL
+else
+	SETS3UPNOSSL="https"
+	export SETS3UPNOSSL
+fi
+
 # stop services
 timeout --foreground 10 \
   service consul onestop || service consul onestop || true
 killall -9 consul || true
 
 export PATH=/usr/local/share/cook/bin:$PATH
+
+# temp fix, ensure mode 644 for /etc/resolv.conf
+# mastodon user ruby process needs to read /etc/resolv.conf
+# to perform DNS lookups
+###
+chmod 644 /etc/resolv.conf
+###
 
 if [ -n "${REMOTELOG}" ]; then
     log "Configure and start syslog-ng"

@@ -72,8 +72,10 @@ Thereafter these files will load automatically, along with any updates, from per
   -E HOSTNAME=<hostname> \
   [ -E CRONBACKUP=/mnt/openldap-data/backups ] \
   [ -E IMPORTCUSTOM=1 ] \
-  [ -E REMOTEIP=<IP address second instance> ] \
-  [ -E SERVERID=<001 or 002> ] \
+  [ -E LAMPASS=<password for ldap-account-manager configuration> ] \
+  [ -E SERVERID=<this server ID, integer from 0 to 4095> ] \
+  [ -E REMOTEIP=<IP address of second openldap instance> ] \
+  [ -E REMOTESERVERID=<server ID of second instance, integer 0 to 4095 not matching SERVERID> ] \
   [ -E DEFAULTGROUPS=Y ] \
   [ -E USERNAME=<generic user username> ] \
   [ -E PASSWORD=<generic user password ] \
@@ -102,10 +104,13 @@ The CRONBACKUP parameter is the path to persistent storage where automatic backu
 
 If set, IMPORTCUSTOM enables the import of copied-in files `/root/config.ldif` and `/root/data.ldif` as a repeat in the cook script. Also available via shell scripts.
 
-The optional REMOTEIP parameter is the IP address of a second `openldap` pot server if running a multi-master
-cluster. If set, a cluster setup will be initiated.
+The optional LAMPASS parameter is the configuration password for `ldap-account-manager`. If not set it defaults to `lam`, as set by the software.
 
-The optional SERVERID parameter is one of `001` or `002` for first or second server if running a multi-master cluster.
+The optional SERVERID parameter is an integer from `0 to 4095`, or `0` for first server, and `1` for second server, and only applies if running a multi-master cluster.
+
+The optional REMOTEIP parameter is the IP address of a second `openldap` pot server if running a multi-master cluster. If set, a cluster setup will be initiated.
+
+The optional REMOTESERVERID parameter is an integer from `0 to 4095` for the second instance, and must be different to SERVERID. 
 
 The optional DEFAULTGROUPS parameter will enable a default group arrangement with People and mail, if set to any value. This will not work if IMPORTCUSTOM is enabled.
 
@@ -147,10 +152,15 @@ Important: `ldapmodify` and `ldapadd` don't work for import, where `slapadd` wor
 
 ## Two server setup - multi-master cluster
 
-When running with two servers, you must first setup one and import existing data with the included scripts.
+When running with two servers, you must first setup one server and import existing data with the included scripts.
 
-Then start a second server on a different host (both will use /mnt/openldap-data so keep on different servers)
-with a different SERVERID and setting REMOTEIP to the IP address of the first server.
+Then start on a second server, or make use of a different ZFS dataset for persistent storage, with a different SERVERID and setting REMOTEIP to the IP address of the first server.
+
+To check sync status compare `contextCSN`:
+```
+ldapsearch -x -LLL -H ldap://remoteldap:389 -s base -b "dc=your-domain,dc=net" contextCSN dn: dc=your-domain,dc=net
+ldapsearch -x -LLL -H ldap://localldap:389 -s base -b "dc=your-domain,dc=net" contextCSN dn: dc=your-domain,dc=net
+```
 
 ## Basic command line search
 
@@ -224,3 +234,23 @@ service slapd restart
 ```
 
 You can now login as Manager via web front end with the new credentials.
+
+## Checking user passwords
+
+If you need to test user credentials, make use of the script `/root/testldapcredentials.sh` and the username as follows:
+
+```
+./testldapcredentials.sh username-to-check
+
+This tool will query the correct cn= from ldapsearch to use in ldapwhoami query.
+
+Manual password entry is required because funny characters don't get escaped properly.
+
+Enter LDAP Password: ******
+dn:cn=user name,ou=People,dc=domain,dc=com
+
+Password success if you see the following:
+dn: cn=user name,ou=People,dc=domain,dc=com
+```
+
+Unfortunately the password requires manual entry as special characters aren't escaped correctly with the right parameter.

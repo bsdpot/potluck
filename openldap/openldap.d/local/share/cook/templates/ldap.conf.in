@@ -5,3 +5,4 @@ TIMELIMIT       15
 DEREF          never
 TLS_CACERT /usr/local/etc/openldap/ca.crt
 TLS_CIPHER_SUITE HIGH:MEDIUM:+SSLv3
+TLS_REQCERT never

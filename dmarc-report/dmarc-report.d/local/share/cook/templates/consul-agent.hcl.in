@@ -28,13 +28,8 @@ services = {
   port = 9100
 }
 services = {
-  name = "zincsearch"
-  tags = ["_app=dmarcreport", "_service=zincsearch", "_hostname=%%nodename%%.%%datacenter%%.consul"]
-  port = 4080
-}
-services = {
-  name = "elastic"
-  tags = ["_app=dmarcreport", "_service=elastic", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  name = "opensearch"
+  tags = ["_app=dmarcreport", "_service=opensearch", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9200
 }
 telemetry = {

@@ -1,3 +1,17 @@
+4.4
+
+* Version bump for new base image
+* Fix node_exporter zfs issue
+
+---
+
+4.3
+
+* Version bump for new base image
+* FBSD14 base image
+
+---
+
 4.2
 
 * Version bump for new base image

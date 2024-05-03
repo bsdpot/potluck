@@ -63,8 +63,8 @@ Listen %%ip%%:80
 # Example:
 # LoadModule foo_module modules/mod_foo.so
 #
-#LoadModule mpm_event_module libexec/apache24/mod_mpm_event.so
-LoadModule mpm_prefork_module libexec/apache24/mod_mpm_prefork.so
+LoadModule mpm_event_module libexec/apache24/mod_mpm_event.so
+#LoadModule mpm_prefork_module libexec/apache24/mod_mpm_prefork.so
 #LoadModule mpm_worker_module libexec/apache24/mod_mpm_worker.so
 LoadModule authn_file_module libexec/apache24/mod_authn_file.so
 #LoadModule authn_dbm_module libexec/apache24/mod_authn_dbm.so
@@ -126,11 +126,11 @@ LoadModule headers_module libexec/apache24/mod_headers.so
 LoadModule setenvif_module libexec/apache24/mod_setenvif.so
 LoadModule version_module libexec/apache24/mod_version.so
 #LoadModule remoteip_module libexec/apache24/mod_remoteip.so
-#LoadModule proxy_module libexec/apache24/mod_proxy.so
+LoadModule proxy_module libexec/apache24/mod_proxy.so
 #LoadModule proxy_connect_module libexec/apache24/mod_proxy_connect.so
 #LoadModule proxy_ftp_module libexec/apache24/mod_proxy_ftp.so
 #LoadModule proxy_http_module libexec/apache24/mod_proxy_http.so
-#LoadModule proxy_fcgi_module libexec/apache24/mod_proxy_fcgi.so
+LoadModule proxy_fcgi_module libexec/apache24/mod_proxy_fcgi.so
 #LoadModule proxy_scgi_module libexec/apache24/mod_proxy_scgi.so
 #LoadModule proxy_uwsgi_module libexec/apache24/mod_proxy_uwsgi.so
 #LoadModule proxy_fdpass_module libexec/apache24/mod_proxy_fdpass.so
@@ -179,7 +179,8 @@ LoadModule dir_module libexec/apache24/mod_dir.so
 #LoadModule userdir_module libexec/apache24/mod_userdir.so
 LoadModule alias_module libexec/apache24/mod_alias.so
 #LoadModule rewrite_module libexec/apache24/mod_rewrite.so
-LoadModule php_module         libexec/apache24/libphp.so
+# disable the mod_php as we don't need that for fpm
+#LoadModule php_module         libexec/apache24/libphp.so
 
 # Third party modules
 IncludeOptional etc/apache24/modules.d/[0-9][0-9][0-9]_*.conf
@@ -265,11 +266,8 @@ DocumentRoot "/usr/local/www/lam"
 <IfModule dir_module>
     DirectoryIndex index.php index.html
     <FilesMatch ".php$">
-        SetHandler application/x-httpd-php
+        SetHandler  "proxy:unix:/var/run/php82-fpm.sock|fcgi://localhost/"
      </FilesMatch>
-    <FilesMatch ".phps$">
-        SetHandler application/x-httpd-php-source
-    </FilesMatch>
 </IfModule>
 
 #

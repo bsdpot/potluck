@@ -40,11 +40,11 @@ load_rc_config $name
 : ${zincsearch_args:=""}
 
 if checkyesno zincsearch_syslog_output_enable; then
-        if [ -n "${zincsearch_syslog_output_tag}" ]; then
-                zincsearch_syslog_output_flags="-T ${zincsearch_syslog_output_tag}"
-        else
-                zincsearch_syslog_output_flags="-T ${name}"
-        fi
+	if [ -n "${zincsearch_syslog_output_tag}" ]; then
+		zincsearch_syslog_output_flags="-T ${zincsearch_syslog_output_tag}"
+	else
+		zincsearch_syslog_output_flags="-T ${name}"
+	fi
 fi
 
 pidfile="/var/run/${name}/${name}.pid"
@@ -53,20 +53,20 @@ required_files=""
 procname="/usr/local/bin/zincsearch"
 command="/usr/sbin/daemon"
 command_args="-f ${zincsearch_syslog_output_flags} -p ${pidfile} -t ${name} \
-        /usr/bin/env ${zincsearch_env} ZINC_FIRST_ADMIN_USER=%%zincuser%% \
-        ZINC_FIRST_ADMIN_PASSWORD=%%zincpass%% ZINC_DATA_PATH=%%zincdata%% \
-        ZINC_SERVER_PORT=%%zincport%% ZINC_PROMETHEUS_ENABLE=True \
-		ZINC_PLUGIN_ES_VERSION=8.8 \
-        ${procname} ${zincsearch_args}"
+ /usr/bin/env ${zincsearch_env} ZINC_FIRST_ADMIN_USER=%%zincuser%% \
+ ZINC_FIRST_ADMIN_PASSWORD=%%zincpass%% ZINC_DATA_PATH=%%zincdata%% \
+ ZINC_SERVER_PORT=%%zincport%% ZINC_PROMETHEUS_ENABLE=True \
+ ZINC_PLUGIN_ES_VERSION=8.8 \
+ ${procname} \
+ ${zincsearch_args}"
 
 start_precmd="zincsearch_start_precmd"
 
 zincsearch_start_precmd()
 {
-        if [ ! -d "/var/run/${name}" ]; then
-                install -d -m 0750 -o ${zincsearch_user} -g ${zincsearch_group} \
-                  "/var/run/${name}"
-        fi
+	if [ ! -d "/var/run/${name}" ]; then
+		install -d -m 0750 -o ${zincsearch_user} -g ${zincsearch_group} "/var/run/${name}"
+	fi
 }
 
 run_rc_command "$1"

@@ -142,8 +142,17 @@ pkg install -y py39-libxml2
 step "Install package py39-cryptography"
 pkg install -y py39-cryptography
 
-step "Install pckage py39-cryptography-vectors"
+step "Install package py39-cryptography-vectors"
 pkg install -y py39-cryptography-vectors
+
+step "Install package py39-regex"
+pkg install -y py39-regex
+
+step "Install package py39-pandas"
+pkg install -y py39-pandas
+
+step "Install package py39-matplotlib"
+pkg install -y py39-matplotlib
 
 step "Install package libxslt"
 pkg install -y libxslt
@@ -151,27 +160,9 @@ pkg install -y libxslt
 step "Install package rust"
 pkg install -y rust
 
-step "Install package grafana9"
-pkg install -y grafana9
-
 step "Clean package installation"
 pkg clean -y
 
-step "Download and extract zincsearch binary from github"
-fetch -qo - \
- https://github.com/zincsearch/zincsearch/releases/download/v0.4.9/zincsearch_0.4.9_freebsd_x86_64.tar.gz | \
- tar xzf - -C /usr/local/bin
-
-step "Testing if zincsearch binary exists"
-if [ ! -f /usr/local/bin/zincsearch ]; then
-    exit_error "/usr/local/bin/zincsearch is missing"
-fi
-
-step "Checksum query for zincsearch"
-if [ "$(sha256 -q /usr/local/bin/zincsearch)" != \
-  "b2183ac2829847897b837017c4d1828cd66ac655fa0c66c67bbd1237e4faff21" ]; then
-  exit_error "/usr/local/bin/zincsearch checksum mismatch!"
-fi
 
 # -------------- END PACKAGE SETUP -------------
 

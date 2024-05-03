@@ -15,6 +15,9 @@ argsfile    /var/run/openldap/slapd.args
 # added from
 # https://loga.us/2014/08/16/openldap-and-multi-master-replication-in-freebsd-part-1/
 loglevel 256
+# set log file, also included in syslog-ng
+logfile /var/log/slapd.log
+logfile-format syslog-localtime
 # Load dynamic backend modules:
 modulepath  /usr/local/libexec/openldap
 moduleload    back_mdb
@@ -24,7 +27,12 @@ moduleload    lastmod
 #moduleload    pw-sha2
 # moduleload    back_ldap
 # this will be automatically updated if cluster
-serverID %%serverid%%
+#  serverID <integer> [<URL>]
+# should be using fully qualified server names instead of IP
+# setting local names in /etc/hosts in configure step
+serverID %%serverid%% ldap://localldap
+serverID %%remoteserverid%% ldap://remoteldap
+
 # added from
 # https://loga.us/2014/08/16/openldap-and-multi-master-replication-in-freebsd-part-1/
 allow bind_v2
@@ -77,46 +85,47 @@ TLSCertificateFile /usr/local/etc/openldap/server.crt
 TLSCertificateKeyFile /usr/local/etc/openldap/private/server.key
 
 # Access control
-access  to      *
-                by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth write
-                by * break
+access	to	*
+		by	dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth write
+		by	* break
         
-access  to      *
-                by dn.base="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" write
-                by * break
+access	to	*
+		by	dn.base="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" write
+		by	* break
 
-access  to      *
-                by dn.base="cn=replicator,dc=%%mysuffix%%,dc=%%mytld%%" read
-                by * break
+access  to	*
+		by	dn.base="cn=replicator,dc=%%mysuffix%%,dc=%%mytld%%" read
+		by	* break
 
 access	to	attrs=userPassword,shadowLastChange 
-		by dn="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" write 
-		by anonymous auth
-		by self write
-		by * none
+		by	dn="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" write 
+		by	anonymous auth
+		by	self write
+		by	* none
 
 access	to	dn.base=""
-		by * read
+		by	* read
 
 access	to	*
-		by self write
-		by dn="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" write
-		by * read
+		by	self write
+		by	dn="cn=Manager,dc=%%mysuffix%%,dc=%%mytld%%" write
+		by	* read
 
 # sync
-syncrepl rid=000
-	provider=ldap://%%remoteip%%:389
+syncrepl rid=0
+	provider=ldap://remoteldap:389
 	searchbase="dc=%%mysuffix%%,dc=%%mytld%%"
 	filter="(objectClass=*)"
 	scope=sub
 	attrs="*,+"
 	bindmethod=simple
 	binddn="cn=replicator,dc=%%mysuffix%%,dc=%%mytld%%"
-	credentials=%%setslappass%%
+	credentials=%%replicationpassword%%
 	type=refreshAndPersist
-	retry="5 5 300 +"
+	retry="60 5 300 +"
 	interval=00:00:05:00
 	schemachecking=on
+	timeout=1
 
 # Indices to maintain
 index   objectClass eq
@@ -138,12 +147,15 @@ index mail pres,eq,sub
 # Syncprov indexes
 index entryCSN eq
 index entryUUID eq
+
 # Mirror mode essential to allow writes and must appear
 # after all syncrepl directives
-mirrormode TRUE
+# mirrormode parameter is replaced by multiprovider parameter
+multiprovider on
+
 # Define the provider to use the syncprov overlay
 # (last directives in database section)
 overlay syncprov
-# contextCSN saved to database every 100 updates or 10 mins.
-syncprov-checkpoint 100 10
+# contextCSN saved to database every 100 updates or 5 mins.
+syncprov-checkpoint 100 5
 syncprov-sessionlog 100

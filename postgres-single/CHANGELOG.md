@@ -1,3 +1,18 @@
+0.5
+
+* Version bump for new base image
+* Fix node_exporter zfs issue
+* Update postgresql_exporter to 0.15.0
+
+---
+
+0.4
+
+* Version bump for new base image
+* FBSD14 base image
+
+---
+
 0.3
 
 * Version bump for new base image

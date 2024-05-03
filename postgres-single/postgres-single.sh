@@ -152,12 +152,13 @@ cd /tmp
 
 step "Download postgres_exporter from github"
 
-/usr/local/bin/git clone --depth 1 -b v0.13.2 \
+/usr/local/bin/git clone --depth 1 -b v0.15.0 \
   https://github.com/prometheus-community/postgres_exporter.git
 
 # make sure we're at the correct commit
 cd /tmp/postgres_exporter
-/usr/local/bin/git checkout 8c3604b85e38ae7141e84ecdc318b6015a196c97
+#/usr/local/bin/git checkout 8c3604b85e38ae7141e84ecdc318b6015a196c97
+/usr/local/bin/git checkout 68c176b8833b7580bf847cecf60f8e0ad5923f9a
 
 # build
 /usr/local/bin/gmake build

@@ -1,3 +1,19 @@
+1.13
+
+* Version bump for new base image
+* Include automatic copy-in pubkey to git user authorized_keys
+* Overwrite existing authorized_keys with copied-in publickey
+* Update versions in sample nomad file in README
+
+---
+
+1.12
+
+* Version bump for base image
+* FBSD14 base image
+
+---
+
 1.11
 
 * Version bump for new base image

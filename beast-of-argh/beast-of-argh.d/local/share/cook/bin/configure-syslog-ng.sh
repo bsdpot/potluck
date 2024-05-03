@@ -26,8 +26,8 @@ config_version=$(/usr/local/sbin/syslog-ng --version | \
   sed "s${sep}%%myip%%${sep}$IP${sep}g" \
   > /usr/local/etc/syslog-ng.conf
 
-# create remote log dir, redundant step
-mkdir -p /mnt/logs/remote
+# create remote log metrics directory
+mkdir -p /mnt/logs/remote/metrics
 
 # make the disk buffer directory
 mkdir -p /mnt/logs/syslog-ng-disk-buffer

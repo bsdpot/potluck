@@ -1,0 +1,46 @@
+import matplotlib
+matplotlib.use('Agg')  # Use the 'Agg' backend for non-GUI environments
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the CSV file
+data = pd.read_csv('/mnt/dmarcreports/aggregate.csv')
+
+# Ensure data types for boolean columns are consistent
+data['spf_aligned'] = data['spf_aligned'].astype(bool)
+data['dkim_aligned'] = data['dkim_aligned'].astype(bool)
+data['dmarc_aligned'] = data['dmarc_aligned'].astype(bool)
+
+# Function to plot pie chart
+def plot_pie(counts, title, filename):
+	fig, ax = plt.subplots()
+	# Ensure both True and False are represented
+	counts = counts.reindex([True, False], fill_value=0)
+	labels = ['True', 'False']
+	ax.pie(counts, labels=labels, autopct='%1.1f%%', startangle=90)
+	ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+	plt.title(title)
+	plt.savefig(filename)
+	plt.close()  # Close the plot to avoid display issues
+
+# Generate counts for each alignment
+spf_counts = data['spf_aligned'].value_counts()
+dkim_counts = data['dkim_aligned'].value_counts()
+dmarc_counts = data['dmarc_aligned'].value_counts()
+
+# Plot each chart and save to file
+plot_pie(spf_counts, 'SPF Aligned', 'spf_pie.png')
+plot_pie(dkim_counts, 'DKIM Aligned', 'dkim_pie.png')
+plot_pie(dmarc_counts, 'DMARC Aligned', 'dmarc_pie.png')
+
+# Write HTML to include images
+with open('/usr/local/www/dmarc-report/index.html', 'w') as f:
+	f.write('<html><body>')
+	f.write('<html><head><title>Report Status</title></head><body><h1>Report Status</h1>')
+	f.write('<img src="spf_pie.png" style="width: 32%; height: 32%">')
+	f.write('<img src="dkim_pie.png" style="width: 32%; height: 32%">')
+	f.write('<img src="dmarc_pie.png" style="width: 32%; height: 32%">')
+	f.write('</body></html>')
+
+# Display message
+print("HTML file with charts generated successfully.")

@@ -25,6 +25,15 @@ source s_slapd {
  file("/var/log/slapd.log");
 };
 
+source s_apache {
+ file("/var/log/httpd-access.log");
+ file("/var/log/httpd-error.log");
+};
+
+source s_lam {
+ file("/var/log/lam.log");
+};
+
 # destinations
 destination messages { file("/var/log/messages"); };
 destination security { file("/var/log/security"); };
@@ -160,3 +169,5 @@ log { source(src); filter(f_ppp); destination(ppp); };
 #};
 log { source(src); filter(f_all); destination(loghost); };
 log { source(s_slapd); destination(loghost); };
+log { source(s_apache); destination(loghost); };
+log { source(s_lam); destination(loghost); };

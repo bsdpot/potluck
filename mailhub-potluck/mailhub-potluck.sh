@@ -240,7 +240,7 @@ git sparse-checkout set GIDs UIDs \
   Mk/ \
   Templates/ \
   Keywords/ \
-  lang/perl5.32/ \
+  lang/perl5.36/ \
   security/openssl/ \
   archivers/zstd \
   mail/dovecot/ \
@@ -275,6 +275,8 @@ git sparse-checkout set GIDs UIDs \
   security/p5-Digest-SHA1/ \
   net/p5-GeoIP2/ \
   net/p5-IP-Country/ \
+  net/p5-IO-Socket-INET6 \
+  net/p5-Socket6 \
   net/openldap26-client \
   net/openldap26-server \
   devel/p5-BSD-Resource/
@@ -292,7 +294,9 @@ step "Pull files"
 #git pull --depth=1 origin 2022Q4
 #git pull --depth=1 origin 2023Q1
 #git pull --depth=1 origin 2023Q2
-git pull --depth=1 origin 2023Q3
+#git pull --depth=1 origin 2023Q3
+#git pull --depth=1 origin 2024Q1
+git pull --depth=1 origin 2024Q2
 
 #step "Port build openssl, remove existing, replace with this port"
 ##required for latest / main branch

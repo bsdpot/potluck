@@ -41,45 +41,48 @@ However the mastodon pot jail will register a SSL certificate directly.
 * Mount in persistent storage for certificates and keys to /mnt specifically
 * Adjust to your environment:
   ```
-    sudo pot set-env -p <clonejailname> \
-    -E DATACENTER=<datacentername> \
-    -E IP=<IP address of this nomad instance> \
-    -E NODENAME=<an internal name for image> \
-    -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
-    -E GOSSIPKEY="<32 byte Base64 key from consul keygen>" \
-    -E DOMAIN=<FQDN for host> \
-    -E EMAIL=<email address for letsencrypt setup> \
-    -E MAILHOST=<mailserver hostname or IP> \
-    -E MAILUSER=<SMTP username> \
-    -E MAILPASS=<SMTP password> \
-    -E MAILFROM=<SMTP from address> \
-    -E DBHOST=<host of postgres jail> \
-    -E DBUSER=<username> \
-    -E DBPASS=<password> \
-    -E DBNAME=<database name> \
-    -E REDISHOST=<IP of redis instance> \
-    -E BUCKETHOST=<public hostname or IP of S3 storage> \
-    -E S3HOSTNAME=<S3 hostname> \
-    -E BUCKETUSER=<S3 access id> \
-    -E BUCKETPASS=<S3 password> \
-    -E BUCKETALIAS=<web address for files, or alt domain name> \
-    -E BUCKETREGION=<S3 region> \
-    [ -E MAILPORT=<SMTP port> ] \
-    [ -E DBPORT=<database port> ] \
-    [ -E REDISPORT=<redis port> ] \
-    [ -E REMOTELOG="<IP syslog-ng server>" ] \
+	sudo pot set-env -p <clonejailname> \
+	-E DATACENTER=<datacentername> \
+	-E IP=<IP address of this nomad instance> \
+	-E NODENAME=<an internal name for image> \
+	-E CONSULSERVERS="<comma-deliminated list of consul servers>" \
+	-E GOSSIPKEY="<32 byte Base64 key from consul keygen>" \
+	-E DOMAIN=<FQDN for host> \
+	-E EMAIL=<email address for letsencrypt setup> \
+	-E MAILHOST=<mailserver hostname or IP> \
+	-E MAILUSER=<SMTP username> \
+	-E MAILPASS=<SMTP password> \
+	-E MAILFROM=<SMTP from address> \
+	-E DBHOST=<host of postgres jail> \
+	-E DBUSER=<username> \
+	-E DBPASS=<password> \
+	-E DBNAME=<database name> \
+	-E REDISHOST=<IP of redis instance> \
+	-E BUCKETNAME=<bucket name on S3 host> \
+	-E S3HOSTNAME=<S3 hostname> \
+	-E BUCKETUSER=<S3 access id> \
+	-E BUCKETPASS=<S3 password> \
+	-E BUCKETALIAS=<web address for files, or alt domain name> \
+	-E BUCKETREGION=<S3 region> \
+	[ -E S3UPNOSSL=<any value enables http upload to S3 instead of https> ] \
+	[ -E MAILPORT=<SMTP port> ] \
+	[ -E DBPORT=<database port> ] \
+	[ -E REDISPORT=<redis port> ] \
+	[ -E REMOTELOG="<IP syslog-ng server>" ] \
 	[ -E MYSECRETKEY="<rails secret key>" ] \
 	[ -E MYOTPSECRET="<rails secret key for otp>" ] \
 	[ -E MYVAPIDPRIVATEKEY="<vapid private key>" ] \
 	[ -E MYVAPIDPUBLICKEY="<vapid public key>" ] \
-    [ -E PVTCERT=<any value enables> ] \
-    [ -E ELASTICENABLE=<any value enables> ] \
-    [ -E ELASTICHOST=<IP of elasticsearch or zincsearch instance> ] \
-    [ -E ELASTICPORT=<port of ES instance, default 9200> ] \
-    [ -E ELASTICUSER=<username for ES instance > ] \
-    [ -E ELASTICPASS=<password for ES instance > ] \
-    [ -E DEEPLKEY=<API key> ] \
-    [ -E DEEPLPLAN=<API plan or free> ]
+	[ -E PVTCERT=<any value enables> ] \
+	[ -E ELASTICENABLE=<any value enables> ] \
+	[ -E ELASTICHOST=<IP of elasticsearch or zincsearch instance> ] \
+	[ -E ELASTICPORT=<port of ES instance, default 9200> ] \
+	[ -E ELASTICUSER=<username for ES instance > ] \
+	[ -E ELASTICPASS=<password for ES instance > ] \
+	[ -E DEEPLKEY=<API key> ] \
+	[ -E DEEPLPLAN=<API plan or free> ] \
+	[ -E OWNERNAME=<admin username> ] \
+	[ -E OWNEREMAIL=<admin email address> ]
   ```
 * Start the pot: ```pot start <yourjailname>```. On the first run the jail will configure itself and start the services.
 
@@ -100,7 +103,7 @@ The DOMAIN parameter is the domain name of the `mastodon-s3` instance.
 
 The EMAIL parameter is the email address to use for letsencrypt registration. SSL certificates are mandatory, modern browsers won't open camera or microphone unless SSL enabled.
 
-The MAILHOST parameter is the hostname or IP address of a mail server to us.
+The MAILHOST parameter is the hostname or IP address of a mail server to us. Legacy SSL is not supported, older mail hosts are not suitable.
 
 The MAILUSER and MAILPASS parameters are the mail user credentials.
 
@@ -116,7 +119,7 @@ The DBNAME parameter is the database name on the external `postgresql` instance.
 
 The REDISHOST parameter is the IP address of a LAN-based `redis` host, such as the `redis-single` potluck instance.
 
-The BUCKETHOST parameter is the public hostname of your S3 storage, such as `file.mastodon.instance`.
+The BUCKETNAME parameter is the name of your bucket in S3 storage.
 
 The S3HOSTNAME parameter is the hostname or IP of your S3 storage.
 
@@ -124,11 +127,13 @@ The BUCKETUSER parameter is the S3 access-id for your storage.
 
 The BUCKETPASS parameter is the S3 password for your storage.
 
-The BUCKETALIAS parameter is an alternate hostname for the S3 storage, or repeat of BUCKETHOST.
+The BUCKETALIAS parameter is an external hostname for the S3 storage, such as reverse proxy front-end.
 
 The BUCKETREGION parameter is the S3 region.
 
 ## Optional Parameters
+
+The S3UPNOSSL parameter will set `http://` uploads to S3 object storage, such as a local minio where self-signed certificate fails. Otherwise defaults to `https://`.
 
 The MAILPORT parameter is the SMTP port to use of the mail server. It defaults to port `25` if not set.
 
@@ -159,6 +164,10 @@ The ELASTICUSER and ELASTICPASS parameters are the credentials for the `elastics
 The DEEPLKEY parameter is the API key for the [DeepL translation service](https://www.deepl.com/translator). In unset a default, invalid key will be set.
 
 The DEEPLPLAN is the type of API plan. If using the free plan set this value to 'free'. If unset it will default to 'free'.
+
+The OWNERNAME is the username of the Owner account on a fresh instance. Setting this simply hard-codes it in the script. The script must still be run manually.
+
+The OWNEREMAIL is the email address of the Owner account. Setting this simply hard-codes it in the script. The script must still be run manually.
 
 # Usage
 
@@ -196,3 +205,11 @@ Caveat: this is untested
 ## Custom fork of Mastodon
 
 This uses a custom fork of Mastodon with a 5000 character limit, from https://github.com/woganmay/mastodon in the v4.2.1-patch tag.
+
+## Maintenance Scripts
+
+There are several useful scripts in `/root/bin/` which can be used to create an admin user, or reset 2FA, or clear media, or produce diagnostic output.
+
+The `/root/bin/create-admin-user.sh` has the admin user and email set by the passed in parameters OWNERNAME and OWNEREMAIL.
+
+A password will be created and user credentials will be saved in `/mnt/mastodon/private/mastodon.owner.credentials`

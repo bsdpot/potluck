@@ -1,3 +1,22 @@
+0.14
+
+* Version bump for new base image
+* Loki 2.9.7, Promtail 2.9.7
+* Fix node_exporter zfs issue
+* Fix copy-in missing vault dashboard, not in use here
+
+---
+
+0.13
+
+* Version bump for new base image
+* FBSD14 base image
+* Loki 2.9.5, Promtail 2.9.5
+* Adjust install method for loki and promtail due to errors with old way
+* Add unzip to packages
+
+---
+
 0.12
 
 * Version bump for new base image
@@ -7,6 +26,8 @@
 * Add redis config to prometheus
 * Update loki and promtail version to latest
 * Add redis dashboard
+* Fix alert metric and loki path
+* Update loki and promtail versions
 
 ---
 

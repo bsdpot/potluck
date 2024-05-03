@@ -1,3 +1,32 @@
+0.10
+
+* Version bump for new base image
+
+---
+
+0.9
+
+* Version bump for new base image
+* FBSD14 base image
+* Add rbenv and upgrade ruby
+* Add cflags to bundle config for cbor and posix-spawn
+* Change BUCKETHOST to BUCKETNAME
+* Update node_exporter to ignore ZFS
+* Fix typo in README
+* Enable legacy ssl in node with NODE_OPTIONS=--openssl-legacy-provider [testing]
+* Set read permissions on /etc/resolv.conf for Ruby as user to allow DNS resolution
+* Remove legacy ssl settings as not working, simply can't connect to old SSL hosts for mail servers
+* Add maintenance scripts for common tasks
+* Add script to automate creating owner user without requiring email confirmation
+* Fix typo
+* Add adjustments for custom S3 provider, use S3_ENDPOINT with url/bucket
+* Add S3UPNOSSL parameter to set HTTP for S3 uploads, such as local minio where self-signed certificates fail to work
+* Fix processing logic for S3UPNOSSL parameter
+* Adjustments to endpoints to remove bucket name, use S3_ENDPOINT with url only
+* Add script to create elasticsearch indexes
+
+---
+
 0.8
 
 * Version bump for new setup with git pull and bundle build process happening in pot build
@@ -9,6 +38,9 @@
 * adjust logic for elasticsearch parameters
 * Add bundle config adjustments from https://wiki.freebsd.org/Ports/net-im/mastodon but commented out because not working
 * Add DeepL translation API parameters
+* Update to mastodon releases/v4.2.5 for security patch
+* Update to mastodon releases/v4.2.6 for security patch
+* Update to mastodon releases/v4.2.7 for security patch
 
 ---
 

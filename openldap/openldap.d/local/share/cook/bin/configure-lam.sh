@@ -17,6 +17,28 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 sep=$'\001'
 
+
+# create LAM config password from passed in parameter
+SETLAMPASS=$(/usr/local/sbin/slappasswd -s "$LAMPASS")
+
+## pre-configure LAM configuration
+## advance planning for password complexity
+## todo: mailserver
+#< "$TEMPLATEPATH/lam.config.cfg.in" \
+# sed "s${sep}%%configpassword%%${sep}$SETLAMPASS${sep}g" | \
+# sed "s${sep}%%minpasslength%%${sep}$PASSLENGTH${sep}g" | \
+# sed "s${sep}%%minpassupper%%${sep}$PASSUPPER${sep}g" | \
+# sed "s${sep}%%minpasslower%%${sep}$PASSLOWER${sep}g" | \
+# sed "s${sep}%%minpassnumber%%${sep}$PASSNUMBER${sep}g" | \
+# sed "s${sep}%%minpasssymbol%%${sep}$PASSSYMBOL${sep}g" | \
+# sed "s${sep}%%minpassclass%%${sep}$PASSCLASS${sep}g" \
+#> /usr/local/www/lam/config/config.cfg
+###
+# pre-configure LAM configuration
+< "$TEMPLATEPATH/lam.config.cfg.in" \
+ sed "s${sep}%%configpassword%%${sep}$SETLAMPASS${sep}g" \
+> /usr/local/www/lam/config/config.cfg
+
 # pre-configure the addressbook template
 # dc=%%mysuffix%%,dc=%%mytld%%
 < "$TEMPLATEPATH/lam.addressbook.conf.in" \

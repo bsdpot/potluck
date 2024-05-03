@@ -1,0 +1,22 @@
+baseURL: "https://%%domainname%%/"
+title: "%%title%%"
+languageCode: "%%language%%"
+themesDir: "themes"
+theme: "%%themename%%"
+config: "hugo.yaml"
+contentDir: "content"
+dataDir: "data"
+defaultExtension: "html"
+defaultLayout: "post"
+defaultContentLanguage: "%%language%%"
+# Do not build RSS files
+disableRSS: false
+# Do not build Sitemap file
+disableSitemap: false
+# Do not inject generator meta tag on homepage
+disableHugoGeneratorInject: true
+# Allows you to disable all page types and will render nothing related to 'kind';
+# values = "page", "home", "section", "taxonomy", "taxonomyTerm", "RSS", "sitemap", "robotsTXT", "404"
+disableKinds: []
+# google analytics tracking id
+#googleAnalytics: ""

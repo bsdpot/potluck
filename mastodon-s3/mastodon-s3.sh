@@ -167,6 +167,15 @@ pkg install -y ffmpeg
 step "Install package rubygem-bundler"
 pkg install -y rubygem-bundler
 
+step "Install package ruby"
+pkg install -y ruby
+
+step "Install package devel/ruby-build"
+pkg install -y devel/ruby-build
+
+step "Install package rbenv"
+pkg install -y rbenv
+
 # Mastodon will install ImageMagick7 regardless of this
 #step "Install package ImageMagick7-nox11"
 #pkg install -y ImageMagick7-nox11
@@ -230,7 +239,7 @@ if [ ! -d /usr/local/www/mastodon/.git ]; then
     echo "Running git fetch"
     su - mastodon -c "cd /usr/local/www/mastodon; git fetch"
     echo "Checking out the mastodon release we want"
-    su - mastodon -c "cd /usr/local/www/mastodon; git checkout stable-4.2"
+    su - mastodon -c "cd /usr/local/www/mastodon; git checkout 2ad19fea7d5b219e5633911d953c47ca58dd164f"
 else
     echo ".git directory exists, not cloning repo"
 fi
@@ -242,12 +251,6 @@ fi
 # however it is missing a step to 'yarn add node-gyp'
 # as covered in the Bastillefile at
 # https://codeberg.org/ddowse/mastodon/src/branch/main/Bastillefile
-
-# not needed any more
-# Update Gemfile for older version json-canonicalization
-# Remove this when fixed in source for workaround for json-canonicalization (1.0.0)
-#cp -f "$TEMPLATEPATH/Gemfile.lock.in" /usr/local/www/mastodon/Gemfile.lock
-#chown  mastodon:mastodon /usr/local/www/mastodon/Gemfile.lock
 
 # enable corepack
 echo "Enabling corepack"
@@ -261,9 +264,6 @@ echo "Adding node-gyp to yarn"
 # enable this for wogan fork
 echo "Setting yarn to classic version"
 su - mastodon -c "/usr/local/bin/yarn set version classic"
-# undo this for wogan fork
-#echo "Setting yarn to stable version"
-#su - mastodon -c "/usr/local/bin/yarn set version stable"
 
 # as user mastodon - enable deployment
 echo "Setting mastodon deployment to true"
@@ -273,39 +273,20 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config dep
 echo "Removing development and test environments"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config without 'development test'"
 
-# Left out as not working, may be relevant for FBSD 14
-# might require cbor and posix-spawn gems installed first
-#########
 # as user mastodon add extra adjustments to bundle as per https://wiki.freebsd.org/Ports/net-im/mastodon
-# (Needed for 13.2-STABLE and 14.0-RELEASE and later)
-#echo "Setting Wno-incompatible-function-pointer-types flag for build.cbor"
-## not working: Could not find command "build.cbor".
-#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle build.cbor --with-cflags='-Wno-incompatible-function-pointer-types'"
-#echo "Setting Wno-incompatible-function-pointer-types flag for build.posix-spawn"
-## not working: Could not find command "build.posix-spawn"
-#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle build.posix-spawn --with-cflags='-Wno-incompatible-function-pointer-types'"
-#########
+echo "Setting Wno-incompatible-function-pointer-types flag for build.cbor"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config build.cbor --with-cflags='-Wno-incompatible-function-pointer-types'"
 
-# not needed any more
-# unfreeze the gem because we're using newer json-canonicalization (1.0.0)
-# remove this when fixed in source, keep as record
-#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config set frozen false"
+echo "Setting Wno-incompatible-function-pointer-types flag for build.posix-spawn"
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config build.posix-spawn --with-cflags='-Wno-incompatible-function-pointer-types'"
 
 # as user mastodon - bundle install
 echo "Installing the required files with bundle"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j1"
 
-# add babel-plugin-lodash@3.3.4 compression-webpack-plugin@6.1.1
-# this is a temp fix for the error about missing versions
-# "Using --ignore-workspace-root-check or -W allows a package to be installed at the workspaces root.
-# This tends not to be desired behaviour, as dependencies are generally expected to be part of a workspace."
-# disable for wogan fork, testing
-#echo "Adding yarn package dependancies - temp fix"
-## no -W with yarn stable aka version 4+
-##su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn add babel-plugin-lodash@3.3.4 compression-webpack-plugin@10.0.0 -W"
-
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
+
 # enable for wogan fork
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
 
