@@ -1,3 +1,9 @@
+0.10.18
+
+* Add explicit -data-dir parameter
+
+---
+
 0.10.17
 
 * Make consul-template retry more often
