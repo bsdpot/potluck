@@ -9,6 +9,7 @@
 * Copy layouts folder from customgit too
 * Make S3 host port an option
 * Fix permissions, remove legacy permission setting, delete copied in key
+* Add some additional default directories
 
 ---
 
