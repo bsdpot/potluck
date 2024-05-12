@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Fix node_exporter zfs issue
 * Update quarterlies git branch
+* Adjust cert renewal script as variables not expanding
 
 ---
 

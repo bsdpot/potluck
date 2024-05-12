@@ -3,22 +3,22 @@
 mydomain="%%mailcertdomain%%"
 registermail="%%postmasteraddress%%"
 
-if [ -d /mnt/acme/"$mydomain"_ecc/ ]; then
+if [ -d /mnt/acme/%%mailcertdomain%%_ecc/ ]; then
     service postfix onestop
     sleep 5
-    mv "/mnt/acme/$mydomain_ecc" "/mnt/acme/$mydomain_ecc.old"
+    mv -f /mnt/acme/%%mailcertdomain%%_ecc /mnt/acme/%%mailcertdomain%%_ecc.old
     /usr/local/sbin/acme.sh --register-account -m "$registermail" --home /mnt/acme --server letsencrypt
     /usr/local/sbin/acme.sh --set-default-ca --server letsencrypt
-    /usr/local/sbin/acme.sh --issue -d "$mydomain" --home /mnt/acme --standalone --server letsencrypt --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
-    cd "/mnt/acme/$mydomain_ecc/"
+    /usr/local/sbin/acme.sh --issue -d %%mailcertdomain%% --home /mnt/acme --standalone --server letsencrypt --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
+    cd /mnt/acme/%%mailcertdomain%%_ecc/
     cp -f * /usr/local/etc/postfix/keys/
     cd /usr/local/etc/postfix/keys/
-    mv -f "$mydomain".cer "$mydomain".crt
-    cat ca.cer >> "$mydomain".crt
+    mv -f %%mailcertdomain%%.cer %%mailcertdomain%%.crt
+    cat ca.cer >> %%mailcertdomain%%.crt
     service postfix onerestart
     service dovecot onerestart
     exit 0
 else
-    echo "There is no /mnt/acme/$mydomain _ecc directory"
+    echo "There is no /mnt/acme/%%mailcertdomain%%_ecc directory"
     exit 1
 fi
