@@ -124,6 +124,9 @@ pkg install -y postgresql15-client
 step "Install package postgresql15-server"
 pkg install -y postgresql15-server
 
+step "Install package postgresql15-contrib"
+pkg install -y postgresql15-contrib
+
 step "Install package git"
 pkg install -y git
 
