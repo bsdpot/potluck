@@ -1,3 +1,9 @@
+2.3.2
+
+* Add postgresql-contrib to support useful plugins like pg_stat_statements
+
+---
+
 2.3.1
 
 * Version bump for FBSD14 base image
