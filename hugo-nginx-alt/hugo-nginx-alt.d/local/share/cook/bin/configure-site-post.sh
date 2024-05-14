@@ -47,7 +47,7 @@ if [ -d "/var/db/$SITENAME/themes/$THEMENAME/static/" ] && [ -d "/var/db/$SITENA
     cp -Rf "/var/db/$SITENAME/themes/$THEMENAME/static/" "/var/db/$SITENAME/static/"
 fi
 
-# copy custom content if exists, move to after theme site icons and css copied
+# copy custom content if exists, move after theme site icons and css copied
 if [ -n "$CONTENTSRC" ]; then
 	if [ -d "/var/db/$SITENAME/.customcontent/assets" ]; then
 		cp -Rf "/var/db/$SITENAME/.customcontent/assets/" "/var/db/$SITENAME/assets/"

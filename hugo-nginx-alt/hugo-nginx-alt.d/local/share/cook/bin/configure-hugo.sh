@@ -57,6 +57,7 @@ chown -R www:www "/var/db/$SITENAME"
 #chmod 777 "/var/db/$SITENAME/layouts/"
 #chmod 777 "/var/db/$SITENAME/layouts/partials"
 #chmod 777 "/var/db/$SITENAME/layouts/partials/head"
+#chmod 777 "/var/db/$SITENAME/layouts/partials/header"
 #chmod 777 "/var/db/$SITENAME/static"
 
 if [ -d "/var/db/$SITENAME/$CUSTOMDIR" ]; then

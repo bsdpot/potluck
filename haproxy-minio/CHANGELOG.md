@@ -1,6 +1,7 @@
 0.1
 
 * Version bump for new base image
+* Add tune.disable-zero-copy-forwarding to haproxy global section to deal with CPU overusage
 
 ---
 
