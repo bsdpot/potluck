@@ -4,6 +4,7 @@
 * Fix node_exporter zfs issue
 * Update postgresql_exporter to 0.15.0
 * Add postgresql-contrib to support useful plugins like pg_stat_statements
+* Increase postgresql max_connections to 200
 
 ---
 
