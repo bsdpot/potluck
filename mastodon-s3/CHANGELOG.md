@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Adjust certificate renewal script
+* Reduce MAX_THREADS and WEB_CONCURRENCY slightly to reduce overhead
 
 ---
 
