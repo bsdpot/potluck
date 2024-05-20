@@ -127,6 +127,9 @@ pkg install -y py39-pip
 step "Install py39-tornado"
 pkg install -y py39-tornado
 
+step "Install py39-aiocontextvars"
+pkg install -y py39-aiocontextvars
+
 step "Install package git-lite"
 pkg install -y git-lite
 
