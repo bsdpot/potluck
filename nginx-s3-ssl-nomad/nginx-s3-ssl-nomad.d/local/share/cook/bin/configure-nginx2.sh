@@ -14,14 +14,11 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# Configure NGINX
-#cp -f "$TEMPLATEPATH/nginx.conf" /usr/local/etc/nginx/nginx.conf
-
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
 sep=$'\001'
 
-# copy in custom nginx and set IP to ip address of pot image
+# copy in custom nginx.conf and set parameters
 < "$TEMPLATEPATH/nginx2.conf.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%serverone%%${sep}$SERVERONE${sep}g" | \

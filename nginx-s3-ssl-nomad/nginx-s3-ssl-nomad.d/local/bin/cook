@@ -45,21 +45,24 @@ fi
 ## Convert parameters to variables if passed (overwrite environment)
 ########################################################################
 OPTIND=1
-while getopts a:b:c:d:s:x: option
+while getopts d:e:f:g:h:s:x: option
 do
     case "${option}"
     in
-      a) SERVERONE=${OPTARG}
-         export SERVERONE
-         ;;
-      b) SERVERTWO=${OPTARG}
-         export SERVERTWO
-         ;;
-      c) SERVERTHREE=${OPTARG}
-         export SERVERTHREE
-         ;;
       d) DOMAIN=${OPTARG}
          export DOMAIN
+         ;;
+      e) SERVERONE=${OPTARG}
+         export SERVERONE
+         ;;
+      f) SERVERTWO=${OPTARG}
+         export SERVERTWO
+         ;;
+      g) SERVERTHREE=${OPTARG}
+         export SERVERTHREE
+         ;;
+      h) SERVERFOUR=${OPTARG}
+         export SERVERFOUR
          ;;
       s) SELFSIGNHOST=${OPTARG}
          export SELFSIGNHOST
@@ -76,7 +79,7 @@ shift "$((OPTIND-1))"
 ########################################################################
 
 required_args="DOMAIN"
-optional_args="SERVERONE SERVERTWO SERVERTHREE BUCKET SELFSIGNHOST"
+optional_args="SERVERONE SERVERTWO SERVERTHREE SERVERFOUR BUCKET SELFSIGNHOST"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -109,15 +112,15 @@ if [ -n "$SELFSIGNHOST" ]; then
     configure-selfsigned.sh
 fi
 
-if [ -n "$SERVERONE" ] && [ -z "$SERVERTWO" ] && [ -z "$SERVERTHREE" ]; then
+if [ -n "$SERVERONE" ] && [ -z "$SERVERTWO" ] && [ -z "$SERVERTHREE" ] && [ -z "$SERVERFOUR" ]; then
     log "Configure nginx with one server"
     configure-nginx.sh
-elif [ -n "$SERVERONE" ] && [ -n "$SERVERTWO" ] && [ -z "$SERVERTHREE" ]; then
+elif [ -n "$SERVERONE" ] && [ -n "$SERVERTWO" ] && [ -z "$SERVERTHREE" ] && [ -z "$SERVERFOUR" ]; then
     log "Configure nginx with two servers"
     configure-nginx2.sh
-elif [ -n "$SERVERONE" ] && [ -n "$SERVERTWO" ] && [ -n "$SERVERTHREE" ]; then
-    log "Configure nginx with three servers"
-    configure-nginx3.sh
+elif [ -n "$SERVERONE" ] && [ -n "$SERVERTWO" ] && [ -n "$SERVERTHREE" ] && [ -n "$SERVERFOUR" ]; then
+    log "Configure nginx with four servers"
+    configure-nginx4.sh
 else
     log "Error: please pass in at least one minio server IP or domain"
     echo "Please pass in at least one minio server IP or domain"

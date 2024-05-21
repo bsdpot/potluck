@@ -1,6 +1,8 @@
 0.3
 
 * Version bump for new base image
+* Adjust to 1, 2, 4 server setups
+* Pass in ip:port for each minio host
 
 ---
 

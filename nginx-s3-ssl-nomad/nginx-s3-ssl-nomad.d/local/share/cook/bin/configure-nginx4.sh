@@ -18,12 +18,13 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 sep=$'\001'
 
-# copy in custom nginx and set IP to ip address of pot image
+# copy in custom nginx.conf and set parameters
 < "$TEMPLATEPATH/nginx3.conf.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%serverone%%${sep}$SERVERONE${sep}g" | \
   sed "s${sep}%%servertwo%%${sep}$SERVERTWO${sep}g" | \
   sed "s${sep}%%serverthree%%${sep}$SERVERTHREE${sep}g" | \
+  sed "s${sep}%%serverfour%%${sep}$SERVERFOUR${sep}g" | \
   sed "s${sep}%%bucket%%${sep}$BUCKET${sep}g"  \
   > /usr/local/etc/nginx/nginx.conf
 
