@@ -48,8 +48,8 @@ http {
 		fastcgi_param	SERVER_NAME		$server_name;
 		fastcgi_param	HTTPS			$https if_not_empty;
 
-		#fastcgi_pass unix:/var/run/fcgiwrap/fcgiwrap.sock;
-		fastcgi_pass unix:/var/run/fcgiwrap.sock;
+		fastcgi_pass unix:/var/run/fcgiwrap/fcgiwrap.sock;
+		#fastcgi_pass unix:/var/run/fcgiwrap.sock;
 	}
 
 	location ^~ /smokeping/ {
