@@ -19,7 +19,7 @@ http {
 
     server {
         listen %%ip%%:80 default_server;
-        server_name smokeping;
+        server_name %%hostname%%;
 
         client_max_body_size 512M;
         client_body_timeout 600s;

@@ -18,7 +18,8 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 mkdir -p /mnt/smokeping/data
 mkdir -p /mnt/smokeping/imagecache
 mkdir -p /mnt/smokeping/run
-chown -R smokeping:smokeping /mnt/smokeping
+mkdir -p /usr/local/var/smokeping
+chown -R smokeping:smokeping /usr/local/var/smokeping
 
 # shellcheck disable=SC3003,SC2039
 # safe(r) separator for sed
