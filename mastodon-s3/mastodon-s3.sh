@@ -260,10 +260,15 @@ echo "Enabling corepack"
 echo "Adding node-gyp to yarn"
 /usr/local/bin/yarn add node-gyp
 
-# as user mastodon - set yarn classic
+# 30 May 2024 as _root_ set yarn classic (was as mastodon user, but broken yarn 1.22.22)
+# as mastodon user gives:
+#   The local project doesn't define a 'packageManager' field.
+#   ...
+#   Error: EACCES: permission denied, open '/package.json'
+#
 # enable this for wogan fork
 echo "Setting yarn to classic version"
-su - mastodon -c "/usr/local/bin/yarn set version classic"
+/usr/local/bin/yarn set version classic
 
 # as user mastodon - enable deployment
 echo "Setting mastodon deployment to true"
@@ -277,6 +282,7 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config wit
 echo "Setting Wno-incompatible-function-pointer-types flag for build.cbor"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config build.cbor --with-cflags='-Wno-incompatible-function-pointer-types'"
 
+# as user mastodon add extra adjustments to bundle as per https://wiki.freebsd.org/Ports/net-im/mastodon
 echo "Setting Wno-incompatible-function-pointer-types flag for build.posix-spawn"
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle config build.posix-spawn --with-cflags='-Wno-incompatible-function-pointer-types'"
 
@@ -286,8 +292,6 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j
 
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
-
-# enable for wogan fork
 su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
 
 # ----------- END CUSTOM MASTODON ---------------

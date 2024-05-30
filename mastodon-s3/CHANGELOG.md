@@ -4,6 +4,7 @@
 * Adjust certificate renewal script
 * Reduce MAX_THREADS and WEB_CONCURRENCY slightly to reduce overhead
 * Update mastodon to 4.2.9
+* Setting yarn to classic as mastodon user no longer works, do this as root
 
 ---
 
