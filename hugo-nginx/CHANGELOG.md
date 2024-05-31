@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Fix node_exporter zfs issue
+* Add parameter to run mirrorsync script via cron
 
 ---
 

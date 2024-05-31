@@ -49,7 +49,3 @@ chmod +x /root/bin/mirrorcheck.sh
 
 # set execute permissions
 chmod +x /root/bin/mirrorsync.sh
-
-# setup mirror script cron job
-# todo
-# jenkins can also run this after a build process
