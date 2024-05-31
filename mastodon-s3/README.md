@@ -191,16 +191,7 @@ On reboot or an upgraded pot image, this file will be read to configure the `mas
 
 ## Upgrading Mastodon
 
-When there is a new github release at https://github.com/mastodon/mastodon/releases you can perform an upgrade by running `/root/upgrade-mastodon.sh` as root, followed by the version you wish to upgrade to.
-
-```
-pot term mastodon-s3-clone
-./upgrade-mastodon.sh 4.2.1
-```
-
-Then make sure to update the source pot image to reflect the new version. You can then restart from the new version.
-
-Caveat: this is untested
+Stop the existing mastodon instance, and re-run provisioning with newer pot image.
 
 ## Custom fork of Mastodon
 
@@ -213,3 +204,16 @@ There are several useful scripts in `/root/bin/` which can be used to create an 
 The `/root/bin/create-admin-user.sh` has the admin user and email set by the passed in parameters OWNERNAME and OWNEREMAIL.
 
 A password will be created and user credentials will be saved in `/mnt/mastodon/private/mastodon.owner.credentials`
+
+### Full Text Search
+
+To enable full text search, pass in the relevant elasticsearch parameters, and once live, run
+```
+/root/bin/setup-es-index.sh
+```
+
+You can also rebuild an existing elasticsearch configuration with
+```
+/root/bin/rebuild-es-index.sh
+```
+

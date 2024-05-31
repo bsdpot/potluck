@@ -17,4 +17,4 @@ cd /tmp || exit 1
 
 # as user mastodon run tootctl to rebuild elasticsearch indexes
 echo "Using tootctl to create elasticsearch indexes"
-su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon/live; RAILS_ENV=production SAFETY_ASSURED=1 bin/tootctl search deploy"'
+su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production SAFETY_ASSURED=1 bin/tootctl search deploy"'
