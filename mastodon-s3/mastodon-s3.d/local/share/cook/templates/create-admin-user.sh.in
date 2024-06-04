@@ -26,7 +26,7 @@ su - mastodon -c "/usr/local/bin/bash -c 'cd /usr/local/www/mastodon; RAILS_ENV=
 
 # approve the newly created user, else get error:
 # "Your application is pending review by our staff. This may take some time. You will receive an e-mail if your application is approved."
-su - mastodon -c "/usr/local/bin/bash -c 'cd /usr/local/www/mastodon; RAILS_ENV=production SAFETY_ASSURED=1 bin/tootctl accounts approve $USERNAME"
+su - mastodon -c "/usr/local/bin/bash -c 'cd /usr/local/www/mastodon; RAILS_ENV=production SAFETY_ASSURED=1 bin/tootctl accounts approve $USERNAME'"
 
 # notify user where credentials are stored
 echo "Mastodon Owner user credentials are stored in $CREDENTIALSFILE"
