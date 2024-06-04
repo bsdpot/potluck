@@ -7,6 +7,7 @@
 * Setting yarn to classic as mastodon user no longer works, do this as root
 * Update README to correct upgrades, add details on elasticsearch scripts
 * Fix script to setup elasticsearch indexes
+* Adjust create-admin-user script to also approve user
 
 ---
 
