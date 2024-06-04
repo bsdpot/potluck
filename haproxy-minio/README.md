@@ -17,7 +17,7 @@ use the [consul](https://potluck.honeyguide.net/blog/consul/) `pot` flavour
 on this site to run `consul`.
 
 # Setup
-You must be running 2 or 3 `minio` servers.
+You must be running 1 to 4 `minio` servers.
 
 ## Installation
 
@@ -42,10 +42,12 @@ You must be running 2 or 3 `minio` servers.
    -E DOMAIN=<internal domain name for self-signed certificate> \
    -E SERVERONE=<IP address first minio host> \
    -E SERVERONEPORT=<port> \
-   -E SERVERTWO=<IP address second minio host> \
-   -E SERVERTWOPORT=<port> \
+   [ -E SERVERTWO=<IP address second minio host> ] \
+   [ -E SERVERTWOPORT=<port> ] \
    [ -E SERVERTHREE=<IP address third minio host> ] \
    [ -E SERVERTHREEPORT=<port> ] \
+   [ -E SERVERFOUR=<IP address third minio host> ] \
+   [ -E SERVERFOURPORT=<port> ] \
    [ -E SELFSIGNHOST=<any value enables> ] \
    [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
@@ -68,13 +70,17 @@ The SERVERONE parameter is the IP address of the first `minio` instance. It is r
 
 The SERVERONEPORT parameter is the port of the first `minio` instance. Commonly `9000`.
 
-The SERVERTWO parameter is the IP address of the second `minio` instance. It is required.
+SERVERTWO is an optional parameter is the IP address of the second `minio` instance.
 
-The SERVERTWOPORT parameter is the port of the second `minio` instance. Commonly `9000`.
+SERVERTWOPORT is an optional parameter is the port of the second `minio` instance. Commonly `9000`.
 
 SERVERTHREE is an optional parameter for the IP address of the third `minio` instance. Do not set to any value if there is no third server.
 
 SERVERTHREEPORT is an optional parameter is the port of the third `minio` instance. Commonly `9000`.
+
+SERVERFOUR is an optional parameter for the IP address of the fourth `minio` instance. Do not set to any value if there is no fourth server.
+
+SERVERFOURPORT is an optional parameter is the port of the fourth `minio` instance. Commonly `9000`.
 
 SELFSIGNHOST is an optional parameter to retrieve certificates from self-signed `minio` servers using SERVERONE and saving to local certificate store.
 
@@ -82,4 +88,8 @@ REMOTELOG is an optional parameter for a remote syslog service, such as via the 
 
 ## Usage
 
-Documentation pending.
+This pot jail exposes HTTPS minio on both HTTP and HTTPS. 
+
+It should not be run on a public IP unless you want HTTP access to your minio setup.
+
+This might not be the right pot jail for your minio loadbalancing needs. You might want to remove the HTTP proxy.

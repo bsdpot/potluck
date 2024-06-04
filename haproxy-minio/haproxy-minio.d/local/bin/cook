@@ -50,8 +50,10 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY DOMAIN"
-required_args="$required_args SERVERONE SERVERONEPORT SERVERTWO SERVERTWOPORT"
-optional_args="SERVERTHREE SERVERTHREEPORT SELFSIGNHOST REMOTELOG"
+required_args="$required_args SERVERONE SERVERONEPORT"
+optional_args="SERVERTWO SERVERTWOPORT SERVERTHREE SERVERTHREEPORT"
+optional_args="$optional_args SERVERFOUR SERVERFOURPORT"
+optional_args="$optional_args SELFSIGNHOST REMOTELOG"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -118,12 +120,18 @@ if [ -n "$SELFSIGNHOST" ]; then
     configure-selfsigned.sh
 fi
 
-if [ -n "$SERVERTHREE" ]; then
-	log "Configuring haproxy for 3 minio servers"
-	configure-haproxy-3.sh
-else
+if [ -n "$SERVERONE" ] && [ -z "$SERVERTWO" ] && [ -z "$SERVERTHREE" ] && [ -z "$SERVERFOUR" ]; then
+	log "Configuring haproxy for 1 minio server"
+    configure-haproxy-1.sh
+elif [ -n "$SERVERONE" ] && [ -n "$SERVERTWO" ] && [ -z "$SERVERTHREE" ] && [ -z "$SERVERFOUR" ]; then
 	log "Configuring haproxy for 2 minio servers"
 	configure-haproxy-2.sh
+elif [ -n "$SERVERONE" ] && [ -n "$SERVERTWO" ] && [ -n "$SERVERTHREE" ] && [ -z "$SERVERFOUR" ]; then
+	log "Configuring haproxy for 3 minio servers"
+	configure-haproxy-3.sh
+elif [ -n "$SERVERONE" ] && [ -n "$SERVERTWO" ] && [ -n "$SERVERTHREE" ] && [ -n "$SERVERFOUR" ]; then
+	log "Configuring haproxy for 4 minio servers"
+	configure-haproxy-4.sh
 fi
 
 log "Start haproxy"
