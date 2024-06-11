@@ -33,7 +33,7 @@ sep=$'\001'
 > /usr/local/etc/redis.conf
 
 # add user www to the redis group
-#optional# pw usermod www -G redis
+pw usermod www -G redis
 
 # enable redis
 service redis enable || true
