@@ -32,5 +32,11 @@ sep=$'\001'
   sed "s${sep}%%ip%%${sep}$IP${sep}g" \
 > /usr/local/etc/redis.conf
 
+# add user www to the redis group
+#optional# pw usermod www -G redis
+
 # enable redis
 service redis enable || true
+
+# start redis
+service redis start || true

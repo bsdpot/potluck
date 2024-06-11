@@ -138,12 +138,6 @@ configure-nginx.sh
 log "Configure pixelfed"
 configure-pixelfed.sh
 
-log "Start redis"
-timeout --foreground 120 \
-  sh -c 'while ! service redis status; do
-    service redis start || true; sleep 5;
-  done'
-
 log "Start nginx"
 timeout --foreground 120 \
   sh -c 'while ! service nginx status; do
