@@ -69,7 +69,7 @@ EOF
 }
 
 # if database exists, run artisan migrate, else create database, then run artisan migrate
-dbcheck=$(check_database)
+dbcheck=$(check_database || true)
 
 if [ "$dbcheck" -eq 1 ]; then
     echo "Configuring or upgrading Pixelfed database"
