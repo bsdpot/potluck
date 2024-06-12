@@ -51,10 +51,10 @@ fi
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY EMAIL"
 required_args="$required_args DBHOST DBPORT DBNAME DBUSER DBPASS"
-required_args="$required_args APPNAME DOMAIN MAILHOST MAILPORT"
+required_args="$required_args APPNAME DOMAIN REDISHOST MAILHOST MAILPORT"
 required_args="$required_args MAILUSER MAILPASS MAILFROM S3REGION"
 required_args="$required_args S3USER S3PASS S3BUCKET S3URL S3ENDPOINT"
-optional_args="REMOTELOG PVTCERT"
+optional_args="REMOTELOG PVTCERT REDISPASS REDISPORT"
 #optional_args="$optional_args ARG"
 
 for var in $required_args; do
@@ -81,6 +81,22 @@ if [ -n "${CONSULSERVERS+x}" ]; then
     FIXCONSULSERVERS=$(convert_to_required_format "$CONSULSERVERS")
     export FIXCONSULSERVERS
 fi
+
+# set REDISPORT
+if [ -n "${REDISPORT+x}" ]; then
+	SETREDISPORT="$REDISPORT"
+else
+	SETREDISPORT="6379"
+fi
+export SETREDISPORT
+
+# set REDIS auth password if passed in, else set to null
+if [ -n "${REDISPASS+x}" ]; then
+	SETREDISPASS="$REDISPASS"
+else
+	SETREDISPASS="null"
+fi
+export SETREDISPASS
 
 # stop services
 timeout --foreground 10 \
@@ -120,9 +136,6 @@ timeout --foreground 120 \
 
 log "Start node_exporter"
 service node_exporter start
-
-log "Configure redis"
-configure-redis.sh
 
 if [ -n "${PVTCERT}" ]; then
 	log "Configure ssl"

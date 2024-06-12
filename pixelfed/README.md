@@ -38,6 +38,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E MAILUSER=<smtp username> \
     -E MAILPASS=<smtp password> \
     -E MAILFROM=<smtp from address> \
+    -E REDISHOST=<hostname or IP of redis instance> \
     -E S3REGION=<s3 region or global> \
     -E S3USER=<s3 username> \
     -E S3PASS=<s3 password> \
@@ -45,6 +46,8 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E S3URL=<s3 write point, include http or https> \
     -E S3ENDPOINT=<s3 endpoint, include http or https> \
     [ -E PVTCERT=<any value enables> ] \
+    [ -E REDISPORT=<non-standard redis port> ] \
+    [ -E REDISPASS=<authentication password for redis if required> ] \
     [ -E REMOTELOG=<IP address> ]
   ```
 * Start the jail
@@ -72,6 +75,8 @@ The parameters DBHOST, DBPORT, DBNAME, DBUSER, DBPASS relate to a postgresql ins
 
 The parameters MAILHOST, MAILPORT, MAILUSER, MAILPASS, MAILFROM relate to an SMTP account for sending mail notices.
 
+The REDISHOST parameter is the IP address or hostname of a redis instance, such as the redis pot jail. 
+
 The parameters S3REGION, S3USER, S3PASS, S3BUCKET related to object storage configuration. This must be setup beforehand with applicable write permissions.
 
 The parameter S3URL is the url to post to when writing to object storage. Include `http://` or `https://` as applicable.
@@ -81,6 +86,10 @@ The parameter S3ENDPOINT is the url for public read-only access to the bucket, s
 ## Optional Parameters
 
 The PVTCERT parameter will configure a self-signed certificate for use with `nginx`. Enable this if you have SSL certificates configured via a frontend such as `haproxy` which is reverse-proxying to this image. No `acme.sh` registration will take place.
+
+The REDISPORT parameter allows for setting a custom redis port. 
+
+The REDISPASS parameter is for authentication to a redis instance, if required.
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 

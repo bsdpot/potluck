@@ -42,6 +42,9 @@ export MYAPPKEY
   sed "s${sep}%%mailuser%%${sep}$MAILUSER${sep}g" | \
   sed "s${sep}%%mailpass%%${sep}$MAILPASS${sep}g" | \
   sed "s${sep}%%mailfromaddress%%${sep}$MAILFROM${sep}g" | \
+  sed "s${sep}%%redishost%%${sep}$REDISHOST${sep}g" | \
+  sed "s${sep}%%redisport%%${sep}$SETREDISPORT${sep}g" | \
+  sed "s${sep}%%redispass%%${sep}$SETREDISPASS${sep}g" | \
   sed "s${sep}%%s3user%%${sep}$S3USER${sep}g" | \
   sed "s${sep}%%s3pass%%${sep}$S3PASS${sep}g" | \
   sed "s${sep}%%s3region%%${sep}$S3REGION${sep}g" | \
