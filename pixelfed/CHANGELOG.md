@@ -10,3 +10,4 @@
 * Remove redis socket in favour of remote redis jail over tcp
 * Postgresql databases aren't automatically created, we need a step to do this
 * Remove horizon:publish step as no longer needed
+* Adjust database creation process

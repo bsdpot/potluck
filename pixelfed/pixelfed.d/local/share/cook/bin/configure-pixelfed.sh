@@ -56,21 +56,35 @@ export MYAPPKEY
 # create storage link as www user
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan storage:link"
 
-# perform database create or migrations (pixelfed db user must already exist with createdb permissions)
-# this is a redundant if/else because it's the same either way
-# this might need work still
-dbcheck=$(/usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres" -lqt | grep -c "$DBNAME")
-if [ "$dbcheck" -eq "0" ]; then
-	echo "Creating pixelfed database"
-	echo "create database $DBNAME;" | /usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres"
-	echo "Configuring pixelfed database"
-	su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan migrate --force"
+# function to check database
+check_database() {
+    /usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres" -lqt | grep -c "$DBNAME"
+}
+
+# function to create database
+create_db() {
+	/usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres" <<EOF
+CREATE DATABASE "$DBNAME";
+EOF
+}
+
+# if database exists, run artisan migrate, else create database, then run artisan migrate
+dbcheck=$(check_database)
+
+if [ "$dbcheck" -eq 1 ]; then
+    echo "Configuring or upgrading Pixelfed database"
+    su -m www -c "cd /usr/local/www/pixelfed && /usr/local/bin/php artisan migrate --force"
 else
-	echo "Upgrading pixelfed database"
-	su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan migrate --force"
+    echo "Database $DBNAME does not exist, creating database"
+    if ! create_db; then
+        echo "Failed to create database $DBNAME" >&2
+        exit 1
+    fi
+    echo "Database $DBNAME created successfully"
+    su -m www -c "cd /usr/local/www/pixelfed && /usr/local/bin/php artisan migrate --force"
 fi
 
-# location data
+# import location data
 echo "Importing cities"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan import:cities"
 
