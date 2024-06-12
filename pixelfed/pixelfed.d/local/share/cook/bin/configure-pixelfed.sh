@@ -61,7 +61,9 @@ su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan storage:lin
 # this might need work still
 dbcheck=$(/usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres" -lqt | grep -c "$DBNAME")
 if [ "$dbcheck" -eq "0" ]; then
-	echo "Setting up pixelfed database"
+	echo "Creating pixelfed database"
+	echo "create database $DBNAME;" | /usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres"
+	echo "Configuring pixelfed database"
 	su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan migrate --force"
 else
 	echo "Upgrading pixelfed database"
@@ -69,25 +71,34 @@ else
 fi
 
 # location data
+echo "Importing cities"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan import:cities"
 
 # enable activitypub features
+echo "Enabling ActivityPub"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan instance:actor"
 
 # update route cache
+echo "Updating route cache"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan route:cache"
 
 # update view cache
+echo "Updating view cache"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan view:cache"
 
 # update config
+echo "Caching config"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan config:cache"
 
 # install horizon
+echo "Installing horizon"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan horizon:install"
-su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan horizon:publish"
+
+# WARN Horizon no longer publishes its assets. You may stop calling the `horizon:publish` command.
+#removed# su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan horizon:publish"
 
 # configure supervisord.conf with program configuration to run horizon
+echo "Setting up supervisord with program configuration for horizon"
 cp -f "$TEMPLATEPATH/supervisord.conf.in" /usr/local/etc/supervisord.conf
 
 # enable and the supervisord service to run horizon
