@@ -11,3 +11,4 @@
 * Postgresql databases aren't automatically created, we need a step to do this
 * Remove horizon:publish step as no longer needed
 * Adjust database creation process
+* Properly fix prior fix with db create step and error return codes

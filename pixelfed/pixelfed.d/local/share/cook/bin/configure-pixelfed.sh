@@ -68,8 +68,13 @@ CREATE DATABASE "$DBNAME";
 EOF
 }
 
+# unset these for dbcheck
+set +e
+# shellcheck disable=SC3040
+set +o pipefail
+
 # if database exists, run artisan migrate, else create database, then run artisan migrate
-dbcheck=$(check_database || true)
+dbcheck=$(check_database)
 
 if [ "$dbcheck" -eq 1 ]; then
     echo "Configuring or upgrading Pixelfed database"
@@ -83,6 +88,11 @@ else
     echo "Database $DBNAME created successfully"
     su -m www -c "cd /usr/local/www/pixelfed && /usr/local/bin/php artisan migrate --force"
 fi
+
+# set back after dbcheck
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
 
 # import location data
 echo "Importing cities"
