@@ -45,6 +45,8 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E S3BUCKET=<s3 bucket> \
     -E S3URL=<s3 write point, include http or https> \
     -E S3ENDPOINT=<s3 endpoint, include http or https> \
+    -E TOPNAME=<name of admin account> \
+    -E TOPEMAIL=<email address of admin account, will become username too> \
     [ -E PVTCERT=<any value enables> ] \
     [ -E REDISPORT=<non-standard redis port> ] \
     [ -E REDISPASS=<authentication password for redis if required> ] \
@@ -83,6 +85,10 @@ The parameter S3URL is the url to post to when writing to object storage. Includ
 
 The parameter S3ENDPOINT is the url for public read-only access to the bucket, such as served by `nginx-s3-nomad` or `nginx-s3-ssl-nomad` pot images. Include `https://`.
 
+The TOPNAME parameter is the name of the admin account and will become the account name on the instance. This is used in the `create-admin.sh` script which can be run after first setup.
+
+The TOPEMAIL parameter is the email address of the admin account, which will also become the username for logging in. This is used in the `create-admin.sh` script which can be run after first setup.
+
 ## Optional Parameters
 
 The PVTCERT parameter will configure a self-signed certificate for use with `nginx`. Enable this if you have SSL certificates configured via a frontend such as `haproxy` which is reverse-proxying to this image. No `acme.sh` registration will take place.
@@ -103,4 +109,8 @@ sudo -u postgres psql -c "CREATE USER pixelfed with encrypted password 'pAsSwoRd
 
 # Usage
 
-To be added.
+If this is the first time setting up this pixelfed instance, you can setup an admin user by running as root inside the jail:
+```
+/root/bin/create-admin.sh
+```
+

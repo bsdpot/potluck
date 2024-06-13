@@ -127,3 +127,12 @@ cp -f "$TEMPLATEPATH/supervisord.conf.in" /usr/local/etc/supervisord.conf
 
 # enable and the supervisord service to run horizon
 service supervisord enable
+
+# copy over the create-admin script and set variables
+< "$TEMPLATEPATH/create-admin.sh.in" \
+  sed "s${sep}%%ownername%%${sep}$TOPNAME${sep}g" | \
+  sed "s${sep}%%owneremail%%${sep}$TOPEMAIL${sep}g" \
+  > /root/bin/create-admin.sh
+
+# make executable
+chmod +x /root/bin/create-admin.sh

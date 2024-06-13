@@ -54,6 +54,7 @@ required_args="$required_args DBHOST DBPORT DBNAME DBUSER DBPASS"
 required_args="$required_args APPNAME DOMAIN REDISHOST MAILHOST MAILPORT"
 required_args="$required_args MAILUSER MAILPASS MAILFROM S3REGION"
 required_args="$required_args S3USER S3PASS S3BUCKET S3URL S3ENDPOINT"
+required_args="$required_args TOPNAME TOPEMAIL"
 optional_args="REMOTELOG PVTCERT REDISPASS REDISPORT"
 #optional_args="$optional_args ARG"
 

@@ -12,3 +12,6 @@
 * Remove horizon:publish step as no longer needed
 * Adjust database creation process
 * Properly fix prior fix with db create step and error return codes
+* Ensure nginx root has correct directory with public appended in all places
+* Ensure port 80 bound to ip
+* Add script to create admin user
