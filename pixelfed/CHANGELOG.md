@@ -15,3 +15,4 @@
 * Ensure nginx root has correct directory with public appended in all places
 * Ensure port 80 bound to ip
 * Add script to create admin user
+* Make sure /usr/local/www/acmetmp/ is created for both SSL options

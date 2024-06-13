@@ -17,6 +17,9 @@ IP="$IP"
 # create directory for local certificates
 mkdir -p /usr/local/etc/ssl/
 
+# needed for nginx and acme but include here for nginx anyway
+mkdir -p /usr/local/www/acmetmp/
+
 # better approach provided openssl >= 1.1.1
 # fullchain.cer is just the certificate, not a CA and intermediate too
 /usr/bin/openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:secp384r1 -days 3650 \
