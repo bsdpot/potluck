@@ -133,8 +133,11 @@ pkg install -y node_exporter
 step "Install package nginx"
 pkg install -y nginx
 
-step "Instal package redis"
+step "Install package redis"
 pkg install -y redis
+
+step "Install package ffmpeg"
+pkg install -y ffmpeg
 
 step "Install package node20"
 pkg install -y node20

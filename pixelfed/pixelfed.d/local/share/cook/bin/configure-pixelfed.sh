@@ -128,6 +128,18 @@ cp -f "$TEMPLATEPATH/supervisord.conf.in" /usr/local/etc/supervisord.conf
 # enable and the supervisord service to run horizon
 service supervisord enable
 
+# configure media for S3
+echo "Running migrate2cloud"
+su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan media:migrate2cloud --no-interaction"
+
+# clear cache
+echo "Clearing cache"
+su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan cache:clear --no-interaction"
+
+# update config again
+echo "Caching config again"
+su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan config:cache"
+
 # copy over the create-admin script and set variables
 < "$TEMPLATEPATH/create-admin.sh.in" \
   sed "s${sep}%%ownername%%${sep}$TOPNAME${sep}g" | \

@@ -16,3 +16,6 @@
 * Ensure port 80 bound to ip
 * Add script to create admin user
 * Make sure /usr/local/www/acmetmp/ is created for both SSL options
+* Add ffmpeg to packages
+* Adjust pixelfed env parameters and add steps to migrate2cloud
+
