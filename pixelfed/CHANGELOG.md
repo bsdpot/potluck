@@ -18,4 +18,5 @@
 * Make sure /usr/local/www/acmetmp/ is created for both SSL options
 * Add ffmpeg to packages
 * Adjust pixelfed env parameters and add steps to migrate2cloud
-
+* Adjust pixelfed env parameters
+* Adjust admin user creation script

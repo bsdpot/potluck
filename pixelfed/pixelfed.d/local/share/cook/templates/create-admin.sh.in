@@ -23,7 +23,7 @@ echo "Pixelfed owner | $EMAIL | $PASSWORD" > "$CREDENTIALSFILE"
 cd /tmp || exit 1
 
 # create user
-su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan user:create --name=$USERNAME --username=$EMAIL --email=$EMAIL --password=$PASSWORD --is_admin=1 --confirm_email=1"
+su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan user:create --name=$USERNAME --username=$EMAIL --email=$EMAIL --password=$PASSWORD --is_admin=yes --confirm_email=no"
 
 # notify user where credentials are stored
 echo "Pixelfed Owner credentials are stored in $CREDENTIALSFILE"
