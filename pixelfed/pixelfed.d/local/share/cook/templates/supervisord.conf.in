@@ -96,7 +96,7 @@ serverurl=unix:///var/run/supervisor/supervisor.sock ; use a unix:// URL  for a 
 ;serverurl=AUTO                ; override serverurl computation (childutils)
 
 [program:pixelfed]
-command=/usr/local/bin/php /usr/local/www/pixelfed/artisan horizon
+command=/usr/local/bin/php /usr/local/www/pixelfed/artisan --no-ansi horizon
 user=www
 autorestart=true
 redirect_stderr=true

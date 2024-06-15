@@ -12,4 +12,4 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 # setup cronjob
-echo "* *   *   *   *   root    sudo -u www /usr/local/bin/php /usr/local/www/pixelfed/artisan schedule:run > /dev/null" >> /etc/crontab
+echo "*	*	*	*	*	root	sudo -u www /usr/local/bin/php /usr/local/www/pixelfed/artisan --no-ansi schedule:run > /dev/null" >> /etc/crontab

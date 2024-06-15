@@ -20,3 +20,8 @@
 * Adjust pixelfed env parameters and add steps to migrate2cloud
 * Adjust pixelfed env parameters
 * Adjust admin user creation script
+* Try more recent commit of pixelfed to get working admin dashboard
+* Add script to clear cache
+* Modify parameters for supervisord and cron to remove ansi
+* Adjust admin user creation script so username is not an email address
+* Cleanup nginx formatting and minor adjustments

@@ -254,7 +254,9 @@ step "Running git fetch"
 su -m www -c "cd /usr/local/www/pixelfed; git fetch"
 
 step "Checking out the latest commit"
-su -m www -c "cd /usr/local/www/pixelfed; git checkout e9bcc52944ffab87d9971f21832046942058570d"
+#su -m www -c "cd /usr/local/www/pixelfed; git checkout e9bcc52944ffab87d9971f21832046942058570d"
+# https://github.com/pixelfed/pixelfed/commit/ceb375d91d736e72f31931e19701b6cff191d0db
+su -m www -c "cd /usr/local/www/pixelfed; git checkout ceb375d91d736e72f31931e19701b6cff191d0db"
 
 # include --no-cache because user www can't create cache dir in /root
 step "Run composer install"

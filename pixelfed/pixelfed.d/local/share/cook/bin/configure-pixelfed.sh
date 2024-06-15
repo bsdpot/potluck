@@ -102,6 +102,10 @@ su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan import:citi
 echo "Enabling ActivityPub"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan instance:actor"
 
+# setup passport keys
+echo "Enabling Passport keys"
+su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan passport:keys"
+
 # update route cache
 echo "Updating route cache"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan route:cache"
@@ -148,3 +152,7 @@ su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan config:cach
 
 # make executable
 chmod +x /root/bin/create-admin.sh
+
+# copy over script to clear cache quickly and set executable
+cp -f "$TEMPLATEPATH/clear-cache.sh.in" /root/bin/clear-cache.sh
+chmod +x /root/bin/clear-cache.sh
