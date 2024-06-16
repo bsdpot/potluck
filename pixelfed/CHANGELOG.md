@@ -25,3 +25,4 @@
 * Modify parameters for supervisord and cron to remove ansi
 * Adjust admin user creation script so username is not an email address
 * Cleanup nginx formatting and minor adjustments
+* Adjustments to pixelfed setup to try get admin dashboard to show

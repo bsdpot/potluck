@@ -140,6 +140,12 @@ su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan media:migra
 echo "Clearing cache"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan cache:clear --no-interaction"
 
+# clear optimize and set
+echo "Clear optimize"
+su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan optimize:clear --no-interaction"
+echo "Set optimize"
+su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan optimize --no-interaction"
+
 # update config again
 echo "Caching config again"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan config:cache"
