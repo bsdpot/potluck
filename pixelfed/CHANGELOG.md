@@ -27,3 +27,7 @@
 * Cleanup nginx formatting and minor adjustments
 * Adjustments to pixelfed setup to try get admin dashboard to show
 * Revert to prior setup for user creation. db records 'f'. 
+* Fixed admin user creation script, use true or false, not yes/no or 1/0.
+* Don't quote mail or S3 parameters in pixelfed env
+* S3 posting URL needs bucketname too
+* Remove old redis.conf template as not in use
