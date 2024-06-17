@@ -26,3 +26,4 @@
 * Adjust admin user creation script so username is not an email address
 * Cleanup nginx formatting and minor adjustments
 * Adjustments to pixelfed setup to try get admin dashboard to show
+* Revert to prior setup for user creation. db records 'f'. 
