@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Fix node_exporter zfs issue
+* Fix naming in consul published services
 
 ---
 

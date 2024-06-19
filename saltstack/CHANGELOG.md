@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Fix node_exporter zfs issue
+* Rebuild for reverted py39-salt package (version 3006) which still works on FreeBSD
 
 ---
 

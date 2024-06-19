@@ -40,9 +40,10 @@ http {
     proxy_read_timeout 600s;
 
     upstream minio_servers {
-        server %%serverone%%:9000;
-        #server %%servertwo%%:9000;
-        #server %%serverthree%%:9000;
+        server %%serverone%%;
+        #server %%servertwo%%;
+        #server %%serverthree%%;
+        #server %%serverfour%%;
     }
 
     server {
@@ -77,6 +78,7 @@ http {
         ignore_invalid_headers off;
         client_max_body_size 0;
         proxy_buffering off;
+        proxy_request_buffering off;
 
         location /404.html {
           proxy_pass https://minio_servers/%%bucket%%/404.html;
@@ -93,7 +95,6 @@ http {
             proxy_http_version 1.1;
             proxy_set_header Connection "";
             chunked_transfer_encoding off;
-            proxy_buffering off;
             proxy_ssl_verify off;
             proxy_pass https://minio_servers/%%bucket%%/;
             proxy_intercept_errors on;

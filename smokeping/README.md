@@ -20,7 +20,7 @@ By default it will monitor predefined hosts, but you can copy in a replacement `
 * Mount in the ZFS dataset you created
   ```pot mount-in -p <jailname> -m /mnt -d /mnt/smokepingdata```
 * Optionally copy in a custom `smokeping` config file. Make sure the destination file is `/root/config.in`
-  ```pot copy-in -p <jailname> -s /path/to/smokeping/config -d /root/config.in
+  ```pot copy-in -p <jailname> -s /path/to/smokeping/config -d /root/config.in```
 * Adjust to your environment:    
   ```
   sudo pot set-env -p <jailname> \
@@ -179,7 +179,7 @@ menu = BBC
 title = BBC
 host = bbc.com
 
-++ CNBC
++++ CNBC
 menu = CNBC
 title = CNBC
 host = cnbc.com

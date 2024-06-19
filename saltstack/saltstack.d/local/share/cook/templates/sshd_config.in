@@ -1,6 +1,7 @@
 Port %%sshport%%
 PubkeyAuthentication yes
 AuthorizedKeysFile       .ssh/authorized_keys
+PermitRootLogin prohibit-password
 PasswordAuthentication no
 ChallengeResponseAuthentication no
 StrictModes no
@@ -15,3 +16,4 @@ PermitTTY yes
 #  X11Forwarding no
 #  AllowTcpForwarding no
 #  ForceCommand internal-sftp
+Subsystem       sftp    /usr/libexec/sftp-server

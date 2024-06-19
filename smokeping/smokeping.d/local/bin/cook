@@ -104,6 +104,8 @@ mkdir -p /mnt/smokeping/data
 mkdir -p /mnt/smokeping/imagecache
 mkdir -p /mnt/smokeping/run
 chown -R smokeping:smokeping /mnt/smokeping
+chown -R smokeping:www /mnt/smokeping/imagecache/
+chmod 2775 /mnt/smokeping/imagecache/
 
 # set path
 export PATH=/usr/local/share/cook/bin:$PATH

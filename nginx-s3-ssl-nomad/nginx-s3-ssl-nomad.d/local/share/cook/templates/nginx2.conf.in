@@ -40,32 +40,33 @@ http {
     proxy_read_timeout 600s;
 
     upstream minio_servers {
-        server %%serverone%%:9000;
-        server %%servertwo%%:9000;
-        #server %%serverthree%%:9000;
+        server %%serverone%%;
+        server %%servertwo%%;
+        #server %%serverthree%%;
+        #server %%serverfour%%;
     }
 
     server {
         listen 443 ssl http2;
         server_name %%domain%%;
 
-        ssl_certificate      /usr/local/etc/ssl/fullchain.cer;
-        ssl_certificate_key  /usr/local/etc/ssl/%%domain%%.key;
-        ssl_protocols TLSv1.3 TLSv1.2;
-        # https://ssl-config.mozilla.org/#server=nginx&config=intermediate
-        #ssl_ciphers  HIGH:!aNULL:!MD5;
-        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
-        ssl_session_cache    shared:SSL:10m;
-        ssl_session_timeout  5m;
-        ssl_session_tickets off;
-        ssl_prefer_server_ciphers  off;
-        ssl_early_data on;
+		ssl_certificate      /usr/local/etc/ssl/fullchain.cer;
+		ssl_certificate_key  /usr/local/etc/ssl/%%domain%%.key;
+		ssl_protocols TLSv1.3 TLSv1.2;
+		# https://ssl-config.mozilla.org/#server=nginx&config=intermediate
+		#ssl_ciphers  HIGH:!aNULL:!MD5;
+		ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+		ssl_session_cache    shared:SSL:10m;
+		ssl_session_timeout  5m;
+		ssl_session_tickets off;
+		ssl_prefer_server_ciphers  off;
+		ssl_early_data on;
 
-        # this fails on freebsd
-        # nginx: [emerg] unknown "tls1_3_early_data" variable
-        #add_header X-Early-Data $tls1_3_early_data;
-        add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
-        add_header X-Frame-Options "DENY";
+		# this fails on freebsd
+		# nginx: [emerg] unknown "tls1_3_early_data" variable
+		#add_header X-Early-Data $tls1_3_early_data;
+		add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+		add_header X-Frame-Options "DENY";
 
         client_body_timeout 600s;
 
@@ -77,6 +78,7 @@ http {
         ignore_invalid_headers off;
         client_max_body_size 0;
         proxy_buffering off;
+        proxy_request_buffering off;
 
         location /404.html {
           proxy_pass https://minio_servers/%%bucket%%/404.html;
@@ -93,11 +95,11 @@ http {
             proxy_http_version 1.1;
             proxy_set_header Connection "";
             chunked_transfer_encoding off;
-            proxy_buffering off;
             proxy_ssl_verify off;
             proxy_pass https://minio_servers/%%bucket%%/;
             proxy_intercept_errors on;
             error_page 404 = /404.html;
         }
+
     }
 }

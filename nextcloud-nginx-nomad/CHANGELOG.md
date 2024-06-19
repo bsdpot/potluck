@@ -1,3 +1,9 @@
+0.94
+
+* Version bump for new nextcloud
+
+---
+
 0.93
 
 * Version bump for new quarterlies

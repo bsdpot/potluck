@@ -67,5 +67,8 @@ mv /usr/local/etc/matrix-synapse/homeserver.yaml /usr/local/etc/matrix-synapse/h
   sed "s${sep}%%ldappassword%%${sep}$LDAPPASSWORD${sep}g" \
   > /usr/local/etc/matrix-synapse/homeserver.yaml
 
+# set synapse as owner for DOMAIN.signing.key
+chown synapse:wheel "/usr/local/etc/matrix-synapse/$DOMAIN.signing.key"
+
 # enable matrix
 service synapse enable || true

@@ -51,6 +51,7 @@ It is advised to run this image behind a proxy. The directory permissions on the
   [ -E BUCKETUSER=<s3 username> ] \
   [ -E BUCKETPASS=<s3 password> ] \
   [ -E BUCKETNAME=<name of bucket> ] \
+  [ -E BUCKETCRON=<any value enables cron sync to S3 bucket> ] \
   [ -E REMOTELOG=<IP syslog-ng server> ]
   ```
 
@@ -84,6 +85,8 @@ Copy in the applicable id_rsa.pub as part of the pot setup and start process.
 The optional THEMEADJUST parameter, if set to 1, will make changes specific to http://potluck.honeyguide.net.
 
 The optional parameters BUCKETHOST, BUCKETUSER, BUCKETPASS and BUCKETNAME refer to credentials for minio-client. This feature is not fully developed yet.
+
+The optional parameter BUCKETCRON will enable a cron job to sync files to S3 bucket if set to any value.
 
 The optional REMOTELOG parameter is for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 

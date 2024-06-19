@@ -8,9 +8,9 @@ sendmail = /usr/sbin/sendmail
 # since all files under cgi-bin will be executed ... this is not
 # good for images.
 imgcache = /mnt/smokeping/imagecache
-imgurl   = cache
+imgurl   = /cache
 datadir  = /mnt/smokeping/data
-piddir  = /mnt/smokeping/run
+piddir  = /usr/local/var/smokeping/
 cgiurl   = http://%%hostname%%/smokeping.cgi
 smokemail = /usr/local/etc/smokeping/smokemail.sample
 tmail = /usr/local/etc/smokeping/tmail.sample

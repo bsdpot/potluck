@@ -1,0 +1,33 @@
+---
+
+0.0
+
+* First bash at a pot jail for pixelfed
+* Fix typos
+* Fix env file formatting
+* Redis must be running before pixelfed is configured, optionally user www must be part of redis group
+* Add www user to redis group
+* Remove redis socket in favour of remote redis jail over tcp
+* Postgresql databases aren't automatically created, we need a step to do this
+* Remove horizon:publish step as no longer needed
+* Adjust database creation process
+* Properly fix prior fix with db create step and error return codes
+* Ensure nginx root has correct directory with public appended in all places
+* Ensure port 80 bound to ip
+* Add script to create admin user
+* Make sure /usr/local/www/acmetmp/ is created for both SSL options
+* Add ffmpeg to packages
+* Adjust pixelfed env parameters and add steps to migrate2cloud
+* Adjust pixelfed env parameters
+* Adjust admin user creation script
+* Try more recent commit of pixelfed to get working admin dashboard
+* Add script to clear cache
+* Modify parameters for supervisord and cron to remove ansi
+* Adjust admin user creation script so username is not an email address
+* Cleanup nginx formatting and minor adjustments
+* Adjustments to pixelfed setup to try get admin dashboard to show
+* Revert to prior setup for user creation. db records 'f'. 
+* Fixed admin user creation script, use true or false, not yes/no or 1/0.
+* Don't quote mail or S3 parameters in pixelfed env
+* S3 posting URL needs bucketname too
+* Remove old redis.conf template as not in use

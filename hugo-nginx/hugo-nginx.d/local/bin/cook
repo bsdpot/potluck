@@ -53,6 +53,7 @@ required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args SERVERNAME SITENAME GITEMAIL GITUSER"
 optional_args="CUSTOMDIR CUSTOMFILE IMPORTPUBKEY THEMEADJUST REMOTELOG"
 optional_args="$optional_args BUCKETHOST BUCKETUSER BUCKETPASS BUCKETNAME"
+optional_args="$optional_args BUCKETCRON"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -156,6 +157,11 @@ configure-goaccess.sh
 if [ -n "${BUCKETHOST}" ]; then
     log "Configure minio client.json"
     configure-minio.sh
+fi
+
+if [ -n "${BUCKETHOST}" ] && [ -n "${BUCKETCRON}" ]; then
+	log "Adding cronjob for s3 sync"
+	configure-cron.sh
 fi
 
 log "Start goaccess"
