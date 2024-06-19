@@ -1,3 +1,9 @@
+0.14.0
+
+* Workaround to fix consul-template restart
+
+---
+
 0.13.1
 
 * Version bump for FBSD14 base image
