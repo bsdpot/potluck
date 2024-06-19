@@ -12,7 +12,7 @@ fi
 
 service nginx reload nodemetricsproxy
 service prometheus restart
-service alertmanager restart
+service alertmanager restart >/dev/null 2>&1
 service nginx reload prometheusproxy
 
 exit 0
