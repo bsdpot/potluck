@@ -233,6 +233,30 @@ chmod +x /root/bin/reset-2fa-user.sh
 cp -f "$TEMPLATEPATH/remove-old-media.sh.in" /root/bin/remove-old-media.sh
 chmod +x /root/bin/remove-old-media.sh
 
+# copy over script to remove media orphans
+cp -f "$TEMPLATEPATH/remove-orphans.sh.in" /root/bin/remove-orphans.sh
+chmod +x /root/bin/remove-orphans.sh
+
+# copy over script to clear the cache
+cp -f "$TEMPLATEPATH/clear-cache.sh.in" /root/bin/clear-cache.sh
+chmod +x /root/bin/clear-cache.sh
+
+# copy over script to fix duplicates
+cp -f "$TEMPLATEPATH/fix-duplicates.sh.in" /root/bin/fix-duplicates.sh
+chmod +x /root/bin/fix-duplicates.sh
+
+# copy over script to rebuild all feeds
+cp -f "$TEMPLATEPATH/rebuild-all-feeds.sh.in" /root/bin/rebuild-all-feeds.sh
+chmod +x /root/bin/rebuild-all-feeds.sh
+
+# copy over script to force refresh all followed content last 2 days
+cp -f "$TEMPLATEPATH/media-refresh.sh.in" /root/bin/media-refresh.sh
+chmod +x /root/bin/media-refresh.sh
+
+# copy over script to calculate media usage
+cp -f "$TEMPLATEPATH/calculate-media-usage.sh.in" /root/bin/calculate-media-usage.sh
+chmod +x /root/bin/calculate-media-usage.sh
+
 # copy over the create-admin-user script and set variables
 < "$TEMPLATEPATH/create-admin-user.sh.in" \
   sed "s${sep}%%ownername%%${sep}$SETOWNERNAME${sep}g" | \

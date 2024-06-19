@@ -1,0 +1,33 @@
+#!/bin/sh
+
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+# Check for root privileges
+if ! [ "$(id -u)" = 0 ]; then
+   echo "This script must be run with root privileges"
+   exit 1
+fi
+
+# change directory to tmp for su purposes
+cd /tmp || exit 1
+
+# stop sidekiq processes
+echo "Stopping mastodon services"
+service mastodon_web stop
+service mastodon_streaming stop
+service mastodon_sidekiq stop
+
+# tootctl maintenance fix-duplicates
+echo "Fixing duplicates"
+su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production bin/tootctl maintenance fix-duplicates"'
+echo ""
+
+# start services
+echo "Starting services again"
+service mastodon_sidekiq start
+service mastodon_streaming start
+service mastodon_web start

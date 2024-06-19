@@ -8,6 +8,7 @@
 * Update README to correct upgrades, add details on elasticsearch scripts
 * Fix script to setup elasticsearch indexes
 * Adjust create-admin-user script to also approve user
+* Add additional maintenance scripts
 
 ---
 
