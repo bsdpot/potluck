@@ -24,13 +24,18 @@ encrypt = "%%gossipkey%%"
 retry_join = [ %%consulservers%% ]
 services = {
   name = "node-exporter"
-  tags = ["_app=traumadrill", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=pixelfed", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
 services = {
+  name = "blackbox-exporter"
+  tags = ["_app=pixelfed", "_service=blackbox-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 9115
+}
+services = {
   name = "www"
-  tags = ["_app=traumadrill", "_service=www", "_hostname=%%nodename%%.%%datacenter%%.consul"]
-  port = 80
+  tags = ["_app=pixelfed", "_service=pixelfedweb", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 443
 }
 telemetry = {
   prometheus_retention_time = "24h"
