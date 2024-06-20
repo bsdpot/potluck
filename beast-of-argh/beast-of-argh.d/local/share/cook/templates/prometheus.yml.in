@@ -166,3 +166,31 @@ scrape_configs:
     file_sd_configs:
     - files:
       - '/mnt/prometheus/targets.d/postgres.yml'
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    relabel_configs:
+      # adds "module" label in the final labelset
+      - source_labels: [__address__]
+        regex: '.*:_:(.*):_:.*:_:.*'
+        target_label: module       
+      # rewrites "instance" label with corresponding URL
+      - source_labels: [__address__]
+        regex: '.*:_:.*:_:.*:_:(.*)'
+        target_label: instance
+      # rewrites "job" label with corresponding location name
+      - source_labels: [__address__]
+        regex: '.*:_:.*:_:(.*):_:.*'
+        target_label: job        
+      # passes "module" parameter to Blackbox exporter
+      - source_labels: [module]
+        target_label: __param_module        
+      # passes "target" parameter to Blackbox exporter
+      - source_labels: [instance]
+        target_label: __param_target        
+      # the Blackbox exporter's real hostname:port
+      - source_labels: [__address__]
+        regex: '(.*):_:.*:_:.*:_:.*'
+        target_label: __address__
+    file_sd_configs:
+    - files:
+      - /mnt/prometheus/targets.d/blackboxhosts.yml

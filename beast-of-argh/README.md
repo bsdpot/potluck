@@ -113,10 +113,11 @@ Access ```alertmanager``` at ```http://yourhost:9093```.
 
 # Dynamic inventory for scrape targets
 
-File-based scrape targets are configured for the following files, which you can copy in replacements to, or update on the system.
+File-based scrape targets are configured for the following files, which you can copy in replacements for, or update on the system.
 
 (assumes persistent storage mounted in)
 
+* /mnt/prometheus/targets.d/blackboxhosts.yml
 * /mnt/prometheus/targets.d/mytargets.yml
 * /mnt/prometheus/targets.d/postgres.yml
 * /mnt/prometheus/targets.d/minio.yml
@@ -129,6 +130,20 @@ These files need to in the format:
   labels:
     job: jobtype1
 ```
+
+The targets file for blackbox hosts has a slightly different format
+```
+#########################################################################
+# <BLACKBOX_EXPORTER_IP_PORT>:_:<<MODULE>:_:<LOCATION>:_:<TARGET_URL>   #
+#########################################################################
+- targets:
+  - 1.2.3.4:9115:_:http_2xx:_:DC1:_:http://prometheus.io
+  - 1.2.3.5:9115:_:http_2xx:_:CapeTown:_:https://prometheus.io
+  - 1.2.3.6:9115:_:http_2xx:_:DC1:_:http://example.com:8080
+  - 1.2.3.7:9115:_:icmp_ipv4:_:DC1:_:10.0.0.1
+```
+
+You do not need to restart prometheus when changing the files in /mnt/prometheus/targets.d/ to take effect.
 
 ## Scraping minio metrics
 

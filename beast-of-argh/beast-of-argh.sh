@@ -153,13 +153,13 @@ pkg clean -y
 
 # alternative approach as temporary measure (2024-03-03)
 step "Download loki release from github"
-fetch -qo /tmp/loki-freebsd-amd64.zip https://github.com/grafana/loki/releases/download/v2.9.7/loki-freebsd-amd64.zip
+fetch -qo /tmp/loki-freebsd-amd64.zip https://github.com/grafana/loki/releases/download/v2.9.8/loki-freebsd-amd64.zip
 
 step "Unzip loki"
 unzip -o -d /tmp /tmp/loki-freebsd-amd64.zip
 
 step "Validate loki checksum and install if valid"
-if [ "$(sha256 -q /tmp/loki-freebsd-amd64)" == "8f62f7181f996e074f5fa6f73d32174ea22b39b1465a2ba43b6f447e7641b78f" ]; then
+if [ "$(sha256 -q /tmp/loki-freebsd-amd64)" == "f4dc39f6eada4fde16617e1d9372c897d16cbbe136401732fb644fb8033278a6" ]; then
 	cp -f /tmp/loki-freebsd-amd64 /usr/local/bin/loki
 	chmod 755 /usr/local/bin/loki
 	rm -rf /tmp/loki-freebsd-amd64.zip /tmp/loki-freebsd-amd64
@@ -180,20 +180,19 @@ fi
 #fi
 
 step "Download promtail release from github"
-fetch -qo /tmp/promtail-freebsd-amd64.zip https://github.com/grafana/loki/releases/download/v2.9.7/promtail-freebsd-amd64.zip
+fetch -qo /tmp/promtail-freebsd-amd64.zip https://github.com/grafana/loki/releases/download/v2.9.8/promtail-freebsd-amd64.zip
 
 step "Unzip promtail"
 unzip -o -d /tmp /tmp/promtail-freebsd-amd64.zip
 
 step "Validate promtail checksum and install if valid"
-if [ "$(sha256 -q /tmp/promtail-freebsd-amd64)" == "b97ed3a1734e44803ca905fabc6f6ae8fb7b1d73fe5bc7ab237e5d0afa42500e" ]; then
+if [ "$(sha256 -q /tmp/promtail-freebsd-amd64)" == "9dcd257be09e4ab22208c819abbaa74782ddcb5cde1f5fbb4fabff938230eeca" ]; then
 	cp -f /tmp/promtail-freebsd-amd64 /usr/local/bin/promtail
 	chmod 755 /usr/local/bin/promtail
 	rm -rf /tmp/promtail-freebsd-amd64.zip /tmp/promtail-freebsd-amd64
 else
 	exit_error "promtail checksum mismatch!"
 fi
-
 
 # -------------- END PACKAGE SETUP -------------
 

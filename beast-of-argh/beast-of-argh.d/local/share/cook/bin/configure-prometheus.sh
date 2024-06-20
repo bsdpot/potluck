@@ -38,6 +38,9 @@ fi
 if [ ! -f /mnt/prometheus/targets.d/redis.yml ]; then
     cp -a "$TEMPLATEPATH"/sampletargets/redis.yml /mnt/prometheus/targets.d/redis.yml
 fi
+if [ ! -f /mnt/prometheus/targets.d/blackboxhosts.yml ]; then
+    cp -a "$TEMPLATEPATH"/sampletargets/blackboxhosts.yml /mnt/prometheus/targets.d/blackboxhosts.yml
+fi
 chown -R prometheus:prometheus /mnt/prometheus/targets.d
 
 # shellcheck disable=SC3003,SC2039

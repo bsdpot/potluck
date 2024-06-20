@@ -4,6 +4,9 @@
 * Loki 2.9.7, Promtail 2.9.7
 * Fix node_exporter zfs issue
 * Fix copy-in missing vault dashboard, not in use here
+* Adjust prometheus memory alert to less than 1% only
+* Loki 2.9.8, Promtail 2.9.8
+* Add blackbox scraper to prometheus
 
 ---
 
