@@ -9,6 +9,7 @@
 * Fix script to setup elasticsearch indexes
 * Adjust create-admin-user script to also approve user
 * Add additional maintenance scripts
+* Add blackbox_exporter
 
 ---
 
