@@ -177,7 +177,7 @@ scrape_configs:
       - source_labels: [__address__]
         regex: '.*:_:.*:_:.*:_:(.*)'
         target_label: instance
-      # rewrites "job" label with corresponding location name
+      # rewrites "job" label with corresponding job name
       - source_labels: [__address__]
         regex: '.*:_:.*:_:(.*):_:.*'
         target_label: job        

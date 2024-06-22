@@ -101,6 +101,8 @@ if [ ! -f /mnt/grafana/grafana.db ]; then
       /mnt/grafana/provisioning/dashboards/minio.json
     cp "$TEMPLATEPATH/redis.json.in" \
       /mnt/grafana/provisioning/dashboards/redis.json
+    cp "$TEMPLATEPATH/blackbox.json.in" \
+      /mnt/grafana/provisioning/dashboards/blackbox.json
 	# removing as not working any more, using hashicorp supplied dashboard now
     #cp "$TEMPLATEPATH/nomadallocations.json.in" \
     #  /mnt/grafana/provisioning/dashboards/nomadallocations.json
@@ -169,6 +171,8 @@ else
       /mnt/grafana/provisioning/dashboards/minio.json
     cp "$TEMPLATEPATH/redis.json.in" \
       /mnt/grafana/provisioning/dashboards/redis.json
+    cp "$TEMPLATEPATH/blackbox.json.in" \
+      /mnt/grafana/provisioning/dashboards/blackbox.json
 	# removing as not working any more, using hashicorp supplied dashboard now
     #cp "$TEMPLATEPATH/nomadallocations.json.in" \
     #  /mnt/grafana/provisioning/dashboards/nomadallocations.json

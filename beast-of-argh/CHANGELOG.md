@@ -7,6 +7,8 @@
 * Adjust prometheus memory alert to less than 1% only
 * Loki 2.9.8, Promtail 2.9.8
 * Add blackbox scraper to prometheus
+* Adjust json files for grafana charts to set null id
+* Adjust blackbox exporter config and sample targets file
 
 ---
 
