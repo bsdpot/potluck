@@ -4,6 +4,7 @@
 * Fix node_exporter zfs issue
 * Update quarterlies git branch
 * Adjust cert renewal script as variables not expanding
+* Update certificate renewal script
 
 ---
 
