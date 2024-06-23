@@ -32,3 +32,4 @@
 * S3 posting URL needs bucketname too
 * Remove old redis.conf template as not in use
 * Add blackbox_exporter
+* Update certificate renewal script
