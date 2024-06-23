@@ -9,6 +9,7 @@
 * Add blackbox scraper to prometheus
 * Adjust json files for grafana charts to set null id
 * Adjust blackbox exporter config and sample targets file
+* Split blackbox exporter into multiple jobs for http_2xx, icmp and tcp_connect
 
 ---
 

@@ -1,9 +1,0 @@
-####################################################################
-# <BLACKBOX_EXPORTER_IP_PORT>:_:<<MODULE>:_:<JOB>:_:<TARGET_URL>   #
-####################################################################
-#- targets:
-#  - 1.2.3.4:9115:_:http_2xx:_:http_prometheus_io:_:http://prometheus.io
-#  - 1.2.3.4:9115:_:http_2xx:_:https_prometheus_io:_:https://prometheus.io
-#  - 1.2.3.4:9115:_:http_2xx:_:http_example_com:_:http://example.com:8080
-#  - 1.2.3.4:9115:_:icmp_ipv4:_:icmp_10_0_0_1:_:10.0.0.1
-- targets:
