@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Update go package to go121
 * Fix perl version 5.36
+* Update certificate renewal script
 
 ---
 

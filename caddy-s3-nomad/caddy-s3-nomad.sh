@@ -123,7 +123,7 @@ pkg install -y acme.sh
 step "Install package git-lite"
 pkg install -y git-lite
 
-step "Install go120"
+step "Install go121"
 pkg install -y go121
 
 # -------------- END PACKAGE SETUP -------------
