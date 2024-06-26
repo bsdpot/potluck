@@ -124,8 +124,11 @@ pkg install -y prometheus
 step "Install package alertmanager"
 pkg install -y alertmanager
 
-step "Install package grafana9"
-pkg install -y grafana9
+#step "Install package grafana9"
+#pkg install -y grafana9
+
+step "Install package grafana"
+pkg install -y grafana
 
 step "Install package nginx"
 pkg install -y nginx
