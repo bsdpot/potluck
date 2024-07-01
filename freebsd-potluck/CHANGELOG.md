@@ -1,3 +1,9 @@
+0.0.25
+
+* Version bump for SSH CVE, new quarterlies in next one
+
+---
+
 0.0.24
 
 * Version bump for ZFS fix
