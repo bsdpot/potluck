@@ -1,5 +1,5 @@
 pidfile = "/var/run/prosody/prosody.pid"
-interfaces = { "127.0.0.1" }
+interfaces = { "%%ip%%" }
 local_interfaces = { "127.0.0.1" }
 c2s_interfaces = { "127.0.0.1" }
 c2s_ports = { 5222 }
