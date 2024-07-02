@@ -1431,7 +1431,7 @@
       "30d"
     ]
   },
-  "timezone": "browser",
+  "timezone": "",
   "title": "Postgres Overview",
   "uid": "wGgaPlciz",
   "version": 1
