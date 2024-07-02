@@ -1,3 +1,10 @@
+0.5.1
+
+* Version bump for new base image
+* Implement rejected PR45 to unset timezone value in grafana dashboards
+
+---
+
 0.4.1
 
 * Version bump for FBSD14 base image
