@@ -1,6 +1,6 @@
-2.3.2
+2.4.1
 
-* Add postgresql-contrib to support useful plugins like pg_stat_statements
+* Version bump for new base image
 
 ---
 

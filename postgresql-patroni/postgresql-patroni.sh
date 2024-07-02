@@ -123,9 +123,6 @@ pkg install -y postgresql13-server
 step "Install package postgresql-client"
 pkg install -y postgresql13-client
 
-step "Install package postgresql-contrib"
-pkg install -y postgresql13-contrib
-
 step "Install package python39"
 pkg install -y python39
 
