@@ -1,6 +1,7 @@
 0.15
 
 * Version bump for new base image
+* Implement grafana change to unset timezone value, from PR45
 
 ---
 
