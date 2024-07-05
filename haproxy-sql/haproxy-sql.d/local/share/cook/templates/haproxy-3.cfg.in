@@ -4,6 +4,7 @@ global
   group www
   maxconn 4096
   stats socket /var/run/haproxy/socket mode 600 level admin expose-fd listeners
+  tune.disable-zero-copy-forwarding
 
 defaults
   log global

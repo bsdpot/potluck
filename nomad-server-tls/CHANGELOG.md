@@ -1,3 +1,9 @@
+0.12.1
+
+* Version bump for new base image
+
+---
+
 0.11.2
 
 * Add explicit -data-dir parameter

@@ -1,8 +1,15 @@
+2.5
+
+* Version bump for new base image
+
+---
+
 2.4
 
 * Version bump for new base image
 * Fix node_exporter zfs issue
 * Set owner synapse for /usr/local/etc/matrix-synapse/DOMAIN.signing.key
+* Update certificate renewal script
 
 ---
 

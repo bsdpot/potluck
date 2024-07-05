@@ -38,6 +38,15 @@ fi
 if [ ! -f /mnt/prometheus/targets.d/redis.yml ]; then
     cp -a "$TEMPLATEPATH"/sampletargets/redis.yml /mnt/prometheus/targets.d/redis.yml
 fi
+if [ ! -f /mnt/prometheus/targets.d/blackboxicmp.yml ]; then
+    cp -a "$TEMPLATEPATH"/sampletargets/blackboxicmp.yml /mnt/prometheus/targets.d/blackboxicmp.yml
+fi
+if [ ! -f /mnt/prometheus/targets.d/blackboxhttpget.yml ]; then
+    cp -a "$TEMPLATEPATH"/sampletargets/blackboxhttpget.yml /mnt/prometheus/targets.d/blackboxhttpget.yml
+fi
+if [ ! -f /mnt/prometheus/targets.d/blackboxtcpconnect.yml ]; then
+    cp -a "$TEMPLATEPATH"/sampletargets/blackboxtcpconnect.yml /mnt/prometheus/targets.d/blackboxtcpconnect.yml
+fi
 chown -R prometheus:prometheus /mnt/prometheus/targets.d
 
 # shellcheck disable=SC3003,SC2039

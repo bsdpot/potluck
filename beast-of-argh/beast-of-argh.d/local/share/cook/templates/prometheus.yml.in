@@ -166,3 +166,72 @@ scrape_configs:
     file_sd_configs:
     - files:
       - '/mnt/prometheus/targets.d/postgres.yml'
+  - job_name: 'blackbox-icmp'
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    relabel_configs:
+      # rewrites "instance" label with corresponding URL
+      - source_labels: [__address__]
+        regex: '.*:_:.*:_:(.*)'
+        target_label: instance
+      # rewrites "job" label with corresponding job name
+      - source_labels: [__address__]
+        regex: '.*:_:(.*):_:.*'
+        target_label: job        
+      # passes "target" parameter to Blackbox exporter
+      - source_labels: [instance]
+        target_label: __param_target        
+      # the Blackbox exporter's real hostname:port
+      - source_labels: [__address__]
+        regex: '(.*):_:.*:_:.*'
+        target_label: __address__
+    file_sd_configs:
+    - files:
+      - /mnt/prometheus/targets.d/blackboxicmp.yml
+  - job_name: 'blackbox-http-get'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    relabel_configs:
+      # rewrites "instance" label with corresponding URL
+      - source_labels: [__address__]
+        regex: '.*:_:.*:_:(.*)'
+        target_label: instance
+      # rewrites "job" label with corresponding job name
+      - source_labels: [__address__]
+        regex: '.*:_:(.*):_:.*'
+        target_label: job        
+      # passes "target" parameter to Blackbox exporter
+      - source_labels: [instance]
+        target_label: __param_target        
+      # the Blackbox exporter's real hostname:port
+      - source_labels: [__address__]
+        regex: '(.*):_:.*:_:.*'
+        target_label: __address__
+    file_sd_configs:
+    - files:
+      - /mnt/prometheus/targets.d/blackboxhttpget.yml
+  - job_name: 'blackbox-tcp-connect'
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    relabel_configs:
+      # rewrites "instance" label with corresponding URL
+      - source_labels: [__address__]
+        regex: '.*:_:.*:_:(.*)'
+        target_label: instance
+      # rewrites "job" label with corresponding job name
+      - source_labels: [__address__]
+        regex: '.*:_:(.*):_:.*'
+        target_label: job        
+      # passes "target" parameter to Blackbox exporter
+      - source_labels: [instance]
+        target_label: __param_target        
+      # the Blackbox exporter's real hostname:port
+      - source_labels: [__address__]
+        regex: '(.*):_:.*:_:.*'
+        target_label: __address__
+    file_sd_configs:
+    - files:
+      - /mnt/prometheus/targets.d/blackboxtcpconnect.yml

@@ -121,6 +121,9 @@ fi
 log "Setup node_exporter"
 configure-node-exporter.sh
 
+log "Setup blackbox_exporter"
+configure-blackbox-exporter.sh
+
 log "Configure consul"
 configure-consul.sh
 
@@ -136,7 +139,10 @@ timeout --foreground 120 \
 #configure-local-unbound.sh
 
 log "Start node_exporter"
-service node_exporter start
+service node_exporter start || true
+
+log "Start blackbox_exporter"
+service blackbox_exporter start || true
 
 if [ -n "${PVTCERT}" ]; then
 	log "Configure ssl"

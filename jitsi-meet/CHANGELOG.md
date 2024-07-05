@@ -1,8 +1,16 @@
+0.18
+
+* Version bump for new base image
+* Test prosody setting of interfaces = { 'x.x.x.x' }
+
+---
+
 0.17
 
 * Version bump for new base image
 * Fix node_exporter zfs issue
 * Adjust cert renew script to hardcode domain
+* Update certificate renewal script
 
 ---
 

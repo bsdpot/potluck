@@ -3673,11 +3673,11 @@
       "30d"
     ]
   },
-  "timezone": "browser",
+  "timezone": "",
   "title": "Node Exporter for FreeBSD",
   "uid": "abcDef",
   "variables": {
     "list": []
   },
-  "version": 4
+  "version": 1
 }

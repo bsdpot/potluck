@@ -1,9 +1,23 @@
+0.15
+
+* Version bump for new base image
+* Implement grafana change to unset timezone value, from PR45
+
+---
+
 0.14
 
 * Version bump for new base image
 * Loki 2.9.7, Promtail 2.9.7
 * Fix node_exporter zfs issue
 * Fix copy-in missing vault dashboard, not in use here
+* Adjust prometheus memory alert to less than 1% only
+* Loki 2.9.8, Promtail 2.9.8
+* Add blackbox scraper to prometheus
+* Adjust json files for grafana charts to set null id
+* Adjust blackbox exporter config and sample targets file
+* Split blackbox exporter into multiple jobs for http_2xx, icmp and tcp_connect
+* Switch to grafana10 in the grafana package
 
 ---
 

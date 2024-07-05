@@ -28,6 +28,11 @@ services = {
   port = 9100
 }
 services = {
+  name = "blackbox-exporter"
+  tags = ["_app=mastodon", "_service=blackbox-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 9115
+}
+services = {
   name = "postgres-exporter"
   tags = ["_app=mastodon", "_service=postgres-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9187
