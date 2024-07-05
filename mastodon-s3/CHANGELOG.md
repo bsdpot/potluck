@@ -1,6 +1,7 @@
 0.11
 
 * Version bump for rebuild
+* Update to latest mastodon release
 
 ---
 
