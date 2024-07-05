@@ -1,3 +1,9 @@
+0.6.0
+
+* Switch to grafana 10
+
+---
+
 0.5.1
 
 * Version bump for new base image

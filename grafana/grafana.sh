@@ -103,8 +103,9 @@ sed -i '' 's/^\(start_precmd=consul_template_startprecmd\)$/\1;'\
 step "Install package node_exporter"
 pkg install -y node_exporter
 
-step "Install package grafana9"
-pkg install -y grafana9
+# On 2024-06-05 this meant grafana version 10
+step "Install package grafana"
+pkg install -y grafana
 
 step "Install package sudo"
 pkg install -y sudo
