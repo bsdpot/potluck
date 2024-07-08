@@ -1,6 +1,8 @@
 0.16
 
 * Switch to using pkg sources for grafana loki and promtail install
+* Update loki config
+* Add directory for promtail positions
 
 ---
 

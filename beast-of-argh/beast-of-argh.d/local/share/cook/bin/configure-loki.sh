@@ -55,6 +55,10 @@ chown -R loki:loki /tmp/loki
 
 # promtail setup
 
+# promtail needs a directory it has permission to write to
+mkdir -p /mnt/promtail
+chown -R promtail:promtail /mnt/promtail
+
 # removed as pkg install should cover it (2024-07-08)
 # copy in the promtail rc file
 #cp "$TEMPLATEPATH/promtail.rc.in" /usr/local/etc/rc.d/promtail
