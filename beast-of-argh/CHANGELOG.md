@@ -1,3 +1,9 @@
+0.16
+
+* Switch to using pkg sources for grafana loki and promtail install
+
+---
+
 0.15
 
 * Version bump for new base image
