@@ -1,3 +1,10 @@
+0.9
+
+* Version bump for new base image
+* Include option "tune.disable-zero-copy-forwarding" to fix high CPU usage
+
+---
+
 0.8
 
 * Version bump for new base image

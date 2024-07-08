@@ -113,10 +113,13 @@ Access ```alertmanager``` at ```http://yourhost:9093```.
 
 # Dynamic inventory for scrape targets
 
-File-based scrape targets are configured for the following files, which you can copy in replacements to, or update on the system.
+File-based scrape targets are configured for the following files, which you can copy in replacements for, or update on the system.
 
 (assumes persistent storage mounted in)
 
+* /mnt/prometheus/targets.d/blackboxhttpget.yml
+* /mnt/prometheus/targets.d/blackboxicmp.yml
+* /mnt/prometheus/targets.d/blackboxtcpconnect.yml
 * /mnt/prometheus/targets.d/mytargets.yml
 * /mnt/prometheus/targets.d/postgres.yml
 * /mnt/prometheus/targets.d/minio.yml
@@ -129,6 +132,34 @@ These files need to in the format:
   labels:
     job: jobtype1
 ```
+
+Reload prometheus when changing the files in /mnt/prometheus/targets.d/ for targets to take effect.
+
+## Scaping blackbox_exporter hosts
+
+The targets files for `blackbox_exporter` hosts has a slightly different format, for example `http_2xx` hosts can be added to `blackboxhttpget.yml` in the following format
+```
+########################################################
+# <BLACKBOX_EXPORTER_IP_PORT>:_:<JOB>:_:<TARGET_URL>   #
+########################################################
+# Only one destination per target
+- targets:
+  - 1.2.3.4:9115:_:prometheusio:_:https://prometheus.io
+```
+
+Whereas ICMP monitoring can be done in `blackboxicmp.yml` in the format
+```
+########################################################
+# <BLACKBOX_EXPORTER_IP_PORT>:_:<JOB>:_:<TARGET_URL>   #
+########################################################
+# Only one destination per target
+- targets:
+  - 1.2.3.4:9115:_:icmp-10-0-0-1:_:10.0.0.1
+```
+
+Reload prometheus when changing the files in /mnt/prometheus/targets.d/ for targets to take effect.
+
+Note: for every target only a single test can be performed. This is split over multiple jobs for `http_2xx`, `icmp` and `tcp_connect`. WIP for others.
 
 ## Scraping minio metrics
 

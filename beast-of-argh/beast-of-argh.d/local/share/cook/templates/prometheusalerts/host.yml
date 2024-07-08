@@ -2,15 +2,15 @@
 groups:
 - name: host-alerts
   rules:
-  # Host out of memory
+  # Host out of memory, trigger on 1% only for freebsd (was 5%)
   - alert: HostOutOfMemory
-    expr: node_memory_free_bytes / node_memory_size_bytes * 100 < 5
+    expr: node_memory_free_bytes / node_memory_size_bytes * 100 < 1
     for: 2m
     labels:
       severity: warning
     annotations:
       summary: Host out of memory (instance {{ $labels.instance }})
-      description: "Node memory is filling up (< 5% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      description: "Node memory is empty (< 1% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
   ## INVALID FOR FREEBSD
   # Host memory under pressure
   #- alert: HostMemoryUnderMemoryPressure

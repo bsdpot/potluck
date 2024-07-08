@@ -1,7 +1,10 @@
 #!/bin/sh
 cd /root || exit 1
 service nginx stop
-mv "/mnt/acme/%%domain%%_ecc/" "/mnt/acme/%%domain%%_ecc.old/"
+if [ -d /mnt/acme/%%domain%%_ecc.old/ ]; then
+	rm -rf /mnt/acme/%%domain%%_ecc.old/
+fi
+mv -f "/mnt/acme/%%domain%%_ecc/" "/mnt/acme/%%domain%%_ecc.old/"
 /usr/local/sbin/acme.sh --register-account -m "%%sslemail%%" --home /mnt/acme --server zerossl
 /usr/local/sbin/acme.sh --set-default-ca --server zerossl
 /usr/local/sbin/acme.sh --issue -d %%domain%% --server zerossl --home /mnt/acme --standalone --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log

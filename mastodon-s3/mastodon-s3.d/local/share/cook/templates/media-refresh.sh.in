@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+# shellcheck disable=SC3040
+set -o pipefail
+
+export PATH=/usr/local/bin:$PATH
+
+# Check for root privileges
+if ! [ "$(id -u)" = 0 ]; then
+   echo "This script must be run with root privileges"
+   exit 1
+fi
+
+# change directory to tmp for su purposes
+cd /tmp || exit 1
+
+# tootctl media refresh
+echo "Refreshing media for last two days for all accounts and domains"
+su - mastodon -c '/usr/local/bin/bash -c "cd /usr/local/www/mastodon; RAILS_ENV=production bin/tootctl media refresh --days=2 --force"'
+echo ""

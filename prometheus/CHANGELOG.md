@@ -1,3 +1,9 @@
+0.15.1
+
+* Version bump for new base image
+
+---
+
 0.14.0
 
 * Workaround to fix consul-template restart

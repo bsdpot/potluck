@@ -1,3 +1,10 @@
+0.11
+
+* Version bump for rebuild
+* Update to latest mastodon release
+
+---
+
 0.10
 
 * Version bump for new base image
@@ -8,6 +15,9 @@
 * Update README to correct upgrades, add details on elasticsearch scripts
 * Fix script to setup elasticsearch indexes
 * Adjust create-admin-user script to also approve user
+* Add additional maintenance scripts
+* Add blackbox_exporter
+* Update certificate renewal script
 
 ---
 

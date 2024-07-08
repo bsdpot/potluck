@@ -31,10 +31,17 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # safe(r) separator for sed
 sep=$'\001'
 
+# testing by setting IP
+# If you're running Prosody in a jail and experience problems, please add
+# the following to the global section of your prosody.cfg.lua:
+# interfaces = { 'x.x.x.x' }
+# where 'x.x.x.x' is the public IP you wish Prosody to bind to.
+#
 # copy over prosody.cfg.lua
 < "$TEMPLATEPATH/prosody.cfg.lua.in" \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%email%%${sep}$EMAIL${sep}g" | \
+  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%keypassword%%${sep}$KEYPASSWORD${sep}g" \
   > /usr/local/etc/prosody/prosody.cfg.lua
 

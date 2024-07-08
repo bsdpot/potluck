@@ -1,0 +1,7 @@
+########################################################
+# <BLACKBOX_EXPORTER_IP_PORT>:_:<JOB>:_:<TARGET_URL>   #
+########################################################
+# Only one destination per target
+#- targets:
+#  - 1.2.3.4:9115:_:testport9000:_:10.0.0.1:9000
+- targets:

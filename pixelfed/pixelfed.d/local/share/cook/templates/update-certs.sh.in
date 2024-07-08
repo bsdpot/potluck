@@ -5,6 +5,9 @@ registermail="%%email%%"
 
 if [ -d /mnt/acme/%%domain%%_ecc ]; then
 	service nginx stop
+	if [ -d /mnt/acme/%%domain%%_ecc.old ]; then
+		rm -rf /mnt/acme/%%domain%%_ecc.old
+	fi
 	mv -f /mnt/acme/%%domain%%_ecc /mnt/acme/%%domain%%_ecc.old
 	/usr/local/sbin/acme.sh --register-account -m "$registermail" --home /mnt/acme --server letsencrypt
 	/usr/local/sbin/acme.sh --set-default-ca --server letsencrypt

@@ -1,7 +1,14 @@
+0.15
+
+* Version bump for new base image
+
+---
+
 0.14
 
 * Version bump for new base image
 * Fix node_exporter zfs issue
+* Update certificate renewal script
 
 ---
 

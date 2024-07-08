@@ -1,3 +1,7 @@
+0.1
+
+* Version bump for new base image
+
 ---
 
 0.0
@@ -31,3 +35,5 @@
 * Don't quote mail or S3 parameters in pixelfed env
 * S3 posting URL needs bucketname too
 * Remove old redis.conf template as not in use
+* Add blackbox_exporter
+* Update certificate renewal script

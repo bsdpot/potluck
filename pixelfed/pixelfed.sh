@@ -130,6 +130,9 @@ pkg install -y rsync
 step "Install package node_exporter"
 pkg install -y node_exporter
 
+step "Install package blackbox_exporter"
+pkg install -y blackbox_exporter
+
 step "Install package nginx"
 pkg install -y nginx
 
