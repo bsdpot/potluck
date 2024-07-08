@@ -22,6 +22,8 @@ create_root_pki() {
   vault secrets list -format=json | jq -e '.["'"$_name"'/"]' >/dev/null || \
     vault secrets enable -path "$_name" pki
   vault secrets tune -max-lease-ttl=87600h "$_name"
+  vault write "$_name"/config/auto-tidy \
+    enabled=true tidy_cert_store=true tidy_revoked_certs=true
 
   vault read -format=json "$_name/cert/ca" >/dev/null || \
     vault write -format=json  -field=certificate "$_name/root/generate/internal" \
@@ -38,6 +40,8 @@ create_int_pki() {
   vault secrets list -format=json | jq -e '.["'"$_name"'/"]' >/dev/null || \
     vault secrets enable -path "$_name" pki
   vault secrets tune -max-lease-ttl=43800h "$_name"
+  vault write "$_name"/config/auto-tidy \
+    enabled=true tidy_cert_store=true tidy_revoked_certs=true
   vault read -format=json "$_name/cert/ca" >/dev/null ||
     (
       _csr=$(vault write -format=json \
