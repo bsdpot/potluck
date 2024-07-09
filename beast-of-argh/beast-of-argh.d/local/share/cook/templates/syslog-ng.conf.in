@@ -13,6 +13,7 @@ options {
  log-fifo-size(40000);
  time_reopen(120);
  ts_format(iso);
+ perm(0644);
 };
 
 # local sources
@@ -63,7 +64,7 @@ destination ppp { file("/var/log/ppp.log"); };
 #destination console { file("/dev/console"); };
 destination allusers { usertty("*"); };
 # pot settings, set permissions to allow promtail to read
-destination lokilogs { file("/mnt/logs/remote/$HOST.log"); perm(0644); };
+destination lokilogs { file("/mnt/logs/remote/$HOST.log"); };
 destination loghost {
   tcp("%%myip%%" port(514)
  );
