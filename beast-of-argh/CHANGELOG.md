@@ -6,6 +6,7 @@
 * Adjust syslog-ng to save remote log files with group read permissions
 * Remove invalid loki and promtail sysrc entries not present in pkg install grafana-loki
 * Change syslog-ng file save perms under options not destination
+* Correctly set syslog-ng remote logs permissions instead of global option
 
 ---
 
