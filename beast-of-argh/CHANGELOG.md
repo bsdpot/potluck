@@ -3,6 +3,8 @@
 * Switch to using pkg sources for grafana loki and promtail install
 * Update loki config
 * Add directory for promtail positions
+* Adjust syslog-ng to save remote log files with group read permissions
+* Remove invalid loki and promtail sysrc entries not present in pkg install grafana-loki
 
 ---
 

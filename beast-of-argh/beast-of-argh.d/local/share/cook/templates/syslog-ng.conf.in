@@ -1,7 +1,7 @@
 @version: %%config_version%%
 @include "scl.conf"
 
-# options
+# options, adding perm() to set any read access for log files
 options {
  chain_hostnames(off);
  use_dns (no);
@@ -19,6 +19,14 @@ options {
 source src {
  system();
  internal();
+};
+
+source s_loki {
+ file("/var/log/loki/loki.log");
+};
+
+source s_promtail {
+ file("/var/log/promtail/promtail.log");
 };
 
 # network sources
@@ -54,8 +62,8 @@ destination newsnotice { file("/var/log/news/news.notice"); };
 destination ppp { file("/var/log/ppp.log"); };
 #destination console { file("/dev/console"); };
 destination allusers { usertty("*"); };
-# pot settings
-destination lokilogs { file("/mnt/logs/remote/$HOST.log"); };
+# pot settings, set permissions to allow promtail to read
+destination lokilogs { file("/mnt/logs/remote/$HOST.log"); perm(0644); };
 destination loghost {
   tcp("%%myip%%" port(514)
  );
@@ -175,5 +183,10 @@ log { source(src); filter(f_all); destination(loghost); };
 log { source(src); filter(f_ppp); destination(ppp); };
 
 # pot config
+
+# enable otherlogs, pkg install grafana-loki uses specific logs not syslog
+log { source(s_loki); destination(loghost); };
+log { source(s_promtail); destination(loghost); };
+
 # log network logs to lokilogs
 log { source(mynetwork); destination(lokilogs); destination(lokisyslog); };

@@ -29,6 +29,10 @@ config_version=$(/usr/local/sbin/syslog-ng --version | \
 # create remote log metrics directory
 mkdir -p /mnt/logs/remote/metrics
 
+# testing
+chgrp loki /mnt/logs/remote
+chgrp loki /mnt/logs/remote/metrics
+
 # make the disk buffer directory
 mkdir -p /mnt/logs/syslog-ng-disk-buffer
 

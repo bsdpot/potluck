@@ -34,7 +34,11 @@ sep=$'\001'
 #chmod +x /usr/local/etc/rc.d/loki
 
 service loki enable || true
-sysrc loki_syslog_output_enable="YES" || true
+
+# this is invalid  on pkg install grafana-loki
+# logs are in /var/log/loki/loki.log
+#sysrc loki_syslog_output_enable="YES" || true
+
 # not specifically needed if permissions on /tmp/loki and loki-local-config.yaml
 # are correct
 #sysrc loki_user="loki"
@@ -57,7 +61,9 @@ chown -R loki:loki /tmp/loki
 
 # promtail needs a directory it has permission to write to
 mkdir -p /mnt/promtail
-chown -R promtail:promtail /mnt/promtail
+
+# promtail default group is loki
+chown -R promtail:loki /mnt/promtail
 
 # removed as pkg install should cover it (2024-07-08)
 # copy in the promtail rc file
@@ -65,7 +71,17 @@ chown -R promtail:promtail /mnt/promtail
 #chmod +x /usr/local/etc/rc.d/promtail
 
 service promtail enable || true
-sysrc promtail_syslog_output_enable="YES" || true
+
+# promtail needs to run with root perms because syslog-ng is saving
+# log files to /mnt/logs/remote and the files have 600 perms
+# disabled #
+# trying with read perms configured in syslog-ng instead
+# sysrc promtail_user="root"
+
+# invalid with pkg install grafana-loki
+# logs are in /var/log/promtail/promtail.log
+#sysrc promtail_syslog_output_enable="YES" || true
+
 # add this in for pkg install of grafana-loki to allow legacy setup stay same (2024-07-08)
 sysrc promtail_config="/usr/local/etc/promtail-local-config.yaml"
 
