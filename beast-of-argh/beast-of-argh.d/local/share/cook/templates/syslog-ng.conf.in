@@ -1,7 +1,7 @@
 @version: %%config_version%%
 @include "scl.conf"
 
-# options, adding perm() to set any read access for log files
+# options
 options {
  chain_hostnames(off);
  use_dns (no);
@@ -63,7 +63,7 @@ destination ppp { file("/var/log/ppp.log"); };
 #destination console { file("/dev/console"); };
 destination allusers { usertty("*"); };
 # pot settings, set permissions to allow promtail to read
-destination lokilogs { file("/mnt/logs/remote/$HOST.log" perm(644)); };
+destination lokilogs { file("/mnt/logs/remote/$HOST.log" perm(0644)); };
 destination loghost {
   tcp("%%myip%%" port(514)
  );
