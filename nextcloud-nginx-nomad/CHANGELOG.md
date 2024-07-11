@@ -1,3 +1,10 @@
+0.96
+
+* Version bump for rebuild
+* Increase S3 timeout value in docs
+
+---
+
 0.95
 
 * Version bump for rebuild
