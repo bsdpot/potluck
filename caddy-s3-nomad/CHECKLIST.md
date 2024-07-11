@@ -26,7 +26,7 @@ When `go` version changes updated the package install line and git sparse checko
 ## Quarterly Package Updates
 Every new quarterly pkg release, update this line to next applicable quarter
 ```
-git pull --depth=1 origin 2024Q2
+git pull --depth=1 origin 2024Q3
 ```
 in:
 * caddy-s3-nomad.sh

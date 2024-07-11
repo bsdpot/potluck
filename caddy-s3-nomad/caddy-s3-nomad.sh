@@ -123,8 +123,13 @@ pkg install -y acme.sh
 step "Install package git-lite"
 pkg install -y git-lite
 
-step "Install go121"
-pkg install -y go121
+#step "Install package go121"
+#pkg install -y go121
+
+step "Install package lang/go"
+pkg install -y lang/go
+
+
 
 # -------------- END PACKAGE SETUP -------------
 
@@ -160,6 +165,7 @@ git sparse-checkout set GIDs UIDs \
   ports-mgmt/pkg/ \
   lang/go121/ \
   lang/go-devel/ \
+  lang/go/ \
   www/caddy/ \
   www/xcaddy/ \
   www/caddy-custom/
@@ -173,7 +179,8 @@ git sparse-checkout set GIDs UIDs \
 # Quarterly in Aug 2023 is 2023Q3
 step "Pull files"
 #git pull --depth=1 origin 2023Q3
-git pull --depth=1 origin 2024Q2
+#git pull --depth=1 origin 2024Q2
+git pull --depth=1 origin 2024Q3
 
 # go straight to building caddy-custom
 #step "Build caddy"

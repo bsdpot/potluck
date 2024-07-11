@@ -1,3 +1,10 @@
+0.11
+
+* Version bump for new base image
+* Install lang/go instead of specific go121
+
+---
+
 0.10
 
 * Version bump for new base image
