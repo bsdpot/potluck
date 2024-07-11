@@ -115,11 +115,11 @@ pkg install -y bash
 step "Install package git-lite"
 pkg install -y git-lite
 
-step "Install package python39"
-pkg install -y python39
+step "Install package python311"
+pkg install -y python311
 
-step "Install package py39-supervisor"
-pkg install -y py39-supervisor
+step "Install package py311-supervisor"
+pkg install -y py311-supervisor
 
 step "Install package postgresql15-client"
 pkg install -y postgresql15-client
