@@ -118,23 +118,23 @@ pkg install -y bash
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
-step "Install package py39-salt"
-pkg install -y py39-salt
+step "Install package py311-salt"
+pkg install -y py311-salt
 
-step "Install py39-pip"
-pkg install -y py39-pip
+step "Install py311-pip"
+pkg install -y py311-pip
 
-step "Install py39-tornado"
-pkg install -y py39-tornado
+step "Install py311-tornado"
+pkg install -y py311-tornado
 
-step "Install py39-aiocontextvars"
-pkg install -y py39-aiocontextvars
+step "Install py311-aiocontextvars"
+pkg install -y py311-aiocontextvars
 
 step "Install package git-lite"
 pkg install -y git-lite
 
-step "Install package go"
-pkg install -y go
+step "Install package lang/go"
+pkg install -y lang/go
 
 step "Install package gmake"
 pkg install -y gmake
