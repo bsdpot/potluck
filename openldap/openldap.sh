@@ -118,10 +118,6 @@ pkg install -y nano
 step "Install package bash"
 pkg install -y bash
 
-# not including go, was depedency for openldap_exporter, which does not work on freebsd
-#step "Install package go"
-#pkg install -y go
-
 step "Install package node_exporter"
 pkg install -y node_exporter
 
@@ -139,10 +135,6 @@ pkg install -y p5-Archive-Zip
 
 step "Install package apache24"
 pkg install -y apache24
-
-# deprecated in favour of php-fpm
-#step "Install package mod_php82"
-#pkg install -y mod_php82
 
 step "Install package php82"
 pkg install -y php82
