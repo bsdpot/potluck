@@ -53,7 +53,7 @@ job "examplegit" {
       config {
         image = "https://potluck.honeyguide.net/git-nomad"
         pot = "git-nomad-amd64-14_0"
-        tag = "1.14.1"
+        tag = "1.15.1"
         command = "/usr/local/bin/cook"
         args = ["-n","gitnomad"]
 
