@@ -116,10 +116,10 @@ step "Install package rsync"
 pkg install -y rsync
 
 step "Install package matrix server"
-pkg install -y py39-matrix-synapse
+pkg install -y py311-matrix-synapse
 
 step "Install package matrix ldap support"
-pkg install -y py39-matrix-synapse-ldap3
+pkg install -y py311-matrix-synapse-ldap3
 
 step "Install package acme.sh"
 pkg install -y acme.sh

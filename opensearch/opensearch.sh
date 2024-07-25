@@ -118,8 +118,8 @@ pkg install -y rsync
 step "Install package git-lite"
 pkg install -y git-lite
 
-step "Install package go"
-pkg install -y go
+step "Install package lang/go"
+pkg install -y lang/go
 
 step "Install package node_exporter"
 pkg install -y node_exporter

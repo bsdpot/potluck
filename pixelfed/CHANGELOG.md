@@ -1,3 +1,10 @@
+0.2
+
+* Version bump for new base image
+* Python is now py311
+
+---
+
 0.1
 
 * Version bump for new base image

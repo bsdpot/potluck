@@ -21,6 +21,14 @@ source src {
  internal();
 };
 
+source s_loki {
+ file("/var/log/loki/loki.log");
+};
+
+source s_promtail {
+ file("/var/log/promtail/promtail.log");
+};
+
 # network sources
 # for every 100 max connections, add 10000 log-fifo-size to destination,
 # plus 10000 for local # so 300 max connections is (30000+10000) or
@@ -54,8 +62,8 @@ destination newsnotice { file("/var/log/news/news.notice"); };
 destination ppp { file("/var/log/ppp.log"); };
 #destination console { file("/dev/console"); };
 destination allusers { usertty("*"); };
-# pot settings
-destination lokilogs { file("/mnt/logs/remote/$HOST.log"); };
+# pot settings, set permissions to allow promtail to read
+destination lokilogs { file("/mnt/logs/remote/$HOST.log" perm(0644)); };
 destination loghost {
   tcp("%%myip%%" port(514)
  );
@@ -175,5 +183,10 @@ log { source(src); filter(f_all); destination(loghost); };
 log { source(src); filter(f_ppp); destination(ppp); };
 
 # pot config
+
+# enable otherlogs, pkg install grafana-loki uses specific logs not syslog
+log { source(s_loki); destination(loghost); };
+log { source(s_promtail); destination(loghost); };
+
 # log network logs to lokilogs
 log { source(mynetwork); destination(lokilogs); destination(lokisyslog); };

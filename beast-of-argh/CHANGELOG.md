@@ -1,3 +1,22 @@
+0.17
+
+* Version bump for new base image
+
+---
+
+0.16
+
+* Switch to using pkg sources for grafana loki and promtail install
+* Update loki config
+* Add directory for promtail positions
+* Adjust syslog-ng to save remote log files with group read permissions
+* Remove invalid loki and promtail sysrc entries not present in pkg install grafana-loki
+* Change syslog-ng file save perms under options not destination
+* Correctly set syslog-ng remote logs permissions instead of global option
+* Even more correctly set permissions 0644 on remote logs files
+
+---
+
 0.15
 
 * Version bump for new base image

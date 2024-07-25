@@ -1,3 +1,9 @@
+0.0.26
+
+* Version bump for new quarterlies
+
+---
+
 0.0.25
 
 * Version bump for SSH CVE, new quarterlies in next one

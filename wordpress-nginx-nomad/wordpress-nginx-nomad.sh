@@ -320,8 +320,8 @@ pkg install -y png
 step "Install package poppler-data"
 pkg install -y poppler-data
 
-step "Install package python39"
-pkg install -y python39
+step "Install package python311"
+pkg install -y python311
 
 step "Install package tiff"
 pkg install -y tiff

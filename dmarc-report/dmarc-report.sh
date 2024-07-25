@@ -127,32 +127,32 @@ pkg install -y nginx
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
-step "Install package python39"
-pkg install -y python39
+step "Install package python311"
+pkg install -y python311
 
-step "Install package py39-pip"
-pkg install -y py39-pip
+step "Install package py311-pip"
+pkg install -y py311-pip
 
-step "Install package py39-virtualenv"
-pkg install -y py39-virtualenv
+step "Install package py311-virtualenv"
+pkg install -y py311-virtualenv
 
-step "Install package py39-libxml2"
-pkg install -y py39-libxml2
+step "Install package py311-libxml2"
+pkg install -y py311-libxml2
 
-step "Install package py39-cryptography"
-pkg install -y py39-cryptography
+step "Install package py311-cryptography"
+pkg install -y py311-cryptography
 
-step "Install package py39-cryptography-vectors"
-pkg install -y py39-cryptography-vectors
+step "Install package py311-cryptography-vectors"
+pkg install -y py311-cryptography-vectors
 
-step "Install package py39-regex"
-pkg install -y py39-regex
+step "Install package py311-regex"
+pkg install -y py311-regex
 
-step "Install package py39-pandas"
-pkg install -y py39-pandas
+step "Install package py311-pandas"
+pkg install -y py311-pandas
 
-step "Install package py39-matplotlib"
-pkg install -y py39-matplotlib
+step "Install package py311-matplotlib"
+pkg install -y py311-matplotlib
 
 step "Install package libxslt"
 pkg install -y libxslt

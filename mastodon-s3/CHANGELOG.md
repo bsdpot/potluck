@@ -2,6 +2,7 @@
 
 * Version bump for rebuild
 * Update to latest mastodon release
+* Configure longer S3 timeouts and add a retry
 
 ---
 

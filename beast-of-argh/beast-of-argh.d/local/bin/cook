@@ -113,6 +113,7 @@ mkdir -p /mnt/prometheus
 mkdir -p /mnt/alertmanager
 mkdir -p /mnt/grafana
 mkdir -p /mnt/loki
+mkdir -p /mnt/promtail
 
 export PATH=/usr/local/share/cook/bin:$PATH
 

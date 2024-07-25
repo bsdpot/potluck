@@ -57,8 +57,9 @@ $CONFIG = array (
       'hostname' => '<your host>',
       'port' => '<your port>',
       'use_ssl' => true,
-      'region' => 'optional',
-      'use_path_style' => true
+      'region' => 'global',
+      'use_path_style' => true,
+      'timeout' => '30'
     ),
   ),
 );
@@ -170,7 +171,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-14_0"
-        tag = "0.95"
+        tag = "0.96"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
