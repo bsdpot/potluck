@@ -24,13 +24,6 @@ config_version=$(/usr/local/sbin/syslog-ng --version | \
   sed "s${sep}%%myip%%${sep}$IP${sep}g" \
   > /usr/local/etc/syslog-ng.conf
 
-# create remote log dir
-mkdir -p /mnt/log/remote/metrics
-
-# correct permissions of existing log files (for upgrading)
-find /mnt/log/remote -name "*.log" -exec chmod 640 {} \;
-find /mnt/log/remote -name "*.log" -exec chgrp promtail {} \;
-
 # stop and disable syslogd
 service syslogd onestop || true
 service syslogd disable

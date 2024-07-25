@@ -50,6 +50,8 @@ sysrc promtail_logfile="/mnt/log/promtail.log"
 mkdir -p /mnt/log
 touch /mnt/log/promtail.log
 chown promtail:promtail /mnt/log/promtail.log
+touch /mnt/log/positions.yaml
+chown promtail:promtail /mnt/log/positions.yaml
 
 # copy in the promtail config file
 if [ -f /mnt/loki/promtail-local-config.yaml.in ]; then
@@ -59,3 +61,8 @@ else
 	cp "$TEMPLATEPATH/promtail-local-config.yaml.in" \
 	  /usr/local/etc/promtail-local-config.yaml
 fi
+
+# correct permissions of existing log files (for upgrading)
+mkdir -p /mnt/log/remote/metrics
+find /mnt/log/remote -name "*.log" -exec chmod 640 {} \;
+find /mnt/log/remote -name "*.log" -exec chgrp promtail {} \;

@@ -1,3 +1,9 @@
+0.2.24
+
+* Fixes to starting promtail
+
+---
+
 0.2.23
 
 * Switch to FreeBSD package versions of loki and promtail
