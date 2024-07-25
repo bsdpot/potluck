@@ -1,3 +1,11 @@
+0.2.25
+
+* More fixes to loki and promtail
+* Breaking change: In case a custom promtail-local-config.yaml.in is used, adjust `positions:` to `filename: /mnt/log/promtail/positions.yaml`
+
+
+---
+
 0.2.24
 
 * Fixes to starting promtail

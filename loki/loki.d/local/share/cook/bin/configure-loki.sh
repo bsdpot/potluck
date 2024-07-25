@@ -23,12 +23,15 @@ mkdir -p /mnt/loki/rules-temp
 service loki enable
 sysrc loki_args="-frontend.instance-addr=127.0.0.1"
 sysrc loki_config=/usr/local/etc/loki-local-config.yaml
-sysrc loki_logfile="/mnt/log/loki.log"
+sysrc loki_logfile="/mnt/log/loki/loki.log"
 
-# prepare loki.log
-mkdir -p /mnt/log
-touch /mnt/log/loki.log
-chown loki:loki /mnt/log/loki.log
+# patch startup script
+sed -i '' 's/command_args="-p/command_args="-f -p/' \
+  /usr/local/etc/rc.d/loki
+
+# prepare logdir
+mkdir -p /mnt/log/loki
+chown loki:loki /mnt/log/loki
 
 # copy in loki config file
 if [ -f /mnt/loki/loki-local-config.yaml.in ]; then
@@ -45,13 +48,20 @@ chown -R loki:loki /mnt/loki
 # promtail setup
 service promtail enable
 sysrc promtail_config="/usr/local/etc/promtail-local-config.yaml"
-sysrc promtail_logfile="/mnt/log/promtail.log"
+sysrc promtail_logfile="/mnt/log/promtail/promtail.log"
 
-mkdir -p /mnt/log
-touch /mnt/log/promtail.log
-chown promtail:promtail /mnt/log/promtail.log
-touch /mnt/log/positions.yaml
-chown promtail:promtail /mnt/log/positions.yaml
+# patch startup script
+sed -i '' 's/command_args="-p/command_args="-f -p/' \
+  /usr/local/etc/rc.d/promtail
+
+# prepare logdir
+mkdir -p /mnt/log/promtail
+chown promtail:promtail /mnt/log/promtail
+if [ -f /mnt/log/positions.yaml ] && \
+    [ ! -f /mnt/log/promtail/positions.yaml ]; then
+	mv /mnt/log/positions.yaml /mnt/log/promtail/positions.yaml
+	chown promtail:promtail /mnt/log/promtail/positions.yaml
+fi
 
 # copy in the promtail config file
 if [ -f /mnt/loki/promtail-local-config.yaml.in ]; then
