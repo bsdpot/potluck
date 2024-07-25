@@ -63,8 +63,20 @@ destination ppp { file("/var/log/ppp.log"); };
 #destination console { file("/dev/console"); };
 destination allusers { usertty("*"); };
 # pot settings
-destination lokilogs { file("/mnt/log/remote/$HOST.log"); };
-destination jsonmetricslog { file("/mnt/log/remote/metrics/jsonmetrics.log"); };
+destination lokilogs {
+  file("/mnt/log/remote/$HOST.log"
+    owner(root)
+    group(promtail)
+    perm(0640)
+  );
+};
+destination jsonmetricslog {
+  file("/mnt/log/remote/metrics/jsonmetrics.log"
+    owner(root)
+    group(promtail)
+    perm(0640)
+  );
+};
 destination loghost {
   tcp("%%myip%%" port(6514)
   tls(
