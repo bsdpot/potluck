@@ -1,3 +1,9 @@
+0.2.23
+
+* Switch to FreeBSD package versions of loki and promtail
+
+---
+
 0.2.22
 
 * Make consul-template retry more often
