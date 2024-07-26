@@ -1,6 +1,7 @@
 0.17
 
 * Version bump for new base image
+* Minor updates to match loki updates
 
 ---
 

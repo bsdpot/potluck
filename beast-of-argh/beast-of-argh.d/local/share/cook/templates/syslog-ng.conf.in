@@ -63,7 +63,20 @@ destination ppp { file("/var/log/ppp.log"); };
 #destination console { file("/dev/console"); };
 destination allusers { usertty("*"); };
 # pot settings, set permissions to allow promtail to read
-destination lokilogs { file("/mnt/logs/remote/$HOST.log" perm(0644)); };
+destination lokilogs { 
+  file("/mnt/logs/remote/$HOST.log"
+    owner(root)
+    group(promtail)
+    perm(0640)
+  );
+};
+destination jsonmetricslog {
+  file("/mnt/logs/remote/metrics/jsonmetrics.log"
+    owner(root)
+    group(promtail)
+    perm(0640)
+  );
+};
 destination loghost {
   tcp("%%myip%%" port(514)
  );
@@ -117,6 +130,9 @@ filter f_is_debug { level(debug); };
 
 # program filters
 filter f_ppp { program("ppp"); };
+
+# jsonmetrics filter
+filter f_jsonmetric { message("jsonmetric - "); };
 
 # filter all
 filter f_all {
@@ -189,4 +205,13 @@ log { source(s_loki); destination(loghost); };
 log { source(s_promtail); destination(loghost); };
 
 # log network logs to lokilogs
-log { source(mynetwork); destination(lokilogs); destination(lokisyslog); };
+#log { source(mynetwork); destination(lokilogs); destination(lokisyslog); };
+log {
+  source(mynetwork);
+  if (filter(f_jsonmetric)) {
+    destination(jsonmetricslog);
+  } else {
+    destination(lokilogs);
+    destination(lokisyslog);
+  };
+};
