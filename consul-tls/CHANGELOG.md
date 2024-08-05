@@ -1,3 +1,9 @@
+0.4.2
+
+* Improve robustness of consul image startup
+
+---
+
 0.4.1
 
 * Version bump for new base image
