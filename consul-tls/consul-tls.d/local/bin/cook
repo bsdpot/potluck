@@ -79,6 +79,9 @@ if [ -e /usr/local/etc/pot-is-seasoned ]; then
         service consul-template stop || true
         service consul-template stop || true
 
+        log "Remove existing consul agent key/cert"
+        rm -f /mnt/consulcerts/agent.crt /mnt/consulcerts/agent.key
+
         log "Seasoned: Start consul-template"
         timeout --foreground 20 \
           sh -c 'while ! service consul-template status; do
