@@ -1,3 +1,9 @@
+0.16.1
+
+* Make sure prometheus and alertmanager are started when an already provisioned image boots a second time
+
+---
+
 0.16.0
 
 * Optimize reloading of services on cert rotation
