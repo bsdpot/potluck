@@ -1,3 +1,9 @@
+0.16.0
+
+* Optimize reloading of services on cert rotation
+
+---
+
 0.15.1
 
 * Version bump for new base image

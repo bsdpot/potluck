@@ -248,7 +248,7 @@ log "Start prometheus"
 service prometheus start
 
 log "Start alertmanager"
-service alertmanager start
+service alertmanager start >/dev/null 2>&1
 
 # syslog-ng start is set in the script because it won't run if REMOTELOG
 # is empty or null

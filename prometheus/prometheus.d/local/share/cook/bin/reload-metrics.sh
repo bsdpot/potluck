@@ -11,8 +11,7 @@ if service syslog-ng enabled; then
 fi
 
 service nginx reload nodemetricsproxy
-service prometheus restart
-service alertmanager restart >/dev/null 2>&1
+service prometheus reload
 service nginx reload prometheusproxy
 
 exit 0
