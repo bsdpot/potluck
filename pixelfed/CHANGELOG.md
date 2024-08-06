@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Python is now py311
+* Update cache clear script
 
 ---
 

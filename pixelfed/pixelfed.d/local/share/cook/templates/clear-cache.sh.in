@@ -17,3 +17,6 @@ cd /tmp || exit 1
 
 echo "Clearing cache"
 su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan cache:clear --no-interaction"
+su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan optimize:clear --no-interaction"
+su -m www -c "cd /usr/local/www/pixelfed; /usr/local/bin/php artisan optimize --no-interaction"
+
