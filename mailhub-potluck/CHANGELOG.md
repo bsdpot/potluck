@@ -1,6 +1,7 @@
 0.14
 
 * Version bump for new base image
+* Fix postfix main.cf to replace "smtpd_use_tls" with "smtpd_tls_security_level"
 
 ---
 

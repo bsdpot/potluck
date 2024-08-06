@@ -732,8 +732,10 @@ sender_dependent_default_transport_maps = hash:/usr/local/etc/postfix/sender_tra
 
 # tls config
 smtpd_tls_auth_only = yes
-smtp_use_tls = yes
-smtpd_use_tls = yes 
+# deprecated
+#smtp_use_tls = yes
+#smtpd_use_tls = yes 
+smtp_tls_security_level = may
 smtpd_tls_security_level = may
 smtpd_tls_loglevel = 1
 smtpd_tls_received_header = yes
