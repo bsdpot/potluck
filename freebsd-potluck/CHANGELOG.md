@@ -1,3 +1,9 @@
+0.0.27
+
+* Version bump for security fixs and errata
+
+---
+
 0.0.26
 
 * Version bump for new quarterlies
