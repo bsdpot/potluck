@@ -1,3 +1,9 @@
+0.2.26
+
+* Add Loki metrics endpoint as a service in Consul
+
+---
+
 0.2.25
 
 * More fixes to loki and promtail

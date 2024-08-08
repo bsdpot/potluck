@@ -1,3 +1,9 @@
+0.15.4
+
+* Add Loki metrics Consul service as a scrape target
+
+---
+
 0.15.3
 
 * Make sure prometheus and alertmanager are started when an already provisioned image boots a second time
