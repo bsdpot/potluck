@@ -1,3 +1,10 @@
+0.17
+
+* Version bump for new base image
+* Jenkins now uses openjdk17
+
+---
+
 0.16
 
 * Version bump for new base image

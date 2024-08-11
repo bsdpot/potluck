@@ -120,8 +120,8 @@ pkg install -y syslog-ng
 step "Install package git"
 pkg install -y git
 
-step "Install package openjdk11"
-pkg install -y openjdk11
+step "Install package openjdk17"
+pkg install -y openjdk17
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng
