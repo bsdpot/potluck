@@ -96,7 +96,7 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/nginx-s3-nomad"
         pot = "nginx-s3-nomad-amd64-14_0"
-        tag = "0.17.1"
+        tag = "0.18.1"
         command = "/usr/local/bin/cook"
         args = ["-a","10.0.0.2","-b","10.0.0.3","-x","bucketname","-s","yes"]
         port_map = {
@@ -150,7 +150,7 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/nginx-s3-nomad"
         pot = "nginx-s3-nomad-amd64-14_0"
-        tag = "0.17.1"
+        tag = "0.18.1"
         command = "/usr/local/bin/cook"
         args = ["-a","10.0.0.2","-b","10.0.0.3","-c","10.0.0.4","-x","bucketname","-s","yes"]
         port_map = {
