@@ -123,9 +123,6 @@ pkg install -y acme.sh
 step "Install package git-lite"
 pkg install -y git-lite
 
-#step "Install package go121"
-#pkg install -y go121
-
 step "Install package lang/go"
 pkg install -y lang/go
 
