@@ -19,7 +19,7 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 * `dmarc-report.ini`
 
 ## Python updates
-Make sure to update python39 and py39-{packagename} in the following files on Python version change:
+Make sure to update python311 and py311-{packagename} in the following files on Python version change:
 * dmarc-report.sh
 
 ## Shellcheck
