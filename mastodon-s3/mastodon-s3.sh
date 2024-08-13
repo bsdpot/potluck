@@ -155,8 +155,11 @@ pkg install -y npm
 step "Install package git"
 pkg install -y git
 
-step "Install package go"
-pkg install -y go
+step "Install package python3"
+pkg install -y python3
+
+step "Install package lang/go"
+pkg install -y lang/go
 
 step "Install package gmake"
 pkg install -y gmake
@@ -164,6 +167,11 @@ pkg install -y gmake
 step "Install package autoconf"
 pkg install -y autoconf
 
+# ports-build-related
+step "Install package gettext-tools"
+pkg install -y gettext-tools
+
+# building from ports
 step "Install package ffmpeg"
 pkg install -y ffmpeg
 
@@ -214,8 +222,48 @@ pkg install -y libyaml
 step "Install package readline"
 pkg install -y readline
 
+#step "Clean package installation"
+#pkg clean -y
+
+# ---------------- SETUP PORTS -----------------
+
+#step "Add openssl settings to make.conf"
+#echo "BATCH=yes" > /etc/make.conf
+#echo "DEFAULT_VERSIONS+=ssl=openssl" >> /etc/make.conf
+##echo "OPTIONS_SET+= " >> /etc/make.conf
+
+#step "Make directory /usr/ports"
+#mkdir -p /usr/ports
+
+#step "Clone ports repo (slow, large)"
+#git clone https://git.freebsd.org/ports.git /usr/ports
+
+#step "Checkout the quarterly distribution"
+#cd /usr/ports
+#git checkout 2024Q3
+
+#step "Build ffmpeg"
+#cd /usr/ports/multimedia/ffmpeg/
+#make install clean BATCH=YES NO_CHECKSUM=yes
+
+#step "Build ImageMagick7"
+#cd /usr/ports/graphics/ImageMagick7/
+#make install clean BATCH=YES
+
+#step "Change directory to /root"
+#cd /root
+
+#step "Remove /usr/ports"
+#rm -rf /usr/ports
+
+# --------------- CLEAN PACKAGES ---------------
+
+step "Package autoremove"
+pkg autoremove -y
+
 step "Clean package installation"
 pkg clean -y
+
 
 # -------------- END PACKAGE SETUP -------------
 
