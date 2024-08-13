@@ -317,6 +317,53 @@ pkg install -y nano
 step "Install package sudo"
 pkg install -y sudo
 
+# this step moved lower due to ports builds
+#step "Clean package installation"
+#pkg clean -y
+
+# ---------------- SETUP PORTS -----------------
+
+#step "Install git-lite"
+#pkg install -y git-lite
+
+#step "Add openssl to make.conf"
+#echo "BATCH=yes" > /etc/make.conf
+#echo "DEFAULT_VERSIONS+=ssl=openssl" >> /etc/make.conf
+##echo "OPTIONS_SET+= " >> /etc/make.conf
+
+#step "Make directory /usr/ports"
+#mkdir -p /usr/ports
+
+#step "Clone ports repo (slow, large)"
+#git clone https://git.freebsd.org/ports.git /usr/ports
+
+#step "Checkout the quarterly distribution"
+#cd /usr/ports
+#git checkout 2024Q3
+
+#step "Build libheif"
+#cd /usr/ports/graphics/libheif/
+#make install clean BATCH=YES
+
+#step "Build ffmpeg"
+#cd /usr/ports/multimedia/ffmpeg/
+#make install clean BATCH=YES NO_CHECKSUM=yes
+
+#step "Build ImageMagick7"
+#cd /usr/ports/graphics/ImageMagick7/
+#make install clean BATCH=YES
+
+#step "Change directory to /root"
+#cd /root
+
+#step "Remove /usr/ports"
+#rm -rf /usr/ports
+
+# --------------- CLEAN PACKAGES ---------------
+
+step "Package autoremove"
+pkg autoremove -y
+
 step "Clean package installation"
 pkg clean -y
 
