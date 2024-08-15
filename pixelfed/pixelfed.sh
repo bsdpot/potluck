@@ -64,7 +64,7 @@ mkdir -p /usr/local/etc/pkg/repos
 # only modify repo if not already done in base image
 # shellcheck disable=SC2016
 test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
-  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
     >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
@@ -148,11 +148,8 @@ pkg install -y node20
 step "Install package yarn-node20"
 pkg install -y yarn-node20
 
-#step "Install package ImageMagick7-nox11"
-#pkg install -y ImageMagick7-nox11
-
-step "Install package ImageMagick7"
-pkg install -y ImageMagick7
+step "Install package ImageMagick7-nox11"
+pkg install -y ImageMagick7-nox11
 
 step "Install package php82"
 pkg install -y php82
@@ -238,6 +235,42 @@ pkg install -y php82-pecl-imagick
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
+# ---------------- SETUP PORTS -----------------
+
+#step "Add openssl settings to make.conf"
+#echo "BATCH=yes" > /etc/make.conf
+#echo "DEFAULT_VERSIONS+=ssl=openssl" >> /etc/make.conf
+##echo "OPTIONS_SET+= " >> /etc/make.conf
+
+#step "Make directory /usr/ports"
+#mkdir -p /usr/ports
+
+#step "Clone ports repo (slow, large)"
+#git clone https://git.freebsd.org/ports.git /usr/ports
+
+#step "Checkout the quarterly distribution"
+#cd /usr/ports
+#git checkout 2024Q3
+
+#step "Build ffmpeg"
+#cd /usr/ports/multimedia/ffmpeg/
+#make install clean BATCH=YES NO_CHECKSUM=yes
+
+#step "Build ImageMagick7"
+#cd /usr/ports/graphics/ImageMagick7/
+#make install clean BATCH=YES
+
+#step "Change directory to /root"
+#cd /root
+
+#step "Remove /usr/ports"
+#rm -rf /usr/ports
+
+# --------------- CLEAN PACKAGES ---------------
+
+step "Package autoremove"
+pkg autoremove -y
+
 step "Clean package installation"
 pkg clean -y
 
@@ -263,8 +296,8 @@ step "Checking out the latest commit"
 #su -m www -c "cd /usr/local/www/pixelfed; git checkout e9bcc52944ffab87d9971f21832046942058570d"
 # https://github.com/pixelfed/pixelfed/commit/ceb375d91d736e72f31931e19701b6cff191d0db
 #su -m www -c "cd /usr/local/www/pixelfed; git checkout ceb375d91d736e72f31931e19701b6cff191d0db"
-# latest commit as of 2024-08-15, albeit dated 3 days prior
-su -m www -c "cd /usr/local/www/pixelfed; git checkout 0941843fad2b355eeb6966523dc48c6fd233f7c5"
+# lock to release v0.12.3 on 2024-08-15
+su -m www -c "cd /usr/local/www/pixelfed; git checkout 4c245cf429330d01fcb8ebeb9aa8c84a9574a645"
 
 # include --no-cache because user www can't create cache dir in /root
 step "Run composer install"
