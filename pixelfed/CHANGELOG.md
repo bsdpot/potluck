@@ -1,3 +1,10 @@
+0.3
+
+* Version bump for new base image
+* Set .env variable "FILESYSTEM_DRIVER=s3"
+
+---
+
 0.2
 
 * Version bump for new base image
