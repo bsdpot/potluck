@@ -27,7 +27,9 @@ sep=$'\001'
 rm /usr/local/etc/rbldnsd/example
 
 # get the blocklist from github
-git clone https://github.com/borestad/blocklist-ip.git /root/blocklist-ip
+#git clone https://github.com/borestad/blocklist-ip.git /root/blocklist-ip
+# updated 2024-08-18, see https://github.com/bsdpot/potluck/issues/55
+git clone https://github.com/borestad/blocklist-abuseipdb.git /root/blocklist-ip
 
 # check ruleset or set default
 if [ -n "$RULESET" ]; then
@@ -38,10 +40,14 @@ fi
 
 case $RULESET in
 1) RULEFILE="/root/blocklist-ip/abuseipdb-s100-1d.ipv4" ;;
-2) RULEFILE="/root/blocklist-ip/abuseipdb-s100-2d.ipv4" ;;
 3) RULEFILE="/root/blocklist-ip/abuseipdb-s100-3d.ipv4" ;;
 7) RULEFILE="/root/blocklist-ip/abuseipdb-s100-7d.ipv4" ;;
+14) RULEFILE="/root/blocklist-ip/abuseipdb-s100-14d.ipv4" ;;
 30) RULEFILE="/root/blocklist-ip/abuseipdb-s100-30d.ipv4" ;;
+60) RULEFILE="/root/blocklist-ip/abuseipdb-s100-60d.ipv4" ;;
+90) RULEFILE="/root/blocklist-ip/abuseipdb-s100-90d.ipv4" ;;
+120) RULEFILE="/root/blocklist-ip/abuseipdb-s100-120d.ipv4" ;;
+all) RULEFILE="/root/blocklist-ip/abuseipdb-s100-all.ipv4" ;;
 *)
   echo "there is a problem with the RULESET parameter"
   exit 1
@@ -75,4 +81,3 @@ sysrc rbldnsd_flags="-r /usr/local/etc/rbldnsd -b $IP bl.$DOMAIN:ip4tset:$DOMAIN
 
 # enable rbldnsd
 service rbldnsd enable || true
-

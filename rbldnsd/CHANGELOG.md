@@ -1,6 +1,7 @@
 0.17
 
 * Version bump for new base image
+* Fix sources to use new git repo at https://github.com/borestad/blocklist-abuseipdb
 
 ---
 

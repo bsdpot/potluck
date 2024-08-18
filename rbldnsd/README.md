@@ -9,7 +9,7 @@ tags: ["rbl", "mail", "blocklist", "security", "postfix"]
 
 This flavour currently contains ```rbldnsd``` for managing the DNS blocklist.
 
-The ruleset is pulled from https://github.com/borestad/blocklist-ip
+The ruleset is pulled from https://github.com/borestad/blocklist-abuseipdb
 
 The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. You can also connect to this host and ```service consul restart``` manually.
 
@@ -54,7 +54,7 @@ The SSLEMAIL parameter is the email address used to register the domain at `zero
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 
-The RULESET parameter is one of 1, 2, 3, 7, or 30, for the [ruleset sources](https://github.com/borestad/blocklist-ip). The default is 30d.
+The RULESET parameter is one of 1, 3, 7, 14, 30, 60, 90 or all, for the [ruleset sources](https://github.com/borestad/blocklist-abuseipdb). The default is 30 for 30d list.
 
 # Usage
 
