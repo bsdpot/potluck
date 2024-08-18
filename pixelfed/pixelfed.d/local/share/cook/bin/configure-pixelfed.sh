@@ -162,3 +162,7 @@ chmod +x /root/bin/create-admin.sh
 # copy over script to clear cache quickly and set executable
 cp -f "$TEMPLATEPATH/clear-cache.sh.in" /root/bin/clear-cache.sh
 chmod +x /root/bin/clear-cache.sh
+
+# copy over script to help with pixelfed logs
+cp -f "$TEMPLATEPATH/watch-pixelfed-logs.sh.in" /root/bin/watch-pixelfed-logs.sh
+chmod +x /root/bin/watch-pixelfed-logs.sh

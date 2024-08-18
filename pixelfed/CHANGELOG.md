@@ -4,6 +4,7 @@
 * Set .env variable "FILESYSTEM_DRIVER=s3"
 * Switch to latest package stream
 * Build as non-layered image
+* Add script to help with laravel.log
 
 ---
 
