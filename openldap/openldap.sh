@@ -173,6 +173,9 @@ pkg install -y php82-filter
 step "Install package php82-zip"
 pkg install -y php82-zip
 
+step "Install package phpldapadmin-php82"
+pkg install -y phpldapadmin-php82
+
 # ldap account manager
 step "Install package ldap-account-manager"
 pkg install -y ldap-account-manager

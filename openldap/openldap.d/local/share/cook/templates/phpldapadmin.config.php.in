@@ -1,0 +1,17 @@
+<?php
+$config->custom->appearance['friendly_attrs'] = array(
+        'facsimileTelephoneNumber' => 'Fax',
+        'gid'                      => 'Group',
+        'mail'                     => 'Email',
+        'telephoneNumber'          => 'Telephone',
+        'uid'                      => 'User Name',
+        'userPassword'             => 'Password'
+);
+$servers = new Datastore();
+$servers->newServer('ldap_pla');
+$servers->setValue('server','name','%%ip%%');
+$servers->setValue('server','host','%%ip%%');
+$servers->setValue('server','port',389);
+$servers->setValue('server','base',array('dc=%%mysuffix%%,dc=%%mytld%%'));
+$servers->setValue('login','bind_id','uid=%%genericusername%%,ou=People,dc=%%mysuffix%%,dc=%%mytld%%');
+?>

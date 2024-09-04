@@ -1,6 +1,7 @@
 1.20
 
 * Version bump for new base image
+* Add PHPLDAPAdmin tool
 
 ---
 

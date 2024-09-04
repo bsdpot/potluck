@@ -250,13 +250,12 @@ ServerName %%ip%%:80
 # documents. By default, all requests are taken from this directory, but
 # symbolic links and aliases may be used to point to other locations.
 #
-# configured for ldap user manager
-DocumentRoot "/usr/local/www/lam"
-<Directory "/usr/local/www/lam">
-    Options +FollowSymLinks
-    AllowOverride All
+# configured for index to ldap user manager and phpldapadmin
+DocumentRoot "/usr/local/www/apache24/data"
+<Directory "/usr/local/www/apache24/data">
+    Options Indexes FollowSymLinks
+    AllowOverride None
     Require all granted
-    DirectoryIndex index.html
 </Directory>
 
 #
@@ -341,6 +340,26 @@ LogLevel warn
     # require it to be present in the URL.  You will also likely
     # need to provide a <Directory> section to allow access to
     # the filesystem path.
+
+	# LDAP Account Manager
+	Alias /lam "/usr/local/www/lam" 
+
+	<Directory "/usr/local/www/lam">
+		Options +FollowSymLinks
+		AllowOverride All
+		Require all granted
+		DirectoryIndex index.html
+	</Directory>
+
+	# PHPLDAPAdmin
+	Alias /phpldapadmin "/usr/local/www/phpldapadmin/htdocs/"
+
+	<Directory "/usr/local/www/phpldapadmin/htdocs">
+		Options none
+		AllowOverride none
+		AllowOverride All
+		Require all granted
+	</Directory>
 
     #
     # ScriptAlias: This controls which directories contain server scripts. 

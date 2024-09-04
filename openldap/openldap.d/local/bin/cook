@@ -153,6 +153,9 @@ configure-php.sh
 log "Configure apache24"
 configure-apache24.sh
 
+log "Configure phpldapadmin"
+configure-phpldapdadmin.sh
+
 log "Configure LAM"
 configure-lam.sh
 
