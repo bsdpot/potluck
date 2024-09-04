@@ -3,7 +3,7 @@
 <h1>Please choose a tool</h1>
 <ul>
 <li><a href="/lam/">LDAP Account Manager</a></li>
-<li><a href-"/phpldapadmin/">PHPLDAPAdmin</a></li>
+<li><a href="/phpldapadmin/">PHPLDAPAdmin</a></li>
 </ul>
 </body>
 </html>

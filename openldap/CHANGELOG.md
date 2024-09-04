@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Add PHPLDAPAdmin tool
+* Fix apache index page to LDAP tools
 
 ---
 
