@@ -35,6 +35,7 @@ sep=$'\001'
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%hashkey%%${sep}$HASHKEY${sep}g" | \
+  sed "s${sep}%%blockkey%%${sep}$BLOCKKEY${sep}g" | \
   sed "s${sep}%%nextcloudurl%%${sep}$NEXTCLOUDURL${sep}g" | \
   sed "s${sep}%%sharedsecret%%${sep}$SHAREDSECRET${sep}g" \
   > /usr/local/etc/ncs/server.conf

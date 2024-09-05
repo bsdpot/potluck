@@ -82,6 +82,14 @@ else
 fi
 export HASHKEY
 
+if [ -z "${BLOCKKEY+x}" ]; then
+	BLOCKKEY=$(/usr/bin/openssl rand -base64 16)
+else
+	BLOCKKEY="$BLOCKKEY"
+fi
+export BLOCKKEY
+
+
 ########################################################################
 ## Provision image
 ########################################################################

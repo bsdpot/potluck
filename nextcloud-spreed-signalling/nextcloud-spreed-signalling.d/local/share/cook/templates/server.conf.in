@@ -44,7 +44,7 @@ hashkey = %%hashkey%%
 # Optional key for encrypting data in the sessions. Must be either 16, 24 or
 # 32 bytes.
 # If no key is specified, data will not be encrypted (not recommended).
-blockkey = -encryption-key-
+blockkey = %%blockkey%%
 
 [clients]
 # Shared secret for connections from internal clients. This must be the same
