@@ -42,7 +42,7 @@ You must run this instance from a top level domain such as `signal.yourdomain.co
    -E DOMAIN=<domain name> \
    -E EMAIL=<email address for certificate registration> \
    -E NEXTCLOUDURL=<FQDN nextcloud host, no https> \
-   -E SHAREDSECRET=<shared secrt with nextcloud host> \
+   -E SHAREDSECRET=<shared secret with nextcloud host> \
    [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 

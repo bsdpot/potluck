@@ -136,6 +136,9 @@ pkg install -y janus
 step "Install package rabbitmq"
 pkg install -y rabbitmq
 
+step "Install package turnserver"
+pkg install -y turnserver
+
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 

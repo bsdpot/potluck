@@ -126,11 +126,26 @@ timeout --foreground 120 \
 log "Start node_exporter"
 service node_exporter start
 
+# Generate a password for stitching up the various parts of the configuration
+# shellcheck disable=SC2002
+KEYPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
+export KEYPASSWORD
+
+# Generate a password for the turnserver and then hash it with turnadmin
+# shellcheck disable=SC2002
+TURNPASSWORD="$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 16; echo)"
+# make sure to get only the final line output as turnadmin produces several lines now
+HASHTURNPASSWORD=$(/usr/local/bin/turnadmin -P -p "$TURNPASSWORD" | tail -1)
+export HASHTURNPASSWORD
+
 log "Configure SSL certificates"
 configure-acme.sh
 
 log "Configure nginx server"
 configure-nginx.sh
+
+log "Configure turnserver"
+configure-turnserver.sh
 
 log "Configure spreed signaling server"
 configure-spreed.sh
@@ -148,6 +163,12 @@ log "Start rabbitmq"
 timeout --foreground 120 \
   sh -c 'while ! service rabbitmq status; do
     service rabbitmq start || true; sleep 5;
+  done'
+
+log "Start turnserver"
+timeout --foreground 120 \
+  sh -c 'while ! service turnserver status; do
+    service turnserver start || true; sleep 5;
   done'
 
 log "Start ncs_signaling"

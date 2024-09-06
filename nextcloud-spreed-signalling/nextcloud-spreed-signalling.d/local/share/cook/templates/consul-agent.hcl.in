@@ -24,7 +24,7 @@ encrypt = "%%gossipkey%%"
 retry_join = [ %%consulservers%% ]
 service = {
   name = "node-exporter"
-  tags = ["_app=matrix", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=spreed", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
 telemetry = {
