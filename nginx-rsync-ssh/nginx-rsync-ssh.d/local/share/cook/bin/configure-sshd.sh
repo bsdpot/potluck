@@ -19,8 +19,9 @@ if [ -f /root/sshd_config_in ]; then
     echo "Manually setting up host keys"
     cd /etc/ssh
     /usr/bin/ssh-keygen -A
+	# restarting instead of starting
     echo "Starting sshd"
-    service sshd start || true
+    service sshd restart || true
 else
     echo "There is no /root/sshd_config_in file"
 fi

@@ -1,3 +1,10 @@
+0.19
+
+* Version bump for new base image
+* Force SSH restart for changed sshd config
+
+---
+
 0.18
 
 * Version bump for new base image
