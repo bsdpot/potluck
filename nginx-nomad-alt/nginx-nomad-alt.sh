@@ -141,8 +141,8 @@ pkg clean -y
 step "Enable nginx"
 service nginx enable
 
-step "Enable php-fpm"
-service php-fpm enable
+#step "Enable php-fpm"
+#service php-fpm enable
 
 # -------------- END PACKAGE SETUP -------------
 

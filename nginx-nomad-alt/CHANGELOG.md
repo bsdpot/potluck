@@ -1,3 +1,10 @@
+0.16
+
+* Version bump for new base image
+* Move php-fpm enable to cook script
+
+---
+
 0.15
 
 * Version bump for new base image
