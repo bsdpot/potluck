@@ -1,14 +1,14 @@
 [http]
 # IP and port to listen on for HTTP requests.
 # Comment line to disable the listener.
-#listen = 127.0.0.1:8080
+listen = 127.0.0.1:8080
 #listen = %%ip%%:8080
 
 # HTTP socket read timeout in seconds.
-#readtimeout = 15
+readtimeout = 15
 
 # HTTP socket write timeout in seconds.
-#writetimeout = 15
+writetimeout = 15
 
 [https]
 # IP and port to listen on for HTTPS requests.

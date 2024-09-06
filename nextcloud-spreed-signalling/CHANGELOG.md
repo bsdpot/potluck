@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Add turnserver
+* Fix ncs to open 127.0.0.1:8080
 
 ---
 
