@@ -63,7 +63,7 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/nginx-nomad-alt"
         pot = "nginx-nomad-alt-amd64-14_0"
-        tag = "0.16.1"
+        tag = "0.16.2"
         command = "/usr/local/bin/cook"
         args = ["-s","servername"]
         mount = [

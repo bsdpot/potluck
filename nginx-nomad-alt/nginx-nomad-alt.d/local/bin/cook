@@ -87,7 +87,6 @@ service nginx onestop || true
 pkill nginx || true
 
 log "stop php-fpm service, kill php-fpm if around"
-service php-fpm enable
 service php-fpm onestop || true
 pkill php-fpm || true
 

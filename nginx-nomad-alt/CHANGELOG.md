@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Move php-fpm enable to cook script
+* Setup steps for manual setup php-fpm service
 
 ---
 
