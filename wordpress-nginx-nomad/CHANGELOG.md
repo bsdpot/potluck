@@ -1,3 +1,17 @@
+2.16
+
+* Version bump for new base image
+* Manually setup php-fpm service with rc file
+
+---
+
+2.15
+
+* Version bump for new base image
+* Broken as no new package for ImageMagick7-nox11 in quarterlies or for fbsd14
+
+---
+
 2.14
 
 * Version bump for new base image

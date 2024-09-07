@@ -344,8 +344,9 @@ pkg clean -y
 step "Enable nginx"
 service nginx enable
 
-step "Enable php-fpm"
-service php-fpm enable
+# not working, done manually in cook scripts
+#step "Enable php-fpm"
+#service php-fpm enable
 
 # -------------- Custom directories ------------
 

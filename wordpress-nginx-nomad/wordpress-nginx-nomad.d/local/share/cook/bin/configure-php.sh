@@ -24,3 +24,14 @@ cp -f "$TEMPLATEPATH/www.conf.in" /usr/local/etc/php-fpm.d/www.conf
 # Configure PHP
 cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 cp -f "$TEMPLATEPATH/99-custom.ini" /usr/local/etc/php/99-custom.ini
+
+# configure php-fpm service manually by fixing
+# missing /usr/local/etc/rc.d/php-fpm file
+if [ ! -f /usr/local/etc/rc.d/php-fpm ]; then
+	cp -f "$TEMPLATEPATH/php-fpm.rc.in" /usr/local/etc/rc.d/php-fpm
+	chown root:wheel /usr/local/etc/rc.d/php-fpm
+	chmod +x /usr/local/etc/rc.d/php-fpm
+fi
+
+# enable php-fpm service
+service php-fpm enable
