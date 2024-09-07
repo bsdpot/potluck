@@ -1,3 +1,10 @@
+1.19
+
+* Version bump for new base image
+* Manually setup php-fpm rc file if not exist
+
+---
+
 1.18
 
 * Version bump for new base image
