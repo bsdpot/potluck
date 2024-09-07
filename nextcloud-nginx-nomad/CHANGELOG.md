@@ -1,3 +1,10 @@
+0.98
+
+* Version bump for new image
+* Move enabling php-fpm service to manual step after creating missing rc file
+
+---
+
 0.97
 
 * Version bump for new image
