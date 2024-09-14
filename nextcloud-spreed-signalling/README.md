@@ -43,6 +43,7 @@ You must run this instance from a top level domain such as `signal.yourdomain.co
    -E EMAIL=<email address for certificate registration> \
    -E NEXTCLOUDURL=<FQDN nextcloud host, no https> \
    -E SHAREDSECRET=<shared secret with nextcloud host> \
+   [ -E PVTCERT=<any value enables> ] \
    [ -E REMOTELOG=<IP of syslog-ng server> ]
   ```
 
@@ -65,6 +66,8 @@ The EMAIL parameter is the email address to use for `acme.sh` SSL certificate re
 The NEXTCLOUDURL parameter is the FQDN of the Nextcloud instance. Do not include `https://`.
 
 The SHAREDSECRET parameter is the shared secret with the Nextcloud instance. This must be 16 or 32 characters.
+
+The PVTCERT parameter will enable self-signed certificates instead of obtaining from provider.
 
 REMOTELOG is an optional parameter for a remote syslog service, such as via the `loki` or `beast-of-argh` images on potluck site.
 
