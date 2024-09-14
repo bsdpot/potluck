@@ -1,3 +1,10 @@
+0.99
+
+* Version bump for new image
+* Fix warning for javascript mime-types adjustment
+
+---
+
 0.98
 
 * Version bump for new image

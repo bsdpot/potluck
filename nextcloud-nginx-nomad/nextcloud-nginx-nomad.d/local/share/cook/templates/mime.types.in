@@ -5,7 +5,7 @@ types {
     text/xml                                         xml;
     image/gif                                        gif;
     image/jpeg                                       jpeg jpg;
-    application/javascript                           js;
+    application/javascript                           js mjs;
     application/atom+xml                             atom;
     application/rss+xml                              rss;
 
@@ -97,5 +97,4 @@ types {
     video/x-ms-wmv                                   wmv;
     video/x-msvideo                                  avi;
 
-    application/javascript                           js mjs;
 }
