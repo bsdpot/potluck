@@ -28,16 +28,18 @@ if [ -s /root/nc-config.php ]; then
     chown www:www /usr/local/www/nextcloud/config/config.php
 fi
 
-# check for copied-in minio.config.php and if exists copy across to nextcloud config dir
+# check for copied-in objectstore.config.php and if exists copy across to nextcloud config dir
 if [ -s /root/objectstore.config.php ]; then
     cp -f /root/objectstore.config.php /usr/local/www/nextcloud/config/objectstore.config.php
     chown www:www /usr/local/www/nextcloud/config/objectstore.config.php
+	chmod 660 /usr/local/www/nextcloud/config/objectstore.config.php
 fi
 
 # check for copied in mysql.config.php and if exists copy across to nextcloud config dir
 if [ -s /root/mysql.config.php ]; then
     cp -f /root/mysql.config.php /usr/local/www/nextcloud/config/mysql.config.php
     chown www:www /usr/local/www/nextcloud/config/mysql.config.php
+	chmod 660 /usr/local/www/nextcloud/config/mysql.config.php
 fi
 
 # check for copied in custom.config.php and if exists copy across to nextcloud config dir
@@ -45,4 +47,5 @@ fi
 if [ -s /root/custom.config.php ]; then
     cp -f /root/custom.config.php /usr/local/www/nextcloud/config/custom.config.php
     chown www:www /usr/local/www/nextcloud/config/custom.config.php
+	chmod 660 /usr/local/www/nextcloud/config/custom.config.php
 fi

@@ -1,3 +1,11 @@
+0.100
+
+* Version bump for new image
+* Adjust permissions on copied in files for install
+* Include nextcloud-talk in nextcloud packages
+
+---
+
 0.99
 
 * Version bump for new image

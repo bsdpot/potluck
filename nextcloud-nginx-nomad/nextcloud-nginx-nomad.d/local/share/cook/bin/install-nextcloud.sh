@@ -21,7 +21,8 @@ if [ ! -e /usr/local/www/nextcloud/status.php ]; then
 	  nextcloud-mail-php82 \
 	  nextcloud-contacts-php82 \
 	  nextcloud-calendar-php82 \
-	  nextcloud-end_to_end_encryption-php82
+	  nextcloud-end_to_end_encryption-php82 \
+	  nextcloud-talk-php82
 	if [ -f /usr/local/www/nextcloud/config/config.php ]; then
 		mv /usr/local/www/nextcloud/config/config.php /usr/local/www/nextcloud/config/config.php.potbak
 		touch /usr/local/www/nextcloud/config/config.php
