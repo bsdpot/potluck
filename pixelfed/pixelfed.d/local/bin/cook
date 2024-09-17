@@ -165,10 +165,15 @@ timeout --foreground 120 \
   done'
 
 log "Start php-fpm"
-timeout --foreground 120 \
-  sh -c 'while ! service php-fpm status; do
-    service php-fpm start || true; sleep 5;
-  done'
+#timeout --foreground 120 \
+#  sh -c 'while ! service php-fpm status; do
+#    service php-fpm start || true; sleep 5;
+#  done'
+if [ -x /usr/local/etc/rc.d/php_fpm ] && [ ! -x /usr/local/etc/rc.d/php-fpm ]; then
+	service php_fpm start || true
+else
+	service php-fpm start || true
+fi
 
 log "Start supervisord"
 timeout --foreground 120 \

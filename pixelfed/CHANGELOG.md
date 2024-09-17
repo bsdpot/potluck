@@ -1,6 +1,7 @@
 0.4
 
 * Version bump for new base image
+* Adjust for php-fpm/php_fpm in RC service
 
 ---
 

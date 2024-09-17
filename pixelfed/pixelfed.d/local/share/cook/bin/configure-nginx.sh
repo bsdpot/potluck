@@ -34,13 +34,9 @@ cp -f "$TEMPLATEPATH/99-custom.ini.in" /usr/local/etc/php/99-custom.ini
 # enable nginx
 service nginx enable
 
-# configure php-fpm service manually by fixing
-# missing /usr/local/etc/rc.d/php-fpm file
-if [ ! -f /usr/local/etc/rc.d/php-fpm ]; then
-	cp -f "$TEMPLATEPATH/php-fpm.rc.in" /usr/local/etc/rc.d/php-fpm
-	chown root:wheel /usr/local/etc/rc.d/php-fpm
-	chmod +x /usr/local/etc/rc.d/php-fpm
+# enable php
+if [ -x /usr/local/etc/rc.d/php_fpm ] && [ ! -x /usr/local/etc/rc.d/php-fpm ]; then
+    service php_fpm enable || true
+else
+    service php-fpm enable || true
 fi
-
-# enable php-fpm
-service php-fpm enable
