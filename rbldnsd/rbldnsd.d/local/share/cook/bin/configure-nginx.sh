@@ -88,7 +88,12 @@ fi
 # enable nginx
 if [ -f "/usr/local/etc/ssl/bl.$DOMAIN.key" ]; then
     service nginx enable || true
-    service php-fpm enable || true
+	# enable php
+	if [ -x /usr/local/etc/rc.d/php_fpm ] && [ ! -x /usr/local/etc/rc.d/php-fpm ]; then
+    	service php_fpm enable || true
+	else
+    	service php-fpm enable || true
+	fi
 else
     echo "Cannot enable nginx. Missing /usr/local/etc/ssl/bl.$DOMAIN.key"
     exit 1
