@@ -374,12 +374,15 @@ mkdir /.snapshots
 step "Enable nginx"
 service nginx enable
 
-# missing /usr/local/etc/rc.d/php-fpm
-# add in manually in cook script if not present
-# and enable service
-#
-#step "Enable php-fpm"
-#service php-fpm enable
+# php-fpm is now php_fpm
+step "Enable php-fpm"
+#service php_fpm enable
+if [ -x /usr/local/etc/rc.d/php_fpm ] && [ ! -x /usr/local/etc/rc.d/php-fpm ]; then
+    service php_fpm enable || true
+else
+    service php-fpm enable || true
+fi
+
 
 # -------------- END PACKAGE SETUP -------------
 

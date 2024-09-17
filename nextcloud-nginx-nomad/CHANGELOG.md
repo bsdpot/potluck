@@ -1,3 +1,10 @@
+0.101
+
+* Version bump for new image
+* Adjust for php-fpm/php_fpm in RC service
+
+---
+
 0.100
 
 * Version bump for new image
