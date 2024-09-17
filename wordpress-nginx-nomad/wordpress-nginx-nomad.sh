@@ -344,9 +344,13 @@ pkg clean -y
 step "Enable nginx"
 service nginx enable
 
-# not working, done manually in cook scripts
-#step "Enable php-fpm"
+step "Enable php-fpm"
 #service php-fpm enable
+if [ -x /usr/local/etc/rc.d/php_fpm ] && [ ! -x /usr/local/etc/rc.d/php-fpm ]; then
+    service php_fpm enable || true
+else
+    service php-fpm enable || true
+fi
 
 # -------------- Custom directories ------------
 
