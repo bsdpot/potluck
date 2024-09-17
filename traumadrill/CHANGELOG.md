@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Manually setup php-fpm rc file if not exist
+* Adjust for php-fpm/php_fpm in RC service
 
 ---
 
