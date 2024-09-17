@@ -87,7 +87,14 @@ service nginx onestop || true
 pkill nginx || true
 
 log "stop php-fpm service, kill php-fpm if around"
-service php-fpm onestop || true
+#service php_fpm onestop || true
+if [ -x /usr/local/etc/rc.d/php_fpm ] && [ ! -x /usr/local/etc/rc.d/php-fpm ]; then
+	timeout --foreground 10 \
+	  service php_fpm onestop || service php_fpm onestop || true
+else
+	timeout --foreground 10 \
+	  service php-fpm onestop || service php-fpm onestop || true
+fi
 pkill php-fpm || true
 
 log "Configure nginx"
@@ -103,10 +110,11 @@ timeout --foreground 120 \
   done'
 
 log "Start php-fpm"
-timeout --foreground 120 \
-  sh -c 'while ! service php-fpm status; do
-    service php-fpm start || true; sleep 5;
-  done'
+if [ -x /usr/local/etc/rc.d/php_fpm ] && [ ! -x /usr/local/etc/rc.d/php-fpm ]; then
+	service php_fpm start || true
+else
+	service php-fpm start || true
+fi
 
 # end script placement
 log "Exit seasoned"
