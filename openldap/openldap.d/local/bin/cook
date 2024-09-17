@@ -106,8 +106,15 @@ timeout --foreground 10 \
 timeout --foreground 10 \
   service slapd onestop || service slapd onestop || true
 
-timeout --foreground 10 \
-  service php-fpm onestop || service php-fpm onestop || true
+if [ -x /usr/local/etc/rc.d/php_fpm ] && [ ! -x /usr/local/etc/rc.d/php-fpm ]; then
+	timeout --foreground 10 \
+	  service php_fpm onestop || service php_fpm onestop || true
+else
+	timeout --foreground 10 \
+	  service php-fpm onestop || service php-fpm onestop || true
+fi
+#timeout --foreground 10 \
+#  service php_fpm onestop || service php_fpm onestop || true
 
 pkill php-fpm || true
 
@@ -175,11 +182,16 @@ if [ -n "$CRONBACKUP" ]; then
 	configure-cronbackup.sh
 fi
 
-log "Start php-fpm"
-timeout --foreground 120 \
-  sh -c 'while ! service php-fpm status; do
-    service php-fpm start || true; sleep 5;
-  done'
+log "Start php_fpm"
+#timeout --foreground 120 \
+#  sh -c 'while ! service php_fpm status; do
+#    service php_fpm start || true; sleep 5;
+#  done'
+if [ -x /usr/local/etc/rc.d/php_fpm ] && [ ! -x /usr/local/etc/rc.d/php-fpm ]; then
+	service php_fpm start || true
+else
+	service php-fpm start || true
+fi
 
 log "Start apache24"
 service apache24 start || true

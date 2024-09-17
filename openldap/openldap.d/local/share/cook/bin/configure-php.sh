@@ -26,4 +26,8 @@ cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 cp -f "$TEMPLATEPATH/99-custom.ini" /usr/local/etc/php/99-custom.ini
 
 # enable php
-service php-fpm enable || true
+if [ -x /usr/local/etc/rc.d/php_fpm ] && [ ! -x /usr/local/etc/rc.d/php-fpm ]; then
+	service php_fpm enable || true
+else
+	service php-fpm enable || true
+fi
