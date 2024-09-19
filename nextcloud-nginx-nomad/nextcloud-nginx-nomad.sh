@@ -323,8 +323,9 @@ pkg install -y sudo
 
 # ---------------- SETUP PORTS -----------------
 
-#step "Install git-lite"
-#pkg install -y git-lite
+# leave this enabled
+step "Install git-lite"
+pkg install -y git-lite
 
 #step "Add openssl to make.conf"
 #echo "BATCH=yes" > /etc/make.conf

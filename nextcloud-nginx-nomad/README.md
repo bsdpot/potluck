@@ -171,7 +171,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-14_0"
-        tag = "0.101"
+        tag = "0.102"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
@@ -209,6 +209,12 @@ The image boots with https enabled in nginx. You will need a frontend proxy like
 Pass in a ```ip:port``` paramater for ```SELFSIGNHOST``` or ```-s ip:port```. If you don't specify a port 443 will be used.
 
 You also need to copy-in the `rootca.crt` file created as part of setting up self-signed certificates. Make sure to copy-in to `/root/rootca.crt` as the script expecting this file name.
+
+## Install nextcloud from github
+
+Warning, this is a 5GB download into persistent storage mounted in to /usr/local/www/nextcloud.
+
+Set the `-v` option with a value matching the github commit, for example `b8d9996b202803f80a2407683fcca2ffe0f96144` for `29.0.6.1`. 
 
 # Useful CLI admin commands
 

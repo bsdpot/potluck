@@ -45,7 +45,7 @@ fi
 ## Convert parameters to variables if passed (overwrite environment)
 ########################################################################
 OPTIND=1
-while getopts d:s:x: option
+while getopts d:s:x:v: option
 do
     case "${option}"
     in
@@ -58,6 +58,9 @@ do
       x) SPECIALPATCH=${OPTARG}
          export SPECIALPATCH
          ;;
+      v) FROMGITHUB=${OPTARG}
+         export FROMGITHUB
+         ;;
     esac
 done
 shift "$((OPTIND-1))"
@@ -67,7 +70,7 @@ shift "$((OPTIND-1))"
 ########################################################################
 
 required_args=""
-optional_args="DATADIR SELFSIGNHOST SPECIALPATCH"
+optional_args="DATADIR SELFSIGNHOST SPECIALPATCH FROMGITHUB"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -104,7 +107,11 @@ fi
 pkill php-fpm || true
 
 log "Install nextcloud packages if they need installing"
-install-nextcloud.sh
+if [ -n "$FROMGITHUB" ]; then
+	install-nextcloud-github.sh
+else
+	install-nextcloud.sh
+fi
 
 log "Configure php"
 configure-php.sh

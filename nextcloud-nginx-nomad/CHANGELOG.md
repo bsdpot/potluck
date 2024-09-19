@@ -1,3 +1,10 @@
+0.102
+
+* Version bump for new image
+* Add option to install nextcloud from github instead of packages
+
+---
+
 0.101
 
 * Version bump for new image
