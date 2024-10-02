@@ -1,3 +1,9 @@
+0.0.29
+
+* Version bump for 14.1 base image
+
+---
+
 0.0.28
 
 * Version bump for security fixes and errata

@@ -6,7 +6,7 @@ On a version change the following files need the version number updated:
 * `freebsd-potluck.ini`
 
 ## FreeBSD version change
-When adjusting version such as 14.0 to 14.1 the following files need to be updated:
+When adjusting version such as 14.1 to 14.2 the following files need to be updated:
 * README.md
 
 ## Shellcheck
