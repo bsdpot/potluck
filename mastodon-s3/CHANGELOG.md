@@ -1,3 +1,10 @@
+0.14
+
+* Version bump for new base image
+* Update to Mastodon 4.2.13
+
+---
+
 0.13
 
 * Version bump for new image
