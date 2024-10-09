@@ -1,3 +1,10 @@
+0.3.1
+
+* Version bump for new base image 14.1
+* Extra steps to trim image size
+
+---
+
 0.2.1
 
 * Version bump for FBSD14 base image
