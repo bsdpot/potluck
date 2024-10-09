@@ -71,6 +71,10 @@ ASSUME_ALWAYS_YES=yes pkg bootstrap
 step "Touch /etc/rc.conf"
 touch /etc/rc.conf
 
+step "Clean freebsd-update"
+rm -rf /var/db/freebsd-update
+mkdir -p /var/db/freebsd-update
+
 # this is important, otherwise running /etc/rc from cook will
 # overwrite the IP address set in tinirc
 step "Remove ifconfig_epair0b from config"
@@ -143,7 +147,7 @@ step "Install package stress-ng"
 pkg install -y stress-ng
 
 step "Clean package installation"
-pkg clean -y
+pkg clean -ay
 
 # -------------- END PACKAGE SETUP -------------
 
