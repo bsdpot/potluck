@@ -86,6 +86,10 @@ service sshd onedisable || true
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
+step "Clean freebsd-update"
+rm -rf /var/db/freebsd-update
+mkdir -p /var/db/freebsd-update
+
 step "Install package sudo"
 pkg install -y sudo
 
@@ -297,7 +301,8 @@ step "Pull files"
 #git pull --depth=1 origin 2023Q3
 #git pull --depth=1 origin 2024Q1
 #git pull --depth=1 origin 2024Q2
-git pull --depth=1 origin 2024Q3
+#git pull --depth=1 origin 2024Q3
+git pull --depth=1 origin 2024Q4
 
 #step "Port build openssl, remove existing, replace with this port"
 ##required for latest / main branch
@@ -333,7 +338,7 @@ step "Package autoremove"
 pkg autoremove -y
 
 step "Clean package installation"
-pkg clean -y
+pkg clean -ay
 
 # -------------- END PACKAGE SETUP -------------
 
