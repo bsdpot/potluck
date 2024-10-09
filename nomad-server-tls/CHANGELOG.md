@@ -1,3 +1,10 @@
+0.13.1
+
+* Version bump for new base image 14.1
+* Extra steps to trim image size
+
+---
+
 0.12.1
 
 * Version bump for new base image
