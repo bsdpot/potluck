@@ -1,3 +1,10 @@
+0.7.1
+
+* Version bump for new base image 14.1
+* Extra steps to trim image size
+
+---
+
 0.6.0
 
 * Switch to grafana 10
