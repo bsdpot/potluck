@@ -83,11 +83,15 @@ service sendmail onedisable || true
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
+step "Clean freebsd-update"
+rm -rf /var/db/freebsd-update
+mkdir -p /var/db/freebsd-update
+
 step "Install package postfix"
 pkg install -y postfix
 
 step "Clean package installation"
-pkg clean -y
+pkg clean -ay
 
 # -------------- END PACKAGE SETUP -------------
 
