@@ -13,4 +13,3 @@ export PATH=/usr/local/bin:$PATH
 
 # install wordpress
 pkg install -y wordpress || true
-
