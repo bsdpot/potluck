@@ -1,3 +1,10 @@
+2.5.1
+
+* Version bump for new base image 14.1
+* Extra steps to trim image size
+
+---
+
 2.4.2
 
 * Set autotidy policy when creating PKIs
