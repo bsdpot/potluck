@@ -86,6 +86,10 @@ service sshd onedisable || true
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
+step "Clean freebsd-update"
+rm -rf /var/db/freebsd-update
+mkdir -p /var/db/freebsd-update
+
 step "Update package repository"
 pkg update -f
 
@@ -118,20 +122,20 @@ step "Install package syslog-ng"
 pkg install -y syslog-ng
 
 step "Install package postgresql-server"
-pkg install -y postgresql13-server
+pkg install -y postgresql15-server
 
 step "Install package postgresql-client"
-pkg install -y postgresql13-client
+pkg install -y postgresql15-client
 
-step "Install package python39"
-pkg install -y python39
+step "Install package python3"
+pkg install -y python3
 
 step "Install package python3-pip"
-pkg install -y py39-pip
+pkg install -y py311-pip
 
 step "Install package python-consul2"
 # this version gives error
-pkg install -y py39-python-consul2
+pkg install -y py311-python-consul2
 
 # using pip to install this package, as pkg removes postgres13 now,
 # and installs postgres12 client as dependency
@@ -212,7 +216,7 @@ pkg delete -y git-lite gmake go
 #### Build postgres_exporter - END
 
 step "Clean package installation"
-pkg clean -y
+pkg clean -ay
 
 # -------------- END PACKAGE SETUP -------------
 #
