@@ -83,6 +83,10 @@ service sendmail onedisable || true
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
+step "Clean freebsd-update"
+rm -rf /var/db/freebsd-update
+mkdir -p /var/db/freebsd-update
+
 # update
 step "Install package samba416"
 pkg install -y samba416
@@ -115,7 +119,7 @@ step "Install package p5-SCGI"
 pkg install -y p5-SCGI
 
 step "Clean package installation"
-pkg clean -y
+pkg clean -ay
 
 # -------------- END PACKAGE SETUP -------------
 
