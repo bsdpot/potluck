@@ -1,3 +1,10 @@
+0.0.30
+
+* Version bump to properly clear freebsd-update and pkg cache
+* Reference https://github.com/bsdpot/pot/issues/298
+
+---
+
 0.0.29
 
 * Version bump for 14.1 base image

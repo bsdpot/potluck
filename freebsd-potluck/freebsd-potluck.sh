@@ -84,6 +84,10 @@ step "Disable sshd"
 service sshd onestop || true
 service sshd onedisable || true
 
+step "Clean freebsd-update"
+rm -rf /var/db/freebsd-update
+mkdir -p /var/db/freebsd-update
+
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
@@ -114,8 +118,9 @@ pkg install -y bash
 step "Install package rsync"
 pkg install -y rsync
 
+# https://github.com/bsdpot/pot/issues/298
 step "Clean package installation"
-pkg clean -y
+pkg clean -ay
 
 # -------------- END PACKAGE SETUP -------------
 
