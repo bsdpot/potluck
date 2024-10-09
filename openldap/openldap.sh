@@ -89,6 +89,10 @@ service sshd enable
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
 
+step "Clean freebsd-update"
+rm -rf /var/db/freebsd-update
+mkdir -p /var/db/freebsd-update
+
 # we need consul for consul agent
 step "Install package consul"
 pkg install -y consul
@@ -185,7 +189,7 @@ pkg install -y syslog-ng
 
 step "Clean package installation"
 pkg autoremove -y
-pkg clean -y
+pkg clean -ay
 
 step "Enable apache24 in /etc/rc.conf"
 service apache24 enable || true
