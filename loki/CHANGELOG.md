@@ -1,6 +1,7 @@
-0.2.26
+0.3.1
 
-* Add Loki metrics endpoint as a service in Consul
+* Version bump for new base image 14.1
+* Extra steps to trim image size
 
 ---
 
