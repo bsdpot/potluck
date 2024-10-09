@@ -29,4 +29,6 @@ if [ ! -e /usr/local/www/nextcloud/status.php ]; then
 		chown www:www /usr/local/www/nextcloud/config/config.php
 		chmod 660 /usr/local/www/nextcloud/config/config.php
 	fi
+	pkg autoremove -y
+	pkg clean -ay
 fi

@@ -1,3 +1,10 @@
+0.103
+
+* Version bump for FBSD 14.1
+* Extra steps to trim image size
+
+---
+
 0.102
 
 * Version bump for new image
