@@ -335,7 +335,10 @@ admin_password = %%grafanapassword%%
 cookie_secure = false
 
 # set cookie SameSite attribute. defaults to `lax`. can be set to "lax", "strict", "none" and "disabled"
-cookie_samesite = none
+# cookie_samesite = none
+#
+# potluck 2024-10-10 set to disabled instead of none to stop login loop
+cookie_samesite = disabled
 
 # set to true if you want to allow browsers to render Grafana in a <frame>, <iframe>, <embed> or <object>. default is false.
 ;allow_embedding = false

@@ -1,6 +1,7 @@
 0.21
 
 * Version bump for new base image
+* Adjust grafana cookie samesite parameter from none to disabled to avoid login loop
 
 ---
 
