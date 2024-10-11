@@ -1,3 +1,10 @@
+0.3.2
+
+* Return to upstream versions of loki and promtail
+* This uses rc scripts taken from the port (including some strangeness), so we can switch back in the future and stay compatible
+
+---
+
 0.3.1
 
 * Version bump for new base image 14.1

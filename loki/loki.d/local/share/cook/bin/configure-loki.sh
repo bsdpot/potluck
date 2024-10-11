@@ -20,6 +20,10 @@ mkdir -p /mnt/loki/rules-temp
 #sep=$'\001'
 
 # loki setup
+
+# copy in loki rc
+cp "$TEMPLATEPATH/loki.rc.in" /usr/local/etc/rc.d/loki
+chmod +x /usr/local/etc/rc.d/loki
 service loki enable
 sysrc loki_args="-frontend.instance-addr=127.0.0.1"
 sysrc loki_config=/usr/local/etc/loki-local-config.yaml
@@ -28,10 +32,6 @@ sysrc loki_logfile="/mnt/log/loki/loki.log"
 # patch startup script
 sed -i '' 's/command_args="-p/command_args="-f -p/' \
   /usr/local/etc/rc.d/loki
-
-# prepare logdir
-mkdir -p /mnt/log/loki
-chown loki:loki /mnt/log/loki
 
 # copy in loki config file
 if [ -f /mnt/loki/loki-local-config.yaml.in ]; then
@@ -42,10 +42,25 @@ else
 	  /usr/local/etc/loki-local-config.yaml
 fi
 
+# create loki group
+/usr/sbin/pw groupadd -n loki -g 967
+
+# create loki user
+/usr/sbin/pw useradd -n loki -c 'Loki' -m -k /var/empty \
+  -d /var/db/loki -u 916 -s /usr/bin/nologin -h -
+
+# prepare logdir
+mkdir -p /mnt/log/loki
+chown loki:loki /mnt/log/loki
+
 # chown to loki user
 chown -R loki:loki /mnt/loki
 
 # promtail setup
+
+# copy in the promtail rc file
+cp "$TEMPLATEPATH/promtail.rc.in" /usr/local/etc/rc.d/promtail
+chmod +x /usr/local/etc/rc.d/promtail
 service promtail enable
 sysrc promtail_config="/usr/local/etc/promtail-local-config.yaml"
 sysrc promtail_logfile="/mnt/log/promtail/promtail.log"
@@ -53,6 +68,13 @@ sysrc promtail_logfile="/mnt/log/promtail/promtail.log"
 # patch startup script
 sed -i '' 's/command_args="-p/command_args="-f -p/' \
   /usr/local/etc/rc.d/promtail
+
+# create promtail group
+/usr/sbin/pw groupadd -n promtail -g 968
+
+# create promtail user
+/usr/sbin/pw useradd -n promtail -c 'Promtail' -m -k /var/empty \
+  -d /var/db/promtail -u 816 -s /usr/bin/nologin -h -
 
 # prepare logdir
 mkdir -p /mnt/log/promtail
