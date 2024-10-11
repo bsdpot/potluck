@@ -128,11 +128,32 @@ pkg install -y vault
 step "Install package syslog-ng"
 pkg install -y syslog-ng
 
-step "Install package grafana-loki"
-pkg install -y grafana-loki
-
 step "Clean package installation"
 pkg clean -ay
+
+# last updated 2024-10-11
+step "Download loki release from github"
+fetch -qo - https://github.com/grafana/loki/releases/download/\
+v3.2.0/loki-freebsd-amd64.zip | unzip -p - loki-freebsd-amd64 \
+  >/usr/local/bin/loki
+chmod 755 /usr/local/bin/loki
+
+if [ "$(sha256 -q /usr/local/bin/loki)" != \
+  "e104034dec55f2ce55492d102f45ac1729567a88d41357ea10d0f61bf58e446c" ]; then
+  exit_error "/usr/local/bin/loki checksum mismatch!"
+fi
+
+# last updated 2024-10-11
+step "Download promtail release from github"
+fetch -qo - https://github.com/grafana/loki/releases/download/\
+v3.2.0/promtail-freebsd-amd64.zip | unzip -p - promtail-freebsd-amd64 \
+  >/usr/local/bin/promtail
+chmod 755 /usr/local/bin/promtail
+
+if [ "$(sha256 -q /usr/local/bin/promtail)" != \
+  "38e730412eee148c0d5d178bdd49b802974492b74fd32d192bcd1ca81a66b4bb" ]; then
+  exit_error "/usr/local/bin/promtail checksum mismatch!"
+fi
 
 # -------------- END PACKAGE SETUP -------------
 
