@@ -1,3 +1,9 @@
+0.3.3
+
+* Change image so it builds on FreeBSD 14.x
+
+---
+
 0.3.2
 
 * Return to upstream versions of loki and promtail
