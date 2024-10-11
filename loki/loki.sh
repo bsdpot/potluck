@@ -134,7 +134,7 @@ pkg clean -ay
 # last updated 2024-10-11
 step "Download loki release from github"
 fetch -qo - https://github.com/grafana/loki/releases/download/\
-v3.2.0/loki-freebsd-amd64.zip | unzip -p - loki-freebsd-amd64 \
+v3.2.0/loki-freebsd-amd64.zip | tar -Oxf - loki-freebsd-amd64 \
   >/usr/local/bin/loki
 chmod 755 /usr/local/bin/loki
 
@@ -146,7 +146,7 @@ fi
 # last updated 2024-10-11
 step "Download promtail release from github"
 fetch -qo - https://github.com/grafana/loki/releases/download/\
-v3.2.0/promtail-freebsd-amd64.zip | unzip -p - promtail-freebsd-amd64 \
+v3.2.0/promtail-freebsd-amd64.zip | tar -Oxf - promtail-freebsd-amd64 \
   >/usr/local/bin/promtail
 chmod 755 /usr/local/bin/promtail
 
