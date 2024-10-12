@@ -2,6 +2,7 @@
 
 * Version bump for new base image 14.1
 * Extra steps to trim image size
+* Fix issue with deprecated .Site.RSSLink
 
 ---
 

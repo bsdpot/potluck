@@ -23,6 +23,13 @@ cp -f "$TEMPLATEPATH/custom_theme_blog_list.html" \
 cp -f "$TEMPLATEPATH/custom_theme_partial_article.html" \
   "/mnt/$SITENAME/themes/kiss-em/layouts/partials/article.html"
 
+# ERROR deprecated: .Site.RSSLink was deprecated in Hugo v0.114.0
+# and will be removed in Hugo 0.134.0. Use the Output Format's
+# Permalink method instead, e.g. .OutputFormats.Get "RSS".Permalink
+# removed the problematic section with if .Site.Params.rss.enable
+cp -f "$TEMPLATEPATH/custom_theme_partial_header.html" \
+  "/mnt/$SITENAME/themes/kiss-em/layouts/partials/header.html"
+
 cp -f "$TEMPLATEPATH/custom_theme_partial_footer.html" \
   "/mnt/$SITENAME/themes/kiss-em/layouts/partials/footer.html"
 

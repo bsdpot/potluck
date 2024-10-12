@@ -1,0 +1,35 @@
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" {{ with .Site.LanguageCode }} lang="{{ . }}"{{ end }}>
+
+	<head>
+
+		<!-- Define character set -->
+		<meta charset="UTF-8" />
+
+		<!-- Mobile optimization -->
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+		<!-- Define Page title -->        
+		<title> 
+			{{ if .IsHome }} {{ .Site.Title }} {{ else }} {{ .Title }} {{ end }} 
+		</title>
+
+		{{ if .Site.Params.rss.enable }}
+			{{ $rssOutput := .OutputFormats.Get "RSS" }}
+			{{ if $rssOutput }}
+				<link href="{{ $rssOutput.Permalink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
+			{{ end }}
+		{{ end }}
+
+		<!-- Theme's CSS -->
+		<link rel="stylesheet" href="{{ "css/style.css" | relURL }}"/>
+
+		<!-- Custom CSS can be used to override CSS definitions -->
+		{{ range .Site.Params.Assets.customCSS }}
+			<link rel='stylesheet' href='{{ . | absURL }}'>
+		{{ end }}
+        
+	</head>
+
+	<body>
