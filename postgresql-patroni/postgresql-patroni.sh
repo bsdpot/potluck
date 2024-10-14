@@ -127,6 +127,9 @@ pkg install -y postgresql15-server
 step "Install package postgresql-client"
 pkg install -y postgresql15-client
 
+step "Install package postgresql-contrib"
+pkg install -y postgresql13-contrib
+
 step "Install package python3"
 pkg install -y python3
 

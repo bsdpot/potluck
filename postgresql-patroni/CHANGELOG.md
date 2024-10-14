@@ -1,3 +1,9 @@
+2.5.2
+
+* Bring back postgresql-contrib to support useful plugins like pg_stat_statements (originally in v2.3.2)
+
+---
+
 2.5.1
 
 * Version bump for new base image 14.1
@@ -8,6 +14,12 @@
 2.4.1
 
 * Version bump for new base image
+
+---
+
+2.3.2
+
+* Add postgresql-contrib to support useful plugins like pg_stat_statements
 
 ---
 
