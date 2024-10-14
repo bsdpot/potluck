@@ -41,6 +41,12 @@ services = {
           "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9103
 }
+services = {
+  name = "loki-metrics"
+  tags = ["_app=loki", "_service=loki-metrics",
+          "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 3100
+}
 telemetry = {
   prometheus_retention_time = "24h"
 }

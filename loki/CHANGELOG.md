@@ -1,3 +1,9 @@
+0.3.4
+
+* Add Loki metrics endpoint as a service in Consul (restores the "lost" version 0.2.26)
+
+---
+
 0.3.3
 
 * Change image so it builds on FreeBSD 14.x
@@ -15,6 +21,12 @@
 
 * Version bump for new base image 14.1
 * Extra steps to trim image size
+
+---
+
+0.2.26
+
+* Add Loki metrics endpoint as a service in Consul
 
 ---
 
