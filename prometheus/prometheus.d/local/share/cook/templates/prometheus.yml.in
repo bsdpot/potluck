@@ -31,6 +31,7 @@ scrape_configs:
         - postgres-exporter
         - prometheus-json-metrics-exporter
         - prometheus-log-exporter
+        - loki-metrics
       datacenter: '%%datacenter%%'
     relabel_configs:
     - source_labels: ['__meta_consul_service']
