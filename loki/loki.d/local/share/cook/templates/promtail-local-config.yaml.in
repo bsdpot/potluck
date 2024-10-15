@@ -11,60 +11,23 @@ clients:
   - url: http://127.0.0.1:3100/loki/api/v1/push
 
 scrape_configs:
-  - job_name: system
+  - job_name: varlogs
     static_configs:
       - targets:
           - localhost
         labels:
           job: varlogs
           __path__: /mnt/log/remote/*.log
-
-  - job_name: syslog
-    syslog:
-      listen_address: 127.0.0.1:1514
-      idle_timeout: 60s
-      label_structured_data: yes
-      labels:
-        job: "syslog"
     pipeline_stages:
-      - match:
-          selector: '{job = "syslog"} |= "query_range?"'
-          action: drop
-          drop_counter_reason: loki_dashboard_query_logs
-      - match:
-          selector: '{job = "syslog"} |= "domainevent -"'
-          stages:
-            - regex:
-                expression: 'domainevent - (?P<event_name>.*)/(?P<event_id>.*)/(?P<event_kind>.*) (?P<json_str>{.*})'
-            - labels:
-                event_name:
-                event_id:
-                event_kind:
-            - static_labels:
-                log_source: "DomainEvent"
-            - output:
-                source: json_str
-            - timestamp:
-                source: timestamp
-                format: RFC3339Nano
-      # whatever tags you can extract from your json logs
-      - match:
-          selector: '{job = "syslog"} |= "json -"'
-          stages:
-            - regex:
-                expression: "json - '(?P<json_str>.*)'"
-            - output:
-                source: json_str
-            - json:
-                expressions:
-                  message: '"@message"'
-                  level: '"@level"'
-            - static_labels:
-                log_source: "Product"
-            - timestamp:
-                source: timestamp
-                format: RFC3339Nano
-    relabel_configs:
-      - source_labels: ['__syslog_message_hostname']
-        target_label: 'host'
-
+      - regex:
+          # ts, host & msg data mandatory; lvl extracted only if exists
+          # log levels https://docs.freebsd.org/en/books/handbook/config/#logging-levels
+          expression: '^(?P<ts>2\S+) (?P<host>(?:\d{1,3}\.){3}\d{1,3}) (?:(?P<lvl>emerg|alert|crit|err|warning|notice|info|debug|none) )?(?P<msg>.*)'
+      - labels:
+          host: host
+          severity: lvl
+      - timestamp:
+          source: ts
+          format: RFC3339
+      - output:
+          source: msg
