@@ -1,3 +1,9 @@
+0.3.5
+
+* Remove syslog log target from promtail and syslog-ng.conf and improve parsing of the varlogs target. This allows reingesting logs after disaster. Also parse severity.
+
+---
+
 0.3.4
 
 * Add Loki metrics endpoint as a service in Consul (restores the "lost" version 0.2.26)

@@ -16,6 +16,11 @@ options {
  ts_format(iso);
 };
 
+# template to include severity
+template t_withseverity {
+ template("${ISODATE} ${HOST} ${SEVERITY} ${MSGHDR}${MSG}\n");
+};
+
 # local sources
 source src {
  system();
@@ -68,6 +73,7 @@ destination lokilogs {
     owner(root)
     group(promtail)
     perm(0640)
+    template(t_withseverity)
   );
 };
 destination jsonmetricslog {
@@ -86,17 +92,6 @@ destination loghost {
    peer-verify(required-trusted)
   )
  );
-};
-
-destination lokisyslog {
-  syslog("127.0.0.1" transport("tcp") port(1514)
-    disk-buffer(
-      mem-buf-size(536870912)    # 512MiB
-      disk-buf-size(10737418240) # 10GiB
-      reliable(yes)
-      dir("/mnt/log/syslog-ng-disk-buffer")
-    )
-);
 };
 
 # log facility filters
@@ -212,6 +207,5 @@ log {
     destination(jsonmetricslog);
   } else {
     destination(lokilogs);
-    destination(lokisyslog);
   };
 };
