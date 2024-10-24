@@ -1,6 +1,7 @@
 0.8
 
 * Version bump for inclusion of varnish7
+* Fix varnish default.vcl to have a validating file (check with "varnishd -C -f default.vcl")
 
 ---
 
