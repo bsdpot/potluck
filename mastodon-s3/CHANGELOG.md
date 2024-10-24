@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Update to Mastodon 4.2.13
 * Trim image size
+* Add S3PORT parameter
 
 ---
 

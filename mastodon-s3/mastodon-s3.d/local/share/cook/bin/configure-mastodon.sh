@@ -9,6 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
+# shellcheck disable=SC2086
 export PATH=/usr/local/bin:$PATH
 
 # check that redis is active
@@ -118,6 +119,7 @@ echo "Creating .env.production"
   sed "s${sep}%%mailfrom%%${sep}$MAILFROM${sep}g" | \
   sed "s${sep}%%bucketname%%${sep}$BUCKETNAME${sep}g" | \
   sed "s${sep}%%s3hostname%%${sep}$S3HOSTNAME${sep}g" | \
+  sed "s${sep}%%s3port%%${sep}$SETS3PORT${sep}g" | \
   sed "s${sep}%%uploadprotocol%%${sep}$SETS3UPNOSSL${sep}g" | \
   sed "s${sep}%%s3user%%${sep}$BUCKETUSER${sep}g" | \
   sed "s${sep}%%s3pass%%${sep}$BUCKETPASS${sep}g" | \

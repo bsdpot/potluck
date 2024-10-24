@@ -54,7 +54,7 @@ required_args="$required_args EMAIL MAILHOST MAILUSER MAILPASS MAILFROM"
 required_args="$required_args REDISHOST DBHOST DBUSER DBPASS DBNAME"
 required_args="$required_args BUCKETNAME BUCKETUSER BUCKETPASS"
 required_args="$required_args BUCKETALIAS BUCKETREGION S3HOSTNAME"
-optional_args="MAILPORT DBPORT REDISPORT REMOTELOG MYSECRETKEY"
+optional_args="S3PORT MAILPORT DBPORT REDISPORT REMOTELOG MYSECRETKEY"
 optional_args="$optional_args MYOTPSECRET MYVAPIDPRIVATEKEY MYVAPIDPUBLICKEY"
 optional_args="$optional_args PVTCERT ELASTICENABLE ELASTICHOST ELASTICPORT"
 optional_args="$optional_args ELASTICUSER ELASTICPASS DEEPLKEY DEEPLPLAN"
@@ -83,6 +83,15 @@ done
 if [ -n "${CONSULSERVERS+x}" ]; then
     FIXCONSULSERVERS=$(convert_to_required_format "$CONSULSERVERS")
     export FIXCONSULSERVERS
+fi
+
+# set S3PORT
+if [ -n "${S3PORT+x}" ]; then
+  SETS3PORT="$S3PORT"
+  export SETS3PORT
+else
+  SETS3PORT="443"
+  export SETS3PORT
 fi
 
 # set MAILPORT
@@ -180,12 +189,13 @@ else
 	export SETS3UPNOSSL
 fi
 
+# shellcheck disable=SC2086
+export PATH=/usr/local/share/cook/bin:$PATH
+
 # stop services
 timeout --foreground 10 \
   service consul onestop || service consul onestop || true
 killall -9 consul || true
-
-export PATH=/usr/local/share/cook/bin:$PATH
 
 # temp fix, ensure mode 644 for /etc/resolv.conf
 # mastodon user ruby process needs to read /etc/resolv.conf
