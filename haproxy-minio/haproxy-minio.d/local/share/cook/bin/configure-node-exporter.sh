@@ -8,7 +8,6 @@ fi
 set -e
 
 # add node_exporter user
-
 if ! id -u "nodeexport" >/dev/null 2>&1; then
   /usr/sbin/pw useradd -n nodeexport -c 'nodeexporter user' -m -s /usr/sbin/nologin -h -
 fi

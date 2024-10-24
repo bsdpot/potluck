@@ -22,10 +22,15 @@ log_file = "/var/log/consul/consul.log"
 log_level = "INFO"
 encrypt = "%%gossipkey%%"
 retry_join = [ %%consulservers%% ]
-service = {
+services = {
   name = "node-exporter"
-  tags = ["_app=matrix", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=haproxy-minio", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
+}
+services = {
+  name = "varnish-exporter"
+  tags = ["_app=varnish-minio", "_service=varnish-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 9131
 }
 telemetry = {
   prometheus_retention_time = "24h"

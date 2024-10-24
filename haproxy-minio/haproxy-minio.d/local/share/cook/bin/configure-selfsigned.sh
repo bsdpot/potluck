@@ -9,6 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
+# shellcheck disable=SC2086
 export PATH=/usr/local/bin:$PATH
 
 # configure self-signed certificates by adding minio certicate to local CA store

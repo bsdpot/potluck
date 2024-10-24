@@ -7,7 +7,7 @@ tags: ["loadbalance", "haproxy", "minio", "clustering" ]
 
 # Overview
 
-This is a `haproxy` jail that can be started with ```pot```.
+This is a `haproxy` jail, inclusive of `varnish`, that can be started with ```pot```. 
 
 The jail exposes parameters that can either be set via the environment.
 
@@ -36,7 +36,7 @@ You must be running 1 to 4 `minio` servers.
   sudo pot set-env -p <jailname> \
    -E DATACENTER=<datacenter name> \
    -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
-   -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+   -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
    -E NODENAME=<name of node> \
    -E IP=<IP address> \
    -E DOMAIN=<internal domain name for self-signed certificate> \
@@ -88,7 +88,9 @@ REMOTELOG is an optional parameter for a remote syslog service, such as via the 
 
 ## Usage
 
-This pot jail exposes HTTPS minio on both HTTP and HTTPS. 
+This pot jail exposes minio on HTTP and HTTPS with a self-signed certificate. 
+
+It also exposes varnish on port 8080, which backends to haproxy on port 80, as HTTP.
 
 It should not be run on a public IP unless you want HTTP access to your minio setup.
 

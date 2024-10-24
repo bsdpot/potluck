@@ -1,0 +1,3 @@
+set-attribute -A persistent -V OFF
+set-attribute -A no-rc-script -V ON
+copy-in -s /usr/local/etc/pot/flavours/nginx-varnish-ssl-nomad.d/local -d /root/.pot_local
