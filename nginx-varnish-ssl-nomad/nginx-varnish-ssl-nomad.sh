@@ -19,7 +19,7 @@
 # (i.e. blocking) jail.
 # You can then query it in the cook script generation below and the script
 # is installed appropriately at the end of this script
-RUNS_IN_NOMAD=false
+RUNS_IN_NOMAD=true
 
 # set the cook log path/filename
 COOKLOG=/var/log/cook.log
@@ -61,11 +61,14 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-# only modify repo if not already done in base image
 # shellcheck disable=SC2016
-test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
-  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
     >/usr/local/etc/pkg/repos/FreeBSD.conf
+# remove above and add back below for quarterlies
+# only modify repo if not already done in base image
+#test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+#  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+#    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
 step "Touch /etc/rc.conf"
@@ -78,10 +81,7 @@ step "Remove ifconfig_epair0b from config"
 sysrc -cq ifconfig_epair0b && sysrc -x ifconfig_epair0b || true
 
 step "Disable sendmail"
-service sendmail onedisable
-
-step "Disable sshd"
-service sshd onedisable || true
+service sendmail onedisable || true
 
 step "Create /usr/local/etc/rc.d"
 mkdir -p /usr/local/etc/rc.d
@@ -90,15 +90,8 @@ step "Clean freebsd-update"
 rm -rf /var/db/freebsd-update
 mkdir -p /var/db/freebsd-update
 
-# we need consul for consul agent
-step "Install package consul"
-pkg install -y consul
-
 step "Install package openssl"
 pkg install -y openssl
-
-step "Install package sudo"
-pkg install -y sudo
 
 # necessary if installing curl now
 step "Install package ca_root_nss"
@@ -107,14 +100,8 @@ pkg install -y ca_root_nss
 step "Install package curl"
 pkg install -y curl
 
-step "Install package jq"
-pkg install -y jq
-
 step "Install package jo"
 pkg install -y jo
-
-step "Install package nano"
-pkg install -y nano
 
 step "Install package bash"
 pkg install -y bash
@@ -122,26 +109,23 @@ pkg install -y bash
 step "Install package rsync"
 pkg install -y rsync
 
-step "Install package node_exporter"
-pkg install -y node_exporter
+step "Install package nginx"
+pkg install -y nginx
 
-step "Install package syslog-ng"
-pkg install -y syslog-ng
+step "Install package jq"
+pkg install -y jq
 
-step "Install package haproxy"
-pkg install -y haproxy
+step "Install package nano"
+pkg install -y nano
 
-step "Install package socat"
-pkg install -y socat
-
-step "Install package varnish7"
-pkg install -y varnish7
-
-step "Install package varnish_exporter"
-pkg install -y varnish_exporter
+step "Install package sudo"
+pkg install -y sudo
 
 step "Clean package installation"
 pkg clean -ay
+
+step "Enable nginx"
+service nginx enable
 
 # -------------- END PACKAGE SETUP -------------
 

@@ -85,6 +85,7 @@ timeout --foreground 10 \
   service consul onestop || service consul onestop || true
 killall -9 consul || true
 
+# shellcheck disable=SC2086
 export PATH=/usr/local/share/cook/bin:$PATH
 
 if [ -n "${REMOTELOG}" ]; then
@@ -120,6 +121,12 @@ if [ -n "$SELFSIGNHOST" ]; then
     configure-selfsigned.sh
 fi
 
+log "configure varnish"
+configure-varnish.sh
+
+log "configure varnish-exporter"
+configure-varnish-exporter.sh
+
 if [ -n "$SERVERONE" ] && [ -z "$SERVERTWO" ] && [ -z "$SERVERTHREE" ] && [ -z "$SERVERFOUR" ]; then
 	log "Configuring haproxy for 1 minio server"
     configure-haproxy-1.sh
@@ -138,6 +145,18 @@ log "Start haproxy"
 timeout --foreground 120 \
   sh -c 'while ! service haproxy status; do
     service haproxy start || true; sleep 5;
+  done'
+
+log "Start varnishd"
+timeout --foreground 120 \
+  sh -c 'while ! service varnishd status; do
+    service varnishd start || true; sleep 5;
+  done'
+
+log "Start varnish_exporter"
+timeout --foreground 120 \
+  sh -c 'while ! service varnish_exporter status; do
+    service varnish_exporter start || true; sleep 5;
   done'
 
 log "Exit seasoned"

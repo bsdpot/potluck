@@ -9,6 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
+# shellcheck disable=SC2086
 export PATH=/usr/local/bin:$PATH
 
 # make directories

@@ -1,0 +1,116 @@
+vcl 4.1;
+
+# Define the haproxy HTTP port as backend
+backend default {
+    .host = "%%ip%%";
+    .port = "80";
+}
+
+# subroutine for receiving the request
+sub vcl_recv {
+    # For every request, we use the default backend (HAProxy)
+    set req.backend_hint = default;
+
+    # You can add further logic here to handle caching rules, etc.
+    # For example, bypassing cache for specific requests:
+    # if (req.url ~ "^/nocache") {
+    #     return (pass);
+    # }
+}
+
+sub vcl_backend_fetch {
+    # Set timeouts or modify backend requests if needed
+    set bereq.first_byte_timeout = 60s;
+    set bereq.connect_timeout = 5s;
+    return (fetch);
+}
+
+# Fetch the object from the selected backend
+sub vcl_backend_response {
+    if (beresp.status >= 500 && beresp.status < 600) {
+        if (req.retries < 3) {
+            return (retry);
+        } else {
+            return (synth(503, "Service Unavailable"));
+        }
+    }
+    # Customize cache duration if needed
+    if (bereq.url ~ "\.(mp4|mp3|wav|flac|ogg)$") {
+        set beresp.ttl = 1d;
+        set beresp.grace = 6h;
+        set beresp.keep = 3d;
+        unset beresp.http.Set-Cookie;
+        unset beresp.http.Cache-Control;
+        set beresp.http.Cache-Control = "public, max-age=86400";
+    } else {
+        set beresp.ttl = 30m;
+        set beresp.grace = 12h;
+        set beresp.keep = 3d;
+    }
+    # Remove some headers
+    unset beresp.http.Server;
+    unset beresp.http.X-Powered-By;
+    unset beresp.http.Via;
+
+    return (deliver);
+}
+
+# Handle object delivery
+sub vcl_deliver {
+    # No need to check backend_hint, since we already set the X-Cache header in vcl_hit
+    if (!resp.http.X-Cache) {
+        set resp.http.X-Cache = "MISS";
+    }
+
+    if (resp.status >= 500 || req.method != "GET") {
+        std.log("Delivering content for " + req.url + " - Cache: " + resp.http.X-Cache + 
+        " - Client IP: " + client.ip + " - Method: " + req.method + " - XID: " + req.xid + 
+        " - Status: " + resp.status);
+    }
+
+    # Remove Varnish headers
+    unset resp.http.Via;
+    unset resp.http.X-Varnish;
+
+    return (deliver);
+}
+
+sub vcl_hit {
+    if (obj.ttl > 0s) {
+        set resp.http.X-Cache = "HIT";
+        return (deliver);
+    }
+    # Serve stale content if grace is set
+    if (obj.ttl <= 0s && obj.grace > 0s) {
+        set resp.http.X-Cache = "HIT (stale)";
+        return (deliver);
+    }
+    return (fetch);
+}
+
+sub vcl_miss {
+    return (fetch);
+}
+
+sub vcl_synth {
+    set resp.http.Content-Type = "text/html; charset=utf-8";
+    if (resp.status == 503) {
+        set resp.http.Retry-After = "10";  # Longer retry for 503
+    }
+    synthetic( {"<!DOCTYPE html>
+        <html>
+            <head>
+                <title>"} + resp.status + " " + resp.reason + {"</title>
+            </head>
+            <body>
+                <h1>Status "} + resp.status + " " + resp.reason + {"</h1>
+                <p>"} + resp.reason + {"</p>
+                <h3>Guru Meditation:</h3>
+                <p>XID: "} + req.xid + {"</p>
+                <hr>
+                <p>Varnish cache server</p>
+            </body>
+        </html>
+    "} );
+    return (deliver);
+}
