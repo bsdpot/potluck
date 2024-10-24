@@ -28,10 +28,10 @@ sub vcl_backend_fetch {
 # Fetch the object from the selected backend
 sub vcl_backend_response {
     if (beresp.status >= 500 && beresp.status < 600) {
-        if (req.retries < 3) {
+        if (bereq.retries < 3) {
             return (retry);
         } else {
-            return (synth(503, "Service Unavailable"));
+            return (error(503, "Service Unavailable")); # Fixed: use error() instead of synth()
         }
     }
     # Customize cache duration if needed
@@ -57,15 +57,10 @@ sub vcl_backend_response {
 
 # Handle object delivery
 sub vcl_deliver {
-    # No need to check backend_hint, since we already set the X-Cache header in vcl_hit
-    if (!resp.http.X-Cache) {
+    if (obj.hits > 0) {
+        set resp.http.X-Cache = "HIT";
+    } else {
         set resp.http.X-Cache = "MISS";
-    }
-
-    if (resp.status >= 500 || req.method != "GET") {
-        std.log("Delivering content for " + req.url + " - Cache: " + resp.http.X-Cache + 
-        " - Client IP: " + client.ip + " - Method: " + req.method + " - XID: " + req.xid + 
-        " - Status: " + resp.status);
     }
 
     # Remove Varnish headers
@@ -77,19 +72,18 @@ sub vcl_deliver {
 
 sub vcl_hit {
     if (obj.ttl > 0s) {
-        set resp.http.X-Cache = "HIT";
         return (deliver);
     }
     # Serve stale content if grace is set
     if (obj.ttl <= 0s && obj.grace > 0s) {
-        set resp.http.X-Cache = "HIT (stale)";
         return (deliver);
     }
-    return (fetch);
+    # Fetch new content from the backend
+    return (pass);  # Fixed: Use 'pass' instead of 'fetch'
 }
 
 sub vcl_miss {
-    return (fetch);
+    return (pass);  # Fixed: Use 'pass' instead of 'fetch'
 }
 
 sub vcl_synth {
