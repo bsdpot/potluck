@@ -60,11 +60,12 @@ However the mastodon pot jail will register a SSL certificate directly.
 	-E REDISHOST=<IP of redis instance> \
 	-E BUCKETNAME=<bucket name on S3 host> \
 	-E S3HOSTNAME=<S3 hostname> \
+	-E S3PORT=<port for S3, or proxy, 80, 443, 8080> \
 	-E BUCKETUSER=<S3 access id> \
 	-E BUCKETPASS=<S3 password> \
 	-E BUCKETALIAS=<web address for files, or alt domain name> \
 	-E BUCKETREGION=<S3 region> \
-	[ -E S3UPNOSSL=<any value enables http upload to S3 instead of https> ] \
+	[ -E S3UPNOSSL=<any value enables http upload to S3 instead of https, must enable if S3PORT set to 80 or 8080> ] \
 	[ -E MAILPORT=<SMTP port> ] \
 	[ -E DBPORT=<database port> ] \
 	[ -E REDISPORT=<redis port> ] \
@@ -133,7 +134,9 @@ The BUCKETREGION parameter is the S3 region.
 
 ## Optional Parameters
 
-The S3UPNOSSL parameter will set `http://` uploads to S3 object storage, such as a local minio where self-signed certificate fails. Otherwise defaults to `https://`.
+The S3PORT parameter defaults to port 443, but if set, can be configured for port 80 for haproxy-minio, or port 8080 for haproxy-minio varnish.
+
+The S3UPNOSSL parameter will set `http://` uploads to S3 object storage, such as a local minio where self-signed certificate fails. Otherwise defaults to `https://`. You must set this if the S3PORT parameter is set to port 80 or 8080.
 
 The MAILPORT parameter is the SMTP port to use of the mail server. It defaults to port `25` if not set.
 

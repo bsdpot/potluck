@@ -9,9 +9,12 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
+# shellcheck disable=SC2086
 export PATH=/usr/local/bin:$PATH
 
+# shellcheck disable=SC2269
 DOMAIN="$DOMAIN"
+# shellcheck disable=SC2269
 IP="$IP"
 
 # create directory for local certificates
