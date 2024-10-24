@@ -45,7 +45,7 @@ fi
 ## Convert parameters to variables if passed (overwrite environment)
 ########################################################################
 OPTIND=1
-while getopts d:b:s: option
+while getopts d:s:b: option
 do
     # shellcheck disable=SC2220
     case "${option}"
