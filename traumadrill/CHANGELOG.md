@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Extra steps to trim image size
+* Rebuild to test post 14.1 infrastructure upgrades
 
 ---
 
