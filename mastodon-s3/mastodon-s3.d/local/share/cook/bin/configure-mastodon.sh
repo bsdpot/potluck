@@ -93,6 +93,10 @@ else
 	VAPIDPUBLICKEY=$(grep VAPID_PUBLIC_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
 fi
 
+# the step to create the Active Record Encryption keys exits with a non-zero status despite working
+# shellcheck disable=SC3040
+set +o pipefail
+
 # generate new Ruby Active Record Encryption keys, new for 4.3.1 onwards
 # shellcheck disable=SC2153
 if [ -f /mnt/mastodon/private/activerecord.keys ]; then
@@ -116,6 +120,10 @@ else
 	MY_ACTIVE_DETERMINISTIC_KEY=$(grep 'deterministic_key:' /mnt/mastodon/private/activerecord.keys | awk -F': ' '{print $2}')
 	MY_ACTIVE_KEY_DERIVATION_SALT=$(grep 'key_derivation_salt:' /mnt/mastodon/private/activerecord.keys | awk -F': ' '{print $2}')
 fi
+
+# revert to normal
+# shellcheck disable=SC3040
+set -o pipefail
 
 # make sure permissions are correct
 chown -R mastodon:mastodon /mnt/mastodon/private/
