@@ -1,0 +1,6 @@
+Add this entry to the credentials of the target environment: 
+
+active_record_encryption:
+  primary_key: %%primary_key%%
+  deterministic_key: %%determine_key%%
+  key_derivation_salt: %%key_salt%%

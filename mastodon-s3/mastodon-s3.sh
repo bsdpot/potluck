@@ -295,7 +295,8 @@ if [ ! -d /usr/local/www/mastodon/.git ]; then
     echo "Checking out the mastodon release we want"
     #su - mastodon -c "cd /usr/local/www/mastodon; git checkout 092506c90f976e13a7a99754d78c08d296b1bc84"
     #su - mastodon -c "cd /usr/local/www/mastodon; git checkout 86a7596a40f086196fdd288ffdf4614a57af6513"
-    su - mastodon -c "cd /usr/local/www/mastodon; git checkout 11aaee1eca898184c871fe5448f7cd6e7e96d156"
+    #su - mastodon -c "cd /usr/local/www/mastodon; git checkout 11aaee1eca898184c871fe5448f7cd6e7e96d156"
+    su - mastodon -c "cd /usr/local/www/mastodon; git checkout 460e86f8410ae671e275e35a5fbb82b98030773b"
 else
     echo ".git directory exists, not cloning repo"
 fi
@@ -348,7 +349,8 @@ su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/bundle install -j
 
 # as user mastodon - yarn install process
 echo "Installing the required files with yarn"
-su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile"
+#su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --pure-lockfile" # mastodon 4.2.3
+su - mastodon -c "cd /usr/local/www/mastodon && /usr/local/bin/yarn install --immutable" # mastodon 4.3.1
 
 # ----------- END CUSTOM MASTODON ---------------
 
