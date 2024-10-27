@@ -74,6 +74,9 @@ However the mastodon pot jail will register a SSL certificate directly.
 	[ -E MYOTPSECRET="<rails secret key for otp>" ] \
 	[ -E MYVAPIDPRIVATEKEY="<vapid private key>" ] \
 	[ -E MYVAPIDPUBLICKEY="<vapid public key>" ] \
+	[ -E MY_ACTIVE_PRIMARY_KEY="<key>" ] \
+        [ -E MY_ACTIVE_DETERMINISTIC_KEY="<key>" ] \
+        [ -E MY_ACTIVE_KEY_DERIVATION_SALT="<key>" ] \
 	[ -E PVTCERT=<any value enables> ] \
 	[ -E ELASTICENABLE=<any value enables> ] \
 	[ -E ELASTICHOST=<IP of elasticsearch or zincsearch instance> ] \
@@ -153,6 +156,8 @@ The MYOTPSECRET parameter is an optional passed-in OTP key for the `.env.product
 The MYVAPIDPRIVATEKEY parameter is an optional passed-in secret key for the `.env.production` value `VAPID_PRIVATE_KEY`.
 
 The MYVAPIDPUBLICKEY parameter is an optional passed-in secret key for the `.env.production` value `VAPID_PUBLIC_KEY`.
+
+The optional parameters MY_ACTIVE_PRIMARY_KEY, MY_ACTIVE_DETERMINISTIC_KEY, MY_ACTIVE_KEY_DERIVATION_SALT relate to new Ruby Active Record Encryption keys, as from 4.3.1 onwards. These are automatically generated first time, but need to be passed in for system migrations to a new host using existing values from `.env.production`.
 
 The PVTCERT parameter is an optional value which generates self-signed certificates instead of using `acme.sh`. This is used in testing, or if there is a frontend that handles SSL certificates, such as `haproxy`. You must still pass in an EMAIL parameter even though it's not used.
 
