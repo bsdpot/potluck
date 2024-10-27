@@ -59,6 +59,8 @@ optional_args="$optional_args MYOTPSECRET MYVAPIDPRIVATEKEY MYVAPIDPUBLICKEY"
 optional_args="$optional_args PVTCERT ELASTICENABLE ELASTICHOST ELASTICPORT"
 optional_args="$optional_args ELASTICUSER ELASTICPASS DEEPLKEY DEEPLPLAN"
 optional_args="$optional_args OWNERNAME OWNEREMAIL S3UPNOSSL"
+optional_args="$optional_args MY_ACTIVE_PRIMARY_KEY MY_ACTIVE_DETERMINISTIC_KEY"
+optional_args="$optional_args MY_ACTIVE_KEY_DERIVATION_SALT"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
