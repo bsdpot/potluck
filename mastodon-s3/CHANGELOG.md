@@ -1,6 +1,7 @@
 0.15
 
 * Update to mastodon 4.3.1
+* Disable pipefail option on step to create Active Record Encryption keys
 
 ---
 
