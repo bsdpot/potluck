@@ -93,35 +93,39 @@ else
 	VAPIDPUBLICKEY=$(grep VAPID_PUBLIC_KEY /mnt/mastodon/private/vapid.keys | awk -F'=' '{print $2}')
 fi
 
-# the step to create the Active Record Encryption keys exits with a non-zero status despite working
+# generate new Ruby Active Record Encryption keys, new for 4.3.1 onwards
+# note that the format of the output differs between manual running as user, and automatic in script
+
+# unset this
+set +e
 # shellcheck disable=SC3040
 set +o pipefail
 
-# generate new Ruby Active Record Encryption keys, new for 4.3.1 onwards
 # shellcheck disable=SC2153
 if [ -f /mnt/mastodon/private/activerecord.keys ]; then
 	echo "Active Record Encryption keys exist, not creating"
-	MY_ACTIVE_PRIMARY_KEY=$(grep 'primary_key:' /mnt/mastodon/private/activerecord.keys | awk -F': ' '{print $2}')
-	MY_ACTIVE_DETERMINISTIC_KEY=$(grep 'deterministic_key:' /mnt/mastodon/private/activerecord.keys | awk -F': ' '{print $2}')
-	MY_ACTIVE_KEY_DERIVATION_SALT=$(grep 'key_derivation_salt:' /mnt/mastodon/private/activerecord.keys | awk -F': ' '{print $2}')
+	MY_ACTIVE_PRIMARY_KEY=$(grep 'ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY' /mnt/mastodon/private/activerecord.keys | awk -F'=' '{print $2}')
+	MY_ACTIVE_DETERMINISTIC_KEY=$(grep 'ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY' /mnt/mastodon/private/activerecord.keys | awk -F'=' '{print $2}')
+	MY_ACTIVE_KEY_DERIVATION_SALT=$(grep 'ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT' /mnt/mastodon/private/activerecord.keys | awk -F'=' '{print $2}')
 else
 	if [ -n "$MY_ACTIVE_PRIMARY_KEY" ] && [ -n "$MY_ACTIVE_DETERMINISTIC_KEY" ] && [ -n "$MY_ACTIVE_KEY_DERIVATION_SALT" ]; then
 		echo "Passing Active Record Encryption keys to new file"
 		< "$TEMPLATEPATH/activerecord.keys.in" \
-		sed "s${sep}%%primary_key%%${sep}$MY_ACTIVE_PRIMARY_KEY${sep}g" | \
 		sed "s${sep}%%determine_key%%${sep}$MY_ACTIVE_DETERMINISTIC_KEY${sep}g" | \
-		sed "s${sep}%%key_salt%%${sep}$MY_ACTIVE_KEY_DERIVATION_SALT${sep}g" \
+		sed "s${sep}%%key_salt%%${sep}$MY_ACTIVE_KEY_DERIVATION_SALT${sep}g" | \
+		sed "s${sep}%%primary_key%%${sep}$MY_ACTIVE_PRIMARY_KEY${sep}g" \
 		> /mnt/mastodon/private/activerecord.keys
 	else
 		echo "Creating Active Record Encryption keys"
 		su - mastodon -c 'cd /usr/local/www/mastodon && RAILS_ENV=production /usr/local/bin/bundle exec rails db:encryption:init > /mnt/mastodon/private/activerecord.keys'
 	fi
-	MY_ACTIVE_PRIMARY_KEY=$(grep 'primary_key:' /mnt/mastodon/private/activerecord.keys | awk -F': ' '{print $2}')
-	MY_ACTIVE_DETERMINISTIC_KEY=$(grep 'deterministic_key:' /mnt/mastodon/private/activerecord.keys | awk -F': ' '{print $2}')
-	MY_ACTIVE_KEY_DERIVATION_SALT=$(grep 'key_derivation_salt:' /mnt/mastodon/private/activerecord.keys | awk -F': ' '{print $2}')
+	MY_ACTIVE_PRIMARY_KEY=$(grep 'ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY' /mnt/mastodon/private/activerecord.keys | awk -F'=' '{print $2}')
+	MY_ACTIVE_DETERMINISTIC_KEY=$(grep 'ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY' /mnt/mastodon/private/activerecord.keys | awk -F'=' '{print $2}')
+	MY_ACTIVE_KEY_DERIVATION_SALT=$(grep 'ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT' /mnt/mastodon/private/activerecord.keys | awk -F'=' '{print $2}')
 fi
 
-# revert to normal
+# set back this
+set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
@@ -137,9 +141,9 @@ echo "Creating .env.production"
   sed "s${sep}%%otpsecret%%${sep}$OTPSECRET${sep}g" | \
   sed "s${sep}%%vapidprivatekey%%${sep}$VAPIDPRIVATEKEY${sep}g" | \
   sed "s${sep}%%vapidpublickey%%${sep}$VAPIDPUBLICKEY${sep}g" | \
-  sed "s${sep}%%primary_key%%${sep}$MY_ACTIVE_PRIMARY_KEY${sep}g" | \
   sed "s${sep}%%determine_key%%${sep}$MY_ACTIVE_DETERMINISTIC_KEY${sep}g" | \
   sed "s${sep}%%key_salt%%${sep}$MY_ACTIVE_KEY_DERIVATION_SALT${sep}g" | \
+  sed "s${sep}%%primary_key%%${sep}$MY_ACTIVE_PRIMARY_KEY${sep}g" | \
   sed "s${sep}%%redishost%%${sep}$REDISHOST${sep}g" | \
   sed "s${sep}%%redisport%%${sep}$SETREDISPORT${sep}g" | \
   sed "s${sep}%%dbhost%%${sep}$DBHOST${sep}g" | \

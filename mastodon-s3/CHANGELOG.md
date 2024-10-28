@@ -2,6 +2,7 @@
 
 * Update to mastodon 4.3.1
 * Disable pipefail option on step to create Active Record Encryption keys
+* Change template file for Active Record Encryption keys because manual output differs from automatic
 
 ---
 
