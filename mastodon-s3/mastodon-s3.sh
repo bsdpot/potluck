@@ -195,6 +195,10 @@ pkg install -y rbenv
 #step "Install package ImageMagick7-nox11"
 #pkg install -y ImageMagick7-nox11
 
+# this will also install ImageMagick7-nox11, and this will replace ImageMagick7 soonish
+#step "Install package vips-nox11"
+#pkf install -y vips-nox11
+
 # this install wayland and lots of bloated packages
 step "Install package ImageMagick7"
 pkg install -y ImageMagick7
