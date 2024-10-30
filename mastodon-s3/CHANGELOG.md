@@ -1,3 +1,9 @@
+0.16
+
+* Version bump for new image
+
+---
+
 0.15
 
 * Update to mastodon 4.3.1

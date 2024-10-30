@@ -20,15 +20,15 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 
 ## PHP version changes
 On PHP version changes, update the socket link `/var/run/php82-fpm.sock` to the new PHP version in files:
-* pixelfed.d/local/share/cook/templates/nginx.conf.in
-* pixelfed.d/local/share/cook/templates/www.conf.in
+* `pixelfed.d/local/share/cook/templates/nginx.conf.in`
+* `pixelfed.d/local/share/cook/templates/www.conf.in`
 
 And update package versions in:
-* pixelfed.sh
+* `pixelfed.sh`
 
 ## Pixelfed version changes
 On Pixelfed release changes, update to the applicable commit in:
-* pixelfed.sh
+* `pixelfed.sh`
 
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?

@@ -20,12 +20,12 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 
 ## Python updates
 Make sure to update python39 and py39-{packagename} in the following files on Python version change:
-* zincsearch.sh
+* `zincsearch.sh`
 
 ## Zincsearch
 Zincsearch releases are on github at https://github.com/zincsearch/zincsearch/releases
 For new releases the URL, and checksum of extracted binary, must be updated in:
-* zincsearch.sh
+* `zincsearch.sh`
 
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?

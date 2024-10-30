@@ -21,7 +21,7 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 
 ## Go Version
 When `go` version changes updated the package install line and git sparse checkout lines in:
-* caddy-s3-nomad.sh
+* `caddy-s3-nomad.sh`
 
 ## Quarterly Package Updates
 Every new quarterly pkg release, update this line to next applicable quarter
@@ -29,7 +29,7 @@ Every new quarterly pkg release, update this line to next applicable quarter
 git pull --depth=1 origin 2024Q3
 ```
 in:
-* caddy-s3-nomad.sh
+* `caddy-s3-nomad.sh`
 
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?

@@ -20,7 +20,7 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 
 ## Java updates
 Make sure to update openjdk version in the following files on version change:
-* opensearch.sh
+* `opensearch.sh`
 
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?

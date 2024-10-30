@@ -20,7 +20,7 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 
 ## New versions of postgresql
 On new versions of postgresql, the postgres.conf.in file needs to be updated
-* postgres-single.d/local/share/cook/templates/postgres.conf.in
+* `postgres-single.d/local/share/cook/templates/postgres.conf.in`
 
 ## postgres_exporter
 On new versions of `postgres_exporter` make sure to update the download link, version and checksum in:
