@@ -1,3 +1,10 @@
+
+0.0.31
+
+* Version bump for freebsd security fixes
+
+---
+
 0.0.30
 
 * Version bump to properly clear freebsd-update and pkg cache
