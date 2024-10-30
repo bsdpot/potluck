@@ -152,6 +152,10 @@ pkg install -y node20
 step "Install package yarn-node20"
 pkg install -y yarn-node20
 
+# this automatically installs ImageMagick7-nox11 too
+step "Install package vips-nox11"
+pkg install -y vips-nox11
+
 step "Install package ImageMagick7-nox11"
 pkg install -y ImageMagick7-nox11
 

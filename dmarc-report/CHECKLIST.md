@@ -20,7 +20,7 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 
 ## Python updates
 Make sure to update python311 and py311-{packagename} in the following files on Python version change:
-* dmarc-report.sh
+* `dmarc-report.sh`
 
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?

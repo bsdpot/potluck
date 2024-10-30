@@ -69,7 +69,7 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/nginx-varnish-ssl-nomad"
         pot = "nginx-varnish-ssl-nomad-amd64-14_1"
-        tag = "0.0.1"
+        tag = "0.1.1"
         command = "/usr/local/bin/cook"
         args = ["-d","domainname","-s","10.0.0.2:8080","-b","bucketname"]
         port_map = {
