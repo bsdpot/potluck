@@ -1,3 +1,9 @@
+2.5.3
+
+* Enable milliseconds in syslog-ng for all log timestamps
+
+---
+
 2.5.2
 
 * Bring back postgresql-contrib to support useful plugins like pg_stat_statements (originally in v2.3.2)

@@ -1,3 +1,9 @@
+0.0.18
+
+* Enable milliseconds in syslog-ng for all log timestamps
+
+---
+
 0.0.17
 
 * Fix nologin shell for nodeexport user

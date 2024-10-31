@@ -1,3 +1,9 @@
+1.23.2
+
+* Enable milliseconds in syslog-ng for all log timestamps
+
+---
+
 1.23
 
 * Version bump for new base image

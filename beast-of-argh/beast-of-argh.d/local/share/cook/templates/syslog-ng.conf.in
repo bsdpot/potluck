@@ -13,6 +13,7 @@ options {
  log-fifo-size(40000);
  time_reopen(120);
  ts_format(iso);
+ frac-digits(3);
 };
 
 # local sources

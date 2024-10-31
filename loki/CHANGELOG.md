@@ -1,3 +1,9 @@
+0.3.6
+
+* Enable milliseconds in syslog-ng for all log timestamps
+
+---
+
 0.3.5
 
 * Remove syslog log target from promtail and syslog-ng.conf and improve parsing of the varlogs target. This allows reingesting logs after disaster. Also parse severity.
