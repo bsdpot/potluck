@@ -2,7 +2,8 @@
 
 * Fix nologin shell for nodeexport user
 * This image is still old format versioning
-
+* Enable milliseconds in syslog-ng for all log timestamps
+* 
 ---
 
 0.0.16

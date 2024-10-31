@@ -14,6 +14,7 @@ options {
  stats_freq(0);
  time_reopen(120);
  ts_format(iso);
+ frac-digits(3);
 };
 
 # template to include severity

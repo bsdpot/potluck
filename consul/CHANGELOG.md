@@ -1,7 +1,8 @@
 2.21
 
 * Version bump for new base image
-
+* Enable milliseconds in syslog-ng for all log timestamps
+ 
 ---
 
 2.20

@@ -1,5 +1,11 @@
 0.16.2
 
+* Enable milliseconds in syslog-ng for all log timestamps
+
+---
+
+0.16.2
+
 * Add Loki metrics Consul service as a scrape target (restores the "lost" version 0.15.4)
 
 ---
