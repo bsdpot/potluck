@@ -1,9 +1,3 @@
-0.0.13
-
-* Enable milliseconds in syslog-ng for all log timestamps
-
----
-
 0.0.12
 
 * Version bump for p3 rebuild
