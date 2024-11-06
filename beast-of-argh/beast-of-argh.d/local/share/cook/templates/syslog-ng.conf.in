@@ -3,16 +3,16 @@
 
 # options
 options {
- chain_hostnames(off);
- use_dns (no);
+ chain-hostnames(no);
+ use-dns(no);
  dns-cache(no);
- use_fqdn (no);
- keep_hostname(no);
- flush_lines(0);
+ use-fqdn(no);
+ keep-hostname(no);
+ flush-lines(0);
  threaded(yes);
  log-fifo-size(40000);
- time_reopen(120);
- ts_format(iso);
+ time-reopen(120);
+ ts-format(iso);
  frac-digits(3);
 };
 
@@ -37,12 +37,13 @@ source s_promtail {
 # https://www.syslog-ng.com/technical-documents/doc/\
 # syslog-ng-open-source-edition/3.19/administration-guide/53
 source mynetwork {
- tcp(
+ network(
   ip(0.0.0.0)
   port(514)
+  transport(tcp)
   max-connections(300)
   log-iw-size(30000)
-  so_keepalive(yes)
+  so-keepalive(yes)
  );
 };
 
@@ -79,15 +80,22 @@ destination jsonmetricslog {
   );
 };
 destination loghost {
-  tcp("%%myip%%" port(514)
- );
+  network(
+    "%%myip%%"
+    port(514)
+    transport(tcp)
+  );
 };
 
 destination lokisyslog {
-  syslog("127.0.0.1" transport("tcp") port(1514)
+  syslog(
+    "127.0.0.1"
+    port(1514)
+    transport("tcp")
     disk-buffer(
-      mem-buf-size(536870912)    # 512MiB
-      disk-buf-size(10737418240) # 10GiB
+      truncate-size-ratio(1)
+      flow-control-window-bytes(536870912) # 512MiB
+      capacity-bytes(10737418240) # 10GiB
       reliable(yes)
       dir("/mnt/logs/syslog-ng-disk-buffer")
     )

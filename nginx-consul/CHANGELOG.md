@@ -1,3 +1,9 @@
+0.3.3
+
+* Update syslog-ng config to use modern config options
+
+---
+
 0.3.2
 
 * Enable milliseconds in syslog-ng for all log timestamps

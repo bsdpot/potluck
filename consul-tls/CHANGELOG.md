@@ -3,6 +3,7 @@
 * Version bump for new base image 14.1
 * Extra steps to trim image size
 * Enable milliseconds in syslog-ng for all log timestamps
+* Update syslog-ng config to use modern config options
 
 ---
 
