@@ -2,6 +2,8 @@
 
 * Version bump for p3 rebuild
 * Add checklist
+* Enable milliseconds in syslog-ng for all log timestamps
+* Update syslog-ng config to use modern config options
 
 ---
 

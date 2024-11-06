@@ -2,7 +2,8 @@
 
 * Version bump for new base image
 * Enable milliseconds in syslog-ng for all log timestamps
-* 
+* Update syslog-ng config to use modern config options
+
 ---
 
 0.8
