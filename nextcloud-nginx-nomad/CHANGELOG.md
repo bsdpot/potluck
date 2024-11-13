@@ -1,3 +1,9 @@
+0.105
+
+* Experimental adjustments to nginx and php
+
+---
+
 0.104
 
 * Version bump for new image
