@@ -51,7 +51,8 @@ if [ -n "${SELFSIGNHOST}" ]; then
     # append the copied in rootca file to necessary files
     if [ -f /root/rootca.crt ]; then
         cat /root/rootca.crt >> /usr/local/share/certs/ca-root-nss.crt
-        echo "openssl.cafile=/usr/local/share/certs/ca-root-nss.crt" >> /usr/local/etc/php/99-custom.ini
+        # testing making this permanent, 99-custom.ini has sections and appending no good any more
+        #echo "openssl.cafile=/usr/local/share/certs/ca-root-nss.crt" >> /usr/local/etc/php/99-custom.ini
         cat /root/rootca.crt >> /usr/local/www/nextcloud/resources/config/ca-bundle.crt
     fi
     # the following fails on some setups so a different approach copying in rootCA is required, as above
