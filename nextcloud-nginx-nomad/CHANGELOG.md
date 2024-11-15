@@ -1,3 +1,9 @@
+0.106
+
+* Enable option openssl.cafile permenantly in php custom config
+
+---
+
 0.105
 
 * Experimental adjustments to nginx and php
