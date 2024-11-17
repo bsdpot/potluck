@@ -49,3 +49,10 @@ if [ -s /root/custom.config.php ]; then
     chown www:www /usr/local/www/nextcloud/config/custom.config.php
 	chmod 660 /usr/local/www/nextcloud/config/custom.config.php
 fi
+
+# check for autoconfig.php and if exists copy across to nextcloud config dir
+if [ -s /root/autoconfig.php ]; then
+    cp -f /root/autoconfig.php /usr/local/www/nextcloud/config/autoconfig.php
+    chown www:www /usr/local/www/nextcloud/config/autoconfig.php
+    chmod 660 /usr/local/www/nextcloud/config/autoconfig.php
+fi

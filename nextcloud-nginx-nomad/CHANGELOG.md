@@ -1,3 +1,10 @@
+0.107
+
+* Enable option to use caddy instead of nginx
+* Add autoconfig.php logic
+
+---
+
 0.106
 
 * Enable option openssl.cafile permenantly in php custom config

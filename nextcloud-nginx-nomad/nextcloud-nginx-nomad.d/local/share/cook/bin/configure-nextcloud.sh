@@ -55,13 +55,6 @@ if [ -n "${SELFSIGNHOST}" ]; then
         #echo "openssl.cafile=/usr/local/share/certs/ca-root-nss.crt" >> /usr/local/etc/php/99-custom.ini
         cat /root/rootca.crt >> /usr/local/www/nextcloud/resources/config/ca-bundle.crt
     fi
-    # the following fails on some setups so a different approach copying in rootCA is required, as above
-    #echo "" |/usr/bin/openssl s_client -showcerts -noservername -connect "${SELFSIGNHOST}" |/usr/bin/openssl x509 -outform PEM > /tmp/cert.pem
-    #if [ -f /tmp/cert.pem ]; then
-    #    cat /tmp/cert.pem >> /usr/local/share/certs/ca-root-nss.crt
-    #    echo "openssl.cafile=/usr/local/share/certs/ca-root-nss.crt" >> /usr/local/etc/php/99-custom.ini
-    #    cat /tmp/cert.pem >> /usr/local/www/nextcloud/resources/config/ca-bundle.crt
-    #fi
 
     if [ -n "${SPECIALPATCH}" ]; then
         # Patch nextcloud source for self-signed certificates with S3

@@ -45,10 +45,13 @@ fi
 ## Convert parameters to variables if passed (overwrite environment)
 ########################################################################
 OPTIND=1
-while getopts d:s:x:v: option
+while getopts c:d:s:x:v: option
 do
     case "${option}"
     in
+      c) CADDYENABLE=${OPTARG}
+         export CADDYENABLE
+         ;;
       d) DATADIR=${OPTARG}
          export DATADIR
          ;;
@@ -70,7 +73,7 @@ shift "$((OPTIND-1))"
 ########################################################################
 
 required_args=""
-optional_args="DATADIR SELFSIGNHOST SPECIALPATCH FROMGITHUB"
+optional_args="CADDYENABLE DATADIR SELFSIGNHOST SPECIALPATCH FROMGITHUB"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -122,8 +125,13 @@ configure-nextcloud.sh
 log "Configure custom nextcloud config.php files"
 configure-custom.sh
 
-log "Configure nginx"
-configure-nginx.sh
+if [ -n "$CADDYENABLE" ]; then
+	log "Configure caddy"
+	configure-caddy.sh
+else
+	log "Configure nginx"
+	configure-nginx.sh
+fi
 
 log "Configure cron"
 configure-cron.sh
@@ -139,8 +147,16 @@ else
 	service php-fpm start || true
 fi
 
-log "Start nginx"
-service nginx start || true
+if [ -n "$CADDYENABLE" ]; then
+	log "Start caddy"
+	service caddy start || true
+else
+	log "Start nginx"
+	service nginx start || true
+fi
+
+# log "Start nginx"
+# service nginx start || true
 #timeout --foreground 120 \
 #  sh -c 'while ! service nginx status; do
 #    service nginx start || true; sleep 5;
