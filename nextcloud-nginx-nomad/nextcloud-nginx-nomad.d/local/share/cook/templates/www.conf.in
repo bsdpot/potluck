@@ -13,6 +13,7 @@ pm.max_spare_servers = 3
 php_flag[display_errors] = on
 php_admin_value[error_log] = /var/log/nginx/fpm-php.www.log
 php_admin_flag[log_errors] = on
+env[NEXTCLOUD_CONFIG_DIR] = /usr/local/www/nextcloud/config
 env[PATH] = /usr/local/bin:/usr/bin:/bin
 env[TMP] = /tmp
 env[TMPDIR] = /tmp

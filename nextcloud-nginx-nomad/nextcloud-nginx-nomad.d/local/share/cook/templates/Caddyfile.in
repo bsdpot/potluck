@@ -18,7 +18,7 @@
 			X-XSS-Protection "1; mode=block" defer
 			Strict-Transport-Security max-age=31536000;
 		}
-		php_fastcgi unix//usr/local/var/run/php-fpm.sock {
+		php_fastcgi unix//var/run/php82-fpm.sock {
 			try_files {path} {path}/index.php index.php
 			env front_controller_active true
 			header_down -x-powered-by
