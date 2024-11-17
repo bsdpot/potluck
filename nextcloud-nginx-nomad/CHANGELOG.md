@@ -1,3 +1,10 @@
+0.108
+
+* Fix php socket path for caddy
+* Add parameter to php-fpm for NEXTCLOUD_CONFIG_DIR
+
+---
+
 0.107
 
 * Enable option to use caddy instead of nginx
