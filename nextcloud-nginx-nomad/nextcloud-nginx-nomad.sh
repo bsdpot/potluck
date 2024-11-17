@@ -115,6 +115,9 @@ pkg install -y rsync
 step "Install package nginx"
 pkg install -y nginx
 
+step "Install package caddy"
+pkg install -y caddy
+
 step "Install package mariadb106-client"
 pkg install -y mariadb106-client
 
@@ -321,9 +324,6 @@ pkg install -y nano
 step "Install package sudo"
 pkg install -y sudo
 
-# this step moved lower due to ports builds
-#step "Clean package installation"
-#pkg clean -y
 
 # ---------------- SETUP PORTS -----------------
 

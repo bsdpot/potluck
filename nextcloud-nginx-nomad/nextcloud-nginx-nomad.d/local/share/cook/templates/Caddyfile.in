@@ -1,0 +1,61 @@
+:80 {
+	root * /usr/local/www/nextcloud
+	file_server
+
+	redir /.well-known/carddav /remote.php/dav 301
+	redir /.well-known/caldav /remote.php/dav 301
+	redir /.well-known/webfinger /index.php{uri} 301
+	redir /.well-known/nodeinfo /index.php{uri} 301
+
+	handle /* {
+		header {
+			Referrer-Policy "no-referrer" defer
+			X-Content-Type-Options "nosniff" defer
+			X-Download-Options "noopen" defer
+			X-Frame-Options "SAMEORIGIN" defer
+			X-Permitted-Cross-Domain-Policies "none" defer
+			X-Robots-Tag "none" defer
+			X-XSS-Protection "1; mode=block" defer
+			Strict-Transport-Security max-age=31536000;
+		}
+		php_fastcgi unix//usr/local/var/run/php-fpm.sock {
+			try_files {path} {path}/index.php index.php
+			env front_controller_active true
+			header_down -x-powered-by
+		}
+		# Required for legacy
+		@notlegacy {
+			path *.php
+			not path /index*
+			not path /remote*
+			not path /public*
+			not path /cron*
+			not path /core/ajax/update*
+			not path /status*
+			not path /ocs/v1*
+			not path /ocs/v2*
+			not path /updater/*
+			not path /ocs-provider/*
+			not path */richdocumentscode/proxy*
+		}
+		rewrite @notlegacy /index.php{uri}
+		
+		@forbidden {
+			path /.htaccess
+			path /data/*
+			path /config/*
+			path /db_*
+			path /.xml
+			path /README
+			path /AUTHORS
+			path /COPYING
+			path /3rdparty/*
+			path /lib/*
+			path /templates/*
+			path /occ
+			path /console.php
+			path /cron.php
+		}
+		respond @forbidden 404
+	}
+}

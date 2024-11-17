@@ -7,7 +7,7 @@ tags: ["nginx", "http", "nextcloud", "documents", "nomad"]
 
 # Overview
 
-This is a Nextcloud on ```nginx``` jail that can be deployed via ```nomad```.
+This is a Nextcloud on ```nginx``` jail that can be deployed via ```nomad```. Optionally `caddy` can be selected instead of `nginx`.
 
 For more details about ```nomad``` images, see [about potluck](https://potluck.honeyguide.net/micro/about-potluck/).
 
@@ -38,6 +38,29 @@ Make sure to specify `/mnt/filestore` or similar for DATADIR parameter (-d) in t
 If you have S3 object storage with a self-signed certificate, set the SELFSIGNHOST parameter to ```ip:port``` or pass in ```-s ip:port```.
 
 You must also copy-in the `rootca.crt` certificate from the setup of self-signed certificates for S3.
+
+## Custom autoconfig.php
+
+You can copy in a custom `autoconfig.php` to `/root/autoconfig.php` and automatic configuration can take place on opening the web page the first time. This means not using the web installer, or cli.
+
+The file needs to look this the following, variables omitted will be asked for in the web installer.
+
+```
+<?php
+$AUTOCONFIG = array(
+  "dbtype"        => 'mysql',
+  "dbname"        => 'databasename',
+  "dbuser"        => 'user',
+  "dbpass"        => 'pass',
+  "dbhost"        => 'ip.address:port',
+  "dbtableprefix" => 'oc_',
+  "adminlogin"    => 'admin name',
+  "adminpass"     => 'admin password',
+  "directory"     => '/mnt/filestore',
+);
+```
+
+You can also copy in the other custom config php files below.
 
 ## Custom objectstore.config.php
 If you wish to make use of object storage for file backing you will need to copy-in a custom `objectstore.config.php` to `/root/objectstore.config.php`.
@@ -151,7 +174,7 @@ job "nextcloud" {
       }
 
       service {
-        tags = ["nginx", "www", "nextcloud"]
+        tags = ["www", "nextcloud"]
         name = "nextcloud-server"
         port = "http"
 
@@ -171,7 +194,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-14_1"
-        tag = "0.106"
+        tag = "0.107"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
@@ -202,13 +225,17 @@ job "nextcloud" {
 
 This is a very large pot image. The nomad job will timeout on first run as `pot` takes a while to download the image and add it.
 
-The image boots with https enabled in nginx. You will need a frontend proxy like `haproxy` or `traefik` or similar to handle the redirect from a domain name, with SSL, to the internal nomad host and port configured in job file. A valid digital certificate would be useful too.
+The image boots with https enabled in nginx but serves over http only. You will need a frontend proxy like `haproxy` or `traefik` or similar to handle the redirect from a domain name, with SSL, to the internal nomad host and port configured in job file. A valid digital certificate would be useful too.
 
 ## Self-signed SSL for Object storage
 
-Pass in a ```ip:port``` paramater for ```SELFSIGNHOST``` or ```-s ip:port```. If you don't specify a port 443 will be used.
+Pass in a ```ip:port``` parameter for ```SELFSIGNHOST``` or ```-s ip:port```. If you don't specify a port 443 will be used.
 
 You also need to copy-in the `rootca.crt` file created as part of setting up self-signed certificates. Make sure to copy-in to `/root/rootca.crt` as the script expecting this file name.
+
+## Use Caddy instead of NGINX
+
+Pass in the parameter ```-c yes``` or set CADDYENABLE to use `caddy` instead of `nginx`.
 
 ## Install nextcloud from github
 
