@@ -1,3 +1,9 @@
+0.109
+
+* Testing: remove special patches as post-install nextcloud integrity checker might be failing on the patches to add 'no ssl verify' for object storage
+
+---
+
 0.108
 
 * Fix php socket path for caddy
