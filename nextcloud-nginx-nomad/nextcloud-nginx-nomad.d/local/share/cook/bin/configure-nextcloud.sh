@@ -56,29 +56,29 @@ if [ -n "${SELFSIGNHOST}" ]; then
         cat /root/rootca.crt >> /usr/local/www/nextcloud/resources/config/ca-bundle.crt
     fi
 
-    if [ -n "${SPECIALPATCH}" ]; then
-        # Patch nextcloud source for self-signed certificates with S3
-        if [ -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php ] && [ -f "$TEMPLATEPATH/S3ObjectTrait.patch" ]; then
-            # make sure we haven't already applied the patch
-            checknotapplied=$(grep -c verify_peer_name /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php)
-            if [ "${checknotapplied}" -eq 0 ]; then
-                # check the patch will apply cleanly
-                # shellcheck disable=SC2008
-                testpatch=$(patch --check -i "$TEMPLATEPATH/S3ObjectTrait.patch" /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php | echo "$?")
-                if [ "${testpatch}" -eq 0 ]; then
-                    # apply the patch
-                    patch -i "$TEMPLATEPATH/S3ObjectTrait.patch" /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php
-                fi
-            fi
-        fi
-    else
-        if [ -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php ] && [ -f "$TEMPLATEPATH/nosslverify.patch" ]; then
-            if [ ! -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php.patched ]; then
-                cp "$TEMPLATEPATH/nosslverify.patch" /usr/local/www/nextcloud/lib/private/Files/ObjectStore/nosslverify.patch
-                sed -e "/'cafile' => \$bundle/r /usr/local/www/nextcloud/lib/private/Files/ObjectStore/nosslverify.patch" -e "//d" /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php > /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php.patched
-                cp -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php.original
-                cp -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php.patched /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php
-            fi
-        fi
-    fi
+    # if [ -n "${SPECIALPATCH}" ]; then
+    #     # Patch nextcloud source for self-signed certificates with S3
+    #     if [ -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php ] && [ -f "$TEMPLATEPATH/S3ObjectTrait.patch" ]; then
+    #         # make sure we haven't already applied the patch
+    #         checknotapplied=$(grep -c verify_peer_name /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php)
+    #         if [ "${checknotapplied}" -eq 0 ]; then
+    #             # check the patch will apply cleanly
+    #             # shellcheck disable=SC2008
+    #             testpatch=$(patch --check -i "$TEMPLATEPATH/S3ObjectTrait.patch" /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php | echo "$?")
+    #             if [ "${testpatch}" -eq 0 ]; then
+    #                 # apply the patch
+    #                 patch -i "$TEMPLATEPATH/S3ObjectTrait.patch" /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php
+    #             fi
+    #         fi
+    #     fi
+    # else
+    #     if [ -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php ] && [ -f "$TEMPLATEPATH/nosslverify.patch" ]; then
+    #         if [ ! -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php.patched ]; then
+    #             cp "$TEMPLATEPATH/nosslverify.patch" /usr/local/www/nextcloud/lib/private/Files/ObjectStore/nosslverify.patch
+    #             sed -e "/'cafile' => \$bundle/r /usr/local/www/nextcloud/lib/private/Files/ObjectStore/nosslverify.patch" -e "//d" /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php > /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php.patched
+    #             cp -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php.original
+    #             cp -f /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php.patched /usr/local/www/nextcloud/lib/private/Files/ObjectStore/S3ObjectTrait.php
+    #         fi
+    #     fi
+    # fi
 fi

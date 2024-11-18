@@ -231,7 +231,7 @@ The image boots with https enabled in nginx but serves over http only. You will 
 
 Pass in a ```ip:port``` parameter for ```SELFSIGNHOST``` or ```-s ip:port```. If you don't specify a port 443 will be used.
 
-You also need to copy-in the `rootca.crt` file created as part of setting up self-signed certificates. Make sure to copy-in to `/root/rootca.crt` as the script expecting this file name.
+You also need to copy-in the `rootca.crt` file created as part of setting up self-signed certificates. Make sure to copy-in to `/root/rootca.crt` as the script is expecting this file name.
 
 ## Use Caddy instead of NGINX
 
