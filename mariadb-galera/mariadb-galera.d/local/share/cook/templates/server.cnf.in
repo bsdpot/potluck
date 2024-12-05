@@ -9,6 +9,7 @@ log-bin-index = bin-log.index
 relay-log = mysqld-relay-bin
 max_binlog_size = 100M
 binlog_format = ROW
+expire_logs_days = 7
 character-set-server = utf8mb4
 collation-server = utf8mb4_general_ci
 wsrep_on = 1

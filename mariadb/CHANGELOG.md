@@ -3,7 +3,8 @@
 * Version bump for new base image
 * Enable milliseconds in syslog-ng for all log timestamps
 * Update syslog-ng config to use modern config options
- 
+* Set mariadb expire_logs_days option
+
 ---
 
 4.9
