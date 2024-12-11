@@ -1,3 +1,8 @@
+0.0.32
+
+* Version bump for 14.2 base image
+
+---
 
 0.0.31
 
