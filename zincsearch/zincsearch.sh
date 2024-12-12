@@ -132,7 +132,7 @@ pkg clean -y
 
 step "Download and extract zincsearch binary from github"
 fetch -qo - \
- https://github.com/zincsearch/zincsearch/releases/download/v0.4.10/zincsearch_0.4.10_darwin_x86_64.tar.gz | \
+ https://github.com/zincsearch/zincsearch/releases/download/v0.4.10/zincsearch_0.4.10_freebsd_x86_64.tar.gz | \
  tar xzf - -C /usr/local/bin
 
 step "Testing if zincsearch binary exists"
@@ -142,7 +142,7 @@ fi
 
 step "Checksum query for zincsearch"
 if [ "$(sha256 -q /usr/local/bin/zincsearch)" != \
-  "aa64596e4660e95adee12d996892b4bcfedc3c52ab110f0f3804ba87569375c6" ]; then
+  "ebe143482d6bf95b966daa51a8360af7e20e9162b2e1db8f1685924226aa2b9f" ]; then
   exit_error "/usr/local/bin/zincsearch checksum mismatch!"
 fi
 

@@ -250,7 +250,7 @@ git sparse-checkout set GIDs UIDs \
   mail/dovecot/ \
   mail/dovecot-pigeonhole/ \
   mail/spamassassin/ \
-  lang/python39/ \
+  lang/python311/ \
   ports-mgmt/pkg/ \
   converters/p5-Encode-Detect/ \
   converters/libiconv/ \

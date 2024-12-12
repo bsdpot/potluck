@@ -53,8 +53,8 @@ job "backupmx" {
 
       config {
         image = "https://potluck.honeyguide.net/postfix-backupmx-nomad"
-        pot = "postfix-backupmx-nomad-amd64-14_1"
-        tag = "1.18.1"
+        pot = "postfix-backupmx-nomad-amd64-14_2"
+        tag = "1.19.1"
         command = "/usr/local/bin/cook"
         args = ["-n","10.10.10.10/32","-d","'example1.com, example2.com, example.de'","-b","'mx2.example1.com ESMTP \\$mail_name'","-h","mx2.example1.com"]
         mount = [
@@ -116,8 +116,8 @@ job "backupmx" {
        }
        config {
         image = "https://potluck.honeyguide.net/postfix-backupmx-nomad"
-        pot = "postfix-backupmx-nomad-amd64-14_1"
-        tag = "1.18.1"
+        pot = "postfix-backupmx-nomad-amd64-14_2"
+        tag = "1.19.1"
         command = "/usr/local/bin/cook"
         args = [""]
 
