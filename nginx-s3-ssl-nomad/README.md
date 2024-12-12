@@ -97,8 +97,8 @@ job "example" {
 
       config {
         image = "https://potluck.honeyguide.net/nginx-s3-ssl-nomad"
-        pot = "nginx-s3-ssl-nomad-amd64-14_1"
-        tag = "0.10.1"
+        pot = "nginx-s3-ssl-nomad-amd64-14_2"
+        tag = "0.11.1"
         command = "/usr/local/bin/cook"
         args = ["-d","domainname","-e","10.0.0.2:9000","-x","bucketname","-s","yes"]
         port_map = {
@@ -151,8 +151,8 @@ job "example" {
 
       config {
         image = "https://potluck.honeyguide.net/nginx-s3-ssl-nomad"
-        pot = "nginx-s3-ssl-nomad-amd64-14_1"
-        tag = "0.10.1"
+        pot = "nginx-s3-ssl-nomad-amd64-14_2"
+        tag = "0.11.1"
         command = "/usr/local/bin/cook"
         args = ["-d","domainname","-e","10.0.0.2:9000","-f","10.0.0.3:9000","-x","bucketname","-s","yes"]
         port_map = {
@@ -205,8 +205,8 @@ job "example" {
 
       config {
         image = "https://potluck.honeyguide.net/nginx-s3-ssl-nomad"
-        pot = "nginx-s3-ssl-nomad-amd64-14_1"
-        tag = "0.10.1"
+        pot = "nginx-s3-ssl-nomad-amd64-14_2"
+        tag = "0.11.1"
         command = "/usr/local/bin/cook"
         args = ["-d","domainname","-e","10.0.0.2:9000","-f","10.0.0.3:9000","-g","10.0.0.4:9000","-h","10.0.0.5:9000","-x","bucketname","-s","yes"]
         port_map = {

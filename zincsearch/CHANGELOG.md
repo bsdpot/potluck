@@ -1,3 +1,10 @@
+0.5
+
+* Version bump for new base image 14.2
+* Use correct download link from github
+
+---
+
 0.4
 
 * Version bump for new base image

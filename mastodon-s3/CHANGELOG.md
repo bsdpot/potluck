@@ -1,3 +1,10 @@
+0.17
+
+* Version bump for 14.2
+* New version mastodon 4.3.2
+
+---
+
 0.16
 
 * Version bump for new image

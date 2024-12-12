@@ -1,3 +1,9 @@
+4.11
+
+* Version bump for new base image 14.2
+
+---
+
 4.10
 
 * Version bump for new base image
