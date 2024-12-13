@@ -159,86 +159,86 @@ pkg install -y vips-nox11
 step "Install package ImageMagick7-nox11"
 pkg install -y ImageMagick7-nox11
 
-step "Install package php82"
-pkg install -y php82
+step "Install package php83"
+pkg install -y php83
 
-step "Install package php82-mbstring"
-pkg install -y php82-mbstring
+step "Install package php83-mbstring"
+pkg install -y php83-mbstring
 
-step "Install package php82-zlib"
-pkg install -y php82-zlib
+step "Install package php83-zlib"
+pkg install -y php83-zlib
 
-step "Install package php82-curl"
-pkg install -y php82-curl
+step "Install package php83-curl"
+pkg install -y php83-curl
 
-step "Install package php82-gd"
-pkg install -y php82-gd
+step "Install package php83-gd"
+pkg install -y php83-gd
 
-step "Install package php82-bcmath"
-pkg install -y php82-bcmath
+step "Install package php83-bcmath"
+pkg install -y php83-bcmath
 
-step "Install package php82-ctype"
-pkg install -y php82-ctype
+step "Install package php83-ctype"
+pkg install -y php83-ctype
 
-step "Install package php82-exif"
-pkg install -y php82-exif
+step "Install package php83-exif"
+pkg install -y php83-exif
 
-step "Install package php82-iconv"
-pkg install -y php82-iconv
+step "Install package php83-iconv"
+pkg install -y php83-iconv
 
-step "Install package php82-intl"
-pkg install -y php82-intl
+step "Install package php83-intl"
+pkg install -y php83-intl
 
-step "Install package php82-pecl-redis"
-pkg install -y php82-pecl-redis
+step "Install package php83-pecl-redis"
+pkg install -y php83-pecl-redis
 
-step "Install package php82-tokenizer"
-pkg install -y php82-tokenizer
+step "Install package php83-tokenizer"
+pkg install -y php83-tokenizer
 
-step "Install package php82-simplexml"
-pkg install -y php82-simplexml
+step "Install package php83-simplexml"
+pkg install -y php83-simplexml
 
-step "Install package php82-xml"
-pkg install -y php82-xml
+step "Install package php83-xml"
+pkg install -y php83-xml
 
-step "Install package php82-xmlreader"
-pkg install -y php82-xmlreader
+step "Install package php83-xmlreader"
+pkg install -y php83-xmlreader
 
-step "Install package php82-xmlwriter"
-pkg install -y php82-xmlwriter
+step "Install package php83-xmlwriter"
+pkg install -y php83-xmlwriter
 
-step "Install package php82-fileinfo"
-pkg install -y php82-fileinfo
+step "Install package php83-fileinfo"
+pkg install -y php83-fileinfo
 
-step "Install package php82-pcntl"
-pkg install -y php82-pcntl
+step "Install package php83-pcntl"
+pkg install -y php83-pcntl
 
-step "Install package php82-sodium"
-pkg install -y php82-sodium
+step "Install package php83-sodium"
+pkg install -y php83-sodium
 
-step "Install package php82-posix"
-pkg install -y php82-posix
+step "Install package php83-posix"
+pkg install -y php83-posix
 
-step "Install package php82-zip"
-pkg install -y php82-zip
+step "Install package php83-zip"
+pkg install -y php83-zip
 
-step "Install package php82-pgsql"
-pkg install -y php82-pgsql
+step "Install package php83-pgsql"
+pkg install -y php83-pgsql
 
-step "Install package php82-pdo_pgsql"
-pkg install -y php82-pdo_pgsql
+step "Install package php83-pdo_pgsql"
+pkg install -y php83-pdo_pgsql
 
-step "Install package php82-mysqli"
-pkg install -y php82-mysqli
+step "Install package php83-mysqli"
+pkg install -y php83-mysqli
 
-step "Install package php82-pdo_mysql"
-pkg install -y php82-pdo_mysql
+step "Install package php83-pdo_mysql"
+pkg install -y php83-pdo_mysql
 
-step "Install package php82-composer"
-pkg install -y php82-composer
+step "Install package php83-composer"
+pkg install -y php83-composer
 
-step "Install package php82-pecl-imagick"
-pkg install -y php82-pecl-imagick
+step "Install package php83-pecl-imagick"
+pkg install -y php83-pecl-imagick
 
 step "Install package syslog-ng"
 pkg install -y syslog-ng
@@ -303,9 +303,8 @@ su -m www -c "cd /usr/local/www/pixelfed; git fetch"
 step "Checking out the latest commit"
 #su -m www -c "cd /usr/local/www/pixelfed; git checkout e9bcc52944ffab87d9971f21832046942058570d"
 # https://github.com/pixelfed/pixelfed/commit/ceb375d91d736e72f31931e19701b6cff191d0db
-#su -m www -c "cd /usr/local/www/pixelfed; git checkout ceb375d91d736e72f31931e19701b6cff191d0db"
-# lock to release v0.12.3 on 2024-08-15
-su -m www -c "cd /usr/local/www/pixelfed; git checkout 4c245cf429330d01fcb8ebeb9aa8c84a9574a645"
+# lock to release v0.12.4 on 2024-11-09
+su -m www -c "cd /usr/local/www/pixelfed; git checkout 65dd601a02f5840c9d3e25bb30cfbbd8d033d8ae"
 
 # include --no-cache because user www can't create cache dir in /root
 step "Run composer install"

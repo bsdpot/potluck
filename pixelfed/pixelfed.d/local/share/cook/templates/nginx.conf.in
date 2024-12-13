@@ -21,7 +21,7 @@ http {
 	}
 
 	upstream php-handler {
-		server unix:/var/run/php82-fpm.sock;
+		server unix:/var/run/php83-fpm.sock;
 	}
 
 	proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=CACHE:10m inactive=7d max_size=1g;

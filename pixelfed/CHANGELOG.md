@@ -1,6 +1,8 @@
 0.8
 
 * Version bump for new base image 14.2
+* Update pixelfed to 0.12.4
+* Update to php83 for latest pixelfed release
 
 ---
 

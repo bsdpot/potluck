@@ -19,7 +19,7 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 * `pixelfed.ini`
 
 ## PHP version changes
-On PHP version changes, update the socket link `/var/run/php82-fpm.sock` to the new PHP version in files:
+On PHP version changes, update the socket link `/var/run/php83-fpm.sock` to the new PHP version in files:
 * `pixelfed.d/local/share/cook/templates/nginx.conf.in`
 * `pixelfed.d/local/share/cook/templates/www.conf.in`
 
