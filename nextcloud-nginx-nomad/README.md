@@ -43,7 +43,7 @@ You must also copy-in the `rootca.crt` certificate from the setup of self-signed
 
 You can copy in a custom `autoconfig.php` to `/root/autoconfig.php` and automatic configuration can take place on opening the web page the first time. This means not using the web installer, or cli.
 
-The file needs to look this the following, variables omitted will be asked for in the web installer.
+The file needs to look like the following, where omitted variables will be asked for in the web installer.
 
 ```
 <?php
@@ -109,6 +109,37 @@ $CONFIG = array (
 );
 ```
 
+Copying in the `mysql.config.php` as indicated will select MySQL as database.
+
+## Custom psql.config.php
+If you wish to pre-configure PostgreSQL instead of MySQL, copy-in a custom `psql.config.php` to `/root/psql.config.php`.
+
+A sample would look like the following:
+
+```
+<?php
+$CONFIG = array (
+  'dbtype' => 'pgsql',
+  'version' => '',
+  'dbname' => '<your-database-name>',
+  'dbhost' => '<ip>:<port>',
+  'dbtableprefix' => 'oc_',
+  'dbuser' => '<db-user>',
+  'dbpassword' => '<db-pass>',
+);
+```
+
+Copying in the `psql.config.php` as indicated will select PostgreSQL as database.
+
+The database will need to be preconfigured on the PostgreSQL instance in advance, or via script:
+```
+sudo -u postgres psql -c "CREATE USER nextcloud with encrypted password 'PASSWORD-GOES-HERE' CREATEDB;"
+sudo -u postgres psql -c "CREATE DATABASE nextcloud TEMPLATE template0 ENCODING 'UTF8';"
+sudo -u postgres psql -c "ALTER DATABASE nextcloud OWNER TO nextcloud;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON SCHEMA public TO nextcloud;"
+```
+
 ## Custom custom.config.php
 If you have other settings you'd like to preconfigure you can copy in a custom `custom.config.php` to `/root/custom.config.php`.
 
@@ -149,7 +180,7 @@ $CONFIG = array (
 
 ## Nomad Job File
 
-A sample nomad job file is included here, and includes an optional copy-in step for a custom config.php. Remove if not used.
+A sample nomad job file is included here, and includes an optional copy-in step for a custom config.php. Remove if not used. Make sure to change `mysql.config.php` to `psql.config.php` if using PostgreSQL.
 
 ```
 job "nextcloud" {
@@ -194,7 +225,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-14_2"
-        tag = "0.110"
+        tag = "0.111"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [

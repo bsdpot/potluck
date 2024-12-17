@@ -266,6 +266,12 @@ pkg install -y php82-pecl-redis
 step "Install package php82-pecl-imagick"
 pkg install -y php82-pecl-imagick
 
+step "Install package php82-pgsql"
+pkg install -y php82-pgsql
+
+step "Install package php82-pdo_pgsql"
+pkg install -y php82-pdo_pgsql
+
 step "Install package php82-phar"
 pkg install -y php82-phar
 
