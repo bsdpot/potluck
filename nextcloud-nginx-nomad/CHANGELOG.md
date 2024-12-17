@@ -1,3 +1,9 @@
+0.111
+
+* Add package php82-pgsql and document related changes
+
+---
+
 0.110
 
 * Rebuild for 14.2
