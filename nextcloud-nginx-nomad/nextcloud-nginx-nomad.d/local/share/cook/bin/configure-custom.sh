@@ -42,6 +42,20 @@ if [ -s /root/mysql.config.php ]; then
 	chmod 660 /usr/local/www/nextcloud/config/mysql.config.php
 fi
 
+# check for copied in mysql.config.php and if exists copy across to nextcloud config dir
+if [ -s /root/pgsql.config.php ]; then
+    cp -f /root/pgsql.config.php /usr/local/www/nextcloud/config/pgsql.config.php
+    chown www:www /usr/local/www/nextcloud/config/pgsql.config.php
+	chmod 660 /usr/local/www/nextcloud/config/pgsql.config.php
+fi
+
+# check for copied in proxy.config.php and if exists copy across to nextcloud config dir
+if [ -s /root/proxy.config.php ]; then
+    cp -f /root/proxy.config.php /usr/local/www/nextcloud/config/proxy.config.php
+    chown www:www /usr/local/www/nextcloud/config/proxy.config.php
+	chmod 660 /usr/local/www/nextcloud/config/proxy.config.php
+fi
+
 # check for copied in custom.config.php and if exists copy across to nextcloud config dir
 # this file would include things previously in nc-config.php from legacy setup
 if [ -s /root/custom.config.php ]; then

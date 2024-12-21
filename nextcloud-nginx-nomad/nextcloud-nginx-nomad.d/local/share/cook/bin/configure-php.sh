@@ -18,10 +18,24 @@ TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 # shellcheck disable=SC3003,SC2039
 # sep=$'\001'
 
-# Configure php-fpm
+# Configure php-fpm from template
 cp -f "$TEMPLATEPATH/www.conf.in" /usr/local/etc/php-fpm.d/www.conf
 
-# Configure PHP
+# Configure PHP from templates
 cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 cp -f "$TEMPLATEPATH/99-custom.ini" /usr/local/etc/php/99-custom.ini
 
+# manually create php log and set owner
+
+
+# confirm logs exist with correct permissions
+if [ -d /var/log/nginx ]; then
+    touch /var/log/nginx/php.error.log
+    chown www:www /var/log/nginx/php.error.log
+
+    touch /var/log/nginx/php.scripts.log
+    chown www:www /var/log/nginx/php.scripts.log
+
+    touch /var/log/nginx/fpm-php.www.log
+    chown www:www /var/log/nginx/php.error.log
+fi
