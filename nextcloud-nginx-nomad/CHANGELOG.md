@@ -1,3 +1,11 @@
+0.112
+
+* Include proxy.config.php option for setting trusted proxies
+* Adjustments to php config to match suggested
+* Switch to php83
+
+---
+
 0.111
 
 * Add package php82-pgsql and document related changes

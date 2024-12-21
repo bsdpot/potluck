@@ -111,8 +111,8 @@ $CONFIG = array (
 
 Copying in the `mysql.config.php` as indicated will select MySQL as database.
 
-## Custom psql.config.php
-If you wish to pre-configure PostgreSQL instead of MySQL, copy-in a custom `psql.config.php` to `/root/psql.config.php`.
+## Custom pgsql.config.php
+If you wish to pre-configure PostgreSQL instead of MySQL, copy-in a custom `pgsql.config.php` to `/root/pgsql.config.php`.
 
 A sample would look like the following:
 
@@ -129,7 +129,7 @@ $CONFIG = array (
 );
 ```
 
-Copying in the `psql.config.php` as indicated will select PostgreSQL as database.
+Copying in the `pgsql.config.php` as indicated will select PostgreSQL as database.
 
 The database will need to be preconfigured on the PostgreSQL instance in advance, or via script:
 ```
@@ -138,6 +138,27 @@ sudo -u postgres psql -c "CREATE DATABASE nextcloud TEMPLATE template0 ENCODING 
 sudo -u postgres psql -c "ALTER DATABASE nextcloud OWNER TO nextcloud;"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON SCHEMA public TO nextcloud;"
+```
+
+## Custom proxy.config.php
+If you wish to pre-configure trusted hosts you can copy-in a custom `proxy.config.php` to `/root/proxy.config.php`.
+
+A sample would look like the following:
+
+```
+<?php
+$CONFIG = array (
+  'trusted_domains' =>
+    array (
+      0 => '127.0.0.1',
+      1 => '10.0.0.0/8',
+    ),
+  'forwarded_for_headers' =>
+    array (
+      0 => 'HTTP_X_FORWARDED_FOR',
+      1 => 'HTTP_FORWARDED_FOR',
+    ),
+);
 ```
 
 ## Custom custom.config.php
@@ -225,12 +246,13 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-14_2"
-        tag = "0.111"
+        tag = "0.112"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
           "/path/to/custom/objectstore.config.php:/root/objectstore.config.php",
           "/path/to/custom/mysql.config.php:/root/mysql.config.php",
+          "/path/to/custom/proxy.config.php:/root/proxy.config.php",
           "/path/to/custom/custom.config.php:/root/custom.config.php",
           "/path/to/rootca.crt:/root/rootca.crt",
         ]

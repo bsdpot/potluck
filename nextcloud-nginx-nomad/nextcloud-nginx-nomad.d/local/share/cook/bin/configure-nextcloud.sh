@@ -27,12 +27,10 @@ chown -R www:www /usr/local/www/nextcloud
 
 # create a nextcloud log file
 # this needs to be configured in nextcloud config.php in copy-in file
-touch /var/log/nginx/nextcloud.log
-chown www:www /var/log/nginx/nextcloud.log
-
-# manually create php log and set owner
-touch /var/log/nginx/php.scripts.log
-chown www:www /var/log/nginx/php.scripts.log
+if [ -d /var/log/nginx ]; then
+    touch /var/log/nginx/nextcloud.log
+    chown www:www /var/log/nginx/nextcloud.log
+fi
 
 # check for .ocdata in DATADIR
 # if using S3 with no mount-in this should set it up in the default DATADIR
