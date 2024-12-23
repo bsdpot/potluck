@@ -2,7 +2,7 @@
 author: "Bretton Vine"
 title: Netbox
 summary: Netbox is a pot image with multiple integrated applications for all in one install of netbox
-tags: ["ipam", "netbox, "monitoring"]
+tags: ["ipam", "netbox", "monitoring"]
 ---
 
 # Overview
