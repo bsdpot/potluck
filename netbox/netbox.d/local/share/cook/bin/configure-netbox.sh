@@ -13,7 +13,7 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 # ensure necessary directories are present
-mkdir -p /mnt/netboxdata/private
+mkdir -p /mnt/netboxdata
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates

@@ -15,10 +15,7 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-# setup the netbox gunicorn template
-cp -f "$TEMPLATEPATH/netbox.conf.py.in" /usr/local/etc/netbox.conf.py
-
-# enable nginx
+# enable gunicorn
 service gunicorn enable
 
 # start gunicorn

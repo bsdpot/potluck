@@ -36,6 +36,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E DBPASSWORD=<database password> \
     -E MAILSERVER=<FQDN or IP of SMTP server> \
     -E MAILUSERNAME=<SMTP username> \
+    -E MAILPASSWORD=<SMTP password> \
     -E ADMINEMAIL=<email address to receive notices> \
     -E FROMMAIL=<from address to use for SMTP account> \
     [ -E DUMPSCHEDULE="<cronschedule>" ] \
