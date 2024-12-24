@@ -75,15 +75,17 @@ cp -f "$TEMPLATEPATH/850.netbox-housekeeping.in" /usr/local/etc/periodic/daily/8
 chmod 755 /usr/local/etc/periodic/daily/850.netbox-housekeeping
 sysrc -f /etc/periodic.conf daily_netbox_housekeeping_enable="YES"
 
-# unset this
-set +e
-# shellcheck disable=SC3040
-set +o pipefail
+# Removing for now
+#
+# # unset this
+# set +e
+# # shellcheck disable=SC3040
+# set +o pipefail
 
-# database check as formality
-dbcheck=$(/usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres" -lqt | grep -c "$DBNAME")
+# # database check as formality
+# dbcheck=$(/usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres" -lqt | grep -c "$DBNAME")
 
-if [ "$dbcheck" -eq "0" ]; then
-	echo "Database $DBNAME not found on $DBHOST:$DBPORT"
-	exit 1
-fi
+# if [ "$dbcheck" -eq "0" ]; then
+# 	echo "Database $DBNAME not found on $DBHOST:$DBPORT"
+# 	exit 1
+# fi

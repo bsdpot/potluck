@@ -49,10 +49,11 @@ fi
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY DBPASSWORD"
+required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
+required_args="$required_args DBHOST DBNAME DBUSER DBPASSWORD REDISHOST"
 required_args="$required_args MAILSERVER MAILUSERNAME MAILPASSWORD"
-required_args="$required_args ADMINEMAIL FROMMAIL"
-optional_args="REMOTELOG DISABLEUNBOUNDV6 DUMPSCHEDULE DUMPPATH"
+required_args="$required_args ADMINNAME ADMINEMAIL FROMMAIL"
+optional_args="REMOTELOG DISABLEUNBOUNDV6 DBPORT REDISPORT MAILPORT"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
