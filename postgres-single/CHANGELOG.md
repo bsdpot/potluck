@@ -1,7 +1,8 @@
 0.13
 
 * Version bump for new base image 14.2
-
+* Add note about database upgrade method, add comments about changes for v16
+  
 ---
 
 0.12

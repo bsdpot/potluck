@@ -22,6 +22,9 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 On new versions of postgresql, the postgres.conf.in file needs to be updated
 * `postgres-single.d/local/share/cook/templates/postgres.conf.in`
 
+As well as the line to check timezone in
+* `postgres-single.d/local/share/cook/bin/configure-postgres.sh`
+
 ## postgres_exporter
 On new versions of `postgres_exporter` make sure to update the download link, version and checksum in:
 * `postgres-single.sh`
