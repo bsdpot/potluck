@@ -14,11 +14,11 @@ ALLOWED_HOSTS = []
 #   https://docs.djangoproject.com/en/stable/ref/settings/#databases
 DATABASE = {
     'ENGINE': 'django.db.backends.postgresql',  # Database engine
-    'NAME': 'netbox',         # Database name
-    'USER': 'netbox',               # PostgreSQL username
+    'NAME': '%%dbname%%',         # Database name
+    'USER': '%%dbuser%%',               # PostgreSQL username
     'PASSWORD': '%%dbpasswd%%',           # PostgreSQL password
-    'HOST': '127.0.0.1',      # Database server
-    'PORT': '5432',           # Database port (leave blank for default)
+    'HOST': '%%dbhost%%',      # Database server
+    'PORT': '%%dbport%%',           # Database port (leave blank for default)
     'CONN_MAX_AGE': 300,      # Max database connection age
 }
 
@@ -27,8 +27,8 @@ DATABASE = {
 # to use two separate database IDs.
 REDIS = {
     'tasks': {
-        'HOST': '127.0.0.1',
-        'PORT': 6379,
+        'HOST': '%%redishost%%',
+        'PORT': %%redisport%%,
         # Comment out `HOST` and `PORT` lines and uncomment the following if using Redis Sentinel
         # 'SENTINELS': [('mysentinel.redis.example.com', 6379)],
         # 'SENTINEL_SERVICE': 'netbox',
@@ -43,8 +43,8 @@ REDIS = {
         # 'CA_CERT_PATH': '/etc/ssl/certs/ca.crt',
     },
     'caching': {
-        'HOST': '127.0.0.1',
-        'PORT': 6379,
+        'HOST': '%%redishost%%',
+        'PORT': %%redisport%%,
         # Comment out `HOST` and `PORT` lines and uncomment the following if using Redis Sentinel
         # 'SENTINELS': [('mysentinel.redis.example.com', 6379)],
         # 'SENTINEL_SERVICE': 'netbox',
@@ -75,7 +75,7 @@ SECRET_KEY = '%%secretkey%%'
 # Specify one or more name and email address tuples representing NetBox administrators. These people will be notified of
 # application errors (assuming correct email settings are provided).
 ADMINS = [
-    # ('Admin', '%%adminemail%%'),
+    # ('%%adminname%%', '%%adminemail%%'),
 ]
 
 # Permit the retrieval of API tokens after their creation.
@@ -121,7 +121,7 @@ DEFAULT_LANGUAGE = 'en-us'
 # Email settings
 EMAIL = {
     'SERVER': '%%mailserver%%',
-    'PORT': 25,
+    'PORT': %%smtpport%%,
     'USERNAME': '%%mailusername%%',
     'PASSWORD': '%%mailpassword%%',
     'USE_SSL': True,

@@ -7,11 +7,26 @@ tags: ["ipam", "netbox", "monitoring"]
 
 # Overview
 
-This flavour contains ```netbox``` with integrated ```postgresql```, ```redis```, ```gunicorn``` and ```nginx```. 
+This flavour contains ```netbox```, a solution for modeling and documenting modern networks, including rack management, IPAM, and more.
 
-It is intended that the database and redis are integrated in this image, and independent of the rest of your pot infrastructure. Make sure to create a ZFS dataset and mount it in correctly to /mnt.
+It serves as a source of truth for your network.
+
+This image is dependent on external postgresql, a dedicated redis pot image, and consul pot image.
 
 The flavour includes a local ```consul``` agent instance to be available that it can connect to (see configuration below). You can e.g. use the [consul](https://potluck.honeyguide.net/blog/consul/) ```pot``` flavour on this site to run ```consul```. You can also connect to this host and ```service consul restart``` manually.
+
+# Preparation
+
+You must prepare a postgresql server beforehand by creating the user and database with correct permissions:
+```
+sudo -u postgres psql -c "CREATE USER netbox with encrypted password 'YOUR-PASSWORD' CREATEDB;"
+sudo -u postgres psql -c "CREATE DATABASE netbox TEMPLATE template0 ENCODING 'UTF8';"
+sudo -u postgres psql -c "ALTER DATABASE netbox OWNER TO netbox;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE netbox TO netbox;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON SCHEMA public TO netbox;"
+```
+
+You will also need a redis pot jail dedicated to netbox, as two databases are used, which may cause problems in a redis setup shared with other applications.
 
 # Installation
 
@@ -33,14 +48,20 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E IP=<IP address of this system> \
     -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
     -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
+    -E DBHOST=<IP of postgresql instance> \
+    -E DBNAME=<database name> \
+    -E DBUSER=<database username> \
     -E DBPASSWORD=<database password> \
+    -E REDISHOST=<IP of dedicated redis instance> \
     -E MAILSERVER=<FQDN or IP of SMTP server> \
     -E MAILUSERNAME=<SMTP username> \
     -E MAILPASSWORD=<SMTP password> \
-    -E ADMINEMAIL=<email address to receive notices> \
     -E FROMMAIL=<from address to use for SMTP account> \
-    [ -E DUMPSCHEDULE="<cronschedule>" ] \
-    [ -E DUMPPATH=<path for database backups> ] \
+    -E ADMINNAME=<name of netbox administrator account> \
+    -E ADMINEMAIL=<email address to receive notices> \
+    [ -E DBPORT=<postgresql port> ] \
+    [ -E REDISPORT=<redis port> ] \
+    [ -E MAILPORT=<SMTP port> ] \
     [ -E REMOTELOG=<IP address> ]
   ```
 * Start the jail
@@ -56,41 +77,40 @@ The CONSULSERVERS parameter is a comma-deliminated list of IP addresses for the 
 
 e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.0.4,10.0.0.5,10.0.0.6"```
 
-The GOSSIPKEY parameter is the gossip encryption key for consul agent. We're using a default key if you do not set the parameter, do not use the default key for production encryption, instead provide your own.
+The GOSSIPKEY parameter is the gossip encryption key for consul agent and must be configured separately with consul host.
 
-The DBPASSWORD parameter is a self-selected password for the local postgresql instance of netbox.
+The DBHOST parameter is the IP address or hostname of the postgresql server.
+
+The DBNAME parameter is the database name on the postgresql server.
+
+The DBUSER and DBPASSWORD parameters are the credentials to access the postgresql server.
+
+The REDISHOST parameter is the IP address of a dedicated redis pot jail. Two databases are used, where it's not suitable to use a redis instance shared with other applications.
 
 The MAILSERVER parameter is for the FQDN or IP address of your SMTP server.
 
-The MAILUSERNAME and MAILPASSWORD parameters are for the credentials for the SMTP server.
-
-The ADMINEMAIL parameter is the notification address to send mail to.
+The MAILUSERNAME and MAILPASSWORD parameters are the credentials for the SMTP server.
 
 The FROMMAIL parameter is the sender address to use for the SMTP server.
 
+The ADMINNAME parameter is the name of the netbox administrator account. It could be a user, or Administrator.
+
+The ADMINEMAIL parameter is the notification address to send notices to.
 
 ## Optional Parameters
 
-DUMPSCHEDULE is an optional parameter for a cronjob to dump the databases to file. Provide it in the scheduling format of crontab, e.g. "0 2 * * *". (include quotes)
+DBPORT is an optional parameter that can be set if the default database port differs from postgresql default of 5432.
 
-DUMPPATH is an optional parameter for the path to store database backups. For example /mnt/pgbak.
+MAILPORT is an optional parameter that can be set if the default SMTP port differs from port 25.
+
+REDISPORT is an optional parameter that can be set if the default redis port differs from port 6379.
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 
 # Usage
 
-TBA, Netbox is a "source of truth" for your network with lots of configurable information, and an IP address management platform. 
+TBA, Netbox is a "source of truth" for your network, with lots of configurable information, and IPAM for managing IP address allocations.
 
 ## Create superuser
 
 TBA
-
-## upgrading postgresql
-
-This jail stores postgresql-16 data in `/mnt/postgres/data/16`. Upgrades with a newer version of postgresql won't work with old versions.
-
-A new version of netbox jail with newer version of postgresql will need old database dumped, and re-imported to new.
-
-This is the least problematic approach, as `pg_upgrade` requires both old and new versions of postgresql to be installed to work.
-
-TBA: automatically import database from configured postgresql backups when a pot parameter is set?

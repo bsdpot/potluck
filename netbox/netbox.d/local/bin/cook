@@ -79,6 +79,33 @@ if [ -n "${CONSULSERVERS+x}" ]; then
 	export FIXCONSULSERVERS
 fi
 
+# set DBPORT
+if [ -n "${DBPORT+x}" ]; then
+	SETDBPORT="$DBPORT"
+	export SETDBPORT
+else
+	SETDBPORT="5432"
+	export SETDBPORT
+fi
+
+# set REDISPORT
+if [ -n "${REDISPORT+x}" ]; then
+	SETREDISPORT="$REDISPORT"
+	export SETREDISPORT
+else
+	SETREDISPORT="6379"
+	export SETREDISPORT
+fi
+
+# set MAILPORT
+if [ -n "${MAILPORT+x}" ]; then
+	SETMAILPORT="$MAILPORT"
+	export SETMAILPORT
+else
+    SETMAILPORT="25"
+    export SETMAILPORT
+fi
+
 # stop services
 timeout --foreground 10 \
   service consul onestop || service consul onestop || true
@@ -112,34 +139,6 @@ timeout --foreground 120 \
 log "Start node_exporter"
 service node_exporter start
 
-log "Configure postgres"
-configure-postgres.sh
-
-log "Start postgres"
-timeout --foreground 120 \
-  sh -c 'while ! service postgresql status; do
-    service postgresql start || true; sleep 5;
-  done'
-
-# the script copied in and called can be used to create additional
-# postgresql users or perform some other fucntion after postgresql
-# is up
-log "Setup database"
-configure-database.sh
-
-if [ -n "$DUMPSCHEDULE" ]; then
-	configure-backups.sh
-fi
-
-log "Configure redis"
-configure-redis.sh
-
-log "Start redis"
-timeout --foreground 120 \
-  sh -c 'while ! service redis status; do
-    service redis start || true; sleep 5;
-  done'
-
 # might not be needed
 # log "Configure and start gunicorn"
 # configure-gunicorn.sh
@@ -165,15 +164,15 @@ timeout --foreground 120 \
     service netbox start || true; sleep 5;
   done'
 
-# check if upgrades are needed
-log "Check if upgrades are needed"
-check-upgrade.sh
-
 log "Start netbox_rq"
 timeout --foreground 120 \
   sh -c 'while ! service netbox_rq status; do
     service netbox_rq start || true; sleep 5;
   done'
+
+# check if upgrades are needed
+log "Check if upgrades are needed"
+check-upgrade.sh
 
 log "Exit seasoned"
 pot_seasoned_exit
