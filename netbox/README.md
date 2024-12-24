@@ -80,3 +80,17 @@ The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` serve
 # Usage
 
 TBA, Netbox is a "source of truth" for your network with lots of configurable information, and an IP address management platform. 
+
+## Create superuser
+
+TBA
+
+## upgrading postgresql
+
+This jail stores postgresql-16 data in `/mnt/postgres/data/16`. Upgrades with a newer version of postgresql won't work with old versions.
+
+A new version of netbox jail with newer version of postgresql will need old database dumped, and re-imported to new.
+
+This is the least problematic approach, as `pg_upgrade` requires both old and new versions of postgresql to be installed to work.
+
+TBA: automatically import database from configured postgresql backups when a pot parameter is set?

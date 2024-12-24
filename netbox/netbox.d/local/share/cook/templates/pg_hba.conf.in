@@ -96,5 +96,5 @@ local   replication     all                                     trust
 host    replication     all             127.0.0.1/32            trust
 host    replication     all             ::1/128                 trust
 # potluck additions
-host    all             all             %%ip4network%%          md5
+#host    all             all             %%ip4network%%          md5
 #host    all             all            :/0                      md5

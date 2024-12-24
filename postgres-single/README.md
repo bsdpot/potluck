@@ -81,4 +81,14 @@ REMOTELOG is an optional parameter for a remote syslog service, such as via the 
 
 The is a sample `customscript.sh` file `customscript.sh.sample`. You can modify this to add users or perform additional steps, then copy it in before starting the image.
 
-This file is automatically run if found in the jail's `/root/customscript.sh`. 
+This file is automatically run if found in the jail's `/root/customscript.sh`.
+
+## upgrading postgresql
+
+This jail stores postgresql-15 data in `/mnt/postgres/data`. Upgrades with a newer version of postgresql won't work with old versions.
+
+Create a new postgresql jail with the newer version, and make a database dump from the old server, then import to new server with newer version of postgresql. 
+
+This is the least problematic approach, as `pg_upgrade` requires both old and new versions of postgresql to be installed to work.
+
+TBA: automatic upgrade from backups when the upgrade parameter is passed in with path to file.

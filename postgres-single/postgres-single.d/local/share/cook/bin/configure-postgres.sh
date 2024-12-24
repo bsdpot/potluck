@@ -37,7 +37,8 @@ if [ ! -f /mnt/postgres/data/PG_VERSION ]; then
 	service postgresql initdb || true
 fi
 
-# get the timezone
+# get the timezone, not this needs an update for postgresql16
+# change to [ ... | awk -F "= " '{print $2}']
 if [ -f /mnt/postgres/data/postgresql.conf ]; then
 	MYTIMEZONE=$(grep log_timezone /mnt/postgres/data/postgresql.conf | awk -F\' '{print $2}')
 else
