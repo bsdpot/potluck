@@ -9,3 +9,6 @@
 * Update postgresql.conf file for new format with log_timezone and timezone
 * Change to using remote postgresql and redis images instead of integrated
 * Downgrade to use postgresql-15 client only
+* Documentation update to fix errors
+* Remove database check for now
+* Fix parameters in cook file

@@ -32,13 +32,13 @@ You will also need a redis pot jail dedicated to netbox, as two databases are us
 
 * Create a ZFS data set on the parent system beforehand 
   ```
-  zfs create -o mountpoint=/mnt/netdata zroot/netdata
+  zfs create -o mountpoint=/mnt/netdata zroot/netbox
   ```
 * Create your local jail from the image or the flavour files.
 * Clone the local jail
 * Mount in the ZFS data set you created
   ```
-  pot mount-in -p <jailname> -m /mnt -d /mnt/netdata
+  pot mount-in -p <jailname> -m /mnt -d /mnt/netbox
   ```
 * Adjust to your environment:
   ```
