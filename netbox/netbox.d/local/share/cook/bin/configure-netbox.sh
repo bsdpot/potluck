@@ -32,10 +32,18 @@ sep=$'\001'
 
 # setup the netbox configuration file
 < "$TEMPLATEPATH/configuration.py.in" \
+  sed "s${sep}%%dbname%%${sep}$DBNAME${sep}g" | \
+  sed "s${sep}%%dbuser%%${sep}$DBUSER${sep}g" | \
   sed "s${sep}%%dbpasswd%%${sep}$DBPASSWD${sep}g" | \
+  sed "s${sep}%%dbhost%%${sep}$DBHOST${sep}g" | \
+  sed "s${sep}%%dbport%%${sep}$SETDBPORT${sep}g" | \
+  sed "s${sep}%%redishost%%${sep}$REDISHOST${sep}g" | \
+  sed "s${sep}%%redisport%%${sep}$SETREDISPORT${sep}g" | \
   sed "s${sep}%%secretkey%%${sep}$SECRETKEY${sep}g" | \
+  sed "s${sep}%%adminname%%${sep}$ADMINNAME${sep}g" | \
   sed "s${sep}%%adminemail%%${sep}$ADMINEMAIL${sep}g" | \
   sed "s${sep}%%mailserver%%${sep}$MAILSERVER${sep}g" | \
+  sed "s${sep}%%smtpport%%${sep}$SETMAILPORT${sep}g" | \
   sed "s${sep}%%mailusername%%${sep}$MAILUSERNAME${sep}g" | \
   sed "s${sep}%%mailpassword%%${sep}$MAILPASSWORD${sep}g" | \
   sed "s${sep}%%frommail%%${sep}$FROMMAIL${sep}g" \
@@ -67,8 +75,15 @@ cp -f "$TEMPLATEPATH/850.netbox-housekeeping.in" /usr/local/etc/periodic/daily/8
 chmod 755 /usr/local/etc/periodic/daily/850.netbox-housekeeping
 sysrc -f /etc/periodic.conf daily_netbox_housekeeping_enable="YES"
 
+# unset this
+set +e
+# shellcheck disable=SC3040
+set +o pipefail
 
-# start the service
-service netbox start
+# database check as formality
+dbcheck=$(/usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$DBPORT/postgres" -lqt | grep -c "$DBNAME")
 
-
+if [ "$dbcheck" -eq "0" ]; then
+	echo "Database $DBNAME not found on $DBHOST:$DBPORT"
+	exit 1
+fi

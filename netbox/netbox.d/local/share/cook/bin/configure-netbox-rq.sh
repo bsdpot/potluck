@@ -15,7 +15,7 @@ export PATH=/usr/local/bin:$PATH
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
-cp -f "$TEMPLATEPATH/netbox_rq_enable.in" /usr/local/etc/rc.d/netbox_rq
+cp -f "$TEMPLATEPATH/netbox_rq.rc.in" /usr/local/etc/rc.d/netbox_rq
 chmod 555 /usr/local/etc/rc.d/netbox_rq
 
 # enable the service
