@@ -99,7 +99,7 @@ fi
 
 # set MAILPORT
 if [ -n "${MAILPORT+x}" ]; then
-  SETMAILPORT="$MAILPORT"
+	SETMAILPORT="$MAILPORT"
 	export SETMAILPORT
 else
 	SETMAILPORT="25"
