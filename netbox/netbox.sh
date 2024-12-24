@@ -140,14 +140,14 @@ pkg install -y syslog-ng
 step "Install package redis"
 pkg install -y redis
 
-step "Install package postgresql15-client"
-pkg install -y postgresql15-client
+step "Install package postgresql16-client"
+pkg install -y postgresql16-client
 
-step "Install package postgresql15-server"
-pkg install -y postgresql15-server
+step "Install package postgresql16-server"
+pkg install -y postgresql16-server
 
-step "Install package postgresql15-contrib"
-pkg install -y postgresql15-contrib
+step "Install package postgresql16-contrib"
+pkg install -y postgresql16-contrib
 
 step "Install package netbox"
 pkg install -y netbox
