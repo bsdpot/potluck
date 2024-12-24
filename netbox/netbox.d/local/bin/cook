@@ -99,11 +99,11 @@ fi
 
 # set MAILPORT
 if [ -n "${MAILPORT+x}" ]; then
-	SETMAILPORT="$MAILPORT"
+  SETMAILPORT="$MAILPORT"
 	export SETMAILPORT
 else
-    SETMAILPORT="25"
-    export SETMAILPORT
+	SETMAILPORT="25"
+	export SETMAILPORT
 fi
 
 # stop services
