@@ -12,3 +12,7 @@
 * Documentation update to fix errors
 * Remove database check for now
 * Fix parameters in cook file
+* Fix nginx configuration for static pages
+* Fix netbox typos, add domain to ALLOWED_HOSTS, and check upgrade steps before starting netbox
+* Automate superuser creation, can be improved in future or set optional
+* Adjust service start order to start nginx last

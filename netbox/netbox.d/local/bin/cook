@@ -25,11 +25,11 @@ pot_seasoned_exit() {
 ########################################################################
 
 log() {
-    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+	echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
 }
 
 convert_to_required_format() {
-    echo "$1" | sed 's/\([^,]*\)/"\1"/g'
+	echo "$1" | sed 's/\([^,]*\)/"\1"/g'
 }
 
 set -e
@@ -49,10 +49,10 @@ fi
 ## Check config
 ########################################################################
 
-required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
+required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY DOMAIN"
 required_args="$required_args DBHOST DBNAME DBUSER DBPASSWORD REDISHOST"
 required_args="$required_args MAILSERVER MAILUSERNAME MAILPASSWORD"
-required_args="$required_args ADMINNAME ADMINEMAIL FROMMAIL"
+required_args="$required_args ADMINNAME ADMINEMAIL ADMINPASSWORD FROMMAIL"
 optional_args="REMOTELOG DISABLEUNBOUNDV6 DBPORT REDISPORT MAILPORT"
 
 for var in $required_args; do
@@ -140,24 +140,22 @@ timeout --foreground 120 \
 log "Start node_exporter"
 service node_exporter start
 
-# might not be needed
-# log "Configure and start gunicorn"
-# configure-gunicorn.sh
-
 log "Configure nginx"
 configure-nginx.sh
-
-log "Start nginx"
-timeout --foreground 120 \
-  sh -c 'while ! service nginx status; do
-    service nginx start || true; sleep 5;
-  done'
 
 log "Configure netbox"
 configure-netbox.sh
 
 log "Configure netbox_rq"
 configure-netbox-rq.sh
+
+# check if upgrades are needed
+log "Check if upgrades are needed"
+check-upgrade.sh
+
+# create superuser account
+log "Create superuser account"
+create-superuser.sh
 
 log "Start netbox"
 timeout --foreground 120 \
@@ -171,9 +169,11 @@ timeout --foreground 120 \
     service netbox_rq start || true; sleep 5;
   done'
 
-# check if upgrades are needed
-log "Check if upgrades are needed"
-check-upgrade.sh
+log "Start nginx"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status; do
+    service nginx start || true; sleep 5;
+  done'
 
 log "Exit seasoned"
 pot_seasoned_exit

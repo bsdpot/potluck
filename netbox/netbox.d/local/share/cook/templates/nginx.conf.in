@@ -28,7 +28,8 @@ http {
 		location /static/ {
 			# from example but directory doesn't exist
 			# alias /opt/netbox/netbox/static/;
-			alias /usr/local/share/netbox/project-static;
+			# trailing slash is important!
+			alias /usr/local/share/netbox/static/;
 		}
 
 		location / {
