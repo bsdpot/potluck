@@ -16,3 +16,4 @@
 * Fix netbox typos, add domain to ALLOWED_HOSTS, and check upgrade steps before starting netbox
 * Automate superuser creation, can be improved in future or set optional
 * Adjust service start order to start nginx last
+* Fix remaining configuration.py.in typos
