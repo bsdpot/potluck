@@ -51,8 +51,8 @@ sep=$'\001'
   > /usr/local/share/netbox/netbox/configuration.py
 
 # set permissions for www owner on netbox.conf.py
-chown www:wheel /usr/local/share/netbox/netbox/configuration.py.in
-chmod 640 /usr/local/share/netbox/netbox/configuration.py.in
+chown www:wheel /usr/local/share/netbox/netbox/configuration.py
+chmod 640 /usr/local/share/netbox/netbox/configuration.py
 
 # copy over the RC file for netbox
 cp -f "$TEMPLATEPATH/netbox.rc.in" /usr/local/etc/rc.d/netbox
