@@ -48,6 +48,7 @@ You will also need a redis pot jail dedicated to netbox, as two databases are us
     -E IP=<IP address of this system> \
     -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
     -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
+    -E DOMAIN=<FQDN for Allowed_Hosts parameter> \
     -E DBHOST=<IP of postgresql instance> \
     -E DBNAME=<database name> \
     -E DBUSER=<database username> \
@@ -59,6 +60,7 @@ You will also need a redis pot jail dedicated to netbox, as two databases are us
     -E FROMMAIL=<from address to use for SMTP account> \
     -E ADMINNAME=<name of netbox administrator account> \
     -E ADMINEMAIL=<email address to receive notices> \
+    -E ADMINPASSWORD=<password for netbox superuser> \
     [ -E DBPORT=<postgresql port> ] \
     [ -E REDISPORT=<redis port> ] \
     [ -E MAILPORT=<SMTP port> ] \
@@ -79,6 +81,8 @@ e.g. ```CONSULSERVERS="10.0.0.2"``` or ```CONSULSERVERS="10.0.0.2,10.0.0.3,10.0.
 
 The GOSSIPKEY parameter is the gossip encryption key for consul agent and must be configured separately with consul host.
 
+The DOMAIN parameter is the FQDN of the frontend, as configured in host haproxy setup. This will go into the ALLOWED_HOSTS parameter for netbox.
+
 The DBHOST parameter is the IP address or hostname of the postgresql server.
 
 The DBNAME parameter is the database name on the postgresql server.
@@ -93,9 +97,11 @@ The MAILUSERNAME and MAILPASSWORD parameters are the credentials for the SMTP se
 
 The FROMMAIL parameter is the sender address to use for the SMTP server.
 
-The ADMINNAME parameter is the name of the netbox administrator account. It could be a user, or Administrator.
+The ADMINNAME parameter is the name of the netbox superuser account. It could be a user, or Administrator.
 
-The ADMINEMAIL parameter is the notification address to send notices to.
+The ADMINEMAIL parameter is the notification address of the superuser account, to send notices to.
+
+The ADMINPASSWORD parameter is the password for the superuser account.
 
 ## Optional Parameters
 
@@ -111,6 +117,3 @@ The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` serve
 
 TBA, Netbox is a "source of truth" for your network, with lots of configurable information, and IPAM for managing IP address allocations.
 
-## Create superuser
-
-TBA

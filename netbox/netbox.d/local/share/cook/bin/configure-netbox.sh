@@ -32,9 +32,10 @@ sep=$'\001'
 
 # setup the netbox configuration file
 < "$TEMPLATEPATH/configuration.py.in" \
+  sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
   sed "s${sep}%%dbname%%${sep}$DBNAME${sep}g" | \
   sed "s${sep}%%dbuser%%${sep}$DBUSER${sep}g" | \
-  sed "s${sep}%%dbpasswd%%${sep}$DBPASSWD${sep}g" | \
+  sed "s${sep}%%dbpasswd%%${sep}$DBPASSWORD${sep}g" | \
   sed "s${sep}%%dbhost%%${sep}$DBHOST${sep}g" | \
   sed "s${sep}%%dbport%%${sep}$SETDBPORT${sep}g" | \
   sed "s${sep}%%redishost%%${sep}$REDISHOST${sep}g" | \
@@ -47,7 +48,7 @@ sep=$'\001'
   sed "s${sep}%%mailusername%%${sep}$MAILUSERNAME${sep}g" | \
   sed "s${sep}%%mailpassword%%${sep}$MAILPASSWORD${sep}g" | \
   sed "s${sep}%%frommail%%${sep}$FROMMAIL${sep}g" \
-  > /usr/local/share/netbox/netbox/configuration.py.in
+  > /usr/local/share/netbox/netbox/configuration.py
 
 # set permissions for www owner on netbox.conf.py
 chown www:wheel /usr/local/share/netbox/netbox/configuration.py.in
@@ -62,7 +63,7 @@ cp -f "$TEMPLATEPATH/netbox.conf.py.in" /usr/local/etc/netbox.conf.py
 chown www /usr/local/etc/netbox.conf.py
 chmod 640 /usr/local/etc/netbox.conf.py
 
-# unclear if needed
+# unclear if needed, do not start
 service gunicorn enable
 
 # set load parameter for netbox config
