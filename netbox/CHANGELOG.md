@@ -17,3 +17,4 @@
 * Automate superuser creation, can be improved in future or set optional
 * Adjust service start order to start nginx last
 * Fix remaining configuration.py.in typos
+* Upgrade steps are not conditional, static files for site need to be generated every time
