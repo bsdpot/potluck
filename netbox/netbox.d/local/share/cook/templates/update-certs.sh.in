@@ -1,0 +1,22 @@
+#!/usr/local/bin/bash
+
+#mydomain="%%domain%%"
+registermail="%%email%%"
+
+if [ -d /mnt/acme/%%domain%%_ecc ]; then
+	service nginx stop
+	if [ -d /mnt/acme/%%domain%%_ecc.old ]; then
+		rm -rf /mnt/acme/%%domain%%_ecc.old
+	fi
+	mv -f /mnt/acme/%%domain%%_ecc /mnt/acme/%%domain%%_ecc.old
+	/usr/local/sbin/acme.sh --register-account -m "$registermail" --home /mnt/acme --server letsencrypt
+	/usr/local/sbin/acme.sh --set-default-ca --server letsencrypt
+	/usr/local/sbin/acme.sh --issue -d %%domain%% --home /mnt/acme --standalone --server letsencrypt --listen-v4 --httpport 80 --log /mnt/acme/acme.sh.log
+	cd /mnt/acme/%%domain%%_ecc/ || exit 1
+	cp -Rf /mnt/acme/%%domain%%_ecc/ /usr/local/etc/ssl/
+	service nginx restart
+	exit 0
+else
+	echo "There is no /mnt/acme/%%domain%%_ecc directory"
+	exit 1
+fi

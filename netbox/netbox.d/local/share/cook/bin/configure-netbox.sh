@@ -13,7 +13,10 @@ set -o pipefail
 export PATH=/usr/local/bin:$PATH
 
 # ensure necessary directories are present
-mkdir -p /mnt/netboxdata
+mkdir -p /mnt/netboxdata/media/devicetype-images
+mkdir -p /mnt/netboxdata/media/image-attachments
+chown www:www /mnt/netboxdata/media/devicetype-images
+chown www:www /mnt/netboxdata/media/image-attachments
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates

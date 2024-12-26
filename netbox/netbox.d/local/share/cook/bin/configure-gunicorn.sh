@@ -16,10 +16,10 @@ export PATH=/usr/local/bin:$PATH
 # TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
 
 # enable gunicorn
-service gunicorn enable
+# service gunicorn enable
 
 # start gunicorn
-service gunicorn start
+# service gunicorn start
 
 
-
+# not in use

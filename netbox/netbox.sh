@@ -116,6 +116,9 @@ pkg install -y nano
 step "Install package bash"
 pkg install -y bash
 
+step "Install package acme.sh"
+pkg install -y acme.sh
+
 step "Install package git"
 pkg install -y git
 
