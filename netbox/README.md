@@ -64,6 +64,8 @@ You will also need a redis pot jail dedicated to netbox, as two databases are us
     [ -E DBPORT=<postgresql port> ] \
     [ -E REDISPORT=<redis port> ] \
     [ -E MAILPORT=<SMTP port> ] \
+    [ -E PVTCERT=<any value enables self-signed SSL certificate> ] \
+    [ -E CERTEMAIL=<email address for acme.sh certificate registration> ] \
     [ -E REMOTELOG=<IP address> ]
   ```
 * Start the jail
@@ -99,7 +101,7 @@ The FROMMAIL parameter is the sender address to use for the SMTP server.
 
 The ADMINNAME parameter is the name of the netbox superuser account. It could be a user, or Administrator.
 
-The ADMINEMAIL parameter is the notification address of the superuser account, to send notices to.
+The ADMINEMAIL parameter is the email address of the superuser account, also used for system notifications.
 
 The ADMINPASSWORD parameter is the password for the superuser account.
 
@@ -110,6 +112,10 @@ DBPORT is an optional parameter that can be set if the default database port dif
 MAILPORT is an optional parameter that can be set if the default SMTP port differs from port 25.
 
 REDISPORT is an optional parameter that can be set if the default redis port differs from port 6379.
+
+PVTCERT is an optional parameter to make use of self-signed SSL certificates instead of acme.sh for registation. Use this is your frontend proxy does SSL already.
+
+CERTEMAIL is an optional parameter to set a custom email address for acme.sh certificate registrations. If not set, ADMINEMAIL is used instead.
 
 The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` server, such as with the ```loki``` flavour, or ```beast-of-argh``` flavour.
 

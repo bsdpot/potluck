@@ -18,3 +18,6 @@
 * Adjust service start order to start nginx last
 * Fix remaining configuration.py.in typos
 * Upgrade steps are not conditional, static files for site need to be generated every time
+* Switch to using nginx with SSL, either via self-signed certificate, or acme.sh registration. Add renew script.
+* Set media location in mount in storage
+* Clean up CHECKLIST
