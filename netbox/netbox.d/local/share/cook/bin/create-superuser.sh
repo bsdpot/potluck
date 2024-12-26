@@ -12,12 +12,24 @@ set -o pipefail
 # shellcheck disable=SC2086
 export PATH=/usr/local/bin:$PATH
 
+# docker-compose version uses different approach which may be more useful
+# to avoid error condition in output. Not in use until scripted token 
+# generation is possible.
+#
+# https://github.com/netbox-community/netbox-docker/blob/release/docker/docker-entrypoint.sh
+#   ./manage.py shell --interface python <<END
+# from users.models import Token, User
+# if not User.objects.filter(username='${SUPERUSER_NAME}'):
+#     u = User.objects.create_superuser('${SUPERUSER_NAME}', '${SUPERUSER_EMAIL}', '${SUPERUSER_PASSWORD}')
+#     Token.objects.create(user=u, key='${SUPERUSER_API_TOKEN}')
+# END
+#
+# Command below has output as follows:
 # Success on first create:
 #  Superuser created successfully.
 # Failure on repeat:
 #  CommandError: Error: That username is already taken.
-#
+
 cd /usr/local/share/netbox || exit 1
-if ! /usr/local/bin/python3.11 manage.py check >/dev/null 2>&1; then
-	DJANGO_SUPERUSER_PASSWORD="$ADMINPASSWORD" /usr/local/bin/python3.11 manage.py createsuperuser --no-input --username "$ADMINNAME" --email "$ADMINEMAIL" || true
-fi
+
+DJANGO_SUPERUSER_PASSWORD="$ADMINPASSWORD" /usr/local/bin/python3.11 manage.py createsuperuser --no-input --username "$ADMINNAME" --email "$ADMINEMAIL" || true
