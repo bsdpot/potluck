@@ -21,3 +21,4 @@
 * Switch to using nginx with SSL, either via self-signed certificate, or acme.sh registration. Add renew script.
 * Set media location in mount in storage
 * Clean up CHECKLIST
+* Fix configure-nginx.sh config missing "|"
