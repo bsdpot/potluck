@@ -113,7 +113,7 @@ MAILPORT is an optional parameter that can be set if the default SMTP port diffe
 
 REDISPORT is an optional parameter that can be set if the default redis port differs from port 6379.
 
-PVTCERT is an optional parameter to make use of self-signed SSL certificates instead of acme.sh for registation. Use this is your frontend proxy does SSL already.
+PVTCERT is an optional parameter to make use of self-signed SSL certificates instead of acme.sh for registation. Use this if your frontend proxy does SSL already.
 
 CERTEMAIL is an optional parameter to set a custom email address for acme.sh certificate registrations. If not set, ADMINEMAIL is used instead.
 
