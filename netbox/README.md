@@ -123,3 +123,8 @@ The REMOTELOG parameter is the IP address of a destination ```syslog-ng``` serve
 
 TBA, Netbox is a "source of truth" for your network, with lots of configurable information, and IPAM for managing IP address allocations.
 
+Login with your configured superuser credentials and provision a site, add a rack, add manufacturers, device types, then add devices in the rack.
+
+Make sure you have pictures of the front and back of every server and network device to upload for the device entries.
+
+Add additional users to assist with the task of documenting your infrastructure. 

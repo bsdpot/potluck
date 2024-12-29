@@ -43,13 +43,23 @@ http {
 		ssl_prefer_server_ciphers  off;
 		ssl_early_data on;
 		add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
-		add_header X-Frame-Options "DENY";
-		
+		# rack images break with this set, see
+		# https://github.com/netbox-community/netbox/discussions/10815
+		#add_header X-Frame-Options "DENY";
+		#
+
 		client_max_body_size 512M;
 		client_body_timeout 600s;
 		fastcgi_buffers 64 4K;
 		fastcgi_buffer_size 64k;
 		fastcgi_busy_buffers_size 64k;
+
+		location /static/netbox_logo.svg {
+			# This is also present in root of static/ but doesn't show up
+			# on login page. Setting specifically seems to work and can
+			# be adapted to a custom image too
+			alias /usr/local/share/netbox/static/docs/netbox_logo.svg;
+		}
 
 		location /static/ {
 			# from example but directory doesn't exist

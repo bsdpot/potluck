@@ -22,3 +22,5 @@
 * Set media location in mount in storage
 * Clean up CHECKLIST
 * Fix configure-nginx.sh config missing "|"
+* Fix missing logo on login page with clear alias to docs directory
+* Fix missing rack images by removing 'add_header X-Frame-Options "DENY"'
