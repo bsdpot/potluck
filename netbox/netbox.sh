@@ -134,6 +134,12 @@ pkg install -y rsync
 step "Install package node_exporter"
 pkg install -y node_exporter
 
+step "Install package python3"
+pkg install -y python3
+
+step "Install package py311-pip"
+pkg install -y py311-pip
+
 step "Install package nginx"
 pkg install -y nginx
 
@@ -149,10 +155,27 @@ pkg install -y postgresql15-client
 step "Install package netbox"
 pkg install -y netbox
 
+step "Install package py311-netbox-secrets"
+pkg install -y py311-netbox-secrets
+
 step "Clean package installation"
 pkg clean -ay
 
 # -------------- END PACKAGE SETUP -------------
+
+# ------------- CUSTOM PYTHON TOOLS -------------
+
+# netbox is running as root, the steps below are not ideal
+# might need to run as a netbox user, run netbox the same
+
+step "Install python pip package netbox-inventory"
+/usr/local/bin/pip install --user netbox-inventory --root-user-action=ignore
+
+step "Install python pip package netbox-bgp"
+/usr/local/bin/pip install --user netbox-bgp --root-user-action=ignore
+
+step "Install python pip package netbox-topology-views"
+/usr/local/bin/pip install --user netbox-topology-views --root-user-action=ignore
 
 #
 # Now generate the run command script "cook"

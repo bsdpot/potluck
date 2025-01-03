@@ -19,7 +19,8 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 * `netbox.ini`
 
 ## Changes in Python version
-Changes in python version need updating of `/usr/local/bin/python3.11` in the following files:
+Changes in python version need updating of package name, or `/usr/local/bin/python3.11`, in the following files:
+* `netbox.sh`
 * `netbox.d/local/share/cook/bin/configure-netbox.sh`
 * `netbox.d/local/share/cook/templates/netbox.rc.in`
 * `netbox.d/local/share/cook/templates/netbox_rq.rc.in`
