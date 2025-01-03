@@ -167,15 +167,17 @@ pkg clean -ay
 
 # netbox is running as root, the steps below are not ideal
 # might need to run as a netbox user, run netbox the same
+# set versions back a couple of releases from latest because error
+# Plugin netbox_inventory requires NetBox minimum version 4.1.0 (current: 4.0.11).
 
 step "Install python pip package netbox-inventory"
-/usr/local/bin/pip install --user netbox-inventory --root-user-action=ignore
+/usr/local/bin/pip install --user netbox-inventory==2.0.2 --root-user-action=ignore
 
 step "Install python pip package netbox-bgp"
-/usr/local/bin/pip install --user netbox-bgp --root-user-action=ignore
+/usr/local/bin/pip install --user netbox-bgp==0.13.3 --root-user-action=ignore
 
 step "Install python pip package netbox-topology-views"
-/usr/local/bin/pip install --user netbox-topology-views --root-user-action=ignore
+/usr/local/bin/pip install --user netbox-topology-views==4.0.1 --root-user-action=ignore
 
 #
 # Now generate the run command script "cook"

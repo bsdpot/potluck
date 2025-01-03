@@ -25,3 +25,4 @@
 * Fix missing logo on login page with clear alias to docs directory
 * Fix missing rack images by removing 'add_header X-Frame-Options "DENY"'
 * Add plugins netbox-secrets via pkg, and netbox-inventory, netbox-bgp, netbox-topology-views pip
+* Set versions on pip python installs
