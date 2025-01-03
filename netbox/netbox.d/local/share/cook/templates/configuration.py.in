@@ -176,7 +176,14 @@ MEDIA_ROOT = '/mnt/netboxdata/media'
 METRICS_ENABLED = True
 
 # Enable installed plugins. Add the name of each plugin to the list.
-PLUGINS = []
+#
+# Pot additions for 
+# https://www.freshports.org/security/py-netbox-secrets/
+# https://github.com/ArnesSI/netbox-inventory
+# https://github.com/netbox-community/netbox-bgp
+# https://github.com/netbox-community/netbox-topology-views
+#
+PLUGINS = ["netbox_secrets", "netbox_inventory", "netbox_bgp", "netbox_topology_views"]
 
 # Plugins configuration settings. These settings are used by various plugins that the user may have installed.
 # Each key in the dictionary is the name of an installed plugin and its value is a dictionary of settings.
@@ -186,6 +193,10 @@ PLUGINS = []
 #         'buzz': 'bazz'
 #     }
 # }
+
+PLUGINS_CONFIG = {
+	"netbox_inventory": {},
+}
 
 # Remote authentication support
 REMOTE_AUTH_ENABLED = False
