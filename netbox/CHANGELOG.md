@@ -26,3 +26,4 @@
 * Fix missing rack images by removing 'add_header X-Frame-Options "DENY"'
 * Add plugins netbox-secrets via pkg, and netbox-inventory, netbox-bgp, netbox-topology-views pip
 * Set versions on pip python installs
+* Remove user flag on pip installs, install to system path
