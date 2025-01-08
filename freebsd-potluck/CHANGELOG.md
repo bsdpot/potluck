@@ -1,3 +1,9 @@
+0.0.33
+
+* Version bump for new quarterlies 2025Q1
+
+---
+
 0.0.32
 
 * Version bump for 14.2 base image
