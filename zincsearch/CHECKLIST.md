@@ -18,10 +18,6 @@ Changes to major or minor versions need to be logged in:
 To force a rebuild of the pot image for the potluck site, increment Z of version="x.y.Z" in:
 * `zincsearch.ini`
 
-## Python updates
-Make sure to update python39 and py39-{packagename} in the following files on Python version change:
-* `zincsearch.sh`
-
 ## Zincsearch
 Zincsearch releases are on github at https://github.com/zincsearch/zincsearch/releases
 For new releases the URL, and checksum of extracted binary, must be updated in:

@@ -38,7 +38,7 @@ The `mariadb` pot images must already be started with the LOADBALANCER parameter
   sudo pot set-env -p <jailname> \
    -E DATACENTER=<datacenter name> \
    -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
-   -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+   -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
    -E NODENAME=<name of node> \
    -E IP=<IP address> \
    -E SERVERONE=<IP address first mariadb host> \

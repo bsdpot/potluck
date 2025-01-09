@@ -49,7 +49,7 @@ http {
             # Mitigate https://httpoxy.org/ vulnerabilities
             fastcgi_param HTTP_PROXY "";
 
-            fastcgi_pass unix:/var/run/php82-fpm.sock;
+            fastcgi_pass unix:/var/run/php83-fpm.sock;
             fastcgi_read_timeout 300;
             fastcgi_index index.php;
 

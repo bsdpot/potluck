@@ -149,8 +149,8 @@ pkg install -y syslog-ng
 step "Install package redis"
 pkg install -y redis
 
-step "Install package postgresql15-client"
-pkg install -y postgresql15-client
+step "Install package postgresql16-client"
+pkg install -y postgresql16-client
 
 step "Install package netbox"
 pkg install -y netbox
@@ -173,13 +173,13 @@ pkg clean -ay
 #  Plugin netbox_inventory requires NetBox minimum version 4.1.0 (current: 4.0.11).
 
 step "Install python pip package netbox-inventory"
-/usr/local/bin/pip install netbox-inventory==2.0.2 --root-user-action=ignore
+/usr/local/bin/pip install netbox-inventory==2.2.1 --root-user-action=ignore
 
 step "Install python pip package netbox-bgp"
-/usr/local/bin/pip install netbox-bgp==0.13.3 --root-user-action=ignore
+/usr/local/bin/pip install netbox-bgp==0.14.0 --root-user-action=ignore
 
 step "Install python pip package netbox-topology-views"
-/usr/local/bin/pip install netbox-topology-views==4.0.1 --root-user-action=ignore
+/usr/local/bin/pip install netbox-topology-views==4.1.0 --root-user-action=ignore
 
 #
 # Now generate the run command script "cook"

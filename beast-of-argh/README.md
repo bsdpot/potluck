@@ -30,7 +30,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E NODENAME=<nodename> \
     -E IP=<IP address of this system> \
     -E CONSULSERVERS=<consul IP address(es) in comma-deliminated format> \
-    -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+    -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
     -E GRAFANAUSER=<grafana username> \
     -E GRAFANAPASSWORD=<grafana password> \
     -E SCRAPECONSUL=<consul IP address(es) in comma-deliminated format> \

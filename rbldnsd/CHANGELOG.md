@@ -1,3 +1,10 @@
+0.22
+
+* Version bump for new base image
+* Update to php83
+
+---
+
 0.21
 
 * Version bump for new base image 14.2

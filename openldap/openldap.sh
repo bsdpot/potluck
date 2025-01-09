@@ -140,6 +140,7 @@ pkg install -y p5-Archive-Zip
 step "Install package apache24"
 pkg install -y apache24
 
+# no php83 yet as dependencies on php82 during install steps
 step "Install package php82"
 pkg install -y php82
 

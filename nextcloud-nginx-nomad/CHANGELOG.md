@@ -1,3 +1,9 @@
+0.113
+
+* Version bump for new quarterlies
+
+---
+
 0.112
 
 * Include proxy.config.php option for setting trusted proxies

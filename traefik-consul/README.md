@@ -24,7 +24,7 @@ This is a flavour containing the ```traefik``` reverse proxy and load balancer p
     -E NODENAME=<nodename> \
     -E IP=<IP address of this system> \
     -E CONSULSERVERS="<comma-deliminated list of consul IP addresses>" \
-    -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+    -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
     [ -E REMOTELOG=<IP address> ]
   ```
 * Start jail with ```pot start <jailname>```

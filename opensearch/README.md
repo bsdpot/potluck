@@ -34,7 +34,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E NODENAME=<nodename> \
     -E IP=<IP address of this system> \
     -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
-    -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+    -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
     [ -E PORT=<opensearch port, default 9200> ] \
     [ -E REMOTELOG=<IP address> ]
   ```

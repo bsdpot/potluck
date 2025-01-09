@@ -43,7 +43,7 @@ This jail must be run with a non-routable IP address, accessible only to the int
   sudo pot set-env -p <jailname> \
    -E DATACENTER=<datacenter name> \
    -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
-   -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+   -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
    -E NODENAME=<name of node> \
    -E IP=<IP address> \
    -E IP4NETWORK=<10.0.0.1/24> \

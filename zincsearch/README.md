@@ -25,7 +25,7 @@ The flavour includes a local ```consul``` agent instance to be available that it
     -E NODENAME=<nodename> \
     -E IP=<IP address of this system> \
     -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
-    -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+    -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
     -E ZINCUSER=<zincsearch admin user> \
     -E ZINCPASS=<zincsearch admin pass> \
     -E ZINCDATA=<path to store zincsearch files, default /mnt/zinc/data> \

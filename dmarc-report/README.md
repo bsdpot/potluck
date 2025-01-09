@@ -35,7 +35,7 @@ There is no progress indicator when complete. When your dmarc folder empties, th
     -E NODENAME=<nodename> \
     -E IP=<IP address of this system> \
     -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
-    -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+    -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
     -E IMAPSERVER=<mail host> \
     -E IMAPUSER=<imap username> \
     -E IMAPPASS=<imap password> \

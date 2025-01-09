@@ -186,8 +186,8 @@ pkg install -y pkgconf
 step "Install package zstd"
 pkg install -y zstd
 
-step "Install package python39"
-pkg install -y python39
+step "Install package python3"
+pkg install -y python3
 
 step "Install package acme.sh"
 pkg install -y acme.sh
@@ -218,8 +218,8 @@ pkg install -y node_exporter
 step "Install package git-lite"
 pkg install -y git-lite
 
-step "Install package go"
-pkg install -y go
+step "Install package lang/go"
+pkg install -y lang/go
 
 step "Add openssl and ldap settings to make.conf"
 echo "BATCH=yes" > /etc/make.conf
@@ -302,7 +302,8 @@ step "Pull files"
 #git pull --depth=1 origin 2024Q1
 #git pull --depth=1 origin 2024Q2
 #git pull --depth=1 origin 2024Q3
-git pull --depth=1 origin 2024Q4
+#git pull --depth=1 origin 2024Q4
+git pull --depth=1 origin 2025Q1
 
 #step "Port build openssl, remove existing, replace with this port"
 ##required for latest / main branch

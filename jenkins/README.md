@@ -34,7 +34,7 @@ You can adjust this flavour and rebuild your own pot image if you have other req
     -E NODENAME=<nodename> \
     -E IP=<IP address of this system> \
     -E CONSULSERVERS=<comma-deliminated list of consul servers> \
-    -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+    -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
     -E RUNTYPE=<nostore|setupstore|activestore> \
     -E BUILDHOST=<IP of potbuilder VM> \
     [ -E IMPORTKEYS=<1|0 default> ] \
