@@ -1,3 +1,10 @@
+0.20
+
+* Version bump for new base image
+* Update to 2025Q1 for pkg sources
+
+---
+
 0.19
 
 * Version bump for new base image 14.2

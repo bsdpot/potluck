@@ -36,7 +36,7 @@ You must run this instance from a top level domain such as `signal.yourdomain.co
   sudo pot set-env -p <jailname> \
    -E DATACENTER=<datacenter name> \
    -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
-   -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+   -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
    -E NODENAME=<name of node> \
    -E IP=<IP address> \
    -E DOMAIN=<domain name> \

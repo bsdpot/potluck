@@ -13,14 +13,18 @@ In `adminer/adminer.d/local/share/cook/bin/configure-adminer.sh` update:
 
 In `adminer/adminer.sh` update:
 ```sh
-pkg install -y php82
-pkg install -y php82-mbstring
-pkg install -y php82-zlib
-pkg install -y php82-curl
-pkg install -y php82-gd
-pkg install -y php82-extensions
-pkg install -y php82-mysqli
-pkg install -y php82-odbc
-pkg install -y php82-pgsql
-pkg install -y php82-pdo_sqlite
+pkg install -y php83
+pkg install -y php83-mbstring
+pkg install -y php83-zlib
+pkg install -y php83-curl
+pkg install -y php83-gd
+pkg install -y php83-extensions
+pkg install -y php83-mysqli
+pkg install -y php83-odbc
+pkg install -y php83-pgsql
+pkg install -y php83-pdo_sqlite
 ```
+
+Also update the PHP socket in
+* `adminer.d/local/share/cook/templates/nginx.conf.in`
+* `adminer.d/local/share/cook/templates/www.conf.in`

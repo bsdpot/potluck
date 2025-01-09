@@ -1,3 +1,8 @@
+0.1
+
+* Version bump for new base image
+* Update for Netbox version 4.1.10 
+
 ---
 
 0.0

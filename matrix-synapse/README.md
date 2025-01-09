@@ -40,7 +40,7 @@ This is a quirk of using `.well-known/matrix/server` with the server's details.
   sudo pot set-env -p <jailname> \
    -E DATACENTER=<datacenter name> \
    -E CONSULSERVERS="<comma-deliminated list of consul servers>" \
-   -E GOSSIPKEY=<32 byte Base64 key from consul keygen>] \
+   -E GOSSIPKEY=<32 byte Base64 key from consul keygen> \
    -E NODENAME=<name of node> \
    -E IP=<IP address> \
    -E DOMAIN=<domain name> \

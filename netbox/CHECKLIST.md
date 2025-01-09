@@ -28,11 +28,12 @@ Changes in python version need updating of package name, or `/usr/local/bin/pyth
 * `netbox.d/local/share/cook/templates/850.netbox-housekeeping.in`
 
 ## Changes in netbox version and python pip installs
-Netbox is currently version 4.0.11. 
-When netbox is version 4.1.0 in packages, then update `netbox.sh` to correct version after checking compatibility chart at each link
-* `netbox-inventory==2.0.2` see Compatibility at https://github.com/ArnesSI/netbox-inventory
-* `netbox-bgp==0.13.3` see Compatibility at https://github.com/netbox-community/netbox-bgp
-* `netbox-topology-views==4.0.1` see Versions at https://github.com/netbox-community/netbox-topology-views
+Netbox is currently version 4.1.10.
+
+When netbox version changes in packages, then update `netbox.sh` to correct version after checking compatibility chart at each link
+* `netbox-inventory==2.2.1` see Compatibility at https://github.com/ArnesSI/netbox-inventory
+* `netbox-bgp==0.14.0` see Compatibility at https://github.com/netbox-community/netbox-bgp
+* `netbox-topology-views==4.1.0` see Versions at https://github.com/netbox-community/netbox-topology-views
 
 ## Shellcheck
 Was `shellcheck` run on all applicable shell files?

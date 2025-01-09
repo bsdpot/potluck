@@ -20,13 +20,13 @@ To force a rebuild of the pot image for the potluck site, increment Z of version
 * `caddy-s3-nomad.ini`
 
 ## Go Version
-When `go` version changes updated the package install line and git sparse checkout lines in:
+If set to a version, then when `go` version changes updated the package install line and git sparse checkout lines in:
 * `caddy-s3-nomad.sh`
 
 ## Quarterly Package Updates
 Every new quarterly pkg release, update this line to next applicable quarter
 ```
-git pull --depth=1 origin 2024Q4
+git pull --depth=1 origin 2025Q1
 ```
 in:
 * `caddy-s3-nomad.sh`

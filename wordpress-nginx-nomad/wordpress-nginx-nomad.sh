@@ -121,6 +121,7 @@ pkg install -y mariadb106-client
 step "Install package postgresql15-client"
 pkg install -y postgresql15-client
 
+# wordpress dependency is php82 still, 2025Q1
 step "Install package php82"
 pkg install -y php82
 
