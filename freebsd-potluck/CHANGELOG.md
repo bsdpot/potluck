@@ -1,3 +1,9 @@
+0.0.34
+
+* Version bump for rsync update
+
+---
+
 0.0.33
 
 * Version bump for new quarterlies 2025Q1
