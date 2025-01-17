@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Update to 2025Q1 for pkg sources
+* Update for rsync security issue
 
 ---
 
