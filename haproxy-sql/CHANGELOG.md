@@ -1,6 +1,7 @@
 0.16
 
 * Version bump for new base image
+* Update for rsync security issue
 
 ---
 

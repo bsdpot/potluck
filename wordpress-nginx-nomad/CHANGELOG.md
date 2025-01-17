@@ -1,6 +1,7 @@
 2.20
 
 * Version bump for new base image
+* Update for rsync security issue
 
 ---
 

@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Update for Netbox version 4.1.10 
 * redo, 4.0.11 installed instead of 4.1.10 in ports
+* Update for rsync security issue
 
 ---
 

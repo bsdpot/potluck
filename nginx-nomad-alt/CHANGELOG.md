@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Switch to php83
+* Update for rsync security issue
 
 ---
 

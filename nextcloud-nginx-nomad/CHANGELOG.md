@@ -1,6 +1,7 @@
 0.113
 
 * Version bump for new quarterlies
+* Update for rsync security issue
 
 ---
 
