@@ -1,3 +1,10 @@
+0.9
+
+* Update for new base image
+* Fix switch to latest over quarterly
+
+---
+
 0.8
 
 * Version bump for new base image 14.2

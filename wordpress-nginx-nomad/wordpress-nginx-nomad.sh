@@ -70,6 +70,8 @@ echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
 #  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
 #    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
+# added for images with switch to latest
+ASSUME_ALWAYS_YES=yes pkg update
 
 step "Touch /etc/rc.conf"
 touch /etc/rc.conf

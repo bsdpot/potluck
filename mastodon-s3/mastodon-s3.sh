@@ -61,13 +61,17 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
-# only modify repo if not already done in base image
-# this is a non-layered image now, with latest package sources
 # shellcheck disable=SC2016
-test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
-  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
+echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
     >/usr/local/etc/pkg/repos/FreeBSD.conf
+# only modify repo if not already done in base image
+# shellcheck disable=SC2016
+#test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
+#  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+#    >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
+# added for images with switch to latest
+ASSUME_ALWAYS_YES=yes pkg update
 
 step "Touch /etc/rc.conf"
 touch /etc/rc.conf

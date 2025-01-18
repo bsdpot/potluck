@@ -2,6 +2,7 @@
 
 * Version bump for new image
 * Update for rsync security issue
+* Fix switch to latest over quarterlies
 
 ---
 
