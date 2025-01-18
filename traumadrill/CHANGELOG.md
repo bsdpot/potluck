@@ -3,6 +3,7 @@
 * Version bump for new base image
 * Update to php83
 * Update for rsync security issue
+* Switch to latest repo as stress-ng missing from quarterlies
 
 ---
 
