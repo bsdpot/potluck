@@ -7,9 +7,10 @@ echo -e "SpamAssassing training starting at $(date +%c)..." > "$LOG" 2>&1
 # this assumes delivery to unified setup of mail/uid
 for d in $(ls %%vhostdir%%/mail/); do
     echo "$d" >> "$LOG" 2>&1
-    /usr/local/bin/sa-learn -u "$d" --no-sync --ham %%vhostdir%%/mail/"$d"/cur >> "$LOG" 2>&1
-    /usr/local/bin/sa-learn -u "$d" --no-sync --ham %%vhostdir%%/mail/"$d"/new >> "$LOG" 2>&1
-    /usr/local/bin/sa-learn -u "$d" --no-sync --spam %%vhostdir%%/mail/"$d"/Junk >> "$LOG" 2>&1
+    /usr/local/bin/sa-learn -u "$d" --no-sync --ham %%vhostdir%%/mail/"$d"/Maildir/cur >> "$LOG" 2>&1
+    /usr/local/bin/sa-learn -u "$d" --no-sync --ham %%vhostdir%%/mail/"$d"/Maildir/new >> "$LOG" 2>&1
+    # Junk folder has a period first: .Junk
+    /usr/local/bin/sa-learn -u "$d" --no-sync --spam %%vhostdir%%/mail/"$d"/Maildir/.Junk >> "$LOG" 2>&1
 done
 
 ## Sync the SpamAssassin journal and print out stats
