@@ -265,7 +265,7 @@ DocumentRoot "/usr/local/www/apache24/data"
 <IfModule dir_module>
     DirectoryIndex index.php index.html
     <FilesMatch ".php$">
-        SetHandler  "proxy:unix:/var/run/php82-fpm.sock|fcgi://localhost/"
+        SetHandler  "proxy:unix:/var/run/php83-fpm.sock|fcgi://localhost/"
      </FilesMatch>
 </IfModule>
 

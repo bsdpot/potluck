@@ -140,46 +140,45 @@ pkg install -y p5-Archive-Zip
 step "Install package apache24"
 pkg install -y apache24
 
-# no php83 yet as dependencies on php82 during install steps
-step "Install package php82"
-pkg install -y php82
+step "Install package php83"
+pkg install -y php83
 
 # php modules need explicit installation now
-step "Install package php82-session"
-pkg install -y php82-session
+step "Install package php83-session"
+pkg install -y php83-session
 
-step "Install package php82-ldap"
-pkg install -y php82-ldap
+step "Install package php83-ldap"
+pkg install -y php83-ldap
 
-step "Install package php82-gettext"
-pkg install -y php82-gettext
+step "Install package php83-gettext"
+pkg install -y php83-gettext
 
-step "Install package php82-xml"
-pkg install -y php82-xml
+step "Install package php83-xml"
+pkg install -y php83-xml
 
-step "Install package php82-xmlreader"
-pkg install -y php82-xmlreader
+step "Install package php83-xmlreader"
+pkg install -y php83-xmlreader
 
-step "Install package php82-xmlwriter"
-pkg install -y php82-xmlwriter
+step "Install package php83-xmlwriter"
+pkg install -y php83-xmlwriter
 
-step "Install package php82-mbstring"
-pkg install -y php82-mbstring
+step "Install package php83-mbstring"
+pkg install -y php83-mbstring
 
-step "Install package php82-gd"
-pkg install -y php82-gd
+step "Install package php83-gd"
+pkg install -y php83-gd
 
-step "Install package php82-gmp"
-pkg install -y php82-gmp
+step "Install package php83-gmp"
+pkg install -y php83-gmp
 
-step "Install package php82-filter"
-pkg install -y php82-filter
+step "Install package php83-filter"
+pkg install -y php83-filter
 
-step "Install package php82-zip"
-pkg install -y php82-zip
+step "Install package php83-zip"
+pkg install -y php83-zip
 
-step "Install package phpldapadmin-php82"
-pkg install -y phpldapadmin-php82
+step "Install package phpldapadmin-php83"
+pkg install -y phpldapadmin-php83
 
 # ldap account manager
 step "Install package ldap-account-manager"
