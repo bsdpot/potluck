@@ -50,10 +50,10 @@ fi
 ########################################################################
 
 required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
-required_args="$required_args DOMAIN MYCREDS HOSTNAME"
-optional_args="SERVERID CRONBACKUP REMOTEIP IMPORTCUSTOM REMOTELOG"
+required_args="$required_args DOMAIN MYCREDS HOSTNAME LOCALNAME"
+optional_args="SERVERID REMOTESERVERID REMOTEIP REMOTENAME IMPORTCUSTOM"
 optional_args="$optional_args DEFAULTGROUPS USERNAME PASSWORD"
-optional_args="$optional_args LAMPASS"
+optional_args="$optional_args LAMPASS CRONBACKUP REMOTELOG"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -118,7 +118,7 @@ fi
 
 pkill php-fpm || true
 
-export PATH=/usr/local/share/cook/bin:$PATH
+export PATH="/usr/local/share/cook/bin:$PATH"
 
 log "Configure directories"
 configure-directories.sh

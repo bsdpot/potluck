@@ -74,12 +74,18 @@ Thereafter these files will load automatically, along with any updates, from per
   [ -E IMPORTCUSTOM=1 ] \
   [ -E LAMPASS=<password for ldap-account-manager configuration> ] \
   [ -E SERVERID=<this server ID, integer from 0 to 4095> ] \
+  [ -E LOCALNAME=<pot name of this instance> ] \
   [ -E REMOTEIP=<IP address of second openldap instance> ] \
   [ -E REMOTESERVERID=<server ID of second instance, integer 0 to 4095 not matching SERVERID> ] \
+  [ -E REMOTENAME=<pot name of second instance> ] \
   [ -E DEFAULTGROUPS=Y ] \
   [ -E USERNAME=<generic user username> ] \
   [ -E PASSWORD=<generic user password ] \
   [ -E REMOTELOG=<IP of syslog-ng server> ]
+  ```
+* Start the image
+  ```
+  pot start <jailname>
   ```
 
 The NODENAME parameter is the name of the node.
@@ -98,7 +104,9 @@ The DOMAIN parameter is the domain name to use for `openldap` configuration.
 
 The MYCREDS parameter is the administrator password for openldap.
 
-The HOSTNAME is the hostname to be used.
+The HOSTNAME parameter is the hostname to be used.
+
+The LOCALNAME parameter is the name of the pot image, for example `openldap-clone`, as would be seen in `/etc/hosts`, which `potnet` injects. This must be set on single and multihost setups.
 
 The CRONBACKUP parameter is the path to persistent storage where automatic backups of ldap config and data are dropped.
 
@@ -111,6 +119,8 @@ The optional SERVERID parameter is an integer from `0 to 4095`, or `0` for first
 The optional REMOTEIP parameter is the IP address of a second `openldap` pot server if running a multi-master cluster. If set, a cluster setup will be initiated.
 
 The optional REMOTESERVERID parameter is an integer from `0 to 4095` for the second instance, and must be different to SERVERID. 
+
+The optional REMOTENAME parameter is the pot name of the other instance, for example `openldap-spare-clone`, as would be seen in `/etc/hosts`, which `potnet` injects. This must be set on multihost setups.
 
 The optional DEFAULTGROUPS parameter will enable a default group arrangement with People and mail, if set to any value. This will not work if IMPORTCUSTOM is enabled.
 

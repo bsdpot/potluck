@@ -7,6 +7,8 @@ fi
 
 set -e
 
+export PATH="/usr/local/bin:$PATH"
+
 # add node_exporter user
 
 if ! id -u "nodeexport" >/dev/null 2>&1; then
