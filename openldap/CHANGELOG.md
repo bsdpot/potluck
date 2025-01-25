@@ -1,6 +1,8 @@
 1.25
 
 * Version bump for new base image
+* Add parameters to fix issue with slapd failing to restart on reboot, because potnet overwrites changes /etc/hosts even when set not to
+* Fix some shellcheck complaints on PATH
 
 ---
 

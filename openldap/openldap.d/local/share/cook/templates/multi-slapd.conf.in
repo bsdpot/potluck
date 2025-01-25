@@ -26,12 +26,14 @@ moduleload    lastmod
 # needed? things break when included
 #moduleload    pw-sha2
 # moduleload    back_ldap
+#
 # this will be automatically updated if cluster
 #  serverID <integer> [<URL>]
-# should be using fully qualified server names instead of IP
+# ideally we should be using fully qualified server names instead of manual setting in /etc/hosts
+#
 # setting local names in /etc/hosts in configure step
-serverID %%serverid%% ldap://localldap
-serverID %%remoteserverid%% ldap://remoteldap
+serverID %%serverid%% ldap://%%localpotname%%
+serverID %%remoteserverid%% ldap://%%remotepotname%%
 
 # added from
 # https://loga.us/2014/08/16/openldap-and-multi-master-replication-in-freebsd-part-1/
