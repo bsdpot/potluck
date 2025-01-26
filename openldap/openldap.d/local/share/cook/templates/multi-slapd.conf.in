@@ -115,7 +115,7 @@ access	to	*
 
 # sync
 syncrepl rid=0
-	provider=ldap://remoteldap:389
+	provider=ldap://%%remotepotname%%:389
 	searchbase="dc=%%mysuffix%%,dc=%%mytld%%"
 	filter="(objectClass=*)"
 	scope=sub

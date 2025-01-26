@@ -4,6 +4,7 @@
 * Add parameters to fix issue with slapd failing to restart on reboot, because potnet overwrites changes /etc/hosts even when set not to
 * Fix some shellcheck complaints on PATH
 * Update to php83 version of packages, because dependency conflict with php82. Was dependent on php82 previously.
+* Fix missed occurance of remoteldap with use remote pot name
 
 ---
 

@@ -168,8 +168,8 @@ Then start on a second server, or make use of a different ZFS dataset for persis
 
 To check sync status compare `contextCSN`:
 ```
-ldapsearch -x -LLL -H ldap://remoteldap:389 -s base -b "dc=your-domain,dc=net" contextCSN dn: dc=your-domain,dc=net
-ldapsearch -x -LLL -H ldap://localldap:389 -s base -b "dc=your-domain,dc=net" contextCSN dn: dc=your-domain,dc=net
+ldapsearch -x -LLL -H ldap://<remoteldap-name>:389 -s base -b "dc=your-domain,dc=net" contextCSN dn: dc=your-domain,dc=net
+ldapsearch -x -LLL -H ldap://<localldap-name>:389 -s base -b "dc=your-domain,dc=net" contextCSN dn: dc=your-domain,dc=net
 ```
 
 ## Basic command line search
