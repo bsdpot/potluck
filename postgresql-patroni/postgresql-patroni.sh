@@ -122,10 +122,10 @@ step "Install package syslog-ng"
 pkg install -y syslog-ng
 
 step "Install package postgresql-server"
-pkg install -y postgresql15-server
+pkg install -y postgresql13-server
 
 step "Install package postgresql-client"
-pkg install -y postgresql15-client
+pkg install -y postgresql13-client
 
 step "Install package postgresql-contrib"
 pkg install -y postgresql13-contrib
