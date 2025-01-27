@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
@@ -165,3 +165,13 @@ if [ -n "$ROOTMAIL" ]; then
         /usr/bin/newaliases
     fi
 fi
+
+# copy over script for queue management cronjob
+cp -f "$TEMPLATEPATH/fix-stuck-messages.sh.in" /root/bin/fix-stuck-messages.sh
+
+# make executable
+chmod +x /root/bin/fix-stuck-messages.sh
+
+# add cronjob to check and requeue message on hold
+echo "# add cronjob to check and requeue messages on hold" >> /etc/crontab
+echo "0	8	*	*	*	root	/root/bin/fix-stuck-messages.sh" >> /etc/crontab

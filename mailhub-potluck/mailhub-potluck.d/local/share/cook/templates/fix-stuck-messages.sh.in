@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# Simple script to check for held messages by looking specifically for
+# a queue ID ending with "!" at the beginning of a line from postqueue -p.
+# If any held messages are found, re-queue them (postsuper -r ALL) and
+# force delivery (postqueue -f).
+
+if postqueue -p | grep -Eq '^[[:alnum:]]+!'; then
+    echo "Held messages found. Re-queueing and forcing delivery..."
+    # Re-queue ALL held messages
+    postsuper -r ALL
+    # Force another queue run
+    postqueue -f
+fi
+

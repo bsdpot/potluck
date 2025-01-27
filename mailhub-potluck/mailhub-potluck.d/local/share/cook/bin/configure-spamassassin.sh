@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
@@ -38,7 +38,8 @@ if [ -f /root/spamassassin_whitelist ]; then
 fi
 
 # setup cronjob for sa-update
-echo "0  1  *  *  *  root  /usr/local/bin/sa-update && /usr/local/bin/sa-compile" >> /etc/crontab
+echo "# add cronjob for spamassassin update and compile" >> /etc/crontab
+echo "0	1	*	*	*	root	/usr/local/bin/sa-update && /usr/local/bin/sa-compile" >> /etc/crontab
 
 # copy over script for cronjob
 < "$TEMPLATEPATH/sa-training.sh.in" \
@@ -49,6 +50,7 @@ echo "0  1  *  *  *  root  /usr/local/bin/sa-update && /usr/local/bin/sa-compile
 chmod +x /root/bin/sa-training.sh
 
 # add cronjob for training
+echo "# add cronjob for spamassassin training" >> /etc/crontab
 echo "0	11	*	*	1-5	root	/root/bin/sa-training.sh" >> /etc/crontab
 
 # run sa-update and sa-compile

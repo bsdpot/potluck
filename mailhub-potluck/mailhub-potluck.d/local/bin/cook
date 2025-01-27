@@ -87,7 +87,7 @@ if [ -n "${CONSULSERVERS+x}" ]; then
     export FIXCONSULSERVERS
 fi
 
-export PATH=/usr/local/share/cook/bin:$PATH
+export PATH="/usr/local/share/cook/bin:$PATH"
 
 # place individual scripts here
 
