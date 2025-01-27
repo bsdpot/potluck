@@ -5,6 +5,7 @@
 * Update for rsync security issue
 * Fix sa-training script for path
 * Add script to requeue the 'on hold' mail
+* Fix issue with shellcheck for PATH
 
 ---
 
