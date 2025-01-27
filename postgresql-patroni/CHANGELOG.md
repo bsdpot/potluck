@@ -1,3 +1,9 @@
+2.7
+
+* Return to using postgresql13
+
+---
+
 2.6
 
 * Version bump for new base image 14.2
