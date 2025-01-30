@@ -4,6 +4,7 @@
 * Update for rsync security issue
 * Update dashboards to match updates to Grafana image
 * Add quotes to PATH where applicable for shellcheck error
+* Revert dashboard changes for some dashboard because not working with grafana from pkg sources yet
 
 ---
 
