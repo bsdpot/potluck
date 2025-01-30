@@ -2,6 +2,8 @@
 
 * Version bump for new base image
 * Update for rsync security issue
+* Update dashboards to match updates to Grafana image
+* Add quotes to PATH where applicable for shellcheck error
 
 ---
 
