@@ -1,7 +1,7 @@
 {
   "__inputs": [
     {
-      "name": "Loki",
+      "name": "DS_LOKI",
       "label": "Loki",
       "description": "",
       "type": "datasource",
@@ -9,18 +9,13 @@
       "pluginName": "Loki"
     }
   ],
+  "__elements": {},
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.5.15"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
+      "version": "10.4.1"
     },
     {
       "type": "panel",
@@ -39,13 +34,22 @@
       "id": "stat",
       "name": "Stat",
       "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
     }
   ],
   "annotations": {
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -53,7 +57,10 @@
         "type": "dashboard"
       },
       {
-        "datasource": "Loki",
+        "datasource": {
+          "type": "loki",
+          "uid": "${DS_LOKI}"
+        },
         "enable": false,
         "expr": "{job=\"syslog\"} |=\"DNS request timed out\"",
         "hide": false,
@@ -69,10 +76,10 @@
   },
   "description": "Custom dashboard showing Loki ingested syslogs forwarded from syslog-ng",
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "gnetId": 13766,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1658336436706,
   "links": [
     {
       "asDropdown": true,
@@ -87,111 +94,149 @@
   ],
   "panels": [
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Loki",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 60,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byValue",
+              "options": {
+                "op": "gte",
+                "reducer": "allIsZero",
+                "value": 0
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byValue",
+              "options": {
+                "op": "gte",
+                "reducer": "allIsNull",
+                "value": 0
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              }
+            ]
+          }
+        ]
       },
-      "fill": 1,
-      "fillGradient": 6,
       "gridPos": {
         "h": 9,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "hiddenSeries": false,
       "id": 3,
       "interval": "$smooth",
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": false,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "sort": "total",
-        "sortDesc": true,
-        "total": true,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "7.5.15",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
+      "pluginVersion": "10.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
           "expr": "count_over_time({job=\"syslog\"}[$__interval])",
           "legendFormat": "{{host}}",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "Log Line Counts By Host (Unfiltered)",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "transformations": [],
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:209",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:210",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "datasource": "Loki",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -229,30 +274,32 @@
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "7.5.15",
+      "pluginVersion": "10.4.1",
       "targets": [
         {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
           "expr": "count_over_time({host=~\"$host\", job=\"syslog\"} [$__interval] |~ \"$free_form_filter\" |~ \"$filter\")",
           "legendFormat": "{{host}}",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Counts By Host ($host) - \"$filter\" - \"$free_form_filter\" (Filtered)",
-      "transformations": [],
       "type": "stat"
     },
     {
-      "datasource": "Loki",
-      "description": "",
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
       },
+      "description": "",
       "gridPos": {
         "h": 10,
         "w": 24,
@@ -262,6 +309,9 @@
       "id": 5,
       "options": {
         "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
         "showLabels": true,
         "showTime": true,
         "sortOrder": "Descending",
@@ -270,32 +320,33 @@
       "pluginVersion": "7.3.6",
       "targets": [
         {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
           "expr": "{job=\"syslog\", host=~\"$host\"} |~ \"$free_form_filter\" |~ \"$filter\"",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Logs By Host - \"$filter\" - \"$free_form_filter\" (Filtered)",
       "type": "logs"
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 27,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [
     "syslog"
   ],
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {},
-        "datasource": "Loki",
+        "datasource": {
+          "type": "loki",
+          "uid": "${DS_LOKI}"
+        },
         "definition": "label_values(job=\"syslog\", host)",
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Host",
@@ -308,21 +359,18 @@
         "skipUrlSync": false,
         "sort": 5,
         "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "wap*",
-        "type": "query",
-        "useTags": true
+        "type": "query"
       },
       {
-        "allValue": null,
         "current": {
           "selected": true,
-          "tags": [],
-          "text": [],
-          "value": []
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": "Filter",
@@ -330,7 +378,7 @@
         "name": "filter",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "All",
             "value": "$__all"
           },
@@ -386,8 +434,6 @@
           "text": "",
           "value": ""
         },
-        "description": null,
-        "error": null,
         "hide": 0,
         "label": "Free Form Filter",
         "name": "free_form_filter",
@@ -403,14 +449,11 @@
         "type": "textbox"
       },
       {
-        "allValue": null,
         "current": {
           "selected": false,
           "text": "1m",
           "value": "1m"
         },
-        "description": null,
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Smooth",
@@ -477,6 +520,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "Loki - Custom Syslog AIO (All In One)",
-  "uid": "lux4rd0labs_loki_syslog_aio_custom",
-  "version": 3
+  "uid": "cebhmy01wfcaoe",
+  "version": 2,
+  "weekStart": ""
 }
