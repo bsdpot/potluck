@@ -115,7 +115,7 @@ mkdir -p /mnt/grafana
 mkdir -p /mnt/loki
 mkdir -p /mnt/promtail
 
-export PATH=/usr/local/share/cook/bin:$PATH
+export PATH="/usr/local/share/cook/bin:$PATH"
 
 log "Setup node_exporter"
 configure-node-exporter.sh

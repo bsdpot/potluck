@@ -1,7 +1,8 @@
 # redis.yml - adjust to suit your needs using the following format
 #
+# the associated dashboard will only show one host
+#
 #- targets:
-#  - 10.0.0.9:9121
 #  - 10.0.0.10:9121
 #  labels:
 #    job: redis
