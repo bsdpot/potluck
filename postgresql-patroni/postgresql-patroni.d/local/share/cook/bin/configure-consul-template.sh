@@ -24,11 +24,18 @@ chmod 600 \
 echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
   /usr/local/etc/consul-template.d/consul-template.hcl
 
+if [ "$SERVICETAG" = "backup_node" ]; then
+    SOB_PREFIX=backup-node
+else
+    SOB_PREFIX=standby-leader
+fi
+
 for name in vault consul patroni metrics; do
     < "$TEMPLATEPATH/$name.tpl.in" \
       sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
       sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
-      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" \
+      sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
+      sed "s${sep}%%standby_or_backup_prefix%%${sep}$SOB_PREFIX${sep}g" \
       > "/mnt/templates/$name.tpl"
 done
 

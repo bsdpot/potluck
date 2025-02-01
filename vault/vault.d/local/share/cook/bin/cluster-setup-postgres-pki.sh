@@ -31,7 +31,8 @@ create_pki_role "postgrespki_int" "postgres-server" \
   master.postgresql.service.consul \
   replica.postgresql.service.consul \
   standby-leader.postgresql.service.consul \
-  backup_node.postgresql.service.consul
+  backup-node.postgresql.service.consul \
+  backup_node.postgresql.service.consul # for backwards compatibility
 
 vault policy write issue-postgres-server-cert - <<-EOF
 	path "postgrespki_int/issue/postgres-server" {

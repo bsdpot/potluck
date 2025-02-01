@@ -1,3 +1,11 @@
+2.8
+
+* Pin patroni version to prevent surprises (3.3.0 for now)
+* Fix missing quotes in patroni.yml.in which broke proper bootstrapping of new clusters
+* Rename backup_node to backup-node for consistency
+
+--
+
 2.7
 
 * Return to using postgresql13
