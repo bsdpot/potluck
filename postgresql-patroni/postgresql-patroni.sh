@@ -163,8 +163,8 @@ pkg install -y curl
 step "Install pip package psycopg2-binary"
 pip install psycopg2-binary --prefix="/usr/local/"
 
-step "Install pip package patroni"
-pip install patroni --prefix="/usr/local"
+step "Install pip package patroni 3.3.0"
+pip install patroni==3.3.0 --prefix="/usr/local"
 #
 ## WARNING: The scripts patroni, patroni_aws, patroni_raft_controller,
 ## patroni_wale_restore and patronictl are installed in

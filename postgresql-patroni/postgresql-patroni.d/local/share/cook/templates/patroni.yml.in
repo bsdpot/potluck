@@ -47,7 +47,7 @@ bootstrap:
       use_slots: true
       parameters:
         wal_level: replica
-        hot_standby: %%hot_standby%%
+        hot_standby: "%%hot_standby%%"
         log_min_duration_statement: 100
         log_parameter_max_length: 0
         wal_keep_segments: 8
