@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 SCRIPT=$(readlink -f "$0")
 TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
@@ -33,6 +33,7 @@ git clone https://github.com/borestad/blocklist-abuseipdb.git /root/blocklist-ip
 
 # check ruleset or set default
 if [ -n "$RULESET" ]; then
+	# shellcheck disable=SC2269
 	RULESET="$RULESET"
 else
 	RULESET="30"
@@ -74,7 +75,8 @@ fi
 chmod +x /usr/local/bin/updatelist.sh
 
 # add to cron every 8 hours
-echo "0 */8 * * *  root  /usr/local/bin/updatelist.sh" >> /etc/crontab
+echo "# Update IP blocklist every 8 hours" >> /etc/crontab
+echo "0	*/8	*	*	*	root	/usr/local/bin/updatelist.sh" >> /etc/crontab
 
 # set options
 sysrc rbldnsd_flags="-r /usr/local/etc/rbldnsd -b $IP bl.$DOMAIN:ip4tset:$DOMAIN"
