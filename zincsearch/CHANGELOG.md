@@ -1,3 +1,10 @@
+0.7
+
+* Version bump for new base image
+* Quote PATH statements
+
+---
+
 0.6
 
 * Version bump for new base image
