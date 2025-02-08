@@ -99,7 +99,7 @@ timeout --foreground 10 \
   service consul onestop || service consul onestop || true
 killall -9 consul || true
 
-export PATH=/usr/local/share/cook/bin:$PATH
+export PATH="/usr/local/share/cook/bin:$PATH"
 
 if [ -n "${REMOTELOG}" ]; then
     log "Configure and start syslog-ng"
@@ -134,11 +134,16 @@ if [ -n "$CONTROLUSER" ]; then
 fi
 
 if [ -n "$NOSSL" ]; then
-    log "Configure nginx-nossl"
-    configure-nginx-nossl.sh
+	log "Configure nginx-nossl"
+	configure-nginx-nossl.sh
 else
-    log "Configure nginx"
-    configure-nginx.sh
+	log "Configure nginx"
+	configure-nginx.sh
+
+	if [ -n "${REMOTELOG}" ]; then
+		log "Configure certificate validity scripts"
+		configure-scripts.sh
+	fi
 fi
 
 log "Start nginx"

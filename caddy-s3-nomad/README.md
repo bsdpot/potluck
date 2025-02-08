@@ -59,7 +59,9 @@ EMAIL is the email address to use for SSL certificate registration. You can set 
 
 SERVER is the S3 server. You can also set this with the `-h` parameter followed by the S3 host..
 
-SELFSIGNED enables obtaining the self-signed CA certicate into the local store. Enable with `-s` and any value.
+SELFSIGNED is optional and enables obtaining the self-signed CA certicate from minio into the local store. Enable with `-s` and any value.
+
+ALERTIP is an optional parameter for the IP address of an `alertmanager` instance, for sending notices of certificate expiry.
 
 # Nomad Job File Samples
 
@@ -98,9 +100,9 @@ job "example" {
       config {
         image = "https://potluck.honeyguide.net/caddy-s3-nomad"
         pot = "caddy-s3-nomad-amd64-14_2"
-        tag = "0.17.3"
+        tag = "0.18.1"
         command = "/usr/local/bin/cook"
-        args = ["-h","s3.my.host","-b","bucketname","-d","domainname","-e","email@add.com","-s","yes"]
+        args = ["-h","s3.my.host","-b","bucketname","-d","domainname","-e","email@add.com","-s","yes","-x","alertmanager-ip"]
 		mount = [
           "/path/to/dataset/caddyimage:/mnt"
         ]

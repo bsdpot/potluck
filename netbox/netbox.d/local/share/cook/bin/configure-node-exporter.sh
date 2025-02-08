@@ -8,7 +8,7 @@ fi
 set -e
 
 # shellcheck disable=SC2086
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # add node_exporter user
 if ! id -u "nodeexport" >/dev/null 2>&1; then

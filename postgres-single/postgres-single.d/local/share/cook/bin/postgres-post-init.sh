@@ -5,7 +5,7 @@ set -e
 set -o pipefail
 
 # we need a path set else sudo not found
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # make sure we're not in /root else this error occurs:
 #

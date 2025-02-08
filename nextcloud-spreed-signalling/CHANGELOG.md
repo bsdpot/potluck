@@ -1,3 +1,11 @@
+0.6
+
+* Version bump for new base image
+* Quote PATH statements
+* Add certificate expiry check with alerts to alertmanager
+
+---
+
 0.5
 
 * Version bump for new base image

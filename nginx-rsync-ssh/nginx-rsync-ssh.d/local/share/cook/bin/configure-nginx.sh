@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # if nginx.conf copied in
 if [ -f /root/nginx.conf ]; then

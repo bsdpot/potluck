@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # link in /usr/local/www/SITENAME to /var/db/SITENAME
 ln -s "/var/db/$SITENAME/public" "/usr/local/www/$SITENAME"

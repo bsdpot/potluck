@@ -152,8 +152,8 @@ pkg install -y redis
 step "Install package postgresql16-client"
 pkg install -y postgresql16-client
 
-step "Install package netbox-4.1.10"
-pkg install -y netbox-4.1.10
+step "Install package netbox-4.1.11"
+pkg install -y netbox-4.1.11
 
 step "Install package py311-netbox-secrets"
 pkg install -y py311-netbox-secrets

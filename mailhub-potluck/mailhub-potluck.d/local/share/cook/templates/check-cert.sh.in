@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# Add to /etc/crontab
+#
+# # Check certificate for %%domain%%
+# 0	12	*	*	*	root	/root/bin/check-cert.sh /path/to/certificate.crt > /dev/null 2>&1
+#
+
+# Check if a certificate path is provided
+if [ -z "$1" ]; then
+	echo "Usage: $0 /path/to/certificate.crt"
+	exit 1
+fi
+
+cert_file="$1"
+
+# Check if the certificate file exists
+if [ ! -f "$cert_file" ]; then
+	echo "Error: File '$cert_file' not found."
+	exit 1
+fi
+
+# Extract the expiration date from the certificate
+expiry_date=$(openssl x509 -noout -enddate -in "$cert_file" | awk -F'=' '{print $2}')
+
+# Convert the expiration date to seconds since epoch
+expiry_epoch=$(date -j -f "%b %e %T %Y %Z" "$expiry_date" "+%s")
+
+# Get the current date in seconds since epoch
+current_epoch=$(date -u "+%s")
+
+# Calculate the difference in seconds
+diff_seconds=$((expiry_epoch - current_epoch))
+
+# Convert 10 days to seconds (10 * 24 * 60 * 60)
+ten_days_seconds=$((10 * 24 * 60 * 60))
+
+# Check if the difference is within 10 days
+if [ "$diff_seconds" -le "$ten_days_seconds" ] && [ "$diff_seconds" -gt 0 ]; then
+	echo "The certificate will expire within 10 days."
+	if [ -x /root/bin/sendcertalert.sh ]; then
+		/root/bin/sendcertalert.sh
+	fi
+elif [ "$diff_seconds" -le 0 ]; then
+	echo "The certificate has already expired."
+	if [ -x /root/bin/sendcertexpired.sh ]; then
+		/root/bin/sendcertexpired.sh
+	fi
+else
+	echo "The certificate is valid for more than 10 days."
+fi

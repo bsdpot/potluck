@@ -89,7 +89,7 @@ timeout --foreground 10 \
   service consul onestop || service consul onestop || true
 killall -9 consul || true
 
-export PATH=/usr/local/share/cook/bin:$PATH
+export PATH="/usr/local/share/cook/bin:$PATH"
 
 if [ -n "${REMOTELOG}" ]; then
     log "Configure and start syslog-ng"

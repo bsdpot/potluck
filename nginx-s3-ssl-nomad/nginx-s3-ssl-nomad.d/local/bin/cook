@@ -98,7 +98,7 @@ done
 ## Provision image
 ########################################################################
 
-export PATH=/usr/local/share/cook/bin:$PATH
+export PATH="/usr/local/share/cook/bin:$PATH"
 
 log "stop nginx service, kill nginx if around"
 service nginx onestop || true

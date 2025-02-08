@@ -80,7 +80,7 @@ done
 ## Provision image
 ########################################################################
 
-export PATH=/usr/local/share/cook/bin:$PATH
+export PATH="/usr/local/share/cook/bin:$PATH"
 
 log "Configure git user and ssh"
 configure-ssh.sh

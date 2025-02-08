@@ -10,7 +10,7 @@ set -e
 set -o pipefail
 
 # shellcheck disable=SC2086
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # docker-compose version uses different approach which may be more useful
 # to avoid error condition in output. Not in use until scripted token 

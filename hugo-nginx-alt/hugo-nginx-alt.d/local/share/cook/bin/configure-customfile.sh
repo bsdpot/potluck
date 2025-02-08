@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # if the copied-in customfile exists, extract to sitename
 if [ -f /root/customfile.tgz ]; then

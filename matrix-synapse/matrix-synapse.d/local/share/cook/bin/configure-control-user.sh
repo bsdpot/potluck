@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # create control user
 pw user add -n control -c 'Control Account' -d /mnt/matrixdata/control -G wheel -m -s /bin/sh

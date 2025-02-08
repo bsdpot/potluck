@@ -12,7 +12,7 @@ URL="http://%%remotelogip%%:9093/api/v2/alerts"
       "severity": "critical"
     },
     "annotations": {
-      "summary": "Certificate for %%domain%% will expire in 10 days"
+      "summary": "Certificate for bl.%%domain%% will expire in 10 days. This host automatically renews certificates. No user action is required."
     },
     "generatorURL": "http://%%remotelogip%%:9090/graph"
   }
