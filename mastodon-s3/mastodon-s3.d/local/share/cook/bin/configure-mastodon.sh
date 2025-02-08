@@ -10,7 +10,7 @@ set -e
 set -o pipefail
 
 # shellcheck disable=SC2086
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # check that redis is active
 echo "Checking for an active redis server"

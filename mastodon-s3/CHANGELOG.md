@@ -1,3 +1,11 @@
+0.19
+
+* Version bump for new image with pkg 2
+* Add certificate expiry checks to alertmanager
+* Quote PATH statements
+
+---
+
 0.18
 
 * Version bump for new image
