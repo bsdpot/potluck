@@ -1,0 +1,125 @@
+#!/bin/sh
+RUNS_IN_NOMAD=false
+COOKLOG=/var/log/cook.log
+
+pot_seasoned_exit() {
+    [ ! -e /usr/local/etc/pot-is-seasoned ] && \
+      touch /usr/local/etc/pot-is-seasoned
+    # If this pot flavour is blocking (i.e. it should not return), there is
+    # no /tmp/environment.sh created by pot and we now after configuration
+    # block indefinitely
+    if [ "$RUNS_IN_NOMAD" = "true" ]; then
+        service cook onestop || true
+        service cook onedisable || true
+        /bin/sh /etc/rc
+        tail -f /dev/null
+    fi
+    exit 0
+}
+
+# No need to change this, just ensures configuration is done only once
+[ -e /usr/local/etc/pot-is-seasoned ] && pot_seasoned_exit
+
+########################################################################
+## Functions and settings
+########################################################################
+
+log() {
+    echo "$(date '+%Y-%m-%dT%H:%M:%S') $*" | tee -a $COOKLOG
+}
+
+convert_to_required_format() {
+    echo "$1" | sed 's/\([^,]*\)/"\1"/g'
+}
+
+set -e
+export HOME=/root
+
+if [ -e /tmp/environment.sh ]
+then
+    # shellcheck disable=SC1091
+    . /tmp/environment.sh
+
+    # XXX: Remove some things from here later
+    cp -a /tmp/environment.sh /root/.env.cook
+fi
+
+
+########################################################################
+## Check config
+########################################################################
+
+required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
+optional_args="SSHPORT REMOTELOG DISABLEUNBOUNDV6"
+
+for var in $required_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "$var is unset - see documentation to configure this flavour."
+    exit 1
+  fi
+done
+
+for var in $optional_args; do
+  if [ -z "$(eval echo "\${$var}")" ]; then
+    log "Optional $var is unset - see documentation to configure this flavour."
+  fi
+done
+
+########################################################################
+## Provision image
+########################################################################
+
+# Input is "10.0.0.1,10.2.0.1,10.45.2.4"
+# Expected output is "10.0.0.1","10.2.0.1","10.45.2.4"
+
+if [ -n "${CONSULSERVERS+x}" ]; then
+    FIXCONSULSERVERS=$(convert_to_required_format "$CONSULSERVERS")
+    export FIXCONSULSERVERS
+fi
+
+# stop services
+timeout --foreground 10 \
+  service consul onestop || service consul onestop || true
+killall -9 consul || true
+
+export PATH="/usr/local/share/cook/bin:$PATH"
+
+if [ -n "${REMOTELOG}" ]; then
+    log "Configure and start syslog-ng"
+    configure-syslog-ng.sh
+fi
+
+log "Setup node_exporter"
+configure-node-exporter.sh
+
+log "Configure consul"
+configure-consul.sh
+
+log "Start consul and wait for it to become stable"
+timeout --foreground 120 \
+  sh -c 'while ! service consul status; do
+    service consul start || true; sleep 5;
+  done'
+
+# Disabling, only practical in VNET jails
+# In future a parameter can be added to enable on VNET jails.
+#log "Set up local unbound using local consul once consul running"
+#configure-local-unbound.sh
+
+log "Start node_exporter"
+service node_exporter start
+
+log "Configure sshd"
+configure-sshd.sh
+
+log "Configure unison"
+configure-unison.sh
+
+log "Start sshd"
+timeout --foreground 120 \
+  sh -c 'while ! service sshd status; do
+    service sshd start || true; sleep 5;
+  done'
+
+log "Exit seasoned"
+pot_seasoned_exit
