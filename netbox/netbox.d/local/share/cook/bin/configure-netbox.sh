@@ -10,7 +10,7 @@ set -e
 set -o pipefail
 
 # shellcheck disable=SC2086
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # ensure necessary directories are present
 mkdir -p /mnt/netboxdata/media/devicetype-images

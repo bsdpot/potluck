@@ -8,7 +8,7 @@ set -e
 set -o pipefail
 
 # shellcheck disable=SC2086
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 echo 'server:
   do-not-query-localhost: no

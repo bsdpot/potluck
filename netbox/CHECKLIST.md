@@ -31,7 +31,7 @@ Changes in python version need updating of package name, or `/usr/local/bin/pyth
 Netbox is currently version 4.1.10.
 
 When netbox version changes in packages, then update `netbox.sh` to correct version after checking compatibility chart at each link
-* `pkg install -y netbox-4.1.10`
+* `pkg install -y netbox-4.1.11`
 * `netbox-inventory==2.2.1` see Compatibility at https://github.com/ArnesSI/netbox-inventory
 * `netbox-bgp==0.14.0` see Compatibility at https://github.com/netbox-community/netbox-bgp
 * `netbox-topology-views==4.1.0` see Versions at https://github.com/netbox-community/netbox-topology-views

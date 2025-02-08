@@ -122,7 +122,7 @@ timeout --foreground 10 \
 killall -9 consul || true
 
 # shellcheck disable=SC2086
-export PATH=/usr/local/share/cook/bin:$PATH
+export PATH="/usr/local/share/cook/bin:$PATH"
 
 if [ -n "${REMOTELOG}" ]; then
 	log "Configure and start syslog-ng"
@@ -155,6 +155,11 @@ if [ -n "${PVTCERT}" ]; then
 else
 	log "Configure acme.sh"
 	configure-acme.sh
+
+	if [ -n "${REMOTELOG}" ]; then
+		log "Configure certificate validity scripts"
+		configure-scripts.sh
+	fi
 fi
 
 log "Configure nginx"

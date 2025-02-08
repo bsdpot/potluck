@@ -10,7 +10,7 @@ set -e
 set -o pipefail
 
 # shellcheck disable=SC2086
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 cd /usr/local/share/netbox || exit 1
 # this upgrades the database schema
