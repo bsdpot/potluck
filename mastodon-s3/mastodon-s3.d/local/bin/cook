@@ -239,8 +239,10 @@ else
 	log "Configure acme.sh"
 	configure-acme.sh
 
-	log "Configure certificate validity scripts"
-	configure-scripts.sh
+	if [ -n "${REMOTELOG}" ]; then
+		log "Configure certificate validity scripts"
+		configure-scripts.sh
+	fi
 fi
 
 log "Configure nginx"
