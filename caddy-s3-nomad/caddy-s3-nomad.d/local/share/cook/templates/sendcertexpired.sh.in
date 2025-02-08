@@ -1,0 +1,20 @@
+#!/bin/sh
+
+URL="http://%%remotelogip%%:9093/api/v2/alerts"
+
+/usr/local/bin/curl -si -X POST -H "Content-Type: application/json" "$URL" -d '
+[
+  {
+    "labels": {
+      "alertname": "CertificateExpired",
+      "instance": "caddy-s3-nomad:12345",
+      "job": "node",
+      "severity": "critical"
+    },
+    "annotations": {
+      "summary": "Certificate for %%domain%% has expired.",
+    },
+    "generatorURL": "http://%%remotelogip%%:9090/graph"
+  }
+]
+'

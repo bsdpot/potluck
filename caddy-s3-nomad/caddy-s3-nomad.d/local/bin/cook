@@ -45,7 +45,7 @@ fi
 ## Convert parameters to variables if passed (overwrite environment)
 ########################################################################
 OPTIND=1
-while getopts b:d:e:h:s: option
+while getopts b:d:e:h:s:x: option
 do
     case "${option}"
     in
@@ -64,6 +64,9 @@ do
       s) SELFSIGNHOST=${OPTARG}
          export SELFSIGNHOST
          ;;
+      x) ALERTIP=${OPTARG}
+         export ALERTIP
+         ;;
     esac
 done
 shift "$((OPTIND-1))"
@@ -73,7 +76,7 @@ shift "$((OPTIND-1))"
 ########################################################################
 
 required_args="SERVER DOMAIN BUCKET EMAIL"
-optional_args="SELFSIGNHOST"
+optional_args="SELFSIGNHOST ALERTIP"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
@@ -92,11 +95,11 @@ done
 ## Provision image
 ########################################################################
 
-export PATH=/usr/local/share/cook/bin:$PATH
+export PATH="/usr/local/share/cook/bin:$PATH"
 
 if [ -n "$SELFSIGNHOST" ]; then
-    log "Configure self-signed certicate store"
-    configure-selfsigned.sh
+	log "Configure self-signed certicate store"
+	configure-selfsigned.sh
 fi
 
 log "Configure access credentials file"
@@ -107,6 +110,11 @@ configure-acme.sh
 
 log "Configure caddy with one S3 server"
 configure-caddy.sh
+
+if [ -n "$ALERTIP" ]; then
+	log "Configure certificate validity scripts"
+	configure-scripts.sh
+fi
 
 log "Start caddy"
 timeout --foreground 120 \
