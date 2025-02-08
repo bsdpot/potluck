@@ -148,6 +148,10 @@ configure-dovecot.sh
 log "Configure clamav"
 configure-clamav.sh
 
+# configure certificate expiry checks
+log "Configure certificate validity scripts"
+configure-scripts.sh
+
 ### start services
 
 # start freshclam and update
