@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 if [ -f /root/authorized_keys_in ]; then
     echo "Adding imported keys to /root/.ssh/authorized_keys"
