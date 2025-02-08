@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # If we do not find a Nextcloud installation, we install it. If we do find something though,
 # we do not install/overwrite anything as we assume that updates/modifications are happening
