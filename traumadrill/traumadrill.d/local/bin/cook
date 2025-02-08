@@ -85,7 +85,7 @@ killall -9 consul || true
 # setup directories for persistent storage (not in use currently)
 mkdir -p /mnt/stress
 
-export PATH=/usr/local/share/cook/bin:$PATH
+export PATH="/usr/local/share/cook/bin:$PATH"
 
 if [ -n "${REMOTELOG}" ]; then
     log "Configure and start syslog-ng"
