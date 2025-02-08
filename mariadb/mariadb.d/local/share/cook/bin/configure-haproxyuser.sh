@@ -9,7 +9,7 @@ set -e
 # shellcheck disable=SC3040
 set -o pipefail
 
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 #SCRIPT=$(readlink -f "$0")
 #TEMPLATEPATH=$(dirname "$SCRIPT")/../templates
