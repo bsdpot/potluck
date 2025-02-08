@@ -10,7 +10,7 @@ set -e
 set -o pipefail
 
 # shellcheck disable=SC2086
-export PATH=/usr/local/bin:$PATH
+export PATH="/usr/local/bin:$PATH"
 
 # configure self-signed certificates by adding minio certicate to local CA store
 echo "" |/usr/bin/openssl s_client -showcerts -noservername -connect "$SERVERONE:$SERVERONEPORT" |/usr/bin/openssl x509 -outform PEM > /tmp/cert.pem
