@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# This will run "minio mirror" on the configured bucket/site_uploads dir and sync all changes to local file store
+
+SOURCE="myminio/%%bucket%%/site_uploads"
+DEST="/mnt/home/%%sshuser%%/files/%%bucket%%/site_uploads"
+MYSESSION="mirror_%%bucket%%_site_uploads.0"
+LOGFILE="/var/log/mirror_%%bucket%%_site_uploads.log"
+
+checkifsession() {
+  tmux has-session -t $MYSESSION 2>/dev/null
+}
+
+killtmux() {
+  tmux kill-session -t $MYSESSION
+}
+
+MYCOMMAND="/usr/local/bin/minio-client mirror \
+  --insecure \
+  --overwrite \
+  --remove \
+  --preserve \
+  --config-dir /root/.minio-client \
+  --json \
+  --watch \
+  $1 $2 >> $LOGFILE 2>&1"
+
+tmuxsession() {
+  tmux new-session -d -s $MYSESSION "$MYCOMMAND $SOURCE $DEST"
+}
+
+if checkifsession; then
+  killtmux
+fi
+
+echo "--- new run $(date) ---" >> "$LOGFILE"
+tmuxsession

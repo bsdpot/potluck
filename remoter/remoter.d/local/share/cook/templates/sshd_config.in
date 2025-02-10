@@ -1,0 +1,20 @@
+Port %%sshport%%
+PubkeyAuthentication yes
+AuthorizedKeysFile       .ssh/authorized_keys
+PermitRootLogin prohibit-password
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+StrictModes no
+UseDNS no
+Banner none
+#LogLevel DEBUG
+AllowAgentForwarding yes
+PermitTTY yes
+#AllowUsers %%sshuser%%
+#Match User %%sshuser%%
+#  ChrootDirectory /dir-name
+#  X11Forwarding no
+#  AllowTcpForwarding no
+#  ForceCommand internal-sftp
+Subsystem       sftp    /usr/libexec/sftp-server
+

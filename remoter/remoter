@@ -1,0 +1,1 @@
+copy-in -s /usr/local/etc/pot/flavours/remoter.d/local -d /root/.pot_local
