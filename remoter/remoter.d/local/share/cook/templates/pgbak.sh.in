@@ -1,0 +1,34 @@
+#!/usr/local/bin/bash
+#
+# Script to backup postgresql databases
+# We're backing up everything in one file, and removing older than 7 days
+
+# +7 days is anything older than 7 days
+storelength="+7"
+
+# today
+timestamp=$(date +%Y-%m-%d)
+
+# set database parameters, credentials in /mnt/home/%%sshuser%%/.pgpass
+db="%%database%%"
+dbhost="%%dbhost%%"
+dbport="%%setdbport%%"
+dbuser="%%dbuser%%"
+
+# backup to here
+path="/mnt/home/%%sshuser%%/files/pgbak"
+
+# create directory if not exist
+mkdir -p "$path"
+
+# clean out old backups
+/usr/bin/find "$path" -name "*.sql.gz" -type f -mtime "$storelength" -print -delete
+
+# check if we can connect to postgresql server, exit if not
+if ! /usr/local/bin/psql -h "$dbhost" -p "$dbport" -U "$dbuser" -d "$db" -c '\q'; then
+	echo "Cannot connect to postgresql server at $dbhost with user $dbuser and database $db"
+	exit 1
+fi
+
+# dump database to file
+/usr/local/bin/pg_dump -h "$dbhost" -p "$dbport" -U "$dbuser" -d "$db" | /usr/bin/gzip > "$path/$db.$timestamp.sql.gz"
