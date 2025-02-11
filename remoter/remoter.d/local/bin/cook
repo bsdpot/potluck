@@ -138,7 +138,7 @@ service node_exporter start
 log "Start sshd and wait for it to become stable"
 timeout --foreground 120 \
   sh -c 'while ! service sshd status; do
-    service ssh start || true; sleep 5;
+    service sshd start || true; sleep 5;
   done'
 
 log "Exit seasoned"
