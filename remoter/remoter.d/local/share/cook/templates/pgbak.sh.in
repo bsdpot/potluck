@@ -1,10 +1,10 @@
 #!/usr/local/bin/bash
 #
 # Script to backup postgresql databases
-# We're backing up everything in one file, and removing older than 7 days
+# We're backing up everything in one file, and removing older than 3 days
 
-# +7 days is anything older than 7 days
-storelength="+7"
+# +3 days is anything older than 3 days
+storelength="+3"
 
 # today
 timestamp=$(date +%Y-%m-%d)
