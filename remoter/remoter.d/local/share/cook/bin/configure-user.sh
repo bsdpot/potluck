@@ -52,9 +52,15 @@ chown -R "$SSHUSER:$SSHUSER" "/mnt/home/$SSHUSER/files"
 mkdir -p "/mnt/home/$SSHUSER/bin"
 chown -R "$SSHUSER:$SSHUSER" "/mnt/home/$SSHUSER/bin"
 
+# create a logs directory
+mkdir -p "/mnt/home/$SSHUSER/logs"
+chown -R "$SSHUSER:$SSHUSER" "/mnt/home/$SSHUSER/logs"
+
 # configure postgresql credentials
 echo "$DBHOST:$SETDBPORT:$DATABASE:$DBUSER:$DBPASS" > "/mnt/home/$SSHUSER/.pgpass"
 chown "$SSHUSER:$SSHUSER" "/mnt/home/$SSHUSER/.pgpass"
+# permissions should be u=rw (0600) or less
+chmod 600 "/mnt/home/$SSHUSER/.pgpass"
 
 # copy in postgresql backup script
 < "$TEMPLATEPATH/pgbak.sh.in" \

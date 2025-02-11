@@ -5,7 +5,7 @@
 SOURCE="myminio/%%bucket%%/accounts"
 DEST="/mnt/home/%%sshuser%%/files/%%bucket%%/accounts"
 MYSESSION="mirror_%%bucket%%_accounts.0"
-LOGFILE="/var/log/mirror_%%bucket%%_accounts.log"
+LOGFILE="/mnt/home/%%sshuser%%/logs/mirror_%%bucket%%_accounts.log"
 
 checkifsession() {
   tmux has-session -t $MYSESSION 2>/dev/null
