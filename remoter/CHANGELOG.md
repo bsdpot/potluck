@@ -2,3 +2,4 @@
 
 * Initiate remoter flavour, custom image for internal use
 * Fix typos
+* Fix user crontab additions

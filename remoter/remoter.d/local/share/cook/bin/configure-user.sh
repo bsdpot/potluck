@@ -69,9 +69,6 @@ chown "$SSHUSER:$SSHUSER" "/mnt/home/$SSHUSER/.pgpass"
 chown -R "$SSHUSER:$SSHUSER" "/mnt/home/$SSHUSER/bin"
 chmod +x "/mnt/home/$SSHUSER/bin/pgbak.sh"
 
-# set crontab entry for postgresql backup script
-echo "0	1	*	*	*	/mnt/home/$SSHUSER/bin/pgbak.sh" | crontab -u "$SSHUSER" -
-
 # copy in minio sync scripts
 
 # copy in mirroraccounts.sh
@@ -104,7 +101,10 @@ chmod +x "/mnt/home/$SSHUSER/bin/mirrorattachments.sh"
 chown -R "$SSHUSER:$SSHUSER" "/mnt/home/$SSHUSER/bin"
 chmod +x "/mnt/home/$SSHUSER/bin/mirroruploads.sh"
 
-# set crontab entries for mirror scripts
-echo "0	2	*	*	*	/mnt/home/$SSHUSER/bin/mirroraccounts.sh" | crontab -u "$SSHUSER" -
-echo "0	3	*	*	*	/mnt/home/$SSHUSER/bin/mirrorattachments.sh" | crontab -u "$SSHUSER" -
-echo "0	4	*	*	*	/mnt/home/$SSHUSER/bin/mirroruploads.sh" | crontab -u "$SSHUSER" -
+# set crontab entries for scripts in one go, else overwrites previous entries
+cat <<EOF | crontab -u "$SSHUSER" -
+0 1 * * * /mnt/home/$SSHUSER/bin/pgbak.sh
+0 2 * * * /mnt/home/$SSHUSER/bin/mirroraccounts.sh
+0 3 * * * /mnt/home/$SSHUSER/bin/mirrorattachments.sh
+0 4 * * * /mnt/home/$SSHUSER/bin/mirroruploads.sh
+EOF
