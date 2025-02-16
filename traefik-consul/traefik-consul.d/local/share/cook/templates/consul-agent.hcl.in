@@ -1,3 +1,5 @@
+bind_addr = "%%ip%%"
+client_addr = "127.0.0.1"
 datacenter = "%%datacenter%%"
 node_name = "%%nodename%%"
 data_dir =  "/var/db/consul"
@@ -24,17 +26,17 @@ encrypt = "%%gossipkey%%"
 retry_join = [ %%consulservers%% ]
 services = {
   name = "node-exporter"
-  tags = ["_app=beast", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=traefik", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
 }
 services = {
   name = "traefik-dashboard"
-  tags = ["_app=beast", "_service=traefik-dashboard", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=traefik", "_service=traefik-dashboard", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9002
 }
 services = {
   name = "traefik-metrics"
-  tags = ["_app=beast", "_service=traefik-metric", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=traefik", "_service=traefik-metric", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 8082
 }
 telemetry = {
