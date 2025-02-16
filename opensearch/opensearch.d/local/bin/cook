@@ -79,8 +79,8 @@ fi
 
 # shellcheck disable=SC2157
 if [ -z "{$PORT+x}" ]; then
-    SETPORT=9200
-    export SETPORT
+	SETPORT=9200
+	export SETPORT
 else
 	SETPORT="$PORT"
 	export SETPORT
