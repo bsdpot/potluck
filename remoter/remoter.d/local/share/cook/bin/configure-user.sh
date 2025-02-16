@@ -24,11 +24,20 @@ sep=$'\001'
 # configure ssh user ssh keys
 mkdir -p "/mnt/home/$SSHUSER/.ssh"
 
-# set permissions
-cat "/root/authorized_keys_in" > "/mnt/home/$SSHUSER/.ssh/authorized_keys"
-chown -R "$SSHUSER:$SSHUSER" "/mnt/home/$SSHUSER/.ssh"
-chmod 600 "/mnt/home/$SSHUSER/.ssh/authorized_keys"
-chmod 700 "/mnt/home/$SSHUSER/.ssh"
+# set authorized_keys if not exist
+if [ -f "/root/authorized_keys_in" ]; then
+	if [ -f "/mnt/home/$SSHUSER/.ssh/authorized_keys" ]; then
+		echo "authorized_keys already exists at the destination. Skipping copy."
+	else
+		cat "/root/authorized_keys_in" > "/mnt/home/$SSHUSER/.ssh/authorized_keys"
+		# set permissions
+		chown -R "$SSHUSER:$SSHUSER" "/mnt/home/$SSHUSER/.ssh"
+		chmod 600 "/mnt/home/$SSHUSER/.ssh/authorized_keys"
+		chmod 700 "/mnt/home/$SSHUSER/.ssh"
+	fi
+else
+	exit_error "No /root/authorized_keys_in file found"
+fi
 
 # create minio client directory
 mkdir -p "/mnt/home/$SSHUSER/.minio-client"
