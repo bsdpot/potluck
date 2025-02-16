@@ -57,9 +57,9 @@ chown -R consul:wheel /usr/local/etc/consul.d/
 # enable consul
 service consul enable || true
 
-# set load parameter for consul config
-#sysrc consul_args="-config-file=/usr/local/etc/consul.d/agent.hcl"
-sysrc consul_args="-config-file=/usr/local/etc/consul.d/agent.json"
+# set load parameter for consul config, back to HCL format
+sysrc consul_args="-config-file=/usr/local/etc/consul.d/agent.hcl"
+#sysrc consul_args="-config-file=/usr/local/etc/consul.d/agent.json"
 sysrc consul_syslog_output_priority="warn"
 #sysrc consul_datadir="/var/db/consul"
 #sysrc consul_group="wheel"

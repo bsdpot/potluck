@@ -4,6 +4,7 @@
 * Quote PATH statements
 * Fix consul labels and set IP parameters
 * Switch back to HCL config for consul and test
+* Fix HCL config consul sysrc parameter
 
 ---
 
