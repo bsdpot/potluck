@@ -30,16 +30,20 @@ fi
 mkdir -p /mnt/home/unison/.ssh
 
 # copy copied-in /root/importauthkey to enable specific pubkey access for unison user
+# do not replace any existing file at /mnt/home/unison/.ssh/authorized_keys if exists
 if [ -f /root/importauthkey ]; then
-	cp -f /root/importauthkey /mnt/home/unison/.ssh/authorized_keys
+	if [ -f /mnt/home/unison/.ssh/authorized_keys ]; then
+		echo "authorized_keys already exists at the destination. Skipping copy."
+	else
+		cp -f /root/importauthkey /mnt/home/unison/.ssh/authorized_keys
+		# set permissions for .ssh directory and authorized_keys file
+		chmod 700 /mnt/home/unison/.ssh
+		chmod 644 /mnt/home/unison/.ssh/authorized_keys
+		chown -R unison:unison /mnt/home/unison/.ssh
+	fi
 else
 	exit_error "No /root/importauthkey file found"
 fi
-
-# set permissions for .ssh directory and authorized_keys file
-chmod 700 /mnt/home/unison/.ssh
-chmod 644 /mnt/home/unison/.ssh/authorized_keys
-chown -R unison:unison /mnt/home/unison/.ssh
 
 # create a unisondata directory and set permissions
 mkdir -p /mnt/home/unison/unisondata
