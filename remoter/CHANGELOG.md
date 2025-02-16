@@ -6,3 +6,4 @@
 * Adjust .pgpass permissions
 * Store only 3 days of postgresql backups
 * Create logs directory and update mirror scripts to log here
+* Fix consul labels and set IP parameters, set 127.0.0.1 only for consul client_addr
