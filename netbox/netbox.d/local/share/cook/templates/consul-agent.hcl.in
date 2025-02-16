@@ -1,3 +1,5 @@
+bind_addr = "%%ip%%"
+client_addr = "127.0.0.1"
 datacenter = "%%datacenter%%"
 node_name = "%%nodename%%"
 data_dir =  "/var/db/consul"
@@ -31,6 +33,11 @@ services = {
   name = "www"
   tags = ["_app=netbox", "_service=www", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 80
+}
+services = {
+  name = "www-ssl"
+  tags = ["_app=netbox", "_service=www-ssl", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 443
 }
 telemetry = {
   prometheus_retention_time = "24h"

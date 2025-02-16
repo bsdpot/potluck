@@ -3,6 +3,7 @@
 * Version bump for new image with pkg 2
 * Add certificate expiry checks to alertmanager
 * Quote PATH statements
+* Fix consul labels and set IP parameters
 
 ---
 

@@ -1,6 +1,7 @@
 2.24
 
 * Version bump for new base image
+* Fix consul labels and set IP parameters
 
 ---
 

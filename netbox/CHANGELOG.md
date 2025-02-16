@@ -4,6 +4,7 @@
 * Quote PATH statements
 * Add certificate expiry check with alerts to alertmanager
 * Netbox v4.1.11
+* Fix consul labels and set IP parameters
 
 ---
 

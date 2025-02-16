@@ -1,3 +1,5 @@
+bind_addr = "%%ip%%"
+client_addr = "127.0.0.1"
 datacenter = "%%datacenter%%"
 node_name = "%%nodename%%"
 data_dir =  "/var/db/consul"
@@ -22,15 +24,10 @@ log_file = "/var/log/consul/consul.log"
 log_level = "INFO"
 encrypt = "%%gossipkey%%"
 retry_join = [ %%consulservers%% ]
-services = {
+service = {
   name = "node-exporter"
-  tags = ["_app=redis", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  tags = ["_app=adminer", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
-}
-services = {
-  name = "redis-exporter"
-  tags = ["_app=redis", "_service=redis-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
-  port = 9121
 }
 telemetry = {
   prometheus_retention_time = "24h"
