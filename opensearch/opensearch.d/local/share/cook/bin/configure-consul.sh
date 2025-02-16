@@ -31,11 +31,14 @@ sep=$'\001'
   sed "s${sep}%%datacenter%%${sep}$DATACENTER${sep}g" | \
   sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
+  sed "s${sep}%%port%%${sep}$SETPORT${sep}g" | \
   sed "s${sep}%%consulservers%%${sep}$FIXCONSULSERVERS${sep}g" \
   > /usr/local/etc/consul.d/agent.hcl
 
-chmod 600 \
-  /usr/local/etc/consul.d/agent.hcl
+# set secure permissions
+chmod 600 /usr/local/etc/consul.d/agent.hcl
+
+# set gossip key
 echo "s${sep}%%gossipkey%%${sep}$GOSSIPKEY${sep}" | sed -i '' -f - \
   /usr/local/etc/consul.d/agent.hcl
 

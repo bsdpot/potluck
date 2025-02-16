@@ -2,6 +2,7 @@
 
 * Version bump for new base image
 * Quote PATH statements
+* Fix consul service labels, set IP specific options
 
 ---
 
