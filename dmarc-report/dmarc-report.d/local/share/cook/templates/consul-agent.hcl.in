@@ -1,3 +1,5 @@
+bind_addr = "%%ip%%"
+client_addr = "127.0.0.1"
 datacenter = "%%datacenter%%"
 node_name = "%%nodename%%"
 data_dir =  "/var/db/consul"
@@ -22,15 +24,10 @@ log_file = "/var/log/consul/consul.log"
 log_level = "INFO"
 encrypt = "%%gossipkey%%"
 start_join = [ %%consulservers%% ]
-services = {
+service = {
   name = "node-exporter"
   tags = ["_app=dmarcreport", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
   port = 9100
-}
-services = {
-  name = "opensearch"
-  tags = ["_app=dmarcreport", "_service=opensearch", "_hostname=%%nodename%%.%%datacenter%%.consul"]
-  port = 9200
 }
 telemetry = {
   prometheus_retention_time = "24h"
