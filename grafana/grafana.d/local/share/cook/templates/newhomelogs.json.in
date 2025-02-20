@@ -520,7 +520,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "Loki - Custom Syslog AIO (All In One)",
-  "uid": "cebhmy01wfcaoe",
-  "version": 2,
+  "uid": "lux4rd0labs_loki_syslog_aio_custom",
+  "version": 4,
   "weekStart": ""
 }
