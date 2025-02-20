@@ -221,6 +221,25 @@
   "templating": {
     "list": [
       {
+        "current": {
+          "selected": false,
+          "text": "default",
+          "value": "default"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "datasource",
+        "multi": false,
+        "name": "DS_LOKI",
+        "options": [],
+        "query": "loki",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
         "current": {},
         "datasource": {
           "type": "loki",
@@ -285,7 +304,7 @@
   },
   "timezone": "",
   "title": "Search Logs",
-  "uid": "bebhn9098mo74d",
-  "version": 3,
+  "uid": "liz0yRCZz",
+  "version": 4,
   "weekStart": ""
 }
