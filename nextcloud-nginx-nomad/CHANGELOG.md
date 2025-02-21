@@ -1,3 +1,9 @@
+0.117
+
+* Version bump for new image
+
+---
+
 0.116
 
 * Version bump for new image with pkg 2
