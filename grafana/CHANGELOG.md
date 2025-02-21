@@ -2,6 +2,8 @@
 
 * Version bump for new base image 14.2
 * Replace deprecated AngularJS panels with supported ones in dashboards
+* Revert dashboard UIDs
+* Add missing datasource var to dashboards
 
 ---
 
