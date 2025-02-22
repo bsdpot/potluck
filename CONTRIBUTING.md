@@ -94,3 +94,12 @@ Many flavours have a `CHECKLIST.md` file with specific things to check when upda
 
 An upgrade of `php` or `python` can cause problems, and these should be identified in the check list file.
 
+## Commit messages
+
+Naming convention for commits is suggested as follows:
+```
+<lowercase-potluck-image-name>: <Text that starts with an uppercase letter>
+```
+
+When doing a batch of updates collectively, use a label like `hashicluster` or `honeyguide`.
+
