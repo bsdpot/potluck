@@ -1,3 +1,9 @@
+2.9
+
+* Version bump for new base image
+
+---
+
 2.8
 
 * Pin patroni version to prevent surprises (3.3.0 for now)
