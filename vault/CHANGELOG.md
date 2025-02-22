@@ -1,3 +1,9 @@
+2.8
+
+* Version bump for new base image
+
+---
+
 2.7
 
 * Modify policy for working with patroni
