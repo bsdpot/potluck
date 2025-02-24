@@ -44,6 +44,7 @@ create_id_group "consul-servers" \
   "issue-consul-server-cert" \
   "issue-metrics-client-cert" \
   "issue-vault-client-cert" \
+  "issue-nomad-client-cert" \
   >/dev/null
 
 
