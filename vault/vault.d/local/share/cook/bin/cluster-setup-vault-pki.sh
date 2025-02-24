@@ -82,7 +82,10 @@ create_id_entity_alias "$ENTITY_NAME" "$entity_id" "token" \
   'desc="'"$ENTITY_NAME"' alias"' >/dev/null
 
 # Create/update group with entity being the sole member (others will follow)
-create_id_group "vault-servers" "issue-vault-server-cert" >/dev/null
+create_id_group "vault-servers" \
+    "issue-vault-server-cert" \
+    "issue-nomad-client-cert" \
+    >/dev/null
 add_id_group_member "vault-servers" "$entity_id"
 
 # Create token role, which will be applied when issuing
