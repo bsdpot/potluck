@@ -1,0 +1,16 @@
+{{- $cert:="" }}{{ $key:="" }}
+{{- with secret "nomadpki_int/issue/nomad-client"
+"common_name=%%nodename%%.global.nomad"
+"alt_names=localhost" "ip_sans=127.0.0.1"}}
+{{- $cert = (print .Data.certificate "\n" .Data.issuing_ca) }}
+{{- $key = .Data.private_key }}
+{{- $cert |
+writeToFile "/mnt/nomadcerts/client.crt" "root" "wheel" "0600" "newline"}}
+{{- $key |
+writeToFile "/mnt/nomadcerts/client.key" "root" "wheel" "0600" "newline"}}
+{{- end }}
+{{- with secret "nomadpki/cert/ca" }}
+{{- .Data.certificate |
+writeToFile "/mnt/nomadcerts/ca_root.crt" "root" "wheel" "0644" "newline"}}
+{{- end }}
+{{- (print $cert $key) | sha256Hex }}
