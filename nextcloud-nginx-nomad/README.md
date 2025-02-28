@@ -56,7 +56,7 @@ $AUTOCONFIG = array(
   "dbtableprefix" => 'oc_',
   "adminlogin"    => 'admin name',
   "adminpass"     => 'admin password',
-  "directory"     => '/mnt/filestore',
+  "directory"     => '/mnt/filestore'
 );
 ```
 
@@ -105,7 +105,7 @@ $CONFIG = array (
   'dbtableprefix' => 'oc_',
   'dbuser' => '<db-user>',
   'dbpassword' => '<db-pass>',
-  'mysql.utf8mb4' => true,
+  'mysql.utf8mb4' => true
 );
 ```
 
@@ -125,7 +125,7 @@ $CONFIG = array (
   'dbhost' => '<ip>:<port>',
   'dbtableprefix' => 'oc_',
   'dbuser' => '<db-user>',
-  'dbpassword' => '<db-pass>',
+  'dbpassword' => '<db-pass>'
 );
 ```
 
@@ -151,12 +151,12 @@ $CONFIG = array (
   'trusted_domains' =>
     array (
       0 => '127.0.0.1',
-      1 => '10.0.0.0/8',
+      1 => '10.0.0.0/8'
     ),
   'forwarded_for_headers' =>
     array (
       0 => 'HTTP_X_FORWARDED_FOR',
-      1 => 'HTTP_FORWARDED_FOR',
+      1 => 'HTTP_FORWARDED_FOR'
     ),
 );
 ```
@@ -174,13 +174,13 @@ $CONFIG = array (
     array (
       'path' => '/usr/local/www/nextcloud/apps',
       'url' => '/apps',
-      'writable' => true,
+      'writable' => true
     ),
     1 =>
     array (
       'path' => '/usr/local/www/nextcloud/apps-pkg',
       'url' => '/apps-pkg',
-      'writable' => false,
+      'writable' => false
     ),
   ),
   'logfile' => '/mnt/filestore/nextcloud.log',
@@ -188,14 +188,14 @@ $CONFIG = array (
   'trusted_domains' =>
   array (
     0 => '10.0.0.2',
-    1 => 'my.host.name',
+    1 => 'my.host.name'
   ),
   'datadirectory' => '/mnt/filestore',
   'overwrite.cli.url' => 'https://my.host.name',
   'overwritehost' => 'my.host.name',
   'overwriteprotocol' => 'https',
   'theme' => '',
-  'loglevel' => 0,
+  'loglevel' => 0
 );
 ```
 
