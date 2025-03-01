@@ -11,9 +11,6 @@ set -o pipefail
 
 export PATH="/usr/local/bin:$PATH"
 
-DOMAIN="$DOMAIN"
-IP="$IP"
-
 # create directory for local certificates
 mkdir -p /usr/local/etc/ssl/
 

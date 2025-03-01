@@ -37,8 +37,8 @@ tokentype = static
 type = janus
 
 # The URL to the websocket endpoint of the MCU server.
-url = ws://127.0.0.1:8188/
-#url = ws://%%ip%%:8188/
+#url = ws://127.0.0.1:8188/
+url = ws://%%ip%%:8188/
 
 # The maximum bitrate per publishing stream (in bits per second).
 # Defaults to 1 mbit/sec.

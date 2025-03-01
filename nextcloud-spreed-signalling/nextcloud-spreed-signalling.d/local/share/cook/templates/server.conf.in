@@ -1,8 +1,8 @@
 [http]
 # IP and port to listen on for HTTP requests.
 # Comment line to disable the listener.
-listen = 127.0.0.1:8080
-#listen = %%ip%%:8080
+#listen = 127.0.0.1:8080
+listen = %%ip%%:8080
 
 # HTTP socket read timeout in seconds.
 readtimeout = 15
@@ -140,7 +140,7 @@ secret = %%sharedsecret%%
 # multiple backends. For local development, this can be set to "nats://loopback"
 # to process NATS messages internally instead of sending them through an
 # external NATS backend.
-url = nats://127.0.0.1:4222
+url = nats://%%ip%%:4222
 
 [mcu]
 # The type of the MCU to use. Currently only "janus" and "proxy" are supported.
@@ -150,7 +150,7 @@ type = janus
 # For type "janus": the URL to the websocket endpoint of the MCU server.
 # For type "proxy": a space-separated list of proxy URLs to connect to.
 #url =
-url = ws://127.0.0.1:8188/
+url = ws://%%ip%%:8188/
 
 # The maximum bitrate per publishing stream (in bits per second).
 # Defaults to 1 mbit/sec.
