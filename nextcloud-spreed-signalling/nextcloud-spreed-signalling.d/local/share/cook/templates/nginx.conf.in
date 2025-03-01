@@ -41,10 +41,6 @@ http {
 		server_name %%domain%%;
 		ssl_certificate /usr/local/etc/ssl/fullchain.cer;
 		ssl_certificate_key /usr/local/etc/ssl/%%domain%%.key;
-		# https://github.com/matrix-org/synapse/blob/develop/docs/reverse_proxy.md
-		# note: do not add a path (even a single /) after the port in `proxy_pass`,
-		# otherwise nginx will canonicalise the URI and cause signature verification
-		# errors.
 
 		root /usr/local/www/spreed;
 		index index.html;
@@ -53,16 +49,18 @@ http {
 			try_files $uri $uri/ =404;
 		}
 
+		# preserve trailing slash on proxy_pass line
 		location /standalone-signaling/ {
-			proxy_pass http://signaling;
+			proxy_pass http://signaling/;
 			proxy_http_version 1.1;
 			proxy_set_header Host $host;
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 		}
 
+		# preserve trailing slash on proxy_pass line
 		location /standalone-signaling/spreed {
-			proxy_pass http://signaling/spreed;
+			proxy_pass http://signaling/spreed/;
 			proxy_http_version 1.1;
 			proxy_set_header Upgrade $http_upgrade;
 			proxy_set_header Connection "Upgrade";

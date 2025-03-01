@@ -3,6 +3,11 @@
 * Version bump for new base image
 * Adjust various services to run on pot IP instead of 127.0.0.1/localhost
 * Update README with steps to configure Nextcloud Talk app
+* Adjust generation of hashkey and blockkey to hex format
+* Add trailing slashes to nginx proxy statements
+* Note that this won't work with current nextcloud because package in ports is too old
+* "Error: Running version: 1.1.3; Server needs to be updated to be compatible with this version of Talk"
+* https://repology.org/project/nextcloud-spreed-signaling/versions
 
 ---
 
