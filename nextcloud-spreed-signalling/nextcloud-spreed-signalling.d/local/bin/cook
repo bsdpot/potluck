@@ -75,14 +75,16 @@ if [ -n "${CONSULSERVERS+x}" ]; then
 fi
 
 # create hashkey variable
+# The sessions hash key should be 32 or 64 bytes
 if [ -z "${HASHKEY+x}" ]; then
-	HASHKEY=$(/usr/bin/openssl rand -base64 32)
+	HASHKEY=$(/usr/bin/openssl rand -hex 32)
 fi
 export HASHKEY
 
 # create blockkey variable
+# the sessions block key must be 16, 24 or 32 bytes but only 16 below works
 if [ -z "${BLOCKKEY+x}" ]; then
-	BLOCKKEY=$(/usr/bin/openssl rand -base64 32)
+	BLOCKKEY=$(/usr/bin/openssl rand -hex 16)
 fi
 export BLOCKKEY
 

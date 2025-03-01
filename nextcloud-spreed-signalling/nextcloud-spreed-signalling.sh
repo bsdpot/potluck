@@ -128,6 +128,7 @@ pkg install -y node_exporter
 step "Install package nginx"
 pkg install -y nginx
 
+# This is version 1.1.3 which is not compatible with the newer Nextcloud version on ports
 step "Install package nextcloud-spreed-signaling"
 pkg install -y nextcloud-spreed-signaling
 
