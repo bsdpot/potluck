@@ -76,19 +76,15 @@ fi
 
 # create hashkey variable
 if [ -z "${HASHKEY+x}" ]; then
-	HASHKEY=$(/usr/bin/openssl rand -base64 16)
-else
-	HASHKEY="$HASHKEY"
+	HASHKEY=$(/usr/bin/openssl rand -base64 32)
 fi
 export HASHKEY
 
+# create blockkey variable
 if [ -z "${BLOCKKEY+x}" ]; then
-	BLOCKKEY=$(/usr/bin/openssl rand -base64 16)
-else
-	BLOCKKEY="$BLOCKKEY"
+	BLOCKKEY=$(/usr/bin/openssl rand -base64 32)
 fi
 export BLOCKKEY
-
 
 ########################################################################
 ## Provision image

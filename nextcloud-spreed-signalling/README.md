@@ -73,4 +73,16 @@ REMOTELOG is an optional parameter for a remote syslog service, such as via the 
 
 ## Usage
 
-tba
+### Configure Nextcloud Talk
+
+From the git repo for the `nextcloud-spreed-signaling` package, https://github.com/strukturag/nextcloud-spreed-signaling
+
+```
+Setup of Nextcloud Talk
+
+Login to your Nextcloud as admin and open the additional settings page. Scroll down to the "Talk" section and enter the base URL of your standalone signaling server in the field "External signaling server". Please note that you have to use https if your Nextcloud is also running on https. Usually you should enter https://myhostname/standalone-signaling as URL.
+
+The value "Shared secret for external signaling server" must be the same as the property secret in section backend of your server.conf.
+
+If you are using a self-signed certificate for development, you need to uncheck the box Validate SSL certificate so backend requests from Nextcloud to the signaling server can be performed.
+```

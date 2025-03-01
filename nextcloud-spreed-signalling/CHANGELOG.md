@@ -1,6 +1,8 @@
 0.7
 
 * Version bump for new base image
+* Adjust various services to run on pot IP instead of 127.0.0.1/localhost
+* Update README with steps to configure Nextcloud Talk app
 
 ---
 

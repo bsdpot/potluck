@@ -19,7 +19,7 @@ http {
 	#access_log  logs/access.log  main;
 
 	upstream signaling {
-		server 127.0.0.1:8080;
+		server %%ip%%:8080;
 	}
 
 	sendfile        on;

@@ -20,6 +20,7 @@ sep=$'\001'
 
 # copy in custom nats.conf file with 127.0.0.1 instead of localhost
 # IP search/replace does nothing here.
+# Updated: set to use pot IP
 < "$TEMPLATEPATH/nats.conf.in" \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" \
   > /usr/local/etc/nats.conf
