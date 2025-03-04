@@ -185,6 +185,15 @@ timeout --foreground 120 \
     service nginx start nodemetricsproxy || true; sleep 3;
   done'
 
+log "Configure nomadproxy"
+configure-nomadproxy.sh
+
+log "Start nomadproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status nomadproxy; do
+    service nginx start nomadproxy || true; sleep 3;
+  done'
+
 log "Configure consul"
 configure-consul.sh
 

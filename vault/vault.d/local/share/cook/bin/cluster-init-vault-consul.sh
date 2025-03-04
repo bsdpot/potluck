@@ -92,7 +92,7 @@ chmod 600 \
 echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
   /usr/local/etc/consul-template-consul.d/consul-template-consul.hcl
 
-for name in consul metrics; do
+for name in consul metrics nomad; do
     < "$TEMPLATEPATH/cluster-$name.tpl.in" \
       sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
       sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
@@ -114,9 +114,16 @@ timeout --foreground 60 \
 echo "s${sep}%%consultoken%%${sep}$VAULT_SERVICE_TOKEN${sep}g" |
   sed -i '' -f - /usr/local/etc/vault.hcl
 
+echo "Start nodemetricsproxy"
 timeout --foreground 120 \
   sh -c 'while ! service nginx status nodemetricsproxy; do
     service nginx start nodemetricsproxy || true; sleep 3;
+  done'
+
+echo "Start nomadproxy"
+timeout --foreground 120 \
+  sh -c 'while ! service nginx status nomadproxy; do
+    service nginx start nomadproxy || true; sleep 3;
   done'
 
 # configure and (re)start syslog-ng if necessary

@@ -1,3 +1,9 @@
+0.16
+
+* Add nomad.service.consul alt name to Nomad certs
+
+---
+
 0.15
 
 * Version bump for new base image

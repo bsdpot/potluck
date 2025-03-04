@@ -1,3 +1,9 @@
+0.8
+
+* Add Nomad proxy
+
+---
+
 0.7
 
 * Version bump for new base image

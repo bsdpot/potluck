@@ -35,7 +35,8 @@ create_int_pki "nomadpki" "nomadpki_int" "global.nomad intermediate"
 create_pki_role "nomadpki_int" "nomad-server" \
   "{{identity.entity.metadata.nodename}}.global.nomad" \
   "server.global.nomad" \
-  "metrics.global.nomad"
+  "metrics.global.nomad" \
+  "nomad.service.consul"
 
 vault policy write issue-nomad-server-cert - <<-EOF
 	path "nomadpki_int/issue/nomad-server" {
