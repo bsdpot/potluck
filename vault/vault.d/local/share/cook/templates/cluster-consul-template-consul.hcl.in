@@ -35,8 +35,8 @@ template {
   command     = "/usr/local/share/cook/bin/cluster-reload-metrics.sh"
 }
 
-template {
-  source      = "/mnt/templates/nomad.tpl"
-  destination = "/mnt/nomadcerts/nomad.checksum"
-  command     = "service nginx reload nomadproxy; true"
-}
+##nomadproxy##template {
+##nomadproxy##  source      = "/mnt/templates/nomad.tpl"
+##nomadproxy##  destination = "/mnt/nomadcerts/nomad.checksum"
+##nomadproxy##  command     = "service nginx reload nomadproxy; true"
+##nomadproxy##}

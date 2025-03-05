@@ -24,7 +24,7 @@ chmod 600 \
 echo "s${sep}%%token%%${sep}$TOKEN${sep}" | sed -i '' -f - \
   /usr/local/etc/consul-template.d/consul-template.hcl
 
-for name in vault consul metrics nomad; do
+for name in vault consul metrics; do
     < "$TEMPLATEPATH/$name.tpl.in" \
       sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
       sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
