@@ -1,6 +1,7 @@
 0.20
 
 * Version bump for new image
+* Update to mastodon 4.3.4
 
 ---
 
