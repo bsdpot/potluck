@@ -2,6 +2,7 @@
 
 * Version bump for new image
 * Update to mastodon 4.3.4
+* Update to mastodon 4.3.4 with extra changes to fork
 
 ---
 
