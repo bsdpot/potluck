@@ -306,7 +306,8 @@ if [ ! -d /usr/local/www/mastodon/.git ]; then
     #su - mastodon -c "cd /usr/local/www/mastodon; git checkout 11aaee1eca898184c871fe5448f7cd6e7e96d156"
     #su - mastodon -c "cd /usr/local/www/mastodon; git checkout 460e86f8410ae671e275e35a5fbb82b98030773b"
     #su - mastodon -c "cd /usr/local/www/mastodon; git checkout 1506ed6009476f793015d6bbcfc4283d09a79d75"
-    su - mastodon -c "cd /usr/local/www/mastodon; git checkout 566862a6a01b59a429e5d544dd1ec18dee5876d4"
+    #su - mastodon -c "cd /usr/local/www/mastodon; git checkout 566862a6a01b59a429e5d544dd1ec18dee5876d4"
+    su - mastodon -c "cd /usr/local/www/mastodon; git checkout b231103d148037c67f04c82d7c585155e57c5f35"
 else
     echo ".git directory exists, not cloning repo"
 fi
