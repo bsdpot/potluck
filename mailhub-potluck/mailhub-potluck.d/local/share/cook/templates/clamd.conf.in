@@ -83,6 +83,11 @@ DatabaseDirectory /var/db/clamav
 # Default: no
 #OfficialDatabaseOnly no
 
+# Return with a nonzero error code if the virus database is older than
+# the specified number of days.
+# Default: -1
+#FailIfCvdOlderThan 7
+
 # The daemon can work in local mode, network mode or both.
 # Due to security reasons we recommend the local mode.
 
@@ -125,7 +130,7 @@ FixStaleSocket yes
 # Close the connection when the data size limit is exceeded.
 # The value should match your MTA's limit for a maximum attachment size.
 # Default: 25M
-#StreamMaxLength 10M
+#StreamMaxLength 25M
 
 # Limit port range.
 # Default: 1024
@@ -188,7 +193,7 @@ FixStaleSocket yes
 
 # Scan files and directories on other filesystems.
 # Default: yes
-#CrossFilesystems yes
+#CrossFilesystems no
 
 # Perform a database check.
 # Default: 600 (10 min)

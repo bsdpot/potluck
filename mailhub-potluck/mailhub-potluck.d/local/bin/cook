@@ -113,6 +113,7 @@ timeout --foreground 120 \
 #log "Set up local unbound using local consul once consul running"
 #configure-local-unbound.sh
 
+# rc name uses underscore separator
 log "Start node_exporter"
 service node_exporter start
 
@@ -155,29 +156,32 @@ configure-scripts.sh
 ### start services
 
 # start freshclam and update
-log "Starting freshclam"
-service clamav-freshclam start
+# rc name uses underscore separator now
+log "Starting clamav_freshclam"
+service clamav_freshclam start
 /usr/local/bin/freshclam || true
 
 # start clamav
-log "Starting clamav"
+# rc name uses underscore separator now
+log "Starting clamav_clamd"
 timeout --foreground 120 \
-  sh -c 'while ! service clamav-clamd status; do
-    service clamav-clamd start || true; sleep 5;
+  sh -c 'while ! service clamav_clamd status; do
+    service clamav_clamd start || true; sleep 5;
   done'
 
 # start milter
-log "Starting clamav-milter"
+# rc name uses underscore separator now
+log "Starting clamav_milter"
 timeout --foreground 120 \
-  sh -c 'while ! service clamav-milter status; do
-    service clamav-milter start || true; sleep 5;
+  sh -c 'while ! service clamav_milter status; do
+    service clamav_milter start || true; sleep 5;
   done'
 
-# start spamassassin
+# start spamassassin, still uses dash separator
 log "Starting spamassassin"
 service sa-spamd start
 
-# start opendkim
+# start opendkim, still uses dash separator
 log "Starting milter-opendkim"
 service milter-opendkim start
 

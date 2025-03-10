@@ -19,6 +19,12 @@ export PATH="/usr/local/bin:$PATH"
 #sep=$'\001'
 #
 
+# we're not currently making any changes to
+# clamd.conf, clamav-milter.conf or freshclam.conf
+# so we can skip the template processing.
+# files are in templates directory for future use.
+
+
 # redundant step but do it anyway
 # create clamav run directory and set ownership to clamav
 mkdir -p /var/run/clamav
