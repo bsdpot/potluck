@@ -1,6 +1,7 @@
 0.22
 
 * Version bump for new base image
+* Clamav services now use underscore in service name
 
 ---
 
