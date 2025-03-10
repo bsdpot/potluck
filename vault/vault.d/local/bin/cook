@@ -189,9 +189,6 @@ service consul start
 log "Configure nodemetricsproxy"
 cluster-configure-nodemetricsproxy.sh
 
-log "Configure nomadproxy"
-cluster-configure-nomadproxy.sh
-
 log "Setup node_exporter"
 cluster-configure-node-exporter.sh
 

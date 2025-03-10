@@ -1,3 +1,9 @@
+0.9
+
+* Make Nomad proxy setup as an optional script
+
+---
+
 0.8
 
 * Add Nomad proxy
