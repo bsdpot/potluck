@@ -1,3 +1,10 @@
+0.8
+
+* Switch to latest packages
+* New version spreed 2.0.2 in latest pkg stream
+
+---
+
 0.7
 
 * Version bump for new base image
