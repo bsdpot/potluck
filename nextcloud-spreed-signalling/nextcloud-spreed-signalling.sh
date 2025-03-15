@@ -62,9 +62,10 @@ trap 'echo ERROR: $STEP$FAILED | (>&2 tee -a $COOKLOG)' EXIT
 step "Bootstrap package repo"
 mkdir -p /usr/local/etc/pkg/repos
 # only modify repo if not already done in base image
+# switched to latest, change to non-layered image
 # shellcheck disable=SC2016
 test -e /usr/local/etc/pkg/repos/FreeBSD.conf || \
-  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/quarterly" }' \
+  echo 'FreeBSD: { url: "pkg+http://pkg.FreeBSD.org/${ABI}/latest" }' \
     >/usr/local/etc/pkg/repos/FreeBSD.conf
 ASSUME_ALWAYS_YES=yes pkg bootstrap
 
@@ -128,7 +129,7 @@ pkg install -y node_exporter
 step "Install package nginx"
 pkg install -y nginx
 
-# This is version 1.1.3 which is not compatible with the newer Nextcloud version on ports
+# This is version 2.0.2 in latest pkg stream for now
 step "Install package nextcloud-spreed-signaling"
 pkg install -y nextcloud-spreed-signaling
 

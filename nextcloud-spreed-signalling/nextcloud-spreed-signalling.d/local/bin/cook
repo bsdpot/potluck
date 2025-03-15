@@ -68,21 +68,20 @@ done
 
 # Input is "10.0.0.1,10.2.0.1,10.45.2.4"
 # Expected output is "10.0.0.1","10.2.0.1","10.45.2.4"
-
 if [ -n "${CONSULSERVERS+x}" ]; then
     FIXCONSULSERVERS=$(convert_to_required_format "$CONSULSERVERS")
     export FIXCONSULSERVERS
 fi
 
 # create hashkey variable
-# The sessions hash key should be 32 or 64 bytes
+# The sessions hash key should be 32 or 64 bytes but only 32 works in practise
 if [ -z "${HASHKEY+x}" ]; then
 	HASHKEY=$(/usr/bin/openssl rand -hex 32)
 fi
 export HASHKEY
 
 # create blockkey variable
-# the sessions block key must be 16, 24 or 32 bytes but only 16 below works
+# the sessions block key must be 16, 24 or 32 bytes according to docs but only 16 below works in practise
 if [ -z "${BLOCKKEY+x}" ]; then
 	BLOCKKEY=$(/usr/bin/openssl rand -hex 16)
 fi
