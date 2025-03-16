@@ -1,0 +1,37 @@
+datacenter = "%%datacenter%%"
+node_name = "%%nodename%%"
+data_dir =  "/var/db/consul"
+dns_config = {
+  a_record_limit = 3
+  enable_truncate = true
+}
+ports = {
+  http = 8500
+  https = -1
+}
+tls {
+  defaults {
+    verify_incoming = false
+    verify_outgoing = false
+  }
+  internal_rpc {
+    verify_server_hostname = false
+  }
+}
+log_file = "/var/log/consul/consul.log"
+log_level = "INFO"
+encrypt = "%%gossipkey%%"
+retry_join = [ %%consulservers%% ]
+services = {
+  name = "node-exporter"
+  tags = ["_app=documentserver", "_service=node-exporter", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 9100
+}
+services = {
+  name = "www"
+  tags = ["_app=documentserver", "_service=www", "_hostname=%%nodename%%.%%datacenter%%.consul"]
+  port = 80
+}
+telemetry = {
+  prometheus_retention_time = "24h"
+}
