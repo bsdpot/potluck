@@ -1,0 +1,43 @@
+{
+  "services": {
+    "CoAuthoring": {
+      "sql": {
+        "type": "postgres",
+        "dbHost": "%%dbhost%%",
+        "dbPort": "%%dbport%%",
+        "dbName": "%%dbname%%",
+        "dbUser": "%%dbuser%%",
+        "dbPass": "%%dbpass%%"
+      },
+      "token": {
+        "enable": {
+          "request": {
+            "inbox": false,
+            "outbox": false
+          },
+          "browser": false
+        },
+        "inbox": {
+          "header": "Authorization"
+        },
+        "outbox": {
+          "header": "Authorization"
+        }
+      },
+      "secret": {
+        "inbox": {
+          "string": "%%verysecretstring%%"
+        },
+        "outbox": {
+          "string": "%%verysecretstring%%"
+        },
+        "session": {
+          "string": "%%verysecretstring%%"
+        }
+      }
+    }
+  },
+  "rabbitmq": {
+    "url": "amqp://onlyoffice:%%rabbitonlyofficepass%%@%%ip%%"
+  }
+}
