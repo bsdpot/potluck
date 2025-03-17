@@ -135,6 +135,13 @@ pkg install -y nginx
 step "Install package python3"
 pkg install -y python3
 
+step "Install package py311-supervisor"
+pkg install -y py311-supervisor
+
+# supervisord needs this but it isn't installed as a dependency with onlyoffice-documentserver
+step "Install package py311-setuptools"
+pkg install -y py311-setuptools
+
 step "Install package postgresql16-client"
 pkg install -y postgresql16-client
 

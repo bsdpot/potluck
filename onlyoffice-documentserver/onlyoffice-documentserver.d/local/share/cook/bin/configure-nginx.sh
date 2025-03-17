@@ -22,7 +22,7 @@ sep=$'\001'
 < "$TEMPLATEPATH/nginx.conf.in" \
   sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%domain%%${sep}$DOMAIN${sep}g" | \
-  sed "s${sep}%%verysecretstring%%${sep}$SECRETSTRING${sep}g" \
+  sed "s${sep}%%verysecretstring%%${sep}$SETSECRETSTRING${sep}g" \
   > /usr/local/etc/nginx/nginx.conf
 
 # enable nginx

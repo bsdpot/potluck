@@ -25,14 +25,14 @@ sep=$'\001'
 
 # copy in custom local.json
 < "$TEMPLATEPATH/local.json.in" \
-  sed "s${sep}%%ip%%${sep}$IP${sep}g" | \
   sed "s${sep}%%dbhost%%${sep}$DBHOST${sep}g" | \
   sed "s${sep}%%dbport%%${sep}$SETDBPORT${sep}g" | \
   sed "s${sep}%%dbname%%${sep}$DBNAME${sep}g" | \
   sed "s${sep}%%dbuser%%${sep}$DBUSER${sep}g" | \
   sed "s${sep}%%dbpass%%${sep}$DBPASS${sep}g" | \
   sed "s${sep}%%verysecretstring%%${sep}$SETSECRETSTRING${sep}g" | \
-  sed "s${sep}%%rabbitonlyofficepass%%${sep}$SETRABBITONLYOFFICEPASS${sep}g" \
+  sed "s${sep}%%rabbitonlyofficepass%%${sep}$SETRABBITONLYOFFICEPASS${sep}g" | \
+  sed "s${sep}%%rabbitnodename%%${sep}$$_POT_NAME${sep}g" \
   > /usr/local/etc/onlyoffice/documentserver/local.json
 
 # unset these for plugin install
