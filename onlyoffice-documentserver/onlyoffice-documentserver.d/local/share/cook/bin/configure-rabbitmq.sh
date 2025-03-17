@@ -30,8 +30,10 @@ service rabbitmq enable
 service rabbitmq start || true
 
 # Create a new rabbitmq user for the ONLYOFFICE Document Server configuration
+# the documentation for the onlyoffice-documentserver port fails to mention including '--node "name"' to make this work
 GETCOOKIE=$(cat /var/db/rabbitmq/.erlang.cookie)
-/usr/local/sbin/rabbitmqctl --erlang-cookie "$GETCOOKIE" add_user onlyoffice "$SETRABBITONLYOFFICEPASS"
-/usr/local/sbin/rabbitmqctl --erlang-cookie "$GETCOOKIE" set_user_tags onlyoffice administrator
-/usr/local/sbin/rabbitmqctl --erlang-cookie "$GETCOOKIE" set_permissions -p / onlyoffice ".*" ".*" ".*"
+GETNODENAME="rabbit@$_POT_NAME"
+/usr/local/sbin/rabbitmqctl --node "$GETNODENAME" --erlang-cookie "$GETCOOKIE" add_user onlyoffice "$SETRABBITONLYOFFICEPASS"
+/usr/local/sbin/rabbitmqctl --node "$GETNODENAME" --erlang-cookie "$GETCOOKIE" set_user_tags onlyoffice administrator
+/usr/local/sbin/rabbitmqctl --node "$GETNODENAME" --erlang-cookie "$GETCOOKIE" set_permissions -p / onlyoffice ".*" ".*" ".*"
 

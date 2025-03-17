@@ -38,6 +38,6 @@
     }
   },
   "rabbitmq": {
-    "url": "amqp://onlyoffice:%%rabbitonlyofficepass%%@%%ip%%"
+    "url": "amqp://onlyoffice:%%rabbitonlyofficepass%%@%%rabbitnodename%%"
   }
 }

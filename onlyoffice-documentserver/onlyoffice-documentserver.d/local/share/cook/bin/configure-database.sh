@@ -24,8 +24,8 @@ set +o pipefail
 # check if database exists
 dbcheck=$(check_database)
 
-# import database structure if db exists
-if [ "$dbcheck" -eq 1 ]; then
+# import database structure if db exists, using greater-than-or-equal-to operator because grep count is 2 if database exists
+if [ "$dbcheck" -ge 1 ]; then
     echo "Configuring onlyoffice database"
     /usr/local/bin/psql "postgresql://$DBUSER:$DBPASS@$DBHOST:$SETDBPORT/$DBNAME" -f /usr/local/www/onlyoffice/documentserver/server/schema/postgresql/createdb.sql
 else

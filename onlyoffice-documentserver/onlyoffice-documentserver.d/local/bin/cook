@@ -53,7 +53,7 @@ required_args="DATACENTER IP NODENAME CONSULSERVERS GOSSIPKEY"
 required_args="$required_args DOMAIN EMAIL"
 required_args="$required_args DBHOST DBNAME DBUSER DBPASS"
 optional_args="REMOTELOG DISABLEUNBOUNDV6 RABBITONLYOFFICEPASS"
-optional_args="$optional_args PVTCERT DBPORT"
+optional_args="$optional_args PVTCERT DBPORT SECRETSTRING"
 
 for var in $required_args; do
   if [ -z "$(eval echo "\${$var}")" ]; then
