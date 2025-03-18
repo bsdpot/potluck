@@ -7,3 +7,4 @@
 * Add missing parameter SECRETSTRING to cook script variables check
 * Fix nginx parameter naming variables
 * Update CHECKLIST for python package version name changes
+* Fix typo in variable expansion of `_POT_NAME` for local.json configuration
