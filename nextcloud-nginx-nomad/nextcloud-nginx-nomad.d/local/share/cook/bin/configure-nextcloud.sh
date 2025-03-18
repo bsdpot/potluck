@@ -43,6 +43,11 @@ fi
 # set perms on DATADIR
 chown -R www:www "${DATADIR}"
 
+# mkdir and copy over the postinstall.sh script to /root/bin
+mkdir -p /root/bin
+cp -f "$TEMPLATEPATH/postinstall.sh.in" /root/bin/postinstall.sh
+chmod +x /root/bin/postinstall.sh
+
 # configure self-signed certificates for libcurl, mostly used for minio with self-signed certificates
 # nextcloud source needs patching to work with self-signed certificates too
 if [ -n "${SELFSIGNHOST}" ]; then

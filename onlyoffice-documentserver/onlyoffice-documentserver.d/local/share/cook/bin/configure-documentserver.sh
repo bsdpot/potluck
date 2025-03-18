@@ -32,7 +32,7 @@ sep=$'\001'
   sed "s${sep}%%dbpass%%${sep}$DBPASS${sep}g" | \
   sed "s${sep}%%verysecretstring%%${sep}$SETSECRETSTRING${sep}g" | \
   sed "s${sep}%%rabbitonlyofficepass%%${sep}$SETRABBITONLYOFFICEPASS${sep}g" | \
-  sed "s${sep}%%rabbitnodename%%${sep}$$_POT_NAME${sep}g" \
+  sed "s${sep}%%rabbitnodename%%${sep}$_POT_NAME${sep}g" \
   > /usr/local/etc/onlyoffice/documentserver/local.json
 
 # unset these for plugin install

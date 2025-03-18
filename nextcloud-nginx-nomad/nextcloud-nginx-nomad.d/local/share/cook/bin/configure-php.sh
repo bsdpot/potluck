@@ -26,8 +26,6 @@ cp -f /usr/local/etc/php.ini-production /usr/local/etc/php.ini
 cp -f "$TEMPLATEPATH/99-custom.ini" /usr/local/etc/php/99-custom.ini
 
 # manually create php log and set owner
-
-
 # confirm logs exist with correct permissions
 if [ -d /var/log/nginx ]; then
     touch /var/log/nginx/php.error.log
