@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Run post-install scripts to perform expensive migrations and set missing indices
+
+# Check if nextcloud is installed by running the status command.
+if su -m www -c 'cd /usr/local/www/nextcloud/; php occ status'; then
+	# If the command is successful, run the following commands.
+	su -m www -c 'cd /usr/local/www/nextcloud/; php occ -vvv maintenance:repair --include-expensive'
+	su -m www -c 'cd /usr/local/www/nextcloud/; php occ -vvv db:add-missing-indices'
+else
+	echo "Nextcloud is not installed or the status command failed."
+fi

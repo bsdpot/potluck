@@ -1,3 +1,10 @@
+0.119
+
+* Version bump for rebuild
+* Add post-install scripts for admin automation
+
+---
+
 0.118
 
 * Version bump for new image
