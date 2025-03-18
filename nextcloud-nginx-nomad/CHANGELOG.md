@@ -2,6 +2,7 @@
 
 * Version bump for rebuild
 * Add post-install scripts for admin automation
+* Update README with version adjustment and postinstall script
 
 ---
 

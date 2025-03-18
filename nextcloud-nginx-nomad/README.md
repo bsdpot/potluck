@@ -246,7 +246,7 @@ job "nextcloud" {
       config {
         image = "https://potluck.honeyguide.net/nextcloud-nginx-nomad"
         pot = "nextcloud-nginx-nomad-amd64-14_2"
-        tag = "0.118"
+        tag = "0.119"
         command = "/usr/local/bin/cook"
         args = ["-d","/mnt/filestore","-s","host:ip"]
         copy = [
@@ -303,6 +303,15 @@ The following commands can be entered in via the command line, from the pot host
 ```
 pot term nextcloud_id...
 ```
+
+## Run postinstall script
+
+The file `/root/bin/postinstall.sh` will perform post-install maintenance steps such as
+
+* php occ maintenance:repair --include-expensive
+* php occ -vvv db:add-missing-indices
+
+This can be run after setup of a new instance, or on a running instance.
 
 ## Get the LDAP config
 ```
