@@ -1,6 +1,7 @@
 0.9
 
 * Make Nomad proxy setup as an optional script
+* Fix a few bugs and notes in setup-nomad-proxy.sh
 
 ---
 

@@ -2,6 +2,9 @@
 
 # The "consul-servers" Vault group needs the "issue-nomad-client-cert" policy
 # for this to work.
+# Example commands:
+# OLD_POLICIES=$(~/vault.sh read -format=json identity/group/name/consul-servers | jq -c '.data.policies' | tr -d '"[]')
+# ~/vault.sh write identity/group/name/consul-servers policies=${OLD_POLICIES},issue-nomad-client-cert
 
 # shellcheck disable=SC1091
 . /root/.env.cook
@@ -22,11 +25,14 @@ sep=$'\001'
 
 # Copy over consul-template template for Nomad certs
 < "$TEMPLATEPATH/nomad.tpl.in" \
-  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" | \
+  sed "s${sep}%%nodename%%${sep}$NODENAME${sep}g" \
   > "/mnt/templates/nomad.tpl"
 
 # Uncomment Nomad cert template in consul-template config
 sed -i '' 's/^##nomadproxy##//g' /usr/local/etc/consul-template.d/consul-template.hcl
+
+# Restart consul-template for it to provision Nomad client certs
+service consul-template restart
 
 # Copy over Nginx config for Nomad proxy
 cp "$TEMPLATEPATH/nomadproxy.conf.in" \

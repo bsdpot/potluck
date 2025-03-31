@@ -1,6 +1,7 @@
 2.10
 
 * Make Nomad proxy setup as an optional script
+* Fix a few bugs and notes in cluster-setup-nomad-proxy.sh
 
 ---
 
