@@ -1,3 +1,5 @@
+# NOTE: THIS REPOSITORY IS NO LONGER MAINTAINED, THE PROJECT HAS MOVED TO https://codeberg.org/bsdpot/potluck
+
 # potluck
 
 ## Overview
